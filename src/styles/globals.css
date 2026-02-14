@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   PINFALL DATA — Global Styles
+   ============================================ */
+
+/* Google Fonts loaded in layout.tsx via next/font */
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-bg-primary text-text-primary font-body;
+    overflow-x: hidden;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-bg-primary;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border-subtle rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-text-secondary;
+  }
+
+  /* Selection color */
+  ::selection {
+    background: rgba(44, 178, 254, 0.3);
+    color: #ffffff;
+  }
+}
+
+@layer components {
+  /* Neon glow card hover effect */
+  .card-glow {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  .card-glow:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 15px rgba(44, 178, 254, 0.3), 0 0 30px rgba(44, 178, 254, 0.1);
+  }
+
+  /* Neon text glow */
+  .text-glow-blue {
+    text-shadow: 0 0 10px rgba(44, 178, 254, 0.5), 0 0 20px rgba(44, 178, 254, 0.2);
+  }
+
+  .text-glow-pink {
+    text-shadow: 0 0 10px rgba(245, 84, 218, 0.5), 0 0 20px rgba(245, 84, 218, 0.2);
+  }
+
+  /* Glass morphism effect for menu */
+  .glass {
+    background: rgba(10, 14, 26, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(44, 178, 254, 0.1);
+  }
+
+  /* Subtle grid background overlay */
+  .bg-grid {
+    background-image:
+      linear-gradient(rgba(44, 178, 254, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(44, 178, 254, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  /* Neon line separator */
+  .neon-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #2cb2fe, transparent);
+  }
+
+  .neon-line-pink {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #f554da, transparent);
+  }
+
+  /* Stat counter animation */
+  .stat-number {
+    @apply font-mono text-text-white;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Skeleton loader */
+  .skeleton {
+    @apply bg-bg-tertiary rounded animate-pulse;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar but keep scroll */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
