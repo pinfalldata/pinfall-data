@@ -13,7 +13,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const superstar = await getSuperstarBySlug(params.slug)
   if (!superstar) return { title: 'Superstar not found — Pinfall Data' }
 
-  const nickname = superstar.nicknames?.find((n: any) => n.is_primary)?.nickname
+  // CORRECTION ICI : On ajoute (superstar as any) pour contourner l'erreur de type
+  const nickname = (superstar as any).nicknames?.find((n: any) => n.is_primary)?.nickname
+  
   const sub = nickname ? `"${nickname}" — ` : ''
 
   return {
