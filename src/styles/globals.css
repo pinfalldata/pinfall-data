@@ -6,8 +6,6 @@
    PINFALL DATA — Global Styles
    ============================================ */
 
-/* Google Fonts loaded in layout.tsx via next/font */
-
 @layer base {
   * {
     box-sizing: border-box;
@@ -70,7 +68,7 @@
 
   /* Glass morphism effect for menu */
   .glass {
-    background: rgba(6, 8, 15, 0.85);
+    background: rgba(5, 5, 7, 0.88);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(44, 178, 254, 0.1);
@@ -147,4 +145,39 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+}
+
+/* ============================================
+   KEYFRAMES — Neon Animations
+   Defined outside @layer so they're always available
+   ============================================ */
+
+@keyframes neon-sweep {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes neon-sweep-reverse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes grid-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+@keyframes glow-pulse {
+  0% { box-shadow: 0 0 10px rgba(44, 178, 254, 0.2); }
+  100% { box-shadow: 0 0 20px rgba(44, 178, 254, 0.4), 0 0 40px rgba(44, 178, 254, 0.1); }
+}
+
+@keyframes slide-in {
+  0% { transform: translateX(20px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }

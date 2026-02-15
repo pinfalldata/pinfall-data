@@ -10,9 +10,9 @@ const config: Config = {
     extend: {
       colors: {
         bg: {
-          primary: '#0a0e1a',
-          secondary: '#111827',
-          tertiary: '#1a1a2e',
+          primary: '#050507',    // ← Noir pur (avant: #0a0e1a bleu nuit)
+          secondary: '#0a0d14',  // ← Plus sombre
+          tertiary: '#10141e',   // ← Plus sombre
         },
         neon: {
           blue: '#2cb2fe',
@@ -33,9 +33,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ['Oswald', 'sans-serif'],
-        body: ['Source Sans 3', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
+        display: ['var(--font-display)', 'Oswald', 'sans-serif'],
+        body: ['var(--font-body)', 'Source Sans 3', 'sans-serif'],
+        mono: ['var(--font-mono)', 'JetBrains Mono', 'monospace'],
       },
       boxShadow: {
         'neon-blue': '0 0 15px rgba(44, 178, 254, 0.3), 0 0 30px rgba(44, 178, 254, 0.1)',
@@ -54,6 +54,9 @@ const config: Config = {
         'slide-in': 'slide-in 0.3s ease-out',
         'fade-in': 'fade-in 0.5s ease-out',
         'count-up': 'count-up 2s ease-out',
+        'neon-sweep': 'neon-sweep 3s ease-in-out infinite',
+        'neon-sweep-reverse': 'neon-sweep-reverse 4s ease-in-out infinite',
+        'grid-pulse': 'grid-pulse 8s ease-in-out infinite',
       },
       keyframes: {
         'glow-pulse': {
@@ -67,6 +70,18 @@ const config: Config = {
         'fade-in': {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
+        },
+        'neon-sweep': {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+        'neon-sweep-reverse': {
+          '0%': { backgroundPosition: '200% 0' },
+          '100%': { backgroundPosition: '-200% 0' },
+        },
+        'grid-pulse': {
+          '0%, 100%': { opacity: '0.4' },
+          '50%': { opacity: '1' },
         },
       },
       screens: {
