@@ -1,11 +1,10 @@
-'use client' // Ajoute ceci pour que l'image puisse gérer les erreurs de chargement
+'use client'
 
 import Image from 'next/image'
-import { useState } from 'react' // Nécessaire pour gérer l'erreur d'image
+import { useState } from 'react'
 import { getStatusColor, getStatusLabel, getRoleLabels } from '@/lib/utils'
 
 export function ProfileHero({ superstar }: { superstar: any }) {
-  // On crée un état pour savoir si l'image a échoué à charger
   const [imageError, setImageError] = useState(false)
 
   const primaryNickname = superstar.nicknames?.find((n: any) => n.is_primary)?.nickname
@@ -14,33 +13,44 @@ export function ProfileHero({ superstar }: { superstar: any }) {
   const primaryEra = superstar.eras?.find((e: any) => e.is_primary)
   const eraCount = superstar.eras?.length || 0
 
-  // Vérification de sécurité
   const hasPhoto = superstar.photo_url && !imageError
 
   return (
-    <section className="relative overflow-hidden">
-      {/* ===== BANNER BACKGROUND ===== */}
-      <div className="relative h-[300px] sm:h-[340px] lg:h-[400px]">
-        {superstar.banner_url ? (
-          <div className="absolute inset-0">
+    <section className="relative overflow-hidden bg-bg-primary">
+      {/* ===== BANNER BACKGROUND MODIFIÉ ===== */}
+      <div className="relative h-[300px] sm:h-[340px] lg:h-[400px] overflow-hidden">
+        
+        {superstar.banner_url && (
+          <div className="absolute top-0 right-0 h-full w-full sm:w-[70%] lg:w-[50%] z-0 pointer-events-none">
             <Image
               src={superstar.banner_url}
               alt=""
               fill
-              className="object-cover object-center opacity-20"
+              // On utilise object-contain et object-right pour caler le logo à droite sans le couper
+              // Opacité réduite à 10% (0.1) pour plus de subtilité
+              className="object-contain object-right opacity-10"
               priority
             />
+            {/* Dégradé pour fondre doucement le bord gauche du logo dans le noir du site */}
+            <div className="absolute inset-0 bg-gradient-to-r from-bg-primary via-bg-primary/40 to-transparent" />
           </div>
-        ) : null}
+        )}
 
-        {/* Gradient background */}
+        {/* Couches de design (Gradients & Grid) */}
         <div className="absolute inset-0 bg-gradient-to-br from-bg-tertiary/90 via-bg-secondary/80 to-bg-primary/90" />
-        {/* Animated grid */}
-        <div className="absolute inset-0 bg-grid opacity-30 animate-grid-pulse" style={{ maskImage: 'radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent)', WebkitMaskImage: 'radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent)' }} />
-        {/* Glow orbs */}
-        <div className="absolute top-10 right-1/4 w-80 h-80 bg-neon-blue/8 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 left-1/4 w-60 h-60 bg-neon-pink/6 rounded-full blur-[100px]" />
-        {/* Gradient fade */}
+        <div 
+          className="absolute inset-0 bg-grid opacity-30 animate-grid-pulse" 
+          style={{ 
+            maskImage: 'radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent)', 
+            WebkitMaskImage: 'radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent)' 
+          }} 
+        />
+        
+        {/* Glow orbs - Légèrement atténués pour laisser respirer le nouveau logo */}
+        <div className="absolute top-10 right-1/4 w-80 h-80 bg-neon-blue/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 left-1/4 w-60 h-60 bg-neon-pink/4 rounded-full blur-[100px]" />
+        
+        {/* Gradient fade vers le bas */}
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/40 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-primary to-transparent" />
       </div>
@@ -56,11 +66,11 @@ export function ProfileHero({ superstar }: { superstar: any }) {
                 <Image 
                   src={superstar.photo_url} 
                   alt={superstar.name} 
-                  fill // Utilise 'fill' au lieu de width/height pour remplir le conteneur carré
+                  fill 
                   sizes="(max-width: 640px) 160px, (max-width: 1024px) 192px, 240px"
                   className="object-cover object-top" 
                   priority 
-                  onError={() => setImageError(true)} // Si l'image plante, on affiche le placeholder
+                  onError={() => setImageError(true)}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-bg-tertiary">
@@ -71,15 +81,13 @@ export function ProfileHero({ superstar }: { superstar: any }) {
               )}
             </div>
             
-            {/* Status badge */}
             <div className={`absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${statusClasses} z-20`}>
               {getStatusLabel(superstar.status)}
             </div>
           </div>
 
-          {/* NAME + META (center) */}
+          {/* NAME + META */}
           <div className="text-center sm:text-left pb-2 z-10 flex-1 min-w-0">
-             {/* ... Le reste du code ne change pas ... */}
             <div className="flex items-center justify-center sm:justify-start gap-2 mb-2 flex-wrap">
               {superstar.current_brand && (
                 <span className={`px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${
@@ -125,8 +133,8 @@ export function ProfileHero({ superstar }: { superstar: any }) {
             )}
           </div>
           
-           {/* ERA BADGE (copie le reste de ton ancien fichier ici pour la partie droite) */}
-           <div className="hidden lg:flex flex-col items-end gap-3 pb-4 z-10 shrink-0">
+          {/* ERA BADGE */}
+          <div className="hidden lg:flex flex-col items-end gap-3 pb-4 z-10 shrink-0">
             {eraCount > 0 && (
               <div className="flex flex-col items-end gap-2">
                 {primaryEra && (
