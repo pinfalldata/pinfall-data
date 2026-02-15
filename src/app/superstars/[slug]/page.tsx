@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getSuperstarBySlug } from '@/lib/queries'
 import { ProfileHero } from '@/components/superstar/ProfileHero'
-import { ProfileStats } from '@/components/superstar/ProfileStats'
+import { ProfileInfoBar } from '@/components/superstar/ProfileInfoBar'
 import { ProfileTabs } from '@/components/superstar/ProfileTabs'
 
 interface Props {
@@ -11,17 +11,16 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const superstar = await getSuperstarBySlug(params.slug)
-  if (!superstar) return { title: 'Superstar not found' }
+  if (!superstar) return { title: 'Superstar not found — Pinfall Data' }
 
-  const primaryNickname = superstar.nicknames?.find((n: any) => n.is_primary)?.nickname
-  const subtitle = primaryNickname ? `"${primaryNickname}" — ` : ''
+  const nickname = superstar.nicknames?.find((n: any) => n.is_primary)?.nickname
+  const sub = nickname ? `"${nickname}" — ` : ''
 
   return {
-    title: `${superstar.name} — WWE Stats & Career History`,
-    description: `${subtitle}Complete WWE profile for ${superstar.name}. Career stats, championship history, rivalries, matches, and more on Pinfall Data.`,
+    title: `${superstar.name} — WWE Stats & Career History | Pinfall Data`,
+    description: `${sub}Complete WWE profile for ${superstar.name}. Career stats, championship history, rivalries, matches, and more.`,
     openGraph: {
       title: `${superstar.name} | Pinfall Data`,
-      description: `${subtitle}${superstar.bio_md?.slice(0, 150) || `Complete WWE profile for ${superstar.name}`}`,
       images: superstar.photo_url ? [superstar.photo_url] : [],
     },
   }
@@ -32,10 +31,10 @@ export default async function SuperstarProfilePage({ params }: Props) {
   if (!superstar) notFound()
 
   return (
-    <div className="min-h-screen">
+    <main className="min-h-screen">
       <ProfileHero superstar={superstar} />
-      <ProfileStats superstar={superstar} />
+      <ProfileInfoBar superstar={superstar} />
       <ProfileTabs superstar={superstar} />
-    </div>
+    </main>
   )
 }
