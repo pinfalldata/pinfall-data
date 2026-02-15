@@ -1,13 +1,17 @@
 import { supabase } from './supabase'
+import type { Superstar } from '@/types/database'
 
 export async function getSuperstarBySlug(slug: string) {
-  const { data: superstar, error } = await supabase
+  const { data, error } = await supabase
     .from('superstars')
     .select('*')
     .eq('slug', slug)
     .single()
 
-  if (error || !superstar) return null
+  if (error || !data) return null
+
+  // Cast explicite — on sait que le select('*') retourne toutes les colonnes
+  const superstar = data as Superstar
 
   const [
     { data: roles },

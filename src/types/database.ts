@@ -8,7 +8,7 @@
 
 export type SuperstarStatus = 'active' | 'retired' | 'deceased' | 'released' | 'inactive'
 export type SuperstarGender = 'male' | 'female' | 'other'
-export type SuperstarRole = 'wrestler' | 'manager' | 'referee' | 'announcer' | 'commentator' | 'authority' | 'other'
+export type SuperstarRole = 'wrestler' | 'manager' | 'referee' | 'announcer' | 'commentator' | 'authority' | 'promoter' | 'trainer' | 'producer' | 'other'
 export type ChampionshipStatus = 'active' | 'retired'
 export type ShowType = 'ppv' | 'weekly' | 'special' | 'tournament' | 'other'
 export type ResultType = 'pinfall' | 'submission' | 'dq' | 'count_out' | 'no_contest' | 'forfeit' | 'ko' | 'referee_stoppage' | 'escape' | 'retrieve' | 'last_elimination' | 'other'
@@ -38,7 +38,6 @@ export interface Superstar {
   slug: string
   real_name: string | null
   birth_date: string | null
-  birth_place: string | null
   death_date: string | null
   height_cm: number | null
   weight_kg: number | null
@@ -50,7 +49,6 @@ export interface Superstar {
   photo_url: string | null
   banner_url: string | null
   bio_md: string | null
-  nationality: string | null
   billed_from: string | null
   era_id: number | null
   is_hall_of_fame: boolean
@@ -60,8 +58,142 @@ export interface Superstar {
   total_matches: number
   total_championship_days: number
   total_reigns: number
+  // Colonnes géographiques
+  birth_city: string | null
+  birth_state: string | null
+  birth_country: string | null
+  nationalities: string[] | null
+  current_brand: string | null
   created_at: string
   updated_at: string
+}
+
+export interface SuperstarRoleRow {
+  id: number
+  superstar_id: number
+  role: SuperstarRole
+  is_primary: boolean
+  start_year: number | null
+  end_year: number | null
+  created_at: string
+}
+
+export interface SuperstarEra {
+  id: number
+  superstar_id: number
+  era_id: number
+  is_primary: boolean
+  created_at: string
+}
+
+export interface SuperstarNickname {
+  id: number
+  superstar_id: number
+  nickname: string
+  is_primary: boolean
+  sort_order: number
+  created_at: string
+}
+
+export interface SuperstarAlias {
+  id: number
+  superstar_id: number
+  alias_name: string
+  start_date: string | null
+  end_date: string | null
+  created_at: string
+}
+
+export interface Finisher {
+  id: number
+  superstar_id: number
+  name: string
+  move_type: MoveType
+  description: string | null
+  created_at: string
+}
+
+export interface EntranceTheme {
+  id: number
+  superstar_id: number
+  song_name: string
+  artist: string | null
+  start_date: string | null
+  end_date: string | null
+  is_current: boolean
+  created_at: string
+}
+
+export interface SuperstarTimeline {
+  id: number
+  superstar_id: number
+  title: string
+  description: string | null
+  date: string | null
+  sort_order: number
+  created_at: string
+}
+
+export interface SuperstarDraftHistory {
+  id: number
+  superstar_id: number
+  brand: string
+  draft_date: string
+  notes: string | null
+  created_at: string
+}
+
+export interface SuperstarCareerBreak {
+  id: number
+  superstar_id: number
+  reason: string | null
+  start_date: string
+  end_date: string | null
+  created_at: string
+}
+
+export interface SuperstarFamily {
+  id: number
+  superstar_id: number
+  related_superstar_id: number
+  relationship: string
+  created_at: string
+}
+
+export interface SuperstarTrainer {
+  id: number
+  superstar_id: number
+  trainer_id: number
+  created_at: string
+}
+
+export interface SuperstarSocialLink {
+  id: number
+  superstar_id: number
+  platform: string
+  url: string
+  created_at: string
+}
+
+export interface Book {
+  id: number
+  superstar_id: number
+  title: string
+  year: number | null
+  description: string | null
+  cover_url: string | null
+  created_at: string
+}
+
+export interface Film {
+  id: number
+  superstar_id: number
+  title: string
+  year: number | null
+  role: string | null
+  description: string | null
+  poster_url: string | null
+  created_at: string
 }
 
 export interface Match {
@@ -195,6 +327,20 @@ export interface Database {
     Tables: {
       eras: { Row: Era; Insert: Omit<Era, 'id' | 'created_at' | 'updated_at'>; Update: Partial<Omit<Era, 'id'>> }
       superstars: { Row: Superstar; Insert: Omit<Superstar, 'id' | 'created_at' | 'updated_at'>; Update: Partial<Omit<Superstar, 'id'>> }
+      superstar_roles: { Row: SuperstarRoleRow; Insert: Omit<SuperstarRoleRow, 'id' | 'created_at'>; Update: Partial<Omit<SuperstarRoleRow, 'id'>> }
+      superstar_eras: { Row: SuperstarEra; Insert: Omit<SuperstarEra, 'id' | 'created_at'>; Update: Partial<Omit<SuperstarEra, 'id'>> }
+      superstar_nicknames: { Row: SuperstarNickname; Insert: Omit<SuperstarNickname, 'id' | 'created_at'>; Update: Partial<Omit<SuperstarNickname, 'id'>> }
+      superstar_aliases: { Row: SuperstarAlias; Insert: Omit<SuperstarAlias, 'id' | 'created_at'>; Update: Partial<Omit<SuperstarAlias, 'id'>> }
+      finishers: { Row: Finisher; Insert: Omit<Finisher, 'id' | 'created_at'>; Update: Partial<Omit<Finisher, 'id'>> }
+      entrance_themes: { Row: EntranceTheme; Insert: Omit<EntranceTheme, 'id' | 'created_at'>; Update: Partial<Omit<EntranceTheme, 'id'>> }
+      superstar_timeline: { Row: SuperstarTimeline; Insert: Omit<SuperstarTimeline, 'id' | 'created_at'>; Update: Partial<Omit<SuperstarTimeline, 'id'>> }
+      superstar_draft_history: { Row: SuperstarDraftHistory; Insert: Omit<SuperstarDraftHistory, 'id' | 'created_at'>; Update: Partial<Omit<SuperstarDraftHistory, 'id'>> }
+      superstar_career_breaks: { Row: SuperstarCareerBreak; Insert: Omit<SuperstarCareerBreak, 'id' | 'created_at'>; Update: Partial<Omit<SuperstarCareerBreak, 'id'>> }
+      superstar_families: { Row: SuperstarFamily; Insert: Omit<SuperstarFamily, 'id' | 'created_at'>; Update: Partial<Omit<SuperstarFamily, 'id'>> }
+      superstar_trainers: { Row: SuperstarTrainer; Insert: Omit<SuperstarTrainer, 'id' | 'created_at'>; Update: Partial<Omit<SuperstarTrainer, 'id'>> }
+      superstar_social_links: { Row: SuperstarSocialLink; Insert: Omit<SuperstarSocialLink, 'id' | 'created_at'>; Update: Partial<Omit<SuperstarSocialLink, 'id'>> }
+      books: { Row: Book; Insert: Omit<Book, 'id' | 'created_at'>; Update: Partial<Omit<Book, 'id'>> }
+      films: { Row: Film; Insert: Omit<Film, 'id' | 'created_at'>; Update: Partial<Omit<Film, 'id'>> }
       matches: { Row: Match; Insert: Omit<Match, 'id' | 'created_at' | 'updated_at'>; Update: Partial<Omit<Match, 'id'>> }
       shows: { Row: Show; Insert: Omit<Show, 'id' | 'created_at' | 'updated_at'>; Update: Partial<Omit<Show, 'id'>> }
       championships: { Row: Championship; Insert: Omit<Championship, 'id' | 'created_at' | 'updated_at'>; Update: Partial<Omit<Championship, 'id'>> }
