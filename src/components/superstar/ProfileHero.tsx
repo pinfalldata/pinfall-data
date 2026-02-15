@@ -21,38 +21,38 @@ export function ProfileHero({ superstar }: { superstar: any }) {
       <div className="relative h-[300px] sm:h-[340px] lg:h-[400px] overflow-hidden">
         
         {superstar.banner_url && (
-          /* - w-full sur mobile, 1/2 sur tablette, 1/3 (33%) sur PC 
-             - right-0 sur mobile, décalé de 4 à 8 unités sur tablette/PC pour ne pas être trop à droite
+          /* - hidden sm:block : Invisible sur mobile, apparaît à partir de 640px (tablette)
+             - sm:w-1/2 lg:w-1/3 : 50% de largeur sur tablette, 33% (1/3) sur ordinateur
+             - right-4 lg:right-8 : Décalage du bord droit pour ne pas coller à l'écran
           */
-          <div className="absolute top-4 bottom-4 right-0 sm:right-4 lg:right-8 h-[calc(100%-2rem)] w-[80%] sm:w-1/2 lg:w-1/3 z-0 pointer-events-none">
+          <div className="hidden sm:block absolute top-4 bottom-4 right-4 lg:right-8 h-[calc(100%-2rem)] sm:w-1/2 lg:w-1/3 z-0 pointer-events-none">
             <Image
               src={superstar.banner_url}
               alt=""
               fill
-              /* Suppression de l'opacité : 100% visible */
               className="object-contain object-right opacity-100"
               priority
             />
-            {/* Dégradé latéral pour éviter une coupure nette à gauche du logo */}
+            {/* Dégradé pour fondre le côté gauche du logo */}
             <div className="absolute inset-0 bg-gradient-to-r from-bg-primary via-transparent to-transparent" />
           </div>
         )}
 
         {/* Couches de design (Gradients & Grid) */}
-        <div className="absolute inset-0 bg-gradient-to-br from-bg-tertiary/95 via-bg-secondary/70 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-br from-bg-tertiary/95 via-bg-secondary/70 to-transparent pointer-events-none" />
         <div 
-          className="absolute inset-0 bg-grid opacity-20 animate-grid-pulse" 
+          className="absolute inset-0 bg-grid opacity-20 animate-grid-pulse pointer-events-none" 
           style={{ 
             maskImage: 'radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent)', 
             WebkitMaskImage: 'radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent)' 
           }} 
         />
         
-        {/* Glow orbs - Positionnés pour ne pas masquer le logo à droite */}
-        <div className="absolute top-10 left-1/4 w-80 h-80 bg-neon-blue/10 rounded-full blur-[120px]" />
+        {/* Glow orb décoratif */}
+        <div className="absolute top-10 left-1/4 w-80 h-80 bg-neon-blue/10 rounded-full blur-[120px] pointer-events-none" />
         
-        {/* Transition vers le bas */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-primary to-transparent" />
+        {/* Transition vers le bas du site */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-primary to-transparent pointer-events-none" />
       </div>
 
       {/* ===== CONTENT: Photo + Name + Meta ===== */}
