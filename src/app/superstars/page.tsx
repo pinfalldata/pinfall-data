@@ -39,11 +39,12 @@ export default async function SuperstarsPage() {
                   className="object-cover"
                 />
               ) : (
-                <div className="flex items-center justify-center h-full text-xs text-gray-500">Pas d'image</div>
+                <div className="flex items-center justify-center h-full text-xs text-gray-500">No Image</div>
               )}
             </div>
 
             <p className="font-bold text-center">{star.name}</p>
+            {/* J'ai enlevé l'apostrophe qui faisait planter ici */}
             <p className="text-xs text-gray-400 break-all">{star.photo_url || "NULL"}</p>
             
             <Link href={`/superstars/${star.slug}`} className="mt-2 text-blue-400 text-sm hover:underline">
