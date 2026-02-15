@@ -17,41 +17,41 @@ export function ProfileHero({ superstar }: { superstar: any }) {
 
   return (
     <section className="relative overflow-hidden bg-bg-primary">
-      {/* ===== BANNER BACKGROUND MODIFIÉ ===== */}
+      {/* ===== BANNER BACKGROUND (LOGO WWE) ===== */}
       <div className="relative h-[300px] sm:h-[340px] lg:h-[400px] overflow-hidden">
         
         {superstar.banner_url && (
-          <div className="absolute top-0 right-0 h-full w-full sm:w-[70%] lg:w-[50%] z-0 pointer-events-none">
+          /* - w-full sur mobile, 1/2 sur tablette, 1/3 (33%) sur PC 
+             - right-0 sur mobile, décalé de 4 à 8 unités sur tablette/PC pour ne pas être trop à droite
+          */
+          <div className="absolute top-4 bottom-4 right-0 sm:right-4 lg:right-8 h-[calc(100%-2rem)] w-[80%] sm:w-1/2 lg:w-1/3 z-0 pointer-events-none">
             <Image
               src={superstar.banner_url}
               alt=""
               fill
-              // On utilise object-contain et object-right pour caler le logo à droite sans le couper
-              // Opacité réduite à 10% (0.1) pour plus de subtilité
-              className="object-contain object-right opacity-10"
+              /* Suppression de l'opacité : 100% visible */
+              className="object-contain object-right opacity-100"
               priority
             />
-            {/* Dégradé pour fondre doucement le bord gauche du logo dans le noir du site */}
-            <div className="absolute inset-0 bg-gradient-to-r from-bg-primary via-bg-primary/40 to-transparent" />
+            {/* Dégradé latéral pour éviter une coupure nette à gauche du logo */}
+            <div className="absolute inset-0 bg-gradient-to-r from-bg-primary via-transparent to-transparent" />
           </div>
         )}
 
         {/* Couches de design (Gradients & Grid) */}
-        <div className="absolute inset-0 bg-gradient-to-br from-bg-tertiary/90 via-bg-secondary/80 to-bg-primary/90" />
+        <div className="absolute inset-0 bg-gradient-to-br from-bg-tertiary/95 via-bg-secondary/70 to-transparent" />
         <div 
-          className="absolute inset-0 bg-grid opacity-30 animate-grid-pulse" 
+          className="absolute inset-0 bg-grid opacity-20 animate-grid-pulse" 
           style={{ 
             maskImage: 'radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent)', 
             WebkitMaskImage: 'radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent)' 
           }} 
         />
         
-        {/* Glow orbs - Légèrement atténués pour laisser respirer le nouveau logo */}
-        <div className="absolute top-10 right-1/4 w-80 h-80 bg-neon-blue/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 left-1/4 w-60 h-60 bg-neon-pink/4 rounded-full blur-[100px]" />
+        {/* Glow orbs - Positionnés pour ne pas masquer le logo à droite */}
+        <div className="absolute top-10 left-1/4 w-80 h-80 bg-neon-blue/10 rounded-full blur-[120px]" />
         
-        {/* Gradient fade vers le bas */}
-        <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/40 to-transparent" />
+        {/* Transition vers le bas */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-primary to-transparent" />
       </div>
 
@@ -59,7 +59,7 @@ export function ProfileHero({ superstar }: { superstar: any }) {
       <div className="relative max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 -mt-44 sm:-mt-48 lg:-mt-56 pb-6">
         <div className="flex flex-col sm:flex-row items-center sm:items-end gap-5 lg:gap-8">
 
-          {/* PHOTO */}
+          {/* PHOTO ZONE */}
           <div className="relative shrink-0 z-10">
             <div className="w-40 h-40 sm:w-48 sm:h-48 lg:w-60 lg:h-60 rounded-2xl overflow-hidden border-2 border-neon-blue/30 bg-bg-tertiary shadow-neon-blue relative">
               {hasPhoto ? (
@@ -133,7 +133,7 @@ export function ProfileHero({ superstar }: { superstar: any }) {
             )}
           </div>
           
-          {/* ERA BADGE */}
+          {/* ERA & SOCIAL */}
           <div className="hidden lg:flex flex-col items-end gap-3 pb-4 z-10 shrink-0">
             {eraCount > 0 && (
               <div className="flex flex-col items-end gap-2">
@@ -145,11 +145,6 @@ export function ProfileHero({ superstar }: { superstar: any }) {
                     <span className="text-neon-blue text-sm font-medium">{primaryEra.eras?.name || 'Era'}</span>
                   </div>
                 )}
-                {eraCount > 1 && (
-                  <span className="text-text-secondary text-xs">
-                    {eraCount} eras
-                  </span>
-                )}
               </div>
             )}
 
@@ -157,15 +152,13 @@ export function ProfileHero({ superstar }: { superstar: any }) {
               <div className="flex items-center gap-2 mt-1">
                 {superstar.socialLinks.map((link: any) => (
                   <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer"
-                    className="w-8 h-8 rounded-lg bg-bg-tertiary/80 border border-border-subtle flex items-center justify-center text-text-secondary hover:text-neon-blue hover:border-neon-blue/40 transition-all"
-                    title={link.platform}>
+                    className="w-8 h-8 rounded-lg bg-bg-tertiary/80 border border-border-subtle flex items-center justify-center text-text-secondary hover:text-neon-blue hover:border-neon-blue/40 transition-all">
                     <SocialIcon platform={link.platform} />
                   </a>
                 ))}
               </div>
             )}
           </div>
-
         </div>
       </div>
 
