@@ -1,45 +1,33 @@
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
-import { getSuperstarBySlug } from '@/lib/queries'
-import { ProfileHero } from '@/components/superstar/ProfileHero'
-import { ProfileInfoBar } from '@/components/superstar/ProfileInfoBar'
-import { ProfileTabs } from '@/components/superstar/ProfileTabs'
 
-// 👇 CES DEUX LIGNES FORCENT LA MISE À JOUR IMMÉDIATE
-export const revalidate = 0
-export const dynamic = 'force-dynamic'
-
-interface Props {
-  params: { slug: string }
+export const metadata: Metadata = {
+  title: 'Superstars',
+  description: 'Browse the complete WWE roster across all eras',
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const superstar = await getSuperstarBySlug(params.slug)
-  if (!superstar) return { title: 'Superstar not found — Pinfall Data' }
-
-  // On garde le 'as any' pour éviter l'erreur de build qu'on a vue tout à l'heure
-  const nickname = (superstar as any).nicknames?.find((n: any) => n.is_primary)?.nickname
-  const sub = nickname ? `"${nickname}" — ` : ''
-
-  return {
-    title: `${superstar.name} — WWE Stats & Career History | Pinfall Data`,
-    description: `${sub}Complete WWE profile for ${superstar.name}. Career stats, championship history, rivalries, matches, and more.`,
-    openGraph: {
-      title: `${superstar.name} | Pinfall Data`,
-      images: superstar.photo_url ? [superstar.photo_url] : [],
-    },
-  }
-}
-
-export default async function SuperstarProfilePage({ params }: Props) {
-  const superstar = await getSuperstarBySlug(params.slug)
-  if (!superstar) notFound()
-
+export default function superstarsPage() {
   return (
-    <main className="min-h-screen">
-      <ProfileHero superstar={superstar} />
-      <ProfileInfoBar superstar={superstar} />
-      <ProfileTabs superstar={superstar} />
-    </main>
+    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-12 lg:py-20">
+      {/* Page header */}
+      <div className="text-center mb-12">
+        <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-white mb-4">
+          Superstars
+        </h1>
+        <p className="text-text-secondary text-lg max-w-2xl mx-auto">
+          Browse the complete WWE roster across all eras
+        </p>
+        <div className="neon-line mt-8 max-w-md mx-auto" />
+      </div>
+
+      {/* Placeholder content */}
+      <div className="glass rounded-2xl p-12 border border-border-subtle text-center">
+        <p className="text-text-secondary text-lg mb-4">
+          This page is under construction.
+        </p>
+        <p className="text-text-secondary text-sm">
+          Content will be added in Phase 1-3 of development.
+        </p>
+      </div>
+    </div>
   )
 }
