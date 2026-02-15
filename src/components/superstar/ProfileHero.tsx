@@ -1,20 +1,26 @@
+'use client' // Ajoute ceci pour que l'image puisse gérer les erreurs de chargement
+
 import Image from 'next/image'
+import { useState } from 'react' // Nécessaire pour gérer l'erreur d'image
 import { getStatusColor, getStatusLabel, getRoleLabels } from '@/lib/utils'
 
 export function ProfileHero({ superstar }: { superstar: any }) {
+  // On crée un état pour savoir si l'image a échoué à charger
+  const [imageError, setImageError] = useState(false)
+
   const primaryNickname = superstar.nicknames?.find((n: any) => n.is_primary)?.nickname
   const statusClasses = getStatusColor(superstar.status)
   const roleLabels = getRoleLabels(superstar)
-
-  // Get primary era for display
   const primaryEra = superstar.eras?.find((e: any) => e.is_primary)
   const eraCount = superstar.eras?.length || 0
+
+  // Vérification de sécurité
+  const hasPhoto = superstar.photo_url && !imageError
 
   return (
     <section className="relative overflow-hidden">
       {/* ===== BANNER BACKGROUND ===== */}
       <div className="relative h-[300px] sm:h-[340px] lg:h-[400px]">
-        {/* Banner image (like Lakers logo behind LeBron) — uses banner_url */}
         {superstar.banner_url ? (
           <div className="absolute inset-0">
             <Image
@@ -27,17 +33,14 @@ export function ProfileHero({ superstar }: { superstar: any }) {
           </div>
         ) : null}
 
-        {/* Gradient background (always present, overlays banner) */}
+        {/* Gradient background */}
         <div className="absolute inset-0 bg-gradient-to-br from-bg-tertiary/90 via-bg-secondary/80 to-bg-primary/90" />
-
         {/* Animated grid */}
         <div className="absolute inset-0 bg-grid opacity-30 animate-grid-pulse" style={{ maskImage: 'radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent)', WebkitMaskImage: 'radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent)' }} />
-
         {/* Glow orbs */}
         <div className="absolute top-10 right-1/4 w-80 h-80 bg-neon-blue/8 rounded-full blur-[120px]" />
         <div className="absolute bottom-0 left-1/4 w-60 h-60 bg-neon-pink/6 rounded-full blur-[100px]" />
-
-        {/* Gradient fade to content */}
+        {/* Gradient fade */}
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/40 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-primary to-transparent" />
       </div>
@@ -48,26 +51,35 @@ export function ProfileHero({ superstar }: { superstar: any }) {
 
           {/* PHOTO */}
           <div className="relative shrink-0 z-10">
-            <div className="w-40 h-40 sm:w-48 sm:h-48 lg:w-60 lg:h-60 rounded-2xl overflow-hidden border-2 border-neon-blue/30 bg-bg-tertiary shadow-neon-blue">
-              {superstar.photo_url ? (
-                <Image src={superstar.photo_url} alt={superstar.name} width={240} height={240} className="w-full h-full object-cover object-top" priority />
+            <div className="w-40 h-40 sm:w-48 sm:h-48 lg:w-60 lg:h-60 rounded-2xl overflow-hidden border-2 border-neon-blue/30 bg-bg-tertiary shadow-neon-blue relative">
+              {hasPhoto ? (
+                <Image 
+                  src={superstar.photo_url} 
+                  alt={superstar.name} 
+                  fill // Utilise 'fill' au lieu de width/height pour remplir le conteneur carré
+                  sizes="(max-width: 640px) 160px, (max-width: 1024px) 192px, 240px"
+                  className="object-cover object-top" 
+                  priority 
+                  onError={() => setImageError(true)} // Si l'image plante, on affiche le placeholder
+                />
               ) : (
-                <div className="w-full h-full flex items-center justify-center">
+                <div className="w-full h-full flex items-center justify-center bg-bg-tertiary">
                   <svg className="w-20 h-20 text-border-subtle" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                   </svg>
                 </div>
               )}
             </div>
+            
             {/* Status badge */}
-            <div className={`absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${statusClasses}`}>
+            <div className={`absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${statusClasses} z-20`}>
               {getStatusLabel(superstar.status)}
             </div>
           </div>
 
           {/* NAME + META (center) */}
           <div className="text-center sm:text-left pb-2 z-10 flex-1 min-w-0">
-            {/* Brand + Roles */}
+             {/* ... Le reste du code ne change pas ... */}
             <div className="flex items-center justify-center sm:justify-start gap-2 mb-2 flex-wrap">
               {superstar.current_brand && (
                 <span className={`px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${
@@ -88,24 +100,20 @@ export function ProfileHero({ superstar }: { superstar: any }) {
               )}
             </div>
 
-            {/* Primary nickname */}
             {primaryNickname && (
               <p className="text-neon-blue text-sm sm:text-base italic mb-1 font-body">
                 &quot;{primaryNickname}&quot;
               </p>
             )}
 
-            {/* NAME — large display */}
             <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-bold text-text-white tracking-tight leading-none">
               {superstar.name.toUpperCase()}
             </h1>
 
-            {/* Real name (if different) */}
             {superstar.real_name && superstar.real_name !== superstar.name && (
               <p className="text-text-secondary text-sm mt-2">{superstar.real_name}</p>
             )}
 
-            {/* Other nicknames */}
             {superstar.nicknames?.length > 1 && (
               <div className="flex flex-wrap gap-1.5 mt-3 justify-center sm:justify-start">
                 {superstar.nicknames.filter((n: any) => !n.is_primary).slice(0, 5).map((n: any) => (
@@ -116,13 +124,11 @@ export function ProfileHero({ superstar }: { superstar: any }) {
               </div>
             )}
           </div>
-
-          {/* ERA BADGE (right side, desktop) — like Follow button on NBA */}
-          <div className="hidden lg:flex flex-col items-end gap-3 pb-4 z-10 shrink-0">
-            {/* Era(s) display */}
+          
+           {/* ERA BADGE (copie le reste de ton ancien fichier ici pour la partie droite) */}
+           <div className="hidden lg:flex flex-col items-end gap-3 pb-4 z-10 shrink-0">
             {eraCount > 0 && (
               <div className="flex flex-col items-end gap-2">
-                {/* Show primary era prominently */}
                 {primaryEra && (
                   <div className="flex items-center gap-2 px-4 py-2 rounded-xl border border-neon-blue/20 bg-neon-blue/5">
                     {primaryEra.eras?.image_url && (
@@ -131,7 +137,6 @@ export function ProfileHero({ superstar }: { superstar: any }) {
                     <span className="text-neon-blue text-sm font-medium">{primaryEra.eras?.name || 'Era'}</span>
                   </div>
                 )}
-                {/* If multiple eras, show count */}
                 {eraCount > 1 && (
                   <span className="text-text-secondary text-xs">
                     {eraCount} eras
@@ -140,7 +145,6 @@ export function ProfileHero({ superstar }: { superstar: any }) {
               </div>
             )}
 
-            {/* Social links */}
             {superstar.socialLinks?.length > 0 && (
               <div className="flex items-center gap-2 mt-1">
                 {superstar.socialLinks.map((link: any) => (
@@ -153,10 +157,10 @@ export function ProfileHero({ superstar }: { superstar: any }) {
               </div>
             )}
           </div>
+
         </div>
       </div>
 
-      {/* Animated neon separator */}
       <div className="neon-line-animated neon-line-glow" />
     </section>
   )
