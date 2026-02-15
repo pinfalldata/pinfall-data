@@ -28,7 +28,13 @@ export function ProfileHero({ superstar }: { superstar: any }) {
         )}
 
         <div className="absolute inset-0 bg-gradient-to-br from-bg-tertiary/90 via-bg-secondary/80 to-bg-primary/90" />
-        <div className="absolute inset-0 bg-grid opacity-30 animate-grid-pulse" style={{ maskImage: 'radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent)', WebkitMaskImage: 'radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent)' }} />
+        <div 
+          className="absolute inset-0 bg-grid opacity-30 animate-grid-pulse" 
+          style={{ 
+            maskImage: 'radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent)', 
+            WebkitMaskImage: 'radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent)' 
+          }} 
+        />
         <div className="absolute top-10 right-1/4 w-80 h-80 bg-neon-blue/8 rounded-full blur-[120px]" />
         <div className="absolute bottom-0 left-1/4 w-60 h-60 bg-neon-pink/6 rounded-full blur-[100px]" />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/40 to-transparent" />
@@ -39,18 +45,14 @@ export function ProfileHero({ superstar }: { superstar: any }) {
       <div className="relative max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 -mt-44 sm:-mt-48 lg:-mt-56 pb-6">
         <div className="flex flex-col sm:flex-row items-center sm:items-end gap-5 lg:gap-8">
 
-          {/* PHOTO - Version simplifiée sans State pour éviter les bugs de cache */}
+          {/* PHOTO - Utilisation d'une balise img standard pour forcer l'affichage sans cache Next.js */}
           <div className="relative shrink-0 z-10">
             <div className="w-40 h-40 sm:w-48 sm:h-48 lg:w-60 lg:h-60 rounded-2xl overflow-hidden border-2 border-neon-blue/30 bg-bg-tertiary shadow-neon-blue relative">
               {superstar.photo_url ? (
-                <Image 
+                <img 
                   src={superstar.photo_url} 
                   alt={superstar.name} 
-                  fill 
-                  sizes="(max-width: 640px) 160px, (max-width: 1024px) 192px, 240px"
-                  className="object-cover object-top" 
-                  priority 
-                  unoptimized={true} // Force le chargement sans optimisation Next.js pour le test
+                  className="w-full h-full object-cover object-top"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-bg-tertiary">
@@ -103,8 +105,8 @@ export function ProfileHero({ superstar }: { superstar: any }) {
             )}
           </div>
           
-           {/* ERA BADGE */}
-           <div className="hidden lg:flex flex-col items-end gap-3 pb-4 z-10 shrink-0">
+          {/* ERA BADGE */}
+          <div className="hidden lg:flex flex-col items-end gap-3 pb-4 z-10 shrink-0">
             {eraCount > 0 && (
               <div className="flex flex-col items-end gap-2">
                 {primaryEra && (
@@ -126,5 +128,5 @@ export function ProfileHero({ superstar }: { superstar: any }) {
 }
 
 function SocialIcon({ platform }: { platform: string }) {
-  return null // Simplifié pour le test
+  return null
 }
