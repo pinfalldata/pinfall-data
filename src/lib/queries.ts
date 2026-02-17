@@ -257,7 +257,7 @@ export async function getMatchBySlug(showSlug: string, matchSlug: string) {
   if (fullError || !matchFull) {
     // On retombe sur la version minimal pour ne pas casser la page
     logError('getMatchBySlug(match full) — falling back to base', fullError)
-   return { ...matchBase, show, __fallback: true, participants: [], managers: [], referees: [], objects: [], media: [] }
+        return { ...matchBase, show, participants: [], managers: [], referees: [], objects: [], media: [] }
   }
 
   return { ...matchFull, show }
