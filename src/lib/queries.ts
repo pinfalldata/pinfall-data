@@ -56,7 +56,7 @@ export async function getSuperstarBySlug(slug: string) {
 export async function getShowBySlug(slug: string) {
   const { data: show, error } = await supabase
     .from('shows')
-    .select('*, show_series:show_series_id(*), arena_data:arenas(*)')
+    .select('*, show_series:show_series_id(*)')
     .eq('slug', slug)
     .single();
 
