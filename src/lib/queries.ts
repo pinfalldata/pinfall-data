@@ -158,7 +158,6 @@ export async function getShowBySlug(slug: string) {
             object:match_objects(*),
             used_by:superstars!match_object_usage_used_by_superstar_id_fkey(id, name, slug, photo_url)
          ),
-         match_commentators(*, superstar:superstars(id, name, slug, photo_url))
         `
       )
       .eq('show_id', show.id)
@@ -249,7 +248,6 @@ export async function getMatchBySlug(showSlug: string, matchSlug: string) {
           object:match_objects(*),
           used_by:superstars!match_object_usage_used_by_superstar_id_fkey(id, name, slug, photo_url)
        ),
-       match_commentators(*, superstar:superstars(id, name, slug, photo_url)),
        media:match_media(*)
       `
     )
@@ -259,7 +257,7 @@ export async function getMatchBySlug(showSlug: string, matchSlug: string) {
   if (fullError || !matchFull) {
     // On retombe sur la version minimal pour ne pas casser la page
     logError('getMatchBySlug(match full) — falling back to base', fullError)
-    return { ...matchBase, show, participants: [], managers: [], referees: [], objects: [], media: [] }
+   return { ...matchBase, show, __fallback: true, participants: [], managers: [], referees: [], objects: [], media: [] }
   }
 
   return { ...matchFull, show }

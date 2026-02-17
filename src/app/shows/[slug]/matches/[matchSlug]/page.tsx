@@ -12,6 +12,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const match = await getMatchBySlug(params.slug, params.matchSlug)
   if (!match) return { title: 'Match not found — Pinfall Data' }
 
+  console.log('MATCH DEBUG fallback?', (match as any).__fallback)
+
   const participants = (match as any).participants || []
   const names = participants.map((p: any) => p.superstar?.name).filter(Boolean)
   const vsStr = names.join(' vs ')
