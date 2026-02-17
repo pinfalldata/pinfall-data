@@ -145,9 +145,9 @@ export async function getShowBySlug(slug: string) {
          match_type:match_types(*),
          championship:championships(id, name, slug, image_url),
          participants:match_participants(*,
-            superstar:superstars(id, name, slug, photo_url, status),
-            tag_team:tag_teams(id, name, slug),
-            eliminated_by:superstars!match_participants_eliminated_by_id_fkey(id, name, slug)
+          superstar:superstars!match_participants_superstar_id_fkey(id, name, slug, photo_url, status),
+          tag_team:tag_teams(id, name, slug),
+          eliminated_by:superstars!match_participants_eliminated_by_id_fkey(id, name, slug)
          ),
          managers:match_managers(*,
             superstar:superstars!match_managers_superstar_id_fkey(id, name, slug, photo_url),
@@ -236,7 +236,7 @@ export async function getMatchBySlug(showSlug: string, matchSlug: string) {
        match_type:match_types(*),
        championship:championships(id, name, slug, image_url),
        participants:match_participants(*,
-          superstar:superstars(id, name, slug, photo_url, status, height_cm, weight_kg, birth_country, nationalities, win_count, loss_count, draw_count, total_matches),
+       superstar:superstars!match_participants_superstar_id_fkey(id, name, slug, photo_url, status, height_cm, weight_kg, birth_country, nationalities, win_count, loss_count, draw_count, total_matches),
           tag_team:tag_teams(id, name, slug, photo_url),
           eliminated_by:superstars!match_participants_eliminated_by_id_fkey(id, name, slug)
        ),
