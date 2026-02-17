@@ -140,26 +140,28 @@ export async function getShowBySlug(slug: string) {
   ] = await Promise.all([
     supabase
       .from('matches')
-      .select(
-        `*,
-         match_type:match_types(*),
-         championship:championships(id, name, slug, image_url),
-         participants:match_participants(*,
+      .select(`
+        *,
+        match_type:match_types(*),
+        championship:championships(id, name, slug, image_url),
+        participants:match_participants(
+          *,
           superstar:superstars!match_participants_superstar_id_fkey(id, name, slug, photo_url, status),
           tag_team:tag_teams(id, name, slug),
           eliminated_by:superstars!match_participants_eliminated_by_id_fkey(id, name, slug)
-         ),
-         managers:match_managers(*,
-            superstar:superstars!match_managers_superstar_id_fkey(id, name, slug, photo_url),
-            managing_for:superstars!match_managers_managing_for_superstar_id_fkey(id, name, slug)
-         ),
-         referees:match_referees(*, superstar:superstars(id, name, slug, photo_url)),
-         objects:match_object_usage(*,
-            object:match_objects(*),
-            used_by:superstars!match_object_usage_used_by_superstar_id_fkey(id, name, slug, photo_url)
-         ),
-        `
-      )
+        ),
+        managers:match_managers(
+          *,
+          superstar:superstars!match_managers_superstar_id_fkey(id, name, slug, photo_url),
+          managing_for:superstars!match_managers_managing_for_superstar_id_fkey(id, name, slug)
+        ),
+        referees:match_referees(*, superstar:superstars(id, name, slug, photo_url)),
+        objects:match_object_usage(
+          *,
+          object:match_objects(*),
+          used_by:superstars!match_object_usage_used_by_superstar_id_fkey(id, name, slug, photo_url)
+        )
+      `)
       .eq('show_id', show.id)
       .order('match_order', { ascending: true }),
 
@@ -169,11 +171,21 @@ export async function getShowBySlug(slug: string) {
       .eq('show_id', show.id)
       .order('sort_order', { ascending: true }),
 
-    supabase.from('show_commentators').select('*, superstar:superstars(id, name, slug, photo_url)').eq('show_id', show.id),
+    supabase
+      .from('show_commentators')
+      .select('*, superstar:superstars(id, name, slug, photo_url)')
+      .eq('show_id', show.id),
 
-    supabase.from('show_ring_announcers').select('*, superstar:superstars(id, name, slug, photo_url)').eq('show_id', show.id),
+    supabase
+      .from('show_ring_announcers')
+      .select('*, superstar:superstars(id, name, slug, photo_url)')
+      .eq('show_id', show.id),
 
-    supabase.from('show_media').select('*').eq('show_id', show.id).order('sort_order', { ascending: true }),
+    supabase
+      .from('show_media')
+      .select('*')
+      .eq('show_id', show.id)
+      .order('sort_order', { ascending: true }),
   ])
 
   // Logs (non bloquants)
