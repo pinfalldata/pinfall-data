@@ -12,11 +12,10 @@ export function MatchStatsSection({ match, h2hData, winMethodsMap }: {
   const color = match.show?.primary_color || '#2cb2fe'
   const teams = groupParticipantsByTeam(participants)
   const teamEntries = Array.from(teams.entries())
-// Correction ici : Array.from au lieu de [...]
   const uniqueSuperstars = Array.from(
     new Map(participants.map((p: any) => [p.superstar?.id, p.superstar])).values()
   ).filter(Boolean)
-  
+
   const has1v1 = uniqueSuperstars.length === 2
   const hasStats = h2hData || Object.keys(winMethodsMap).length > 0
 
@@ -26,7 +25,7 @@ export function MatchStatsSection({ match, h2hData, winMethodsMap }: {
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 space-y-8">
       {/* Section title */}
       <div className="text-center">
-        <h2 className="font-display text-xl sm:text-2xl font-bold text-text-white">Statistics</h2>
+        <h2 className="font-display text-xl sm:text-2xl font-bold text-text-white uppercase tracking-wide">📊 Statistics</h2>
         <div className="h-px mt-3 max-w-xs mx-auto" style={{ background: `linear-gradient(90deg, transparent, ${color}, transparent)` }} />
       </div>
 
@@ -45,11 +44,7 @@ export function MatchStatsSection({ match, h2hData, winMethodsMap }: {
         {uniqueSuperstars.slice(0, 6).map((s: any) => (
           <div key={s.id}>
             <p className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-2 text-center">{s.name}</p>
-            <SuperstarQuickStats
-              superstar={s}
-              winMethods={winMethodsMap[s.id]}
-              color={color}
-            />
+            <SuperstarQuickStats superstar={s} winMethods={winMethodsMap[s.id]} color={color} />
           </div>
         ))}
       </div>
@@ -68,7 +63,7 @@ export function MatchStatsSection({ match, h2hData, winMethodsMap }: {
         </div>
       )}
 
-      {/* Multi-man: show win methods for top participants */}
+      {/* Multi-man: show win methods */}
       {!has1v1 && uniqueSuperstars.length > 2 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {uniqueSuperstars.slice(0, 6).map((s: any) => (

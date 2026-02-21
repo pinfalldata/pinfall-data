@@ -1,17 +1,8 @@
 // @ts-nocheck
 import { supabase } from './supabase'
 
-/**
- * Ce fichier utilise @ts-nocheck pour ignorer les erreurs de typage strictes.
- * Objectif : garder les relations complexes sans casser le build TS.
- */
-
-// ------------------------------------------------------------
-// Helpers
-// ------------------------------------------------------------
 function logError(label: string, error: any) {
   if (!error) return
-  // Supabase renvoie souvent { message, details, hint, code }
   console.error(`[queries] ${label}`, error)
 }
 
@@ -31,20 +22,10 @@ export async function getSuperstarBySlug(slug: string) {
   }
 
   const [
-    { data: roles, error: rolesError },
-    { data: eras, error: erasError },
-    { data: nicknames, error: nicknamesError },
-    { data: aliases, error: aliasesError },
-    { data: finishers, error: finishersError },
-    { data: themes, error: themesError },
-    { data: timeline, error: timelineError },
-    { data: draftHistory, error: draftError },
-    { data: careerBreaks, error: breaksError },
-    { data: families, error: familiesError },
-    { data: trainers, error: trainersError },
-    { data: socialLinks, error: socialError },
-    { data: books, error: booksError },
-    { data: films, error: filmsError },
+    { data: roles }, { data: eras }, { data: nicknames }, { data: aliases },
+    { data: finishers }, { data: themes }, { data: timeline },
+    { data: draftHistory }, { data: careerBreaks }, { data: families },
+    { data: trainers }, { data: socialLinks }, { data: books }, { data: films },
   ] = await Promise.all([
     supabase.from('superstar_roles').select('*').eq('superstar_id', superstar.id).order('is_primary', { ascending: false }),
     supabase.from('superstar_eras').select('*, eras(*)').eq('superstar_id', superstar.id).order('era_id', { ascending: true }),
@@ -55,51 +36,21 @@ export async function getSuperstarBySlug(slug: string) {
     supabase.from('superstar_timeline').select('*').eq('superstar_id', superstar.id).order('sort_order', { ascending: true }),
     supabase.from('superstar_draft_history').select('*').eq('superstar_id', superstar.id).order('draft_date', { ascending: true }),
     supabase.from('superstar_career_breaks').select('*').eq('superstar_id', superstar.id).order('start_date', { ascending: true }),
-    supabase
-      .from('superstar_families')
-      .select('*, related:superstars!superstar_families_related_superstar_id_fkey(id, name, slug, photo_url)')
-      .eq('superstar_id', superstar.id),
-    supabase
-      .from('superstar_trainers')
-      .select('*, trainer:superstars!superstar_trainers_trainer_id_fkey(id, name, slug)')
-      .eq('superstar_id', superstar.id),
+    supabase.from('superstar_families').select('*, related:superstars!superstar_families_related_superstar_id_fkey(id, name, slug, photo_url)').eq('superstar_id', superstar.id),
+    supabase.from('superstar_trainers').select('*, trainer:superstars!superstar_trainers_trainer_id_fkey(id, name, slug)').eq('superstar_id', superstar.id),
     supabase.from('superstar_social_links').select('*').eq('superstar_id', superstar.id),
     supabase.from('books').select('*').eq('superstar_id', superstar.id).order('year', { ascending: false }),
     supabase.from('films').select('*').eq('superstar_id', superstar.id).order('year', { ascending: false }),
   ])
 
-  // Logs (non bloquants)
-  logError('getSuperstarBySlug(roles)', rolesError)
-  logError('getSuperstarBySlug(eras)', erasError)
-  logError('getSuperstarBySlug(nicknames)', nicknamesError)
-  logError('getSuperstarBySlug(aliases)', aliasesError)
-  logError('getSuperstarBySlug(finishers)', finishersError)
-  logError('getSuperstarBySlug(themes)', themesError)
-  logError('getSuperstarBySlug(timeline)', timelineError)
-  logError('getSuperstarBySlug(draftHistory)', draftError)
-  logError('getSuperstarBySlug(careerBreaks)', breaksError)
-  logError('getSuperstarBySlug(families)', familiesError)
-  logError('getSuperstarBySlug(trainers)', trainersError)
-  logError('getSuperstarBySlug(socialLinks)', socialError)
-  logError('getSuperstarBySlug(books)', booksError)
-  logError('getSuperstarBySlug(films)', filmsError)
-
   return {
     ...superstar,
-    roles: roles || [],
-    eras: eras || [],
-    nicknames: nicknames || [],
-    aliases: aliases || [],
-    finishers: finishers || [],
-    themes: themes || [],
-    timeline: timeline || [],
-    draftHistory: draftHistory || [],
-    careerBreaks: careerBreaks || [],
-    families: families || [],
-    trainers: trainers || [],
-    socialLinks: socialLinks || [],
-    books: books || [],
-    films: films || [],
+    roles: roles || [], eras: eras || [], nicknames: nicknames || [],
+    aliases: aliases || [], finishers: finishers || [], themes: themes || [],
+    timeline: timeline || [], draftHistory: draftHistory || [],
+    careerBreaks: careerBreaks || [], families: families || [],
+    trainers: trainers || [], socialLinks: socialLinks || [],
+    books: books || [], films: films || [],
   }
 }
 
@@ -118,25 +69,22 @@ export async function getShowBySlug(slug: string) {
     return null
   }
 
-  // Episode number : fallback via view si pas rempli
   let episodeNumber = show.episode_number
   if (!episodeNumber && show.show_series_id) {
-    const { data: epData, error: epError } = await supabase
+    const { data: epData } = await supabase
       .from('show_episode_numbers')
       .select('calculated_episode_number')
       .eq('show_id', show.id)
       .single()
-
-    logError('getShowBySlug(show_episode_numbers)', epError)
     episodeNumber = epData?.calculated_episode_number || null
   }
 
   const [
     { data: matches, error: matchesError },
-    { data: segments, error: segmentsError },
-    { data: commentators, error: commError },
-    { data: ringAnnouncers, error: announcersError },
-    { data: media, error: mediaError },
+    { data: segments },
+    { data: commentators },
+    { data: ringAnnouncers },
+    { data: media },
   ] = await Promise.all([
     supabase
       .from('matches')
@@ -146,7 +94,7 @@ export async function getShowBySlug(slug: string) {
         championship:championships(id, name, slug, image_url),
         participants:match_participants(
           *,
-          superstar:superstars!match_participants_superstar_id_fkey(id, name, slug, photo_url, status),
+          superstar:superstars!match_participants_superstar_id_fkey(id, name, slug, photo_url, status, birth_date),
           tag_team:tag_teams(id, name, slug),
           eliminated_by:superstars!match_participants_eliminated_by_id_fkey(id, name, slug)
         ),
@@ -164,23 +112,19 @@ export async function getShowBySlug(slug: string) {
       `)
       .eq('show_id', show.id)
       .order('match_order', { ascending: true }),
-
     supabase
       .from('show_segments')
-      .select(`*, participants:show_segment_participants(*, superstar:superstars(id, name, slug, photo_url, status)), media:segment_media(*)`)
+      .select('*, participants:show_segment_participants(*, superstar:superstars(id, name, slug, photo_url, status)), media:segment_media(*)')
       .eq('show_id', show.id)
       .order('sort_order', { ascending: true }),
-
     supabase
       .from('show_commentators')
       .select('*, superstar:superstars(id, name, slug, photo_url)')
       .eq('show_id', show.id),
-
     supabase
       .from('show_ring_announcers')
       .select('*, superstar:superstars(id, name, slug, photo_url)')
       .eq('show_id', show.id),
-
     supabase
       .from('show_media')
       .select('*')
@@ -188,36 +132,85 @@ export async function getShowBySlug(slug: string) {
       .order('sort_order', { ascending: true }),
   ])
 
-  // Logs (non bloquants)
   logError('getShowBySlug(matches)', matchesError)
-  logError('getShowBySlug(segments)', segmentsError)
-  logError('getShowBySlug(commentators)', commError)
-  logError('getShowBySlug(ringAnnouncers)', announcersError)
-  logError('getShowBySlug(media)', mediaError)
+
+  // Compute average age of wrestlers at show date
+  let averageAge: number | null = null
+  const safeMatches = matches || []
+  if (safeMatches.length > 0) {
+    const showDate = new Date(show.date)
+    const seen = new Set<number>()
+    const ages: number[] = []
+    for (const m of safeMatches) {
+      for (const p of (m.participants || [])) {
+        if (p.superstar?.birth_date && p.superstar?.id && !seen.has(p.superstar.id)) {
+          seen.add(p.superstar.id)
+          const bd = new Date(p.superstar.birth_date)
+          let age = showDate.getFullYear() - bd.getFullYear()
+          const mo = showDate.getMonth() - bd.getMonth()
+          if (mo < 0 || (mo === 0 && showDate.getDate() < bd.getDate())) age--
+          if (age > 0 && age < 100) ages.push(age)
+        }
+      }
+    }
+    if (ages.length > 0) {
+      averageAge = Math.round((ages.reduce((s, a) => s + a, 0) / ages.length) * 10) / 10
+    }
+  }
+
+  // Adjacent shows (prev/next in same series)
+  let prevShow: { slug: string; name: string; date: string } | null = null
+  let nextShow: { slug: string; name: string; date: string } | null = null
+  if (show.show_series_id) {
+    const [{ data: prev }, { data: next }] = await Promise.all([
+      supabase
+        .from('shows')
+        .select('slug, name, date')
+        .eq('show_series_id', show.show_series_id)
+        .lt('date', show.date)
+        .order('date', { ascending: false })
+        .limit(1)
+        .single(),
+      supabase
+        .from('shows')
+        .select('slug, name, date')
+        .eq('show_series_id', show.show_series_id)
+        .gt('date', show.date)
+        .order('date', { ascending: true })
+        .limit(1)
+        .single(),
+    ])
+    prevShow = prev || null
+    nextShow = next || null
+  }
 
   return {
     ...show,
     episodeNumber,
-    matches: matches || [],
+    matches: safeMatches,
     segments: segments || [],
     commentators: commentators || [],
     ringAnnouncers: ringAnnouncers || [],
     media: media || [],
+    averageAge,
+    prevShow,
+    nextShow,
   }
 }
 
 // ============================================================
-// MATCH & SEGMENT
+// MATCH
 // ============================================================
-
-// Version robuste :
-// 1) on récupère le show (garanti show.id)
-// 2) on récupère le match en "minimal" (garanti si data OK)
-// 3) on tente d'enrichir avec relations (si ça casse, on retombe sur minimal)
 export async function getMatchBySlug(showSlug: string, matchSlug: string) {
   const { data: show, error: showError } = await supabase
     .from('shows')
-    .select('id, name, slug, date, primary_color, logo_url, show_series:show_series_id(*)')
+    .select(`
+      id, name, slug, date, primary_color, logo_url, banner_url,
+      show_type, venue, city, state_province, country,
+      attendance, tv_audience, start_time, episode_number,
+      theme_song, theme_song_artist,
+      show_series:show_series_id(id, name, short_name, slug)
+    `)
     .eq('slug', showSlug)
     .single()
 
@@ -226,7 +219,21 @@ export async function getMatchBySlug(showSlug: string, matchSlug: string) {
     return null
   }
 
-  // Minimal (doit toujours marcher si match existe)
+  let episodeNumber = show.episode_number
+  if (!episodeNumber && show.show_series?.id) {
+    const { data: epData } = await supabase
+      .from('show_episode_numbers')
+      .select('calculated_episode_number')
+      .eq('show_id', show.id)
+      .single()
+    episodeNumber = epData?.calculated_episode_number || null
+  }
+
+  const [{ data: showCommentators }, { data: showAnnouncers }] = await Promise.all([
+    supabase.from('show_commentators').select('*, superstar:superstars(id, name, slug, photo_url)').eq('show_id', show.id),
+    supabase.from('show_ring_announcers').select('*, superstar:superstars(id, name, slug, photo_url)').eq('show_id', show.id),
+  ])
+
   const { data: matchBase, error: baseError } = await supabase
     .from('matches')
     .select('*')
@@ -239,15 +246,14 @@ export async function getMatchBySlug(showSlug: string, matchSlug: string) {
     return null
   }
 
-  // Enrichi (peut casser si une relation FK manque quelque part)
   const { data: matchFull, error: fullError } = await supabase
     .from('matches')
     .select(
       `*,
        match_type:match_types(*),
-       championship:championships(id, name, slug, image_url),
+       championship:championships(id, name, slug, image_url, status),
        participants:match_participants(*,
-       superstar:superstars!match_participants_superstar_id_fkey(id, name, slug, photo_url, status, height_cm, weight_kg, birth_country, nationalities, win_count, loss_count, draw_count, total_matches),
+          superstar:superstars!match_participants_superstar_id_fkey(id, name, slug, photo_url, status, height_cm, weight_kg, birth_date, birth_country, nationalities, win_count, loss_count, draw_count, total_matches, total_reigns, total_championship_days),
           tag_team:tag_teams(id, name, slug, photo_url),
           eliminated_by:superstars!match_participants_eliminated_by_id_fkey(id, name, slug)
        ),
@@ -266,38 +272,34 @@ export async function getMatchBySlug(showSlug: string, matchSlug: string) {
     .eq('id', matchBase.id)
     .single()
 
+  const showData = { ...show, episodeNumber, commentators: showCommentators || [], ringAnnouncers: showAnnouncers || [] }
+
   if (fullError || !matchFull) {
-    // On retombe sur la version minimal pour ne pas casser la page
     logError('getMatchBySlug(match full) — falling back to base', fullError)
-        return { ...matchBase, show, participants: [], managers: [], referees: [], objects: [], media: [] }
+    return { ...matchBase, show: showData, participants: [], managers: [], referees: [], objects: [], media: [] }
   }
 
-  return { ...matchFull, show }
+  return { ...matchFull, show: showData }
 }
 
+// ============================================================
+// SEGMENT
+// ============================================================
 export async function getSegmentBySlug(showSlug: string, segmentSlug: string) {
   const { data: show, error: showError } = await supabase
     .from('shows')
     .select('id, name, slug, date, primary_color, logo_url, show_series:show_series_id(*)')
     .eq('slug', showSlug)
     .single()
-
-  if (showError || !show) {
-    logError('getSegmentBySlug(show)', showError)
-    return null
-  }
+  if (showError || !show) return null
 
   const { data: segment, error } = await supabase
     .from('show_segments')
-    .select(`*, participants:show_segment_participants(*, superstar:superstars(id, name, slug, photo_url, status)), media:segment_media(*)`)
+    .select('*, participants:show_segment_participants(*, superstar:superstars(id, name, slug, photo_url, status)), media:segment_media(*)')
     .eq('show_id', show.id)
     .eq('slug', segmentSlug)
     .single()
-
-  if (error || !segment) {
-    logError('getSegmentBySlug(segment)', error)
-    return null
-  }
+  if (error || !segment) return null
 
   return { ...segment, show }
 }

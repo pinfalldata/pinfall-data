@@ -2,7 +2,8 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { formatDate, formatTime, formatNumber, formatCompactNumber, getRatingColor } from '@/lib/utils'
+import { formatDate, formatTime, formatNumber, formatCompactNumber } from '@/lib/utils'
+import { StarRating } from '@/components/ui/StarRating'
 
 export function ShowInfoBar({ show }: { show: any }) {
   const color = show.primary_color || '#2cb2fe'
@@ -11,18 +12,18 @@ export function ShowInfoBar({ show }: { show: any }) {
   const seriesName = show.show_series?.short_name || show.show_series?.name || ''
 
   const infoCells = [
-    { label: 'Date', value: formatDate(show.date) },
-    epNum ? { label: 'Episode', value: `${seriesName} #${epNum}` } : null,
-    show.start_time ? { label: 'Start Time', value: formatTime(show.start_time) } : null,
-    show.attendance ? { label: 'Attendance', value: formatNumber(show.attendance) } : null,
-    show.tv_audience ? { label: 'TV Audience', value: formatCompactNumber(show.tv_audience) } : null,
-    show.rating ? { label: 'Show Rating', value: `${show.rating}/10`, colorClass: getRatingColor(show.rating) } : null,
-    venue ? { label: 'Venue', value: venue } : null,
-  ].filter(Boolean) as { label: string; value: string; colorClass?: string }[]
+    { label: 'Date', value: formatDate(show.date), icon: '📅' },
+    epNum ? { label: 'Episode', value: `${seriesName} #${epNum}`, icon: '📺' } : null,
+    show.start_time ? { label: 'Start Time', value: formatTime(show.start_time), icon: '⏰' } : null,
+    show.attendance ? { label: 'Attendance', value: formatNumber(show.attendance), icon: '🏟️' } : null,
+    show.tv_audience ? { label: 'TV Audience', value: formatCompactNumber(show.tv_audience), icon: '📡' } : null,
+    venue ? { label: 'Venue', value: venue, icon: '📍' } : null,
+    show.averageAge ? { label: 'Avg. Wrestler Age', value: `${show.averageAge} years`, icon: '👤' } : null,
+  ].filter(Boolean) as { label: string; value: string; icon: string }[]
 
   return (
     <div className="relative bg-bg-secondary/50 backdrop-blur-sm">
-      {/* Neon line top — dynamic color */}
+      {/* Neon line top */}
       <div
         className="h-px"
         style={{
@@ -33,13 +34,24 @@ export function ShowInfoBar({ show }: { show: any }) {
       />
 
       <div className="max-w-[1440px] mx-auto">
+        {/* Show Rating — prominent star display */}
+        {show.rating && (
+          <div className="flex items-center justify-center gap-4 py-4 border-b border-border-subtle/20">
+            <span className="text-text-secondary text-xs uppercase tracking-widest">Show Rating</span>
+            <StarRating rating={show.rating} size="lg" showValue color={color} />
+          </div>
+        )}
+
         {/* Info cells */}
         {infoCells.length > 0 && (
-          <div className={`grid ${infoCells.length <= 3 ? 'grid-cols-1 sm:grid-cols-3' : infoCells.length <= 4 ? 'grid-cols-2 sm:grid-cols-4' : infoCells.length <= 5 ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5' : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-' + Math.min(infoCells.length, 7)}`}>
+          <div className={`grid grid-cols-2 sm:grid-cols-3 ${infoCells.length >= 6 ? 'lg:grid-cols-' + Math.min(infoCells.length, 7) : infoCells.length >= 4 ? 'lg:grid-cols-' + infoCells.length : 'lg:grid-cols-3'}`}>
             {infoCells.map((cell, i) => (
-              <div key={cell.label} className="relative px-4 py-4 text-center border-b border-border-subtle/20 sm:border-b-0 sm:border-r sm:border-border-subtle/20 last:border-r-0">
-                <p className="text-text-secondary text-[10px] sm:text-xs uppercase tracking-widest mb-1">{cell.label}</p>
-                <p className={`text-sm sm:text-base font-medium truncate ${cell.colorClass || 'text-text-white'}`}>{cell.value}</p>
+              <div key={cell.label} className="relative px-4 py-4 text-center border-b border-border-subtle/10 sm:border-b-0 sm:border-r sm:border-border-subtle/15 last:border-r-0">
+                <p className="text-text-secondary text-[10px] sm:text-xs uppercase tracking-widest mb-1.5 flex items-center justify-center gap-1.5">
+                  <span className="text-xs">{cell.icon}</span>
+                  {cell.label}
+                </p>
+                <p className="text-sm sm:text-base font-medium text-text-white truncate">{cell.value}</p>
                 {i < infoCells.length - 1 && (
                   <span
                     className="absolute right-0 top-1/2 -translate-y-1/2 w-[3px] h-[3px] rounded-full hidden sm:block"
@@ -51,7 +63,7 @@ export function ShowInfoBar({ show }: { show: any }) {
           </div>
         )}
 
-        {/* Neon line middle — reverse */}
+        {/* Neon line middle */}
         <div
           className="h-px"
           style={{
@@ -66,20 +78,28 @@ export function ShowInfoBar({ show }: { show: any }) {
           {/* Theme Song */}
           {show.theme_song && (
             <div className="flex items-center gap-2 text-sm">
-              <span className="text-text-secondary text-xs uppercase tracking-wider">Theme</span>
+              <span className="text-lg">🎵</span>
               <span className="text-text-white">&quot;{show.theme_song}&quot;</span>
               {show.theme_song_artist && <span className="text-text-secondary">by {show.theme_song_artist}</span>}
+              {show.theme_song_url && (
+                <a href={show.theme_song_url} target="_blank" rel="noopener noreferrer" className="text-xs hover:underline" style={{ color }}>▶</a>
+              )}
             </div>
           )}
 
           {/* Ring Announcers */}
           {show.ringAnnouncers?.length > 0 && (
             <div className="flex items-center gap-2 text-sm">
-              <span className="text-text-secondary text-xs uppercase tracking-wider">Ring Announcer{show.ringAnnouncers.length > 1 ? 's' : ''}</span>
-              <div className="flex items-center gap-1.5">
+              <span className="text-text-secondary text-xs uppercase tracking-wider">🎙️ Ring Announcer{show.ringAnnouncers.length > 1 ? 's' : ''}</span>
+              <div className="flex items-center gap-2">
                 {show.ringAnnouncers.map((ra: any) => (
-                  <Link key={ra.id} href={`/superstars/${ra.superstar?.slug}`} className="text-text-white hover:underline" style={{ color }}>
-                    {ra.superstar?.name}
+                  <Link key={ra.id} href={`/superstars/${ra.superstar?.slug}`} className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
+                    {ra.superstar?.photo_url && (
+                      <div className="w-6 h-6 rounded-full overflow-hidden border border-border-subtle/50 shrink-0">
+                        <Image src={ra.superstar.photo_url} alt="" width={24} height={24} className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                    <span className="text-text-white hover:underline" style={{ color }}>{ra.superstar?.name}</span>
                   </Link>
                 ))}
               </div>
@@ -89,13 +109,13 @@ export function ShowInfoBar({ show }: { show: any }) {
           {/* Commentators with photos */}
           {show.commentators?.length > 0 && (
             <div className="flex items-center gap-2 text-sm">
-              <span className="text-text-secondary text-xs uppercase tracking-wider">Commentary</span>
+              <span className="text-text-secondary text-xs uppercase tracking-wider">🎧 Commentary</span>
               <div className="flex items-center gap-2">
                 {show.commentators.map((c: any) => (
                   <Link key={c.id} href={`/superstars/${c.superstar?.slug}`} className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
                     {c.superstar?.photo_url && (
-                      <div className="w-6 h-6 rounded-full overflow-hidden border border-border-subtle/50 shrink-0">
-                        <Image src={c.superstar.photo_url} alt="" width={24} height={24} className="w-full h-full object-cover" />
+                      <div className="w-7 h-7 rounded-full overflow-hidden border border-border-subtle/50 shrink-0">
+                        <Image src={c.superstar.photo_url} alt="" width={28} height={28} className="w-full h-full object-cover" />
                       </div>
                     )}
                     <span className="text-text-white hover:underline" style={{ color }}>{c.superstar?.name}</span>
@@ -105,6 +125,22 @@ export function ShowInfoBar({ show }: { show: any }) {
             </div>
           )}
         </div>
+
+        {/* Highlights */}
+        {show.highlights_md && (
+          <>
+            <div
+              className="h-px"
+              style={{
+                background: `linear-gradient(90deg, transparent 0%, transparent 30%, ${color}40 50%, transparent 70%, transparent 100%)`,
+              }}
+            />
+            <div className="px-4 sm:px-6 py-4 max-w-3xl mx-auto">
+              <p className="text-xs text-text-secondary uppercase tracking-widest mb-2 text-center">Highlights</p>
+              <p className="text-sm text-text-primary leading-relaxed text-center">{show.highlights_md}</p>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Neon line bottom */}
