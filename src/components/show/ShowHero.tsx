@@ -11,16 +11,11 @@ export function ShowHero({ show }: { show: any }) {
   const colorStyle = getShowColorStyle(color) as React.CSSProperties
   const hasLogo = show.logo_url && !logoError
   const seriesName = show.show_series?.short_name || ''
-  const showTypeLabel = show.show_type === 'ppv' ? 'Premium Live Event'
-    : show.show_type === 'weekly' ? 'Weekly Show'
-    : show.show_type === 'house_show' ? 'House Show'
-    : show.show_type === 'special' ? 'Special Event'
-    : show.show_type || ''
 
   return (
     <section className="relative overflow-hidden bg-bg-primary" style={colorStyle}>
       {/* Banner background */}
-      <div className="relative h-[340px] sm:h-[400px] lg:h-[480px] overflow-hidden">
+      <div className="relative h-[320px] sm:h-[380px] lg:h-[440px] overflow-hidden">
         {show.banner_url && (
           <div className="absolute inset-0 z-0">
             <Image src={show.banner_url} alt="" fill className="object-cover opacity-15" priority />
@@ -39,39 +34,37 @@ export function ShowHero({ show }: { show: any }) {
 
         {/* Dynamic color glow orbs */}
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full blur-[180px] opacity-20 pointer-events-none"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full blur-[150px] opacity-20 pointer-events-none"
           style={{ backgroundColor: color }}
         />
         <div
-          className="absolute top-10 right-1/4 w-72 h-72 rounded-full blur-[120px] opacity-10 pointer-events-none"
+          className="absolute top-10 right-1/4 w-60 h-60 rounded-full blur-[100px] opacity-10 pointer-events-none"
           style={{ backgroundColor: color }}
         />
 
         {/* Fade to content */}
-        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-bg-primary to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-primary to-transparent pointer-events-none" />
 
         {/* ===== CENTERED LOGO ===== */}
         <div className="relative z-10 flex flex-col items-center justify-center h-full px-4">
           {hasLogo ? (
-            <div className="relative w-56 h-56 sm:w-72 sm:h-72 lg:w-80 lg:h-80">
+            <div className="relative w-48 h-48 sm:w-60 sm:h-60 lg:w-72 lg:h-72">
               <div
-                className="absolute -inset-4 rounded-2xl opacity-40 blur-xl pointer-events-none"
+                className="absolute -inset-3 rounded-2xl opacity-40 blur-xl pointer-events-none"
                 style={{ backgroundColor: color }}
               />
               <div
                 className="absolute -inset-1 rounded-2xl opacity-60 pointer-events-none"
-                style={{ boxShadow: `0 0 40px ${color}66, 0 0 80px ${color}33, 0 0 120px ${color}1a` }}
+                style={{ boxShadow: `0 0 30px ${color}66, 0 0 60px ${color}33, 0 0 90px ${color}1a` }}
               />
-              <div
-                className="relative w-full h-full rounded-2xl overflow-hidden border-2 bg-bg-tertiary/50 backdrop-blur-sm"
-                style={{ borderColor: `${color}50` }}
-              >
+              <div className="relative w-full h-full rounded-2xl overflow-hidden border-2 bg-bg-tertiary/50 backdrop-blur-sm"
+                style={{ borderColor: `${color}50` }}>
                 <Image
                   src={show.logo_url}
                   alt={show.name}
                   fill
-                  sizes="(max-width: 640px) 224px, (max-width: 1024px) 288px, 320px"
-                  className="object-contain p-5"
+                  sizes="(max-width: 640px) 192px, (max-width: 1024px) 240px, 288px"
+                  className="object-contain p-4"
                   priority
                   onError={() => setLogoError(true)}
                 />
@@ -92,8 +85,8 @@ export function ShowHero({ show }: { show: any }) {
 
           {/* Show name below logo */}
           {hasLogo && (
-            <div className="mt-5 text-center">
-              <h1 className="font-display text-2xl sm:text-3xl lg:text-5xl font-bold text-text-white tracking-tight">
+            <div className="mt-4 text-center">
+              <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-text-white tracking-tight">
                 {show.name.toUpperCase()}
               </h1>
             </div>
@@ -101,67 +94,53 @@ export function ShowHero({ show }: { show: any }) {
 
           {/* Show type badge + date */}
           <div className="mt-3 flex items-center gap-3 flex-wrap justify-center">
-            {showTypeLabel && (
+            {show.show_type && (
               <span
-                className="px-4 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider border"
+                className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border"
                 style={{
                   backgroundColor: `${color}20`,
                   borderColor: `${color}40`,
                   color,
                 }}
               >
-                {showTypeLabel}
+                {show.show_type === 'ppv' ? 'Premium Live Event' : show.show_type === 'weekly' ? 'Weekly Show' : show.show_type === 'house_show' ? 'House Show' : show.show_type}
               </span>
             )}
-            <span className="text-sm text-text-secondary">{formatDate(show.date)}</span>
+            <span className="text-text-secondary text-sm">{formatDate(show.date)}</span>
           </div>
-
-          {/* Description */}
-          {show.description_md && (
-            <p className="mt-4 text-sm text-text-secondary max-w-2xl text-center leading-relaxed line-clamp-3">
-              {show.description_md}
-            </p>
-          )}
         </div>
+
+        {/* ===== PREV / NEXT navigation ===== */}
+        {show.prevShow && (
+          <Link
+            href={`/shows/${show.prevShow.slug}`}
+            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 flex items-center gap-2 px-3 py-2 rounded-xl bg-bg-primary/80 border border-border-subtle/30 backdrop-blur-sm hover:border-border-subtle/60 transition-all group"
+          >
+            <svg className="w-4 h-4 text-text-secondary group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            <div className="hidden sm:block">
+              <p className="text-[9px] text-text-secondary uppercase tracking-wider">Previous</p>
+              <p className="text-xs text-text-white font-medium truncate max-w-[120px]">{show.prevShow.name}</p>
+            </div>
+          </Link>
+        )}
+
+        {show.nextShow && (
+          <Link
+            href={`/shows/${show.nextShow.slug}`}
+            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 flex items-center gap-2 px-3 py-2 rounded-xl bg-bg-primary/80 border border-border-subtle/30 backdrop-blur-sm hover:border-border-subtle/60 transition-all group"
+          >
+            <div className="hidden sm:block text-right">
+              <p className="text-[9px] text-text-secondary uppercase tracking-wider">Next</p>
+              <p className="text-xs text-text-white font-medium truncate max-w-[120px]">{show.nextShow.name}</p>
+            </div>
+            <svg className="w-4 h-4 text-text-secondary group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
+        )}
       </div>
-
-      {/* Prev / Next Navigation */}
-      {(show.prevShow || show.nextShow) && (
-        <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 -mt-4 mb-2">
-          <div className="flex items-center justify-between">
-            {show.prevShow ? (
-              <Link
-                href={`/shows/${show.prevShow.slug}`}
-                className="group flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all hover:translate-x-[-2px]"
-                style={{ borderColor: `${color}25`, backgroundColor: `${color}08` }}
-              >
-                <svg className="w-4 h-4 text-text-secondary group-hover:text-text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-                <div className="text-left">
-                  <p className="text-[10px] text-text-secondary uppercase tracking-wider">Previous</p>
-                  <p className="text-xs text-text-white font-medium truncate max-w-[140px] sm:max-w-[200px]">{show.prevShow.name}</p>
-                </div>
-              </Link>
-            ) : <div />}
-            {show.nextShow ? (
-              <Link
-                href={`/shows/${show.nextShow.slug}`}
-                className="group flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all hover:translate-x-[2px]"
-                style={{ borderColor: `${color}25`, backgroundColor: `${color}08` }}
-              >
-                <div className="text-right">
-                  <p className="text-[10px] text-text-secondary uppercase tracking-wider">Next</p>
-                  <p className="text-xs text-text-white font-medium truncate max-w-[140px] sm:max-w-[200px]">{show.nextShow.name}</p>
-                </div>
-                <svg className="w-4 h-4 text-text-secondary group-hover:text-text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            ) : <div />}
-          </div>
-        </div>
-      )}
 
       {/* Animated neon separator */}
       <div
