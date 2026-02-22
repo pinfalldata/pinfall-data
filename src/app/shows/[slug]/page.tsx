@@ -95,9 +95,7 @@ export default async function ShowPage(props: Props) {
       <main className="min-h-screen bg-bg-primary pb-20">
         <ShowHero show={show} />
         <ShowInfoBar show={show} />
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-          <ShowCard show={show} />
-        </div>
+        <ShowCard show={show} />
       </main>
     </>
   )

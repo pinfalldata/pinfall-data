@@ -85,12 +85,24 @@ export function ShowInfoBar({ show }: { show: any }) {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 py-3 px-4 border-b border-border-subtle/10">
             {/* Arena image */}
             {arena?.image_url && (
-              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg overflow-hidden border border-border-subtle/30 bg-bg-tertiary/50 shrink-0">
-                <Image src={arena.image_url} alt={arenaName} width={56} height={56} className="w-full h-full object-cover" />
-              </div>
+              arena?.slug ? (
+                <Link href={`/arenas/${arena.slug}`} className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg overflow-hidden border border-border-subtle/30 bg-bg-tertiary/50 shrink-0 hover:border-border-subtle/60 transition-all">
+                  <Image src={arena.image_url} alt={arenaName} width={56} height={56} className="w-full h-full object-cover" />
+                </Link>
+              ) : (
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg overflow-hidden border border-border-subtle/30 bg-bg-tertiary/50 shrink-0">
+                  <Image src={arena.image_url} alt={arenaName} width={56} height={56} className="w-full h-full object-cover" />
+                </div>
+              )
             )}
             <div className="text-center sm:text-left">
-              <p className="text-text-white text-sm font-medium">{arenaName}</p>
+              {arena?.slug ? (
+                <Link href={`/arenas/${arena.slug}`} className="text-text-white text-sm font-medium hover:underline transition-colors" style={{ color: `${color}` }}>
+                  {arenaName}
+                </Link>
+              ) : (
+                <p className="text-text-white text-sm font-medium">{arenaName}</p>
+              )}
               {arenaLocation && (
                 <p className="text-text-secondary text-xs flex items-center justify-center sm:justify-start gap-1">
                   <span>📍</span> {arenaLocation}
@@ -114,23 +126,21 @@ export function ShowInfoBar({ show }: { show: any }) {
             </div>
           )}
 
-          {/* Ring Announcers */}
+          {/* Ring Announcers — with photos like commentators */}
           {show.ringAnnouncers?.length > 0 && (
             <div className="flex items-center gap-2 text-sm">
               <span>🎙️</span>
               <span className="text-text-secondary text-[10px] uppercase tracking-wider">Ring Announcer</span>
-              <div className="flex items-center gap-1.5">
-                {show.ringAnnouncers.map((ra: any, idx: number) => (
-                  <span key={ra.id}>
-                    {ra.superstar?.slug ? (
-                      <Link href={`/superstars/${ra.superstar.slug}`} className="hover:underline" style={{ color }}>
-                        {ra.superstar?.name}
-                      </Link>
-                    ) : (
-                      <span className="text-text-white">{ra.superstar?.name}</span>
+              <div className="flex items-center gap-2">
+                {show.ringAnnouncers.map((ra: any) => (
+                  <Link key={ra.id} href={`/superstars/${ra.superstar?.slug}`} className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
+                    {ra.superstar?.photo_url && (
+                      <div className="w-6 h-6 rounded-full overflow-hidden border border-border-subtle/50 shrink-0">
+                        <Image src={ra.superstar.photo_url} alt="" width={24} height={24} className="w-full h-full object-cover" />
+                      </div>
                     )}
-                    {idx < show.ringAnnouncers.length - 1 && <span className="text-text-secondary">, </span>}
-                  </span>
+                    <span className="hover:underline" style={{ color }}>{ra.superstar?.name}</span>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -169,7 +179,7 @@ export function ShowInfoBar({ show }: { show: any }) {
               }}
             />
             <div className="py-4 px-4 sm:px-8 text-center">
-              <p className="text-text-secondary text-[10px] uppercase tracking-widest mb-2">Highlights</p>
+              <p className="text-text-secondary text-[10px] uppercase tracking-widest mb-2">Overview</p>
               <p className="text-sm text-text-white/80 leading-relaxed max-w-3xl mx-auto">
                 {show.highlights_md}
               </p>

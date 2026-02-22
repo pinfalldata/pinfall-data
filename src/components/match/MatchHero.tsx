@@ -75,9 +75,21 @@ export function MatchHero({ match }: { match: any }) {
 
           {/* Bottom row: venue + commentary + ring announcers */}
           <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-text-secondary">
-            {venue && (
+            {(show?.arena || venue) && (
               <span className="flex items-center gap-1">
-                <span>📍</span> {venue}
+                <span>📍</span>
+                {show?.arena?.slug ? (
+                  <Link href={`/arenas/${show.arena.slug}`} className="hover:underline" style={{ color }}>
+                    {show.arena.name || venue}
+                  </Link>
+                ) : (
+                  <span>{venue}</span>
+                )}
+                {show?.arena && (
+                  <span className="text-text-secondary/60">
+                    {[show.arena.city || show?.city, show.arena.state_province || show?.state_province, show.arena.country || show?.country].filter(Boolean).join(', ')}
+                  </span>
+                )}
               </span>
             )}
             {commentators.length > 0 && (
@@ -137,78 +149,35 @@ export function MatchHero({ match }: { match: any }) {
               )}
             </div>
 
-{/* Championship — GIGANTIC belt, extreme tight spacing */}
+{/* Championship — belt prominent, name smaller and clickable */}
             {match.championship && (
-              <div className="flex flex-col items-center -mb-8 sm:-mb-12 z-10 relative">
+              <div className="flex flex-col items-center pb-2 z-10 relative">
                 {match.championship.image_url && (
-                  <div className="relative w-56 h-56 sm:w-80 sm:h-80 lg:w-[400px] lg:h-[400px]">
+                  <div className="relative w-44 h-44 sm:w-56 sm:h-56 lg:w-72 lg:h-72">
                     <Image
                       src={match.championship.image_url}
                       alt={match.championship.name}
                       fill
                       className="object-contain drop-shadow-2xl"
-                      sizes="(max-width: 640px) 224px, (max-width: 1024px) 320px, 400px"
+                      sizes="(max-width: 640px) 176px, (max-width: 1024px) 224px, 288px"
                     />
                   </div>
                 )}
-                <span className="text-xl sm:text-2xl lg:text-4xl text-yellow-400 font-black uppercase tracking-wider -mt-10 sm:-mt-16 text-center drop-shadow-md z-10 relative">
-                  {match.championship.name}
-                </span>
+                {match.championship.slug ? (
+                  <Link href={`/championships/${match.championship.slug}`} className="text-sm sm:text-base lg:text-lg text-yellow-400 font-bold uppercase tracking-wider mt-0 text-center drop-shadow-md z-10 relative hover:text-yellow-300 transition-colors">
+                    {match.championship.name}
+                  </Link>
+                ) : (
+                  <span className="text-sm sm:text-base lg:text-lg text-yellow-400 font-bold uppercase tracking-wider mt-0 text-center drop-shadow-md z-10 relative">
+                    {match.championship.name}
+                  </span>
+                )}
               </div>
             )}
                                     
             {/* ===== Participants display ===== */}
             {!isBattleRoyal ? (
-              <div className="flex items-start justify-center gap-4 sm:gap-8 lg:gap-16 flex-wrap">
-                {teamEntries.map(([teamNum, members], teamIdx) => (
-                  <div key={teamNum} className="flex items-start gap-4 sm:gap-8 lg:gap-16">
-                    {teamIdx > 0 && (
-                      <div className="flex items-center self-center pt-8 sm:pt-12">
-                        <span className="font-display text-2xl sm:text-3xl font-bold text-text-secondary">VS</span>
-                      </div>
-                    )}
-                    {/* Team block */}
-                    <div className="flex flex-col items-center">
-                      {/* Tag team name */}
-                      {members[0]?.tag_team && (
-                        <p className="text-[10px] text-text-secondary uppercase tracking-wider mb-2">{members[0].tag_team.name}</p>
-                      )}
-                      {/* Members grid — 2 per row on mobile for tag teams */}
-                      <div className={`grid gap-3 sm:gap-4 justify-items-center ${
-                        members.length <= 1 ? 'grid-cols-1' :
-                        members.length === 2 ? 'grid-cols-2' :
-                        members.length <= 4 ? 'grid-cols-2' :
-                        'grid-cols-2 sm:grid-cols-3'
-                      }`}>
-                        {members.map((p: any) => (
-                          <ParticipantCard key={p.id} participant={p} color={color} match={match} />
-                        ))}
-                      </div>
-                      {/* Team managers — below all members */}
-                      {(() => {
-                        const teamManagers = (match.managers || []).filter((m: any) =>
-                          m.team_number === teamNum || members.some((p: any) => m.managing_for?.id === p.superstar?.id)
-                        )
-                        if (teamManagers.length === 0) return null
-                        return (
-                          <div className="mt-3 flex items-center gap-2 justify-center">
-                            {teamManagers.map((mg: any) => (
-                              <Link key={mg.id} href={`/superstars/${mg.superstar?.slug || '#'}`} className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
-                                {mg.superstar?.photo_url && (
-                                  <div className="w-5 h-5 rounded-full overflow-hidden border border-border-subtle/50 shrink-0">
-                                    <Image src={mg.superstar.photo_url} alt="" width={20} height={20} className="w-full h-full object-cover" />
-                                  </div>
-                                )}
-                                <span className="text-[10px] text-text-secondary italic">w/ {mg.superstar?.name}</span>
-                              </Link>
-                            ))}
-                          </div>
-                        )
-                      })()}
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <MatchParticipantsLayout teamEntries={teamEntries} color={color} match={match} />
             ) : (
               /* Battle Royal */
               <div className="text-center">
@@ -330,6 +299,110 @@ export function MatchHero({ match }: { match: any }) {
           <MediaCarousel items={match.media} columns={2} color={color} />
         </div>
       )}
+    </div>
+  )
+}
+
+// ============================================================
+// MATCH PARTICIPANTS LAYOUT — aligned teams + responsive mobile
+// ============================================================
+
+function MatchParticipantsLayout({ teamEntries, color, match }: {
+  teamEntries: [number, any[]][]; color: string; match: any
+}) {
+  const totalParticipants = teamEntries.reduce((sum, [, m]) => sum + m.length, 0)
+  const anyTagTeam = teamEntries.some(([, members]) => members[0]?.tag_team)
+
+  // For mobile with many participants: stack teams vertically
+  if (totalParticipants > 4) {
+    return (
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 lg:gap-16">
+        {teamEntries.map(([teamNum, members], teamIdx) => (
+          <div key={teamNum} className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8 lg:gap-16">
+            {teamIdx > 0 && (
+              <div className="flex items-center">
+                <span className="font-display text-2xl sm:text-3xl font-bold text-text-secondary">VS</span>
+              </div>
+            )}
+            <div className="flex flex-col items-center">
+              {/* Tag team name — reserve space uniformly */}
+              <div className="h-5 flex items-end justify-center mb-1">
+                {members[0]?.tag_team ? (
+                  <p className="text-[10px] text-text-secondary uppercase tracking-wider">
+                    {members[0].tag_team.name}
+                  </p>
+                ) : anyTagTeam ? <span /> : null}
+              </div>
+              {/* Members — use flex-wrap for mobile, always centered */}
+              <div className="flex flex-wrap gap-3 sm:gap-4 justify-center">
+                {members.map((p: any) => (
+                  <ParticipantCard key={p.id} participant={p} color={color} match={match} />
+                ))}
+              </div>
+              {/* Managers */}
+              <TeamManagers teamNum={teamNum} members={members} match={match} color={color} />
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  // Standard layout: side by side
+  return (
+    <div className="flex items-start justify-center gap-4 sm:gap-8 lg:gap-16">
+      {teamEntries.map(([teamNum, members], teamIdx) => (
+        <div key={teamNum} className="flex items-start gap-4 sm:gap-8 lg:gap-16">
+          {teamIdx > 0 && (
+            <div className="flex items-center self-center" style={{ paddingTop: anyTagTeam ? '28px' : '40px' }}>
+              <span className="font-display text-2xl sm:text-3xl font-bold text-text-secondary">VS</span>
+            </div>
+          )}
+          <div className="flex flex-col items-center">
+            {/* Tag team name — reserve space uniformly */}
+            <div className="h-5 flex items-end justify-center mb-1">
+              {members[0]?.tag_team ? (
+                <p className="text-[10px] text-text-secondary uppercase tracking-wider">
+                  {members[0].tag_team.name}
+                </p>
+              ) : anyTagTeam ? <span /> : null}
+            </div>
+            <div className={`grid gap-3 sm:gap-4 justify-items-center ${
+              members.length <= 1 ? 'grid-cols-1' :
+              members.length === 2 ? 'grid-cols-2' :
+              members.length <= 4 ? 'grid-cols-2' :
+              'grid-cols-2 sm:grid-cols-3'
+            }`}>
+              {members.map((p: any) => (
+                <ParticipantCard key={p.id} participant={p} color={color} match={match} />
+              ))}
+            </div>
+            <TeamManagers teamNum={teamNum} members={members} match={match} color={color} />
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// Team managers sub-component
+function TeamManagers({ teamNum, members, match, color }: { teamNum: number; members: any[]; match: any; color: string }) {
+  const teamManagers = (match.managers || []).filter((m: any) =>
+    m.team_number === teamNum || members.some((p: any) => m.managing_for?.id === p.superstar?.id)
+  )
+  if (teamManagers.length === 0) return null
+  return (
+    <div className="mt-3 flex items-center gap-2 justify-center">
+      {teamManagers.map((mg: any) => (
+        <Link key={mg.id} href={`/superstars/${mg.superstar?.slug || '#'}`} className="flex items-center gap-1.5 hover:opacity-80 transition-opacity">
+          {mg.superstar?.photo_url && (
+            <div className="w-5 h-5 rounded-full overflow-hidden border border-border-subtle/50 shrink-0">
+              <Image src={mg.superstar.photo_url} alt="" width={20} height={20} className="w-full h-full object-cover" />
+            </div>
+          )}
+          <span className="text-[10px] text-text-secondary italic">w/ {mg.superstar?.name}</span>
+        </Link>
+      ))}
     </div>
   )
 }

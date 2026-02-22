@@ -170,21 +170,21 @@ function MatchCard({ match, show, color, spoilerMode, index, isMainEvent }: {
           </div>
         )}
 
-{/* Championship — HUGE belt, extreme tight spacing */}
+{/* Championship — belt prominent, name smaller below */}
         {match.championship && (
-          <div className="flex flex-col items-center pt-1 -mb-2 sm:-mb-6 border-b border-border-subtle/10 z-10 relative">
+          <div className="flex flex-col items-center pt-2 pb-1 border-b border-border-subtle/10 z-10 relative">
             {match.championship.image_url && (
-              <div className="relative w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80">
+              <div className="relative w-36 h-36 sm:w-48 sm:h-48 lg:w-56 lg:h-56">
                 <Image
                   src={match.championship.image_url}
                   alt={match.championship.name}
                   fill
                   className="object-contain drop-shadow-xl hover:scale-105 transition-transform"
-                  sizes="(max-width: 640px) 192px, (max-width: 1024px) 256px, 320px"
+                  sizes="(max-width: 640px) 144px, (max-width: 1024px) 192px, 224px"
                 />
               </div>
             )}
-            <span className="text-base sm:text-lg lg:text-2xl text-yellow-400 font-extrabold uppercase tracking-wider -mt-8 sm:-mt-12 pb-4 text-center px-4 z-10 relative">
+            <span className="text-[11px] sm:text-xs lg:text-sm text-yellow-400 font-bold uppercase tracking-wider mt-0 pb-3 text-center px-4 z-10 relative">
               {match.championship.name}
             </span>
           </div>
@@ -231,23 +231,30 @@ function MatchCard({ match, show, color, spoilerMode, index, isMainEvent }: {
 function StandardMatchParticipants({ teamEntries, spoilerMode, color, match }: {
   teamEntries: [number, any[]][]; spoilerMode: boolean; color: string; match: any
 }) {
+  // Check if any team has a tag team name (to reserve space uniformly)
+  const anyTagTeam = teamEntries.some(([, members]) => members[0]?.tag_team)
+
   return (
     <div className="flex items-start justify-center gap-4 sm:gap-6 lg:gap-10">
       {teamEntries.map(([teamNum, members], teamIdx) => (
         <div key={teamNum} className="flex items-start gap-4 sm:gap-6 lg:gap-10">
           {teamIdx > 0 && (
-            <div className="flex items-center self-center pt-6">
+            <div className="flex items-center self-center" style={{ paddingTop: anyTagTeam ? '24px' : '6px' }}>
               <span className="font-display text-lg sm:text-xl font-bold text-text-secondary">VS</span>
             </div>
           )}
           {/* Team container — all members share same alignment */}
           <div className="flex flex-col items-center">
-            {/* Tag team name (shared above all members) */}
-            {members[0]?.tag_team && teamEntries.length <= 2 && (
-              <p className="text-[10px] text-text-secondary uppercase tracking-wider mb-2">
-                {members[0].tag_team.name}
-              </p>
-            )}
+            {/* Tag team name — always reserve space if any team has one */}
+            <div className="h-5 flex items-end justify-center mb-1">
+              {members[0]?.tag_team && teamEntries.length <= 2 ? (
+                <p className="text-[10px] text-text-secondary uppercase tracking-wider">
+                  {members[0].tag_team.name}
+                </p>
+              ) : anyTagTeam ? (
+                <span />
+              ) : null}
+            </div>
             {/* Member photos row — ALIGNED */}
             <div className="flex items-start gap-2 sm:gap-3 flex-wrap justify-center">
               {members.map((p: any) => {
