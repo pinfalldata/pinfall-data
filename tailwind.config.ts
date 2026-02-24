@@ -10,13 +10,13 @@ const config: Config = {
     extend: {
       colors: {
         bg: {
-          primary: '#050507',    // ← Noir pur (avant: #0a0e1a bleu nuit)
-          secondary: '#0a0d14',  // ← Plus sombre
-          tertiary: '#10141e',   // ← Plus sombre
+          primary: '#050507',
+          secondary: '#0a0d14',
+          tertiary: '#10141e',
         },
         neon: {
-          blue: '#2cb2fe',
-          pink: '#f554da',
+          blue: '#c7a05a',       // ← Gold (primary)
+          pink: '#c0c0c0',       // ← Silver (secondary)
         },
         text: {
           primary: '#e0e0e0',
@@ -38,13 +38,13 @@ const config: Config = {
         mono: ['var(--font-mono)', 'JetBrains Mono', 'monospace'],
       },
       boxShadow: {
-        'neon-blue': '0 0 15px rgba(44, 178, 254, 0.3), 0 0 30px rgba(44, 178, 254, 0.1)',
-        'neon-pink': '0 0 15px rgba(245, 84, 218, 0.3), 0 0 30px rgba(245, 84, 218, 0.1)',
-        'neon-blue-lg': '0 0 20px rgba(44, 178, 254, 0.4), 0 0 40px rgba(44, 178, 254, 0.15)',
+        'neon-blue': '0 0 15px rgba(199, 160, 90, 0.3), 0 0 30px rgba(199, 160, 90, 0.1)',
+        'neon-pink': '0 0 15px rgba(192, 192, 192, 0.3), 0 0 30px rgba(192, 192, 192, 0.1)',
+        'neon-blue-lg': '0 0 20px rgba(199, 160, 90, 0.4), 0 0 40px rgba(199, 160, 90, 0.15)',
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'grid-pattern': 'linear-gradient(rgba(44, 178, 254, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(44, 178, 254, 0.03) 1px, transparent 1px)',
+        'grid-pattern': 'linear-gradient(rgba(199, 160, 90, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(199, 160, 90, 0.03) 1px, transparent 1px)',
       },
       backgroundSize: {
         'grid': '50px 50px',
@@ -60,8 +60,8 @@ const config: Config = {
       },
       keyframes: {
         'glow-pulse': {
-          '0%': { boxShadow: '0 0 10px rgba(44, 178, 254, 0.2)' },
-          '100%': { boxShadow: '0 0 20px rgba(44, 178, 254, 0.4), 0 0 40px rgba(44, 178, 254, 0.1)' },
+          '0%': { boxShadow: '0 0 10px rgba(199, 160, 90, 0.2)' },
+          '100%': { boxShadow: '0 0 20px rgba(199, 160, 90, 0.4), 0 0 40px rgba(199, 160, 90, 0.1)' },
         },
         'slide-in': {
           '0%': { transform: 'translateX(20px)', opacity: '0' },

@@ -1,21 +1,20 @@
 import Image from 'next/image'
-import { formatDateShort } from '@/lib/utils'
 
-// Film profile links — logo URLs from Supabase storage
+// Film profile links — order: TMDB, IMDb (center), Rotten Tomatoes
 const FILM_SITES = [
-  {
-    key: 'imdb_link',
-    name: 'IMDb',
-    logo: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Films/IMDb.png',
-    color: 'bg-[#f5c518]/10 border-[#f5c518]/30 hover:bg-[#f5c518]/20',
-    textColor: 'text-[#f5c518]',
-  },
   {
     key: 'tmdb_link',
     name: 'TMDB',
     logo: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Films/TMDB.webp',
     color: 'bg-[#01b4e4]/10 border-[#01b4e4]/30 hover:bg-[#01b4e4]/20',
     textColor: 'text-[#01b4e4]',
+  },
+  {
+    key: 'imdb_link',
+    name: 'IMDb',
+    logo: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Films/IMDb.png',
+    color: 'bg-[#f5c518]/10 border-[#f5c518]/30 hover:bg-[#f5c518]/20',
+    textColor: 'text-[#f5c518]',
   },
   {
     key: 'rotten_tomatoes_link',
@@ -27,84 +26,61 @@ const FILM_SITES = [
 ]
 
 export function TabMedia({ superstar }: { superstar: any }) {
-  const hasThemes = superstar.themes?.length > 0
   const hasBooks = superstar.books?.length > 0
 
-  // Films: new schema = one row with imdb_link, tmdb_link, rotten_tomatoes_link
+  // Films: one row per superstar with imdb_link, tmdb_link, rotten_tomatoes_link
   const filmEntry = superstar.films?.[0] || null
   const hasFilmLinks = filmEntry && (filmEntry.imdb_link || filmEntry.tmdb_link || filmEntry.rotten_tomatoes_link)
 
-  if (!hasThemes && !hasBooks && !hasFilmLinks) {
+  // Only active film buttons
+  const activeFilmSites = hasFilmLinks
+    ? FILM_SITES.filter(site => filmEntry[site.key])
+    : []
+
+  if (!hasBooks && !hasFilmLinks) {
     return <p className="text-center py-12 text-text-secondary">No data yet.</p>
   }
 
   return (
     <div className="max-w-4xl mx-auto space-y-10">
       {/* ============================================================ */}
-      {/* ENTRANCE THEMES */}
+      {/* FILMS — External profile links (IMDb centered) */}
       {/* ============================================================ */}
-      {hasThemes && (
+      {activeFilmSites.length > 0 && (
         <section>
-          <h3 className="font-display text-lg font-bold text-neon-blue mb-4 flex items-center gap-2">
-            <span className="w-1.5 h-5 bg-neon-blue rounded-full" />Entrance Themes
-          </h3>
-          <div className="space-y-2">
-            {superstar.themes.map((t: any) => (
-              <div key={t.id} className={`glass rounded-xl p-4 border flex items-center justify-between gap-4 ${t.is_current ? 'border-neon-blue/30 bg-neon-blue/5' : 'border-border-subtle/50'}`}>
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${t.is_current ? 'bg-neon-blue/20' : 'bg-bg-tertiary'}`}>
-                    <svg className={`w-4 h-4 ${t.is_current ? 'text-neon-blue' : 'text-text-secondary'}`} fill="currentColor" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-                  </div>
-                  <div className="min-w-0">
-                    <p className={`text-sm font-medium truncate ${t.is_current ? 'text-neon-blue' : 'text-text-white'}`}>{t.song_name}</p>
-                    {t.artist && <p className="text-text-secondary text-xs truncate">{t.artist}</p>}
-                  </div>
-                </div>
-                <div className="text-right shrink-0">
-                  <p className="text-text-secondary text-xs">{formatDateShort(t.start_date)} → {t.end_date ? formatDateShort(t.end_date) : 'Now'}</p>
-                  {t.is_current && <span className="text-[10px] text-status-success uppercase">Current</span>}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ============================================================ */}
-      {/* FILMS — External profile links */}
-      {/* ============================================================ */}
-      {hasFilmLinks && (
-        <section>
-          <h3 className="font-display text-lg font-bold text-neon-pink mb-4 flex items-center gap-2">
+          <h3 className="font-display text-lg font-bold text-neon-pink mb-5 flex items-center gap-2">
             <span className="w-1.5 h-5 bg-neon-pink rounded-full" />Films & TV
           </h3>
-          <div className="grid grid-cols-3 gap-3 sm:gap-4 max-w-lg">
-            {FILM_SITES.map((site) => {
-              const link = filmEntry[site.key]
-              if (!link) return null
-              return (
-                <a
-                  key={site.key}
-                  href={link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`flex flex-col items-center justify-center gap-2 sm:gap-2.5 py-4 sm:py-5 px-3 rounded-xl border transition-all duration-200 ${site.color}`}
-                >
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center shrink-0">
-                    <Image
-                      src={site.logo}
-                      alt={site.name}
-                      width={40}
-                      height={40}
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
-                  <span className={`text-xs sm:text-sm font-medium text-center leading-tight ${site.textColor}`}>
-                    {site.name}
-                  </span>
-                </a>
-              )
-            })}
+          <div
+            className="grid gap-3 sm:gap-4"
+            style={{
+              gridTemplateColumns: `repeat(${activeFilmSites.length}, minmax(0, 1fr))`,
+              maxWidth: activeFilmSites.length === 1 ? '180px' : activeFilmSites.length === 2 ? '360px' : '540px',
+            }}
+          >
+            {activeFilmSites.map((site) => (
+              <a
+                key={site.key}
+                href={filmEntry[site.key]}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`flex flex-col items-center justify-center gap-2.5 py-5 px-4 rounded-xl border transition-all duration-200 ${site.color}`}
+              >
+                <div className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center shrink-0">
+                  <Image
+                    src={site.logo}
+                    alt={site.name}
+                    width={48}
+                    height={48}
+                    className="w-full h-full object-contain"
+                    unoptimized
+                  />
+                </div>
+                <span className={`text-xs sm:text-sm font-medium text-center leading-tight ${site.textColor}`}>
+                  {site.name}
+                </span>
+              </a>
+            ))}
           </div>
         </section>
       )}
@@ -114,7 +90,7 @@ export function TabMedia({ superstar }: { superstar: any }) {
       {/* ============================================================ */}
       {hasBooks && (
         <section>
-          <h3 className="font-display text-lg font-bold text-neon-pink mb-4 flex items-center gap-2">
+          <h3 className="font-display text-lg font-bold text-neon-pink mb-5 flex items-center gap-2">
             <span className="w-1.5 h-5 bg-neon-pink rounded-full" />Books
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -132,17 +108,18 @@ export function TabMedia({ superstar }: { superstar: any }) {
 // BOOK CARD — Uniform sizing with cover image
 // ============================================================
 function BookCard({ book }: { book: any }) {
-  const Card = book.external_url ? 'a' : 'div'
-  const linkProps = book.external_url
+  const isLink = !!book.external_url
+  const Tag = isLink ? 'a' : 'div'
+  const linkProps = isLink
     ? { href: book.external_url, target: '_blank', rel: 'noopener noreferrer' }
     : {}
 
   return (
-    <Card
+    <Tag
       {...(linkProps as any)}
       className="group flex flex-col rounded-xl border border-border-subtle/40 bg-bg-secondary/30 overflow-hidden transition-all duration-200 hover:border-border-subtle/60 hover:bg-bg-secondary/50 hover:shadow-lg"
     >
-      {/* Cover image — fixed aspect ratio for uniformity */}
+      {/* Cover image — fixed aspect ratio 2:3 for uniformity */}
       <div className="relative w-full aspect-[2/3] bg-bg-tertiary overflow-hidden">
         {book.image_url ? (
           <Image
@@ -173,7 +150,7 @@ function BookCard({ book }: { book: any }) {
         {book.description && (
           <p className="text-[11px] text-text-secondary line-clamp-3 leading-relaxed mt-0.5">{book.description}</p>
         )}
-        {book.external_url && (
+        {isLink && (
           <span className="mt-auto pt-2 text-[10px] text-neon-blue font-medium flex items-center gap-1 group-hover:gap-1.5 transition-all">
             View book
             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -182,6 +159,6 @@ function BookCard({ book }: { book: any }) {
           </span>
         )}
       </div>
-    </Card>
+    </Tag>
   )
 }

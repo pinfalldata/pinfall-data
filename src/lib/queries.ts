@@ -64,7 +64,7 @@ export async function getSuperstarBySlug(slug: string) {
       .eq('superstar_id', superstar.id),
     supabase.from('superstar_social_links').select('*').eq('superstar_id', superstar.id),
     supabase.from('books').select('*').eq('superstar_id', superstar.id).order('year', { ascending: false }),
-    supabase.from('films').select('*').eq('superstar_id', superstar.id).order('year', { ascending: false }),
+    supabase.from('films').select('*').eq('superstar_id', superstar.id),
   ])
 
   logError('getSuperstarBySlug(roles)', rolesError)

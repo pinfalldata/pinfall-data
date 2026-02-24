@@ -64,7 +64,7 @@ const defaultFilters: Filters = {
 }
 
 // Fixed year range for the site
-const SITE_START_YEAR = 1948
+const SITE_START_YEAR = 1953
 const CURRENT_YEAR = new Date().getFullYear()
 const YEARS = Array.from({ length: CURRENT_YEAR - SITE_START_YEAR + 1 }, (_, i) => CURRENT_YEAR - i)
 
@@ -403,7 +403,7 @@ export function TabMatches({ superstar }: { superstar: any }) {
       ) : (
         <>
           {/* Desktop table header */}
-          <div className="hidden lg:grid lg:grid-cols-[90px_minmax(120px,1fr)_140px_minmax(180px,2fr)_100px_50px_56px] gap-2 px-4 pb-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20">
+          <div className="hidden lg:grid lg:grid-cols-[95px_minmax(140px,1.2fr)_150px_minmax(200px,2.5fr)_110px_55px_56px] gap-3 px-4 pb-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20">
             <span>Date</span>
             <span>Show</span>
             <span>Type</span>
@@ -468,96 +468,89 @@ function MatchRow({ match, superstarId, index }: {
   return (
     <Link href={`/shows/${match.show?.slug}/matches/${match.slug}`} className="block group">
       {/* ——— DESKTOP ——— */}
-      <div className="hidden lg:grid lg:grid-cols-[90px_minmax(120px,1fr)_140px_minmax(180px,2fr)_100px_50px_56px] gap-2 items-center px-4 py-2.5 rounded-lg border border-transparent transition-all duration-150 hover:bg-bg-secondary/40 hover:border-border-subtle/20">
+      <div className="hidden lg:grid lg:grid-cols-[95px_minmax(140px,1.2fr)_150px_minmax(200px,2.5fr)_110px_55px_56px] gap-3 items-center px-4 py-3 rounded-lg border border-transparent transition-all duration-150 hover:bg-bg-secondary/40 hover:border-border-subtle/20">
         {/* Date */}
-        <span className="text-[11px] text-text-secondary font-mono whitespace-nowrap">
+        <span className="text-xs text-text-secondary font-mono whitespace-nowrap">
           {match.date ? formatDateShort(match.date) : '—'}
         </span>
 
         {/* Show */}
-        <div className="flex items-center gap-1.5 min-w-0">
+        <div className="flex items-center gap-2 min-w-0">
           {match.show?.show_series?.logo_url && (
-            <div className="w-4 h-4 rounded overflow-hidden shrink-0">
-              <Image src={match.show.show_series.logo_url} alt="" width={16} height={16} className="w-full h-full object-contain" />
+            <div className="w-5 h-5 rounded overflow-hidden shrink-0">
+              <Image src={match.show.show_series.logo_url} alt="" width={20} height={20} className="w-full h-full object-contain" />
             </div>
           )}
-          <span className="text-xs text-text-white truncate">{match.show?.name || '—'}</span>
+          <span className="text-sm text-text-white truncate">{match.show?.name || '—'}</span>
         </div>
 
         {/* Match Type */}
-        <span className="text-[11px] text-neon-blue font-medium truncate uppercase">
+        <span className="text-xs text-neon-blue font-semibold truncate uppercase">
           {match.match_type?.name || 'Match'}
         </span>
 
-        {/* Match details: with Teammate vs Opponents */}
-        <div className="flex items-center gap-1 min-w-0 overflow-hidden">
+        {/* Match details: with Teammate(s) vs Opponents */}
+        <div className="flex items-center gap-1.5 min-w-0 overflow-hidden">
           {/* Teammates */}
           {hasTeammates && showDetails && (
             <>
-              <span className="text-[10px] text-text-secondary italic shrink-0">w/</span>
-              <div className="flex -space-x-1 shrink-0">
+              <span className="text-[11px] text-text-secondary italic shrink-0">w/</span>
+              <div className="flex items-center gap-1 shrink-0">
                 {match.teammates.slice(0, 2).map(t => (
-                  <div key={t.id} className="w-5 h-5 rounded-full overflow-hidden border border-bg-primary">
-                    {t.photo_url ? (
-                      <Image src={t.photo_url} alt="" width={20} height={20} className="w-full h-full object-cover" />
-                    ) : <div className="w-full h-full bg-bg-tertiary" />}
+                  <div key={t.id} className="flex items-center gap-0.5 shrink-0">
+                    <div className="w-6 h-6 rounded-full overflow-hidden border border-bg-primary">
+                      {t.photo_url ? (
+                        <Image src={t.photo_url} alt="" width={24} height={24} className="w-full h-full object-cover" />
+                      ) : <div className="w-full h-full bg-bg-tertiary" />}
+                    </div>
                   </div>
                 ))}
-                {match.teammates.length > 2 && (
-                  <div className="w-5 h-5 rounded-full bg-bg-tertiary border border-bg-primary flex items-center justify-center text-[7px] text-text-secondary">
-                    +{match.teammates.length - 2}
-                  </div>
-                )}
               </div>
+              <span className="text-xs text-text-white truncate max-w-[120px] shrink-0">
+                {match.teammates.map(t => t.name).join(', ')}
+              </span>
             </>
           )}
 
           {/* VS */}
-          <span className="text-[10px] text-text-secondary font-bold mx-1 shrink-0">vs</span>
+          <span className="text-[11px] text-neon-blue font-bold mx-1 shrink-0">vs</span>
 
           {/* Opponents */}
           {showDetails ? (
             <>
-              <div className="flex -space-x-1 shrink-0">
+              <div className="flex -space-x-1.5 shrink-0">
                 {match.opponents.slice(0, 3).map(o => (
-                  <div key={o.id} className="w-5 h-5 rounded-full overflow-hidden border border-bg-primary">
+                  <div key={o.id} className="w-6 h-6 rounded-full overflow-hidden border border-bg-primary">
                     {o.photo_url ? (
-                      <Image src={o.photo_url} alt="" width={20} height={20} className="w-full h-full object-cover" />
+                      <Image src={o.photo_url} alt="" width={24} height={24} className="w-full h-full object-cover" />
                     ) : <div className="w-full h-full bg-bg-tertiary" />}
                   </div>
                 ))}
                 {match.opponents.length > 3 && (
-                  <div className="w-5 h-5 rounded-full bg-bg-tertiary border border-bg-primary flex items-center justify-center text-[7px] text-text-secondary">
+                  <div className="w-6 h-6 rounded-full bg-bg-tertiary border border-bg-primary flex items-center justify-center text-[8px] text-text-secondary">
                     +{match.opponents.length - 3}
                   </div>
                 )}
               </div>
-              <span className="text-[11px] text-text-white truncate ml-1">
+              <span className="text-xs text-text-white truncate ml-1">
                 {opponentStr}
               </span>
             </>
           ) : (
-            <span className="text-[11px] text-text-secondary italic truncate">{opponentStr}</span>
-          )}
-
-          {/* Managers */}
-          {match.managers.length > 0 && (
-            <span className="text-[9px] text-text-secondary italic ml-1 shrink-0 hidden xl:inline">
-              (w/ {match.managers.map(m => m.name).join(', ')})
-            </span>
+            <span className="text-xs text-text-secondary italic truncate">{opponentStr}</span>
           )}
         </div>
 
         {/* Championship */}
-        <div className="flex items-center gap-1 min-w-0">
+        <div className="flex items-center gap-1.5 min-w-0">
           {match.championship ? (
             <>
               {match.championship.image_url && (
-                <div className="w-6 h-4 shrink-0">
-                  <Image src={match.championship.image_url} alt="" width={24} height={16} className="w-full h-full object-contain" />
+                <div className="w-7 h-5 shrink-0">
+                  <Image src={match.championship.image_url} alt="" width={28} height={20} className="w-full h-full object-contain" />
                 </div>
               )}
-              <span className="text-[9px] text-yellow-400 font-medium truncate">{match.championship.name}</span>
+              <span className="text-[10px] text-yellow-400 font-medium truncate">{match.championship.name}</span>
             </>
           ) : (
             <span className="text-[10px] text-text-secondary/30">—</span>
@@ -571,7 +564,7 @@ function MatchRow({ match, superstarId, index }: {
 
         {/* Result */}
         <div className="flex justify-center">
-          <span className={`text-[11px] font-bold px-2 py-0.5 rounded border ${resultBg} ${resultColor}`}>
+          <span className={`text-xs font-bold px-2.5 py-1 rounded border ${resultBg} ${resultColor}`}>
             {resultLabel}
           </span>
         </div>

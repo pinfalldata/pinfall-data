@@ -6,7 +6,7 @@ import { StarRating } from '@/components/ui/StarRating'
 import { formatDate, formatTime, formatNumber, formatCompactNumber } from '@/lib/utils'
 
 export function ShowInfoBar({ show }: { show: any }) {
-  const color = show.primary_color || '#2cb2fe'
+  const color = show.primary_color || '#c7a05a'
   const epNum = show.episodeNumber || show.episode_number
   const seriesName = show.show_series?.short_name || show.show_series?.name || ''
 

@@ -6,7 +6,7 @@ import { formatDate, getSegmentCategoryLabel, getSegmentCategoryIcon, getShowCol
 
 export function SegmentDetail({ segment }: { segment: any }) {
   const show = segment.show
-  const color = show?.primary_color || '#2cb2fe'
+  const color = show?.primary_color || '#c7a05a'
   const colorStyle = getShowColorStyle(color) as React.CSSProperties
   const participants = segment.participants || []
 

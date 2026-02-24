@@ -60,7 +60,7 @@ function isVideoItem(item: MediaItem): boolean {
   return false
 }
 
-export function MediaCarousel({ items, columns = 3, color = '#2cb2fe' }: MediaCarouselProps) {
+export function MediaCarousel({ items, columns = 3, color = '#c7a05a' }: MediaCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
 
   const goNext = useCallback(() => {

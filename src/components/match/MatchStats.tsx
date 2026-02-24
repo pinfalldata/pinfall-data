@@ -56,8 +56,8 @@ function DonutChart({ data, color, size = 120 }: {
 // ============================================================
 
 const METHOD_COLORS: Record<string, string> = {
-  pinfall: '#2cb2fe',
-  submission: '#f554da',
+  pinfall: '#c7a05a',
+  submission: '#c0c0c0',
   dq: '#facc15',
   count_out: '#fb923c',
   ko: '#ef4444',
@@ -137,8 +137,8 @@ export function HeadToHeadSection({ h2h, superstar1, superstar2, color }: {
 }) {
   if (!h2h || !h2h.total_matches || h2h.total_matches === 0) return null
 
-  const c1 = '#2cb2fe' // blue for superstar 1
-  const c2 = '#f554da' // pink for superstar 2
+  const c1 = '#c7a05a' // blue for superstar 1
+  const c2 = '#c0c0c0' // pink for superstar 2
 
   return (
     <div className="glass rounded-xl p-5 border border-border-subtle/20">

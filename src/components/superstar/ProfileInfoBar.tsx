@@ -54,7 +54,7 @@ export function ProfileInfoBar({ superstar }: { superstar: any }) {
                 <p className="text-text-white text-sm sm:text-base font-medium truncate">{cell.value}</p>
                 {/* Neon dot separator (desktop) */}
                 {i < topRow.length - 1 && (
-                  <span className="absolute right-0 top-1/2 -translate-y-1/2 w-[3px] h-[3px] rounded-full bg-neon-blue/60 shadow-[0_0_8px_rgba(44,178,254,0.6)] hidden sm:block" />
+                  <span className="absolute right-0 top-1/2 -translate-y-1/2 w-[3px] h-[3px] rounded-full bg-neon-blue/60 shadow-[0_0_8px_rgba(199,160,90,0.6)] hidden sm:block" />
                 )}
               </div>
             ))}
@@ -77,7 +77,7 @@ export function ProfileInfoBar({ superstar }: { superstar: any }) {
                 </p>
                 {/* Neon dot separator (desktop) */}
                 {i < bottomRow.length - 1 && (
-                  <span className="absolute right-0 top-1/2 -translate-y-1/2 w-[3px] h-[3px] rounded-full bg-neon-pink/50 shadow-[0_0_6px_rgba(245,84,218,0.5)] hidden sm:block" />
+                  <span className="absolute right-0 top-1/2 -translate-y-1/2 w-[3px] h-[3px] rounded-full bg-neon-pink/50 shadow-[0_0_6px_rgba(192,192,192,0.5)] hidden sm:block" />
                 )}
               </div>
             ))}

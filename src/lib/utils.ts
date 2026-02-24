@@ -185,6 +185,22 @@ export function isIronManMatch(matchTypeName: string | null): boolean {
   return matchTypeName.toLowerCase().includes('iron man')
 }
 
+/**
+ * Matches that have a score (falls count).
+ * Includes Iron Man, 2 out of 3 falls, Best of X falls, etc.
+ */
+export function isScoredMatch(matchTypeName: string | null): boolean {
+  if (!matchTypeName) return false
+  const name = matchTypeName.toLowerCase()
+  return (
+    name.includes('iron man') ||
+    name.includes('falls') ||
+    name.includes('2 out of 3') ||
+    name.includes('best of') ||
+    name.includes('two out of three')
+  )
+}
+
 // --- SEGMENT CATEGORIES ---
 
 export function getSegmentCategoryLabel(category: string): string {
@@ -227,7 +243,7 @@ export function getSegmentCategoryIcon(category: string): string {
 // Returns CSS custom property style object for dynamic show color
 
 export function getShowColorStyle(color: string | null): Record<string, string> {
-  const c = color || '#2cb2fe' // fallback to neon blue
+  const c = color || '#c7a05a' // fallback to neon blue
   return {
     '--show-color': c,
     '--show-color-20': `${c}33`,    // 20% opacity

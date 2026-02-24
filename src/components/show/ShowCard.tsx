@@ -7,13 +7,13 @@ import { StarRating } from '@/components/ui/StarRating'
 import { MediaCarousel } from '@/components/ui/MediaCarousel'
 import {
   formatDuration, getRatingColor, getRatingBgColor, getResultLabel,
-  isBattleRoyalType, isIronManMatch, groupParticipantsByTeam,
+  isBattleRoyalType, isScoredMatch, groupParticipantsByTeam,
   getSegmentCategoryLabel, getSegmentCategoryIcon,
 } from '@/lib/utils'
 
 export function ShowCard({ show }: { show: any }) {
   const [spoilerMode, setSpoilerMode] = useState(true)
-  const color = show.primary_color || '#2cb2fe'
+  const color = show.primary_color || '#c7a05a'
 
   const matchCount = (show.matches || []).length
   const segmentCount = (show.segments || []).length
@@ -113,7 +113,7 @@ function MatchCard({ match, show, color, spoilerMode, index, isMainEvent }: {
   const teams = groupParticipantsByTeam(participants)
   const teamEntries = Array.from(teams.entries())
   const isBattleRoyal = isBattleRoyalType(match.match_type?.name)
-  const isIronMan = isIronManMatch(match.match_type?.name)
+  const isIronMan = isScoredMatch(match.match_type?.name)
   const manyParticipants = participants.length > 10
   const matchSlug = match.slug || match.id
 
@@ -235,11 +235,15 @@ function MatchCard({ match, show, color, spoilerMode, index, isMainEvent }: {
             />
           )}
 
-          {/* Iron Man score */}
+          {/* Falls / Score */}
           {isIronMan && !spoilerMode && match.score_winner != null && (
-            <p className="text-center mt-3 font-mono text-sm" style={{ color }}>
-              Score: {match.score_winner} – {match.score_loser}
-            </p>
+            <div className="flex justify-center mt-3">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border-subtle/30 bg-bg-secondary/40">
+                <span className="text-lg font-display font-bold text-text-white">{match.score_winner}</span>
+                <span className="text-sm text-text-secondary/50">–</span>
+                <span className="text-lg font-display font-bold text-text-secondary">{match.score_loser}</span>
+              </div>
+            </div>
           )}
 
           {/* Result type */}

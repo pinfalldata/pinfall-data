@@ -9,7 +9,7 @@ export function MatchStatsSection({ match, h2hData, winMethodsMap }: {
   winMethodsMap: Record<number, any[]>
 }) {
   const participants = match.participants || []
-  const color = match.show?.primary_color || '#2cb2fe'
+  const color = match.show?.primary_color || '#c7a05a'
   const teams = groupParticipantsByTeam(participants)
   const teamEntries = Array.from(teams.entries())
   const uniqueSuperstars = Array.from(

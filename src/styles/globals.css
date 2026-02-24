@@ -41,7 +41,7 @@
 
   /* Selection color */
   ::selection {
-    background: rgba(44, 178, 254, 0.3);
+    background: rgba(199, 160, 90, 0.3);
     color: #ffffff;
   }
 }
@@ -54,16 +54,16 @@
 
   .card-glow:hover {
     transform: translateY(-4px);
-    box-shadow: 0 0 15px rgba(44, 178, 254, 0.3), 0 0 30px rgba(44, 178, 254, 0.1);
+    box-shadow: 0 0 15px rgba(199, 160, 90, 0.3), 0 0 30px rgba(199, 160, 90, 0.1);
   }
 
   /* Neon text glow */
   .text-glow-blue {
-    text-shadow: 0 0 10px rgba(44, 178, 254, 0.5), 0 0 20px rgba(44, 178, 254, 0.2);
+    text-shadow: 0 0 10px rgba(199, 160, 90, 0.5), 0 0 20px rgba(199, 160, 90, 0.2);
   }
 
   .text-glow-pink {
-    text-shadow: 0 0 10px rgba(245, 84, 218, 0.5), 0 0 20px rgba(245, 84, 218, 0.2);
+    text-shadow: 0 0 10px rgba(192, 192, 192, 0.5), 0 0 20px rgba(192, 192, 192, 0.2);
   }
 
   /* Glass morphism effect for menu */
@@ -71,32 +71,32 @@
     background: rgba(5, 5, 7, 0.88);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(44, 178, 254, 0.1);
+    border: 1px solid rgba(199, 160, 90, 0.1);
   }
 
   /* Subtle grid background overlay */
   .bg-grid {
     background-image:
-      linear-gradient(rgba(44, 178, 254, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(44, 178, 254, 0.03) 1px, transparent 1px);
+      linear-gradient(rgba(199, 160, 90, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(199, 160, 90, 0.03) 1px, transparent 1px);
     background-size: 50px 50px;
   }
 
   /* Neon line separator — static */
   .neon-line {
     height: 1px;
-    background: linear-gradient(90deg, transparent, #2cb2fe, transparent);
+    background: linear-gradient(90deg, transparent, #c7a05a, transparent);
   }
 
   .neon-line-pink {
     height: 1px;
-    background: linear-gradient(90deg, transparent, #f554da, transparent);
+    background: linear-gradient(90deg, transparent, #c0c0c0, transparent);
   }
 
   /* Animated neon sweep line — blue */
   .neon-line-animated {
     height: 1px;
-    background: linear-gradient(90deg, transparent 0%, transparent 30%, #2cb2fe 50%, transparent 70%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, transparent 30%, #c7a05a 50%, transparent 70%, transparent 100%);
     background-size: 200% 100%;
     animation: neon-sweep 3s ease-in-out infinite;
   }
@@ -104,7 +104,7 @@
   /* Animated neon sweep line — pink */
   .neon-line-animated-pink {
     height: 1px;
-    background: linear-gradient(90deg, transparent 0%, transparent 30%, #f554da 50%, transparent 70%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, transparent 30%, #c0c0c0 50%, transparent 70%, transparent 100%);
     background-size: 200% 100%;
     animation: neon-sweep-reverse 4s ease-in-out infinite;
   }
@@ -168,8 +168,8 @@
 }
 
 @keyframes glow-pulse {
-  0% { box-shadow: 0 0 10px rgba(44, 178, 254, 0.2); }
-  100% { box-shadow: 0 0 20px rgba(44, 178, 254, 0.4), 0 0 40px rgba(44, 178, 254, 0.1); }
+  0% { box-shadow: 0 0 10px rgba(199, 160, 90, 0.2); }
+  100% { box-shadow: 0 0 20px rgba(199, 160, 90, 0.4), 0 0 40px rgba(199, 160, 90, 0.1); }
 }
 
 @keyframes slide-in {

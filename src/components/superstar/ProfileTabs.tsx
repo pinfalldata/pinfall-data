@@ -12,10 +12,10 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
   const [activeTab, setActiveTab] = useState('profile')
 
   const isWrestler = hasRole(superstar, 'wrestler')
-  // Books & Films: themes, books, or film profile links
+  // Books & Films: only show if books or film profile links exist
   const filmEntry = superstar.films?.[0]
   const hasFilmLinks = filmEntry && (filmEntry.imdb_link || filmEntry.tmdb_link || filmEntry.rotten_tomatoes_link)
-  const hasMediaContent = (superstar.themes?.length > 0) || (superstar.books?.length > 0) || hasFilmLinks
+  const hasBooksOrFilms = (superstar.books?.length > 0) || hasFilmLinks
   const hasMatches = isWrestler && (superstar.total_matches > 0)
 
   const tabs = [
@@ -23,7 +23,7 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
     { id: 'matches', label: 'Matches', show: hasMatches },
     { id: 'timeline', label: 'Timeline', show: superstar.timeline?.length > 0 },
     { id: 'moves', label: 'Moves', show: isWrestler && superstar.finishers?.length > 0 },
-    { id: 'media', label: 'Books & Films', show: hasMediaContent },
+    { id: 'media', label: 'Books & Films', show: hasBooksOrFilms },
   ].filter(t => t.show)
 
   return (
@@ -48,7 +48,7 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
                 </span>
               )}
               {activeTab === tab.id && (
-                <span className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full bg-neon-blue shadow-[0_0_8px_rgba(44,178,254,0.5)]" />
+                <span className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full bg-neon-blue shadow-[0_0_8px_rgba(199,160,90,0.5)]" />
               )}
             </button>
           ))}

@@ -7,7 +7,7 @@ import { getShowColorStyle, formatDate } from '@/lib/utils'
 
 export function ShowHero({ show }: { show: any }) {
   const [logoError, setLogoError] = useState(false)
-  const color = show.primary_color || '#2cb2fe'
+  const color = show.primary_color || '#c7a05a'
   const colorStyle = getShowColorStyle(color) as React.CSSProperties
   const hasLogo = show.logo_url && !logoError
   const seriesName = show.show_series?.short_name || ''

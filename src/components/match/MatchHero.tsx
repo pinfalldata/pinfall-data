@@ -8,19 +8,19 @@ import {
   formatDate, formatDuration, formatHeight, formatWeight, formatNumber,
   formatCompactNumber, formatTime,
   getRatingColor, getRatingBgColor, getResultLabel, getWinRate,
-  groupParticipantsByTeam, isBattleRoyalType, isIronManMatch,
+  groupParticipantsByTeam, isBattleRoyalType, isScoredMatch,
   getShowColorStyle,
 } from '@/lib/utils'
 
 export function MatchHero({ match }: { match: any }) {
   const show = match.show
-  const color = show?.primary_color || '#2cb2fe'
+  const color = show?.primary_color || '#c7a05a'
   const colorStyle = getShowColorStyle(color) as React.CSSProperties
   const participants = match.participants || []
   const teams = groupParticipantsByTeam(participants)
   const teamEntries = Array.from(teams.entries())
   const isBattleRoyal = isBattleRoyalType(match.match_type?.name)
-  const isIronMan = isIronManMatch(match.match_type?.name)
+  const isIronMan = isScoredMatch(match.match_type?.name)
 
   const epNum = show?.episodeNumber || show?.episode_number
   const seriesName = show?.show_series?.short_name || show?.show_series?.name || ''
@@ -205,9 +205,13 @@ export function MatchHero({ match }: { match: any }) {
                 </p>
               )}
               {isIronMan && match.score_winner != null && (
-                <p className="font-mono text-lg font-bold" style={{ color }}>
-                  Score: {match.score_winner} – {match.score_loser}
-                </p>
+                <div className="flex items-center justify-center gap-3 my-1">
+                  <div className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border-subtle/30 bg-bg-secondary/40">
+                    <span className="text-2xl sm:text-3xl font-display font-bold text-text-white">{match.score_winner}</span>
+                    <span className="text-lg text-text-secondary/50 font-display">–</span>
+                    <span className="text-2xl sm:text-3xl font-display font-bold text-text-secondary">{match.score_loser}</span>
+                  </div>
+                </div>
               )}
               <div className="flex items-center justify-center gap-4 text-sm text-text-secondary flex-wrap">
                 {match.duration_seconds && (
