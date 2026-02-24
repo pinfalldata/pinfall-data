@@ -170,23 +170,50 @@ function MatchCard({ match, show, color, spoilerMode, index, isMainEvent }: {
           </div>
         )}
 
-{/* Championship — belt prominent, name smaller below */}
+{/* Championship — compact golden banner with shimmer */}
         {match.championship && (
-          <div className="flex flex-col items-center pt-2 pb-1 border-b border-border-subtle/10 z-10 relative">
-            {match.championship.image_url && (
-              <div className="relative w-36 h-36 sm:w-48 sm:h-48 lg:w-56 lg:h-56">
-                <Image
-                  src={match.championship.image_url}
-                  alt={match.championship.name}
-                  fill
-                  className="object-contain drop-shadow-xl hover:scale-105 transition-transform"
-                  sizes="(max-width: 640px) 144px, (max-width: 1024px) 192px, 224px"
-                />
-              </div>
-            )}
-            <span className="text-[11px] sm:text-xs lg:text-sm text-yellow-400 font-bold uppercase tracking-wider mt-0 pb-3 text-center px-4 z-10 relative">
-              {match.championship.name}
-            </span>
+          <div className="relative overflow-hidden">
+            {/* Golden shimmer overlay */}
+            <div className="absolute inset-0 opacity-[0.04]" style={{
+              background: 'linear-gradient(135deg, transparent 20%, rgba(255,215,0,0.4) 45%, rgba(255,215,0,0.6) 50%, rgba(255,215,0,0.4) 55%, transparent 80%)',
+              backgroundSize: '300% 300%',
+              animation: 'belt-shimmer 4s ease-in-out infinite',
+            }} />
+            
+            <div className="relative flex items-center justify-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4">
+              {/* Left ornament line */}
+              <div className="hidden sm:block flex-1 h-[1px] max-w-[80px]" style={{
+                background: 'linear-gradient(90deg, transparent, rgba(255,215,0,0.3))',
+              }} />
+
+              {/* Belt image — compact */}
+              {match.championship.image_url && (
+                <div className="relative w-16 h-10 sm:w-20 sm:h-14 lg:w-24 lg:h-16 shrink-0 group/belt">
+                  <Image
+                    src={match.championship.image_url}
+                    alt={match.championship.name}
+                    fill
+                    className="object-contain drop-shadow-[0_0_12px_rgba(255,215,0,0.25)] group-hover/belt:drop-shadow-[0_0_20px_rgba(255,215,0,0.4)] transition-all duration-500"
+                    sizes="(max-width: 640px) 64px, (max-width: 1024px) 80px, 96px"
+                  />
+                </div>
+              )}
+
+              {/* Title name */}
+              <span className="text-[10px] sm:text-[11px] lg:text-xs text-yellow-400/90 font-bold uppercase tracking-[0.15em] text-center leading-tight max-w-[200px] sm:max-w-none">
+                {match.championship.name}
+              </span>
+
+              {/* Right ornament line */}
+              <div className="hidden sm:block flex-1 h-[1px] max-w-[80px]" style={{
+                background: 'linear-gradient(90deg, rgba(255,215,0,0.3), transparent)',
+              }} />
+            </div>
+
+            {/* Bottom golden border */}
+            <div className="h-[1px]" style={{
+              background: 'linear-gradient(90deg, transparent, rgba(255,215,0,0.15) 30%, rgba(255,215,0,0.25) 50%, rgba(255,215,0,0.15) 70%, transparent)',
+            }} />
           </div>
         )}
                         

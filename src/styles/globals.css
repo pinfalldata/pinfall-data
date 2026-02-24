@@ -181,3 +181,9 @@
   0% { opacity: 0; }
   100% { opacity: 1; }
 }
+
+@keyframes belt-shimmer {
+  0% { background-position: 200% 200%; }
+  50% { background-position: -50% -50%; }
+  100% { background-position: 200% 200%; }
+}
