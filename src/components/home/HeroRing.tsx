@@ -13,294 +13,300 @@ export function HeroRing() {
 
     let animId: number
     let time = 0
+    let w = 0, h = 0
 
     const resize = () => {
       const dpr = window.devicePixelRatio || 1
       const rect = canvas.getBoundingClientRect()
-      canvas.width = rect.width * dpr
-      canvas.height = rect.height * dpr
+      w = rect.width
+      h = rect.height
+      canvas.width = w * dpr
+      canvas.height = h * dpr
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     }
     resize()
     window.addEventListener('resize', resize)
 
-    const GOLD = '#c7a05a'
-    const SILVER = '#c0c0c0'
-    const G = [199, 160, 90] // gold RGB
-    const S = [192, 192, 192] // silver RGB
+    // ===== COLOR PALETTE (matching logo) =====
+    const GOLD = [199, 160, 90]    // #c7a05a — posts, ropes, apron circuits
+    const SILVER = [200, 205, 215]  // mat surface, subtle tones
+    const WHITE = [240, 238, 230]   // highlights
+    const RED = [180, 40, 40]       // center glow
+    const DARK = [8, 10, 18]        // background surfaces
+
     const rgba = (c: number[], a: number) => `rgba(${c[0]},${c[1]},${c[2]},${a})`
 
-    // Isometric projection helper
-    const iso = (cx: number, cy: number, lx: number, ly: number, x: number, y: number) => ({
-      x: cx + (x - y) * lx,
-      y: cy + (x + y) * ly,
-    })
+    // ===== CIRCUIT PATTERN GENERATOR =====
+    // Pre-compute random circuit paths (stable across frames)
+    const seed = 42
+    let rng = seed
+    const rand = () => { rng = (rng * 16807) % 2147483647; return (rng - 1) / 2147483646 }
 
-    // Draw a glowing line
-    function glowLine(x1: number, y1: number, x2: number, y2: number, color: number[], alpha: number, width: number, blur: number) {
-      ctx!.save()
-      ctx!.shadowColor = rgba(color, alpha * 0.8)
-      ctx!.shadowBlur = blur
-      ctx!.strokeStyle = rgba(color, alpha)
-      ctx!.lineWidth = width
-      ctx!.beginPath()
-      ctx!.moveTo(x1, y1)
-      ctx!.lineTo(x2, y2)
-      ctx!.stroke()
-      ctx!.restore()
-    }
-
-    // Draw circuit trace (line with right-angle turns and nodes)
-    function drawCircuit(points: { x: number; y: number }[], color: number[], alpha: number, glow: number) {
-      if (points.length < 2) return
-      ctx!.save()
-      ctx!.shadowColor = rgba(color, alpha * 0.6)
-      ctx!.shadowBlur = glow
-      ctx!.strokeStyle = rgba(color, alpha)
-      ctx!.lineWidth = 0.8
-      ctx!.beginPath()
-      ctx!.moveTo(points[0].x, points[0].y)
-      for (let i = 1; i < points.length; i++) {
-        ctx!.lineTo(points[i].x, points[i].y)
-      }
-      ctx!.stroke()
-
-      // Nodes at junctions
-      for (let i = 1; i < points.length - 1; i++) {
-        ctx!.fillStyle = rgba(color, alpha * 1.2)
-        ctx!.beginPath()
-        ctx!.arc(points[i].x, points[i].y, 1.5, 0, Math.PI * 2)
-        ctx!.fill()
-      }
-      ctx!.restore()
-    }
-
-    // Pre-generate circuit paths (re-generated on each resize, but consistent during animation)
-    let cachedW = 0
-    let matCircuits: { points: { x: number; y: number }[]; color: number[]; speed: number }[] = []
-    let apronCircuitsLeft: { points: { x: number; y: number }[]; color: number[] }[] = []
-    let apronCircuitsRight: { points: { x: number; y: number }[]; color: number[] }[] = []
-    let apronCircuitsFront: { points: { x: number; y: number }[]; color: number[] }[] = []
-
-    function generateCircuits(w: number, h: number) {
-      if (Math.abs(w - cachedW) < 5) return
-      cachedW = w
-
-      const cx = w / 2
-      const cy = h * 0.50
-      const rW = Math.min(w * 0.72, 520)
-      const rH = rW * 0.35
-      const apronH = rH * 0.38
-
-      // ---- MAT CIRCUITS (top surface) ----
-      matCircuits = []
-      const corners = [
-        { x: cx - rW / 2, y: cy },
-        { x: cx, y: cy - rH * 0.22 },
-        { x: cx + rW / 2, y: cy },
-        { x: cx, y: cy + rH * 0.22 },
-      ]
-
-      // Radial lines from center outward
-      for (let angle = 0; angle < 360; angle += 15) {
-        const rad = (angle * Math.PI) / 180
-        const len = rW * 0.38
-        const endX = cx + Math.cos(rad) * len * 0.5
-        const endY = cy + Math.sin(rad) * len * 0.22
-        const midX = cx + Math.cos(rad) * len * 0.2
-        const midY = cy + Math.sin(rad) * len * 0.09
-
-        // Add right-angle turn
-        const turnX = midX + (Math.random() - 0.5) * 20
-        const turnY = midY
-
-        matCircuits.push({
-          points: [
-            { x: cx + Math.cos(rad) * 8, y: cy + Math.sin(rad) * 3 },
-            { x: midX, y: midY },
-            { x: turnX, y: turnY },
-            { x: endX, y: endY },
-          ],
-          color: angle % 30 === 0 ? G : S,
-          speed: 0.5 + Math.random() * 0.5,
-        })
-      }
-
-      // Grid overlay lines
-      for (let i = -6; i <= 6; i++) {
-        const t = i / 6
-        matCircuits.push({
-          points: [
-            { x: cx + t * rW * 0.4, y: cy - rH * 0.18 },
-            { x: cx + t * rW * 0.4, y: cy + rH * 0.18 },
-          ],
-          color: S,
-          speed: 0,
-        })
-      }
-      for (let i = -4; i <= 4; i++) {
-        const t = i / 4
-        matCircuits.push({
-          points: [
-            { x: cx - rW * 0.4, y: cy + t * rH * 0.18 },
-            { x: cx + rW * 0.4, y: cy + t * rH * 0.18 },
-          ],
-          color: S,
-          speed: 0,
-        })
-      }
-
-      // ---- APRON CIRCUITS (sides) ----
-      const genApronCircuits = (p1: { x: number; y: number }, p2: { x: number; y: number }, depth: number) => {
-        const circuits: { points: { x: number; y: number }[]; color: number[] }[] = []
-        for (let i = 0; i < 8; i++) {
-          const t = (i + 0.5) / 8
-          const topX = p1.x + (p2.x - p1.x) * t
-          const topY = p1.y + (p2.y - p1.y) * t
-          const botX = topX
-          const botY = topY + depth
-
-          // Zigzag pattern
-          const midX1 = topX + (Math.random() - 0.5) * 15
-          const midY1 = topY + depth * 0.3
-          const midX2 = topX + (Math.random() - 0.5) * 15
-          const midY2 = topY + depth * 0.6
-
-          circuits.push({
-            points: [
-              { x: topX, y: topY + 2 },
-              { x: midX1, y: midY1 },
-              { x: midX2, y: midY2 },
-              { x: botX, y: botY },
-            ],
-            color: i % 2 === 0 ? G : S,
-          })
+    // Generate apron circuit paths for a face
+    const genApronCircuits = (count: number) => {
+      const circuits: { t: number; segments: { dx: number; dy: number }[]; }[] = []
+      for (let i = 0; i < count; i++) {
+        const t = (i + 0.3 + rand() * 0.4) / count
+        const segs: { dx: number; dy: number }[] = []
+        let dir = 0 // 0=down, alternate with horizontal
+        for (let s = 0; s < 4 + Math.floor(rand() * 3); s++) {
+          if (dir === 0) {
+            segs.push({ dx: 0, dy: 0.08 + rand() * 0.15 })
+          } else {
+            segs.push({ dx: (rand() - 0.5) * 0.12, dy: 0 })
+          }
+          dir = 1 - dir
         }
-        // Horizontal lines across apron
-        for (let j = 0; j < 3; j++) {
-          const yOff = depth * (0.2 + j * 0.3)
-          circuits.push({
-            points: [
-              { x: p1.x + 5, y: p1.y + yOff },
-              { x: p2.x - 5, y: p2.y + yOff },
-            ],
-            color: S,
-          })
-        }
-        return circuits
+        circuits.push({ t, segments: segs })
       }
-
-      // Left apron (corner 3→0)
-      apronCircuitsLeft = genApronCircuits(corners[3], corners[0], apronH)
-      // Right apron (corner 0→1... wait, visible sides)
-      // Visible sides: left (3→0), front-left (0→... no)
-      // Actually for isometric: visible = bottom-left and bottom-right
-      apronCircuitsRight = genApronCircuits(corners[2], corners[3], apronH)
-      apronCircuitsFront = [] // front-bottom
+      return circuits
     }
+
+    // Generate mat circuit traces
+    const genMatCircuits = (count: number) => {
+      const circuits: { angle: number; nodes: { r: number; a: number }[] }[] = []
+      for (let i = 0; i < count; i++) {
+        const angle = (i / count) * Math.PI * 2 + rand() * 0.1
+        const nodes: { r: number; a: number }[] = []
+        let r = 0.05
+        for (let n = 0; n < 3 + Math.floor(rand() * 3); n++) {
+          r += 0.06 + rand() * 0.12
+          const a = angle + (rand() - 0.5) * 0.15
+          nodes.push({ r: Math.min(r, 0.42), a })
+        }
+        circuits.push({ angle, nodes })
+      }
+      return circuits
+    }
+
+    const apronLeftCircuits = genApronCircuits(10)
+    const apronRightCircuits = genApronCircuits(10)
+    const matCircuitPaths = genMatCircuits(28)
 
     function draw() {
-      const w = canvas!.getBoundingClientRect().width
-      const h = canvas!.getBoundingClientRect().height
       ctx!.clearRect(0, 0, w, h)
-      time += 0.006
+      time += 0.005
 
       const cx = w / 2
-      const cy = h * 0.50
-      const rW = Math.min(w * 0.72, 520)
+      const cy = h * 0.48
+      const rW = Math.min(w * 0.74, 540)
       const rH = rW * 0.35
-      const postH = rW * 0.24
+      const isoX = rW / 2
+      const isoY = rH * 0.22
+      const postH = rW * 0.26
       const ropeGap = postH / 3.5
-      const apronH = rH * 0.38
+      const apronH = rH * 0.42
 
-      generateCircuits(w, h)
-
-      const corners = [
-        { x: cx - rW / 2, y: cy },       // left
-        { x: cx, y: cy - rH * 0.22 },    // back
-        { x: cx + rW / 2, y: cy },        // right
-        { x: cx, y: cy + rH * 0.22 },     // front
+      // 4 corners of the isometric diamond (mat surface)
+      const C = [
+        { x: cx - isoX, y: cy },         // 0: left
+        { x: cx,        y: cy - isoY },   // 1: back (top)
+        { x: cx + isoX, y: cy },         // 2: right
+        { x: cx,        y: cy + isoY },   // 3: front (bottom)
       ]
 
-      // ==============================
-      // GROUND SHADOW
-      // ==============================
-      ctx!.save()
-      ctx!.shadowColor = rgba(G, 0.08)
-      ctx!.shadowBlur = 60
-      ctx!.fillStyle = rgba(G, 0.02)
-      ctx!.beginPath()
-      ctx!.ellipse(cx, cy + apronH + 20, rW * 0.55, rH * 0.3, 0, 0, Math.PI * 2)
-      ctx!.fill()
-      ctx!.restore()
+      // Helper: interpolate between two corners
+      const lerp = (a: typeof C[0], b: typeof C[0], t: number) => ({
+        x: a.x + (b.x - a.x) * t,
+        y: a.y + (b.y - a.y) * t,
+      })
 
-      // ==============================
-      // APRON SIDES (visible: left & right)
-      // ==============================
-      // Left apron face (corners 3 → 0)
-      const drawApronFace = (c1: typeof corners[0], c2: typeof corners[0], circuits: typeof apronCircuitsLeft) => {
-        ctx!.fillStyle = 'rgba(8, 10, 18, 0.92)'
+      // ============================================
+      // 1. GROUND GLOW (subtle reflection)
+      // ============================================
+      const groundGrad = ctx!.createRadialGradient(cx, cy + apronH + 10, 0, cx, cy + apronH + 10, rW * 0.5)
+      groundGrad.addColorStop(0, rgba(GOLD, 0.04))
+      groundGrad.addColorStop(1, 'rgba(0,0,0,0)')
+      ctx!.fillStyle = groundGrad
+      ctx!.beginPath()
+      ctx!.ellipse(cx, cy + apronH + 10, rW * 0.5, rH * 0.25, 0, 0, Math.PI * 2)
+      ctx!.fill()
+
+      // ============================================
+      // 2. APRON FACES (left side: C3→C0, right side: C2→C3)
+      // ============================================
+      const drawApron = (cA: typeof C[0], cB: typeof C[0], circuits: ReturnType<typeof genApronCircuits>) => {
+        // Fill dark face
+        ctx!.fillStyle = rgba(DARK, 0.94)
         ctx!.beginPath()
-        ctx!.moveTo(c1.x, c1.y)
-        ctx!.lineTo(c2.x, c2.y)
-        ctx!.lineTo(c2.x, c2.y + apronH)
-        ctx!.lineTo(c1.x, c1.y + apronH)
+        ctx!.moveTo(cA.x, cA.y)
+        ctx!.lineTo(cB.x, cB.y)
+        ctx!.lineTo(cB.x, cB.y + apronH)
+        ctx!.lineTo(cA.x, cA.y + apronH)
         ctx!.closePath()
         ctx!.fill()
-        // Border
-        ctx!.strokeStyle = rgba(G, 0.2)
-        ctx!.lineWidth = 0.5
-        ctx!.stroke()
 
-        // Circuits on apron
-        const pulseAlpha = 0.12 + Math.sin(time * 2.5) * 0.06
-        circuits.forEach(c => {
-          drawCircuit(c.points, c.color, pulseAlpha, 4)
+        // Apron border (gold edge)
+        ctx!.save()
+        ctx!.shadowColor = rgba(GOLD, 0.15)
+        ctx!.shadowBlur = 4
+        ctx!.strokeStyle = rgba(GOLD, 0.35)
+        ctx!.lineWidth = 1.2
+        ctx!.beginPath()
+        ctx!.moveTo(cA.x, cA.y)
+        ctx!.lineTo(cB.x, cB.y)
+        ctx!.lineTo(cB.x, cB.y + apronH)
+        ctx!.lineTo(cA.x, cA.y + apronH)
+        ctx!.closePath()
+        ctx!.stroke()
+        ctx!.restore()
+
+        // Circuit traces on apron face
+        const pulse = 0.18 + Math.sin(time * 2) * 0.06
+        circuits.forEach(circuit => {
+          const startPt = lerp(cA, cB, circuit.t)
+          let px = startPt.x
+          let py = startPt.y + 4
+
+          ctx!.save()
+          ctx!.shadowColor = rgba(GOLD, pulse * 0.5)
+          ctx!.shadowBlur = 5
+          ctx!.strokeStyle = rgba(GOLD, pulse)
+          ctx!.lineWidth = 0.8
+          ctx!.beginPath()
+          ctx!.moveTo(px, py)
+
+          const faceW = cB.x - cA.x
+          const faceSlope = (cB.y - cA.y) / (faceW || 1)
+
+          circuit.segments.forEach(seg => {
+            px += seg.dx * Math.abs(faceW)
+            py += seg.dy * apronH + seg.dx * faceSlope * Math.abs(faceW)
+            ctx!.lineTo(px, py)
+          })
+          ctx!.stroke()
+
+          // Small nodes at turns
+          ctx!.fillStyle = rgba(GOLD, pulse * 1.5)
+          let npx = startPt.x, npy = startPt.y + 4
+          circuit.segments.forEach((seg, si) => {
+            npx += seg.dx * Math.abs(faceW)
+            npy += seg.dy * apronH + seg.dx * faceSlope * Math.abs(faceW)
+            if (si > 0 && si < circuit.segments.length - 1) {
+              ctx!.beginPath()
+              ctx!.arc(npx, npy, 1.2, 0, Math.PI * 2)
+              ctx!.fill()
+            }
+          })
+          ctx!.restore()
         })
+
+        // Horizontal accent lines across apron
+        for (let i = 1; i <= 3; i++) {
+          const yFrac = i / 4
+          const y1 = cA.y + apronH * yFrac
+          const y2 = cB.y + apronH * yFrac
+          ctx!.save()
+          ctx!.shadowColor = rgba(GOLD, 0.08)
+          ctx!.shadowBlur = 3
+          ctx!.strokeStyle = rgba(GOLD, 0.08 + Math.sin(time * 1.5 + i) * 0.03)
+          ctx!.lineWidth = 0.5
+          ctx!.beginPath()
+          ctx!.moveTo(cA.x + 3, y1)
+          ctx!.lineTo(cB.x - 3, y2)
+          ctx!.stroke()
+          ctx!.restore()
+        }
       }
 
-      drawApronFace(corners[3], corners[0], apronCircuitsLeft)
-      drawApronFace(corners[2], corners[3], apronCircuitsRight)
+      // Draw aprons (order matters for layering)
+      drawApron(C[3], C[0], apronLeftCircuits)   // left face
+      drawApron(C[2], C[3], apronRightCircuits)   // right face
 
-      // ==============================
-      // MAT TOP SURFACE
-      // ==============================
-      ctx!.fillStyle = 'rgba(6, 8, 16, 0.96)'
+      // ============================================
+      // 3. MAT TOP SURFACE
+      // ============================================
+      // Fill with a subtle gradient (silver-white with slight warmth)
+      const matGrad = ctx!.createLinearGradient(C[0].x, cy, C[2].x, cy)
+      matGrad.addColorStop(0, 'rgba(18, 20, 30, 0.97)')
+      matGrad.addColorStop(0.5, 'rgba(22, 24, 35, 0.97)')
+      matGrad.addColorStop(1, 'rgba(16, 18, 28, 0.97)')
+      ctx!.fillStyle = matGrad
       ctx!.beginPath()
-      ctx!.moveTo(corners[0].x, corners[0].y)
-      ctx!.lineTo(corners[1].x, corners[1].y)
-      ctx!.lineTo(corners[2].x, corners[2].y)
-      ctx!.lineTo(corners[3].x, corners[3].y)
+      ctx!.moveTo(C[0].x, C[0].y)
+      ctx!.lineTo(C[1].x, C[1].y)
+      ctx!.lineTo(C[2].x, C[2].y)
+      ctx!.lineTo(C[3].x, C[3].y)
       ctx!.closePath()
       ctx!.fill()
 
       // Mat border glow
       ctx!.save()
-      ctx!.shadowColor = rgba(G, 0.15)
-      ctx!.shadowBlur = 8
-      ctx!.strokeStyle = rgba(G, 0.25)
+      ctx!.shadowColor = rgba(SILVER, 0.2)
+      ctx!.shadowBlur = 6
+      ctx!.strokeStyle = rgba(SILVER, 0.25)
       ctx!.lineWidth = 1
       ctx!.stroke()
       ctx!.restore()
 
-      // ---- CIRCUIT TRACES ON MAT ----
-      const gridAlpha = 0.04 + Math.sin(time * 1.5) * 0.02
-      const circuitAlpha = 0.1 + Math.sin(time * 2) * 0.05
+      // ---- MAT GRID (subtle silver grid) ----
+      ctx!.save()
+      ctx!.globalAlpha = 0.04 + Math.sin(time * 1.2) * 0.01
+      ctx!.strokeStyle = rgba(SILVER, 1)
+      ctx!.lineWidth = 0.4
+      // Isometric grid lines (following diamond shape)
+      for (let i = -8; i <= 8; i++) {
+        const t = 0.5 + i / 18
+        const a = lerp(C[0], C[1], t)
+        const b = lerp(C[3], C[2], t)
+        ctx!.beginPath(); ctx!.moveTo(a.x, a.y); ctx!.lineTo(b.x, b.y); ctx!.stroke()
+      }
+      for (let i = -8; i <= 8; i++) {
+        const t = 0.5 + i / 18
+        const a = lerp(C[0], C[3], t)
+        const b = lerp(C[1], C[2], t)
+        ctx!.beginPath(); ctx!.moveTo(a.x, a.y); ctx!.lineTo(b.x, b.y); ctx!.stroke()
+      }
+      ctx!.restore()
 
-      matCircuits.forEach((c, i) => {
-        const a = c.speed === 0 ? gridAlpha : circuitAlpha
-        const glow = c.speed === 0 ? 2 : 6
-        drawCircuit(c.points, c.color, a, glow)
+      // ---- MAT CIRCUIT TRACES (radial from center) ----
+      const circuitPulse = 0.09 + Math.sin(time * 2.5) * 0.04
+      matCircuitPaths.forEach(circuit => {
+        ctx!.save()
+        ctx!.shadowColor = rgba(SILVER, circuitPulse * 0.4)
+        ctx!.shadowBlur = 4
+        ctx!.strokeStyle = rgba(SILVER, circuitPulse)
+        ctx!.lineWidth = 0.7
+        ctx!.beginPath()
+
+        // Start from center
+        ctx!.moveTo(cx, cy)
+        let prevPt = { x: cx, y: cy }
+
+        circuit.nodes.forEach(node => {
+          // Convert polar to isometric
+          const rawX = Math.cos(node.a) * node.r * rW
+          const rawY = Math.sin(node.a) * node.r * rW
+          const iX = cx + rawX * 0.5 - rawY * 0
+          const iY = cy + rawX * 0 + rawY * 0.22
+          ctx!.lineTo(iX, iY)
+
+          prevPt = { x: iX, y: iY }
+        })
+        ctx!.stroke()
+
+        // Nodes
+        ctx!.fillStyle = rgba(SILVER, circuitPulse * 2)
+        circuit.nodes.forEach(node => {
+          const rawX = Math.cos(node.a) * node.r * rW
+          const rawY = Math.sin(node.a) * node.r * rW
+          const iX = cx + rawX * 0.5
+          const iY = cy + rawY * 0.22
+          ctx!.beginPath()
+          ctx!.arc(iX, iY, 1, 0, Math.PI * 2)
+          ctx!.fill()
+        })
+        ctx!.restore()
       })
 
-      // ---- CENTER GLOW (X / infinity symbol) ----
-      // Multi-layer radial glow at center
+      // ---- CENTER X + RED GLOW (like the logo) ----
+      // Red radial glow
       for (let layer = 3; layer >= 0; layer--) {
-        const radius = 8 + layer * 12
-        const alpha = layer === 0 ? 0.5 : 0.08 / (layer * 0.5)
+        const radius = 6 + layer * 10
+        const alpha = layer === 0 ? 0.45 : 0.06 / (layer * 0.6 + 0.3)
         const grad = ctx!.createRadialGradient(cx, cy, 0, cx, cy, radius)
-        grad.addColorStop(0, rgba(G, alpha + Math.sin(time * 3) * 0.05))
-        grad.addColorStop(0.5, rgba(S, alpha * 0.3))
+        grad.addColorStop(0, rgba(RED, alpha + Math.sin(time * 3) * 0.04))
+        grad.addColorStop(0.4, rgba(RED, alpha * 0.4))
         grad.addColorStop(1, 'rgba(0,0,0,0)')
         ctx!.fillStyle = grad
         ctx!.beginPath()
@@ -308,13 +314,14 @@ export function HeroRing() {
         ctx!.fill()
       }
 
-      // Center X with glow
-      const xS = rW * 0.06
+      // X / infinity cross at center
+      const xS = rW * 0.05
       ctx!.save()
-      ctx!.shadowColor = rgba(G, 0.6)
-      ctx!.shadowBlur = 15
-      ctx!.strokeStyle = rgba(G, 0.4 + Math.sin(time * 2.5) * 0.15)
-      ctx!.lineWidth = 2
+      ctx!.shadowColor = rgba(SILVER, 0.5)
+      ctx!.shadowBlur = 8
+      ctx!.strokeStyle = rgba(SILVER, 0.35 + Math.sin(time * 2) * 0.1)
+      ctx!.lineWidth = 2.5
+      ctx!.lineCap = 'round'
       ctx!.beginPath()
       ctx!.moveTo(cx - xS, cy - xS * 0.4)
       ctx!.lineTo(cx + xS, cy + xS * 0.4)
@@ -323,35 +330,36 @@ export function HeroRing() {
       ctx!.stroke()
       ctx!.restore()
 
-      // Bright white-gold center dot
-      const dotGrad = ctx!.createRadialGradient(cx, cy, 0, cx, cy, 5)
-      dotGrad.addColorStop(0, 'rgba(255, 250, 240, 0.9)')
-      dotGrad.addColorStop(0.4, rgba(G, 0.6))
+      // Bright white-red center point
+      const dotGrad = ctx!.createRadialGradient(cx, cy, 0, cx, cy, 4)
+      dotGrad.addColorStop(0, 'rgba(255, 240, 235, 0.95)')
+      dotGrad.addColorStop(0.3, rgba(RED, 0.5))
       dotGrad.addColorStop(1, 'rgba(0,0,0,0)')
       ctx!.fillStyle = dotGrad
       ctx!.beginPath()
-      ctx!.arc(cx, cy, 5, 0, Math.PI * 2)
+      ctx!.arc(cx, cy, 4, 0, Math.PI * 2)
       ctx!.fill()
 
-      // ==============================
-      // CORNER POSTS (3D gradient)
-      // ==============================
-      corners.forEach((c, i) => {
+      // ============================================
+      // 4. CORNER POSTS (3D metallic gold)
+      // ============================================
+      C.forEach((c, i) => {
         const isBack = i === 1
-        const baseAlpha = isBack ? 0.15 : 0.6
+        const alpha = isBack ? 0.2 : 0.75
 
-        // Post body — gradient for 3D effect
-        const postGrad = ctx!.createLinearGradient(c.x - 3, c.y, c.x + 3, c.y)
-        postGrad.addColorStop(0, rgba(G, baseAlpha * 0.6))
-        postGrad.addColorStop(0.3, rgba(G, baseAlpha))
-        postGrad.addColorStop(0.7, rgba(S, baseAlpha * 0.8))
-        postGrad.addColorStop(1, rgba(G, baseAlpha * 0.4))
+        // Post body — metallic gradient
+        const pGrad = ctx!.createLinearGradient(c.x - 4, c.y, c.x + 4, c.y)
+        pGrad.addColorStop(0, rgba(GOLD, alpha * 0.4))
+        pGrad.addColorStop(0.2, rgba(GOLD, alpha * 0.9))
+        pGrad.addColorStop(0.5, rgba(WHITE, alpha * 0.6))
+        pGrad.addColorStop(0.8, rgba(GOLD, alpha * 0.8))
+        pGrad.addColorStop(1, rgba(GOLD, alpha * 0.3))
 
         ctx!.save()
-        ctx!.shadowColor = rgba(G, baseAlpha * 0.3)
+        ctx!.shadowColor = rgba(GOLD, alpha * 0.25)
         ctx!.shadowBlur = 6
-        ctx!.strokeStyle = postGrad
-        ctx!.lineWidth = isBack ? 3 : 5
+        ctx!.strokeStyle = pGrad
+        ctx!.lineWidth = isBack ? 3 : 6
         ctx!.lineCap = 'round'
         ctx!.beginPath()
         ctx!.moveTo(c.x, c.y)
@@ -359,134 +367,101 @@ export function HeroRing() {
         ctx!.stroke()
         ctx!.restore()
 
-        // Post top cap — bright glow sphere
+        // Cap glow (sphere at top of post)
         if (!isBack) {
-          const capGrad = ctx!.createRadialGradient(c.x, c.y - postH, 0, c.x, c.y - postH, 6)
-          capGrad.addColorStop(0, 'rgba(255, 245, 220, 0.8)')
-          capGrad.addColorStop(0.3, rgba(G, 0.6 + Math.sin(time * 3 + i * 1.5) * 0.2))
+          const capGrad = ctx!.createRadialGradient(c.x, c.y - postH, 0, c.x, c.y - postH, 7)
+          capGrad.addColorStop(0, rgba(WHITE, 0.7))
+          capGrad.addColorStop(0.25, rgba(GOLD, 0.55 + Math.sin(time * 2.5 + i * 2) * 0.1))
+          capGrad.addColorStop(0.7, rgba(GOLD, 0.15))
           capGrad.addColorStop(1, 'rgba(0,0,0,0)')
           ctx!.fillStyle = capGrad
           ctx!.beginPath()
-          ctx!.arc(c.x, c.y - postH, 6, 0, Math.PI * 2)
+          ctx!.arc(c.x, c.y - postH, 7, 0, Math.PI * 2)
           ctx!.fill()
         }
       })
 
-      // ==============================
-      // ROPES (3D gradient per rope)
-      // ==============================
+      // ============================================
+      // 5. ROPES (3D metallic tubes — gold)
+      // ============================================
       for (let r = 1; r <= 3; r++) {
-        const ropeY = -r * ropeGap
-        const ropeW = 4 - r * 0.5
+        const ry = -r * ropeGap
+        const thickness = (4 - r) * 0.9 + 1
 
         for (let s = 0; s < 4; s++) {
-          const c1 = corners[s]
-          const c2 = corners[(s + 1) % 4]
-          const isBackSide = s === 1
+          const c1 = C[s]
+          const c2 = C[(s + 1) % 4]
+          const isBack = s === 1
 
-          // Rope gradient (3D tube effect)
+          // Perpendicular direction for tube gradient
+          const dx = c2.x - c1.x
+          const dy = c2.y - c1.y
+          const len = Math.sqrt(dx * dx + dy * dy) || 1
+          const nx = (-dy / len) * 3
+          const ny = (dx / len) * 3
           const midX = (c1.x + c2.x) / 2
-          const midY = (c1.y + c2.y) / 2 + ropeY
-          const perpX = -(c2.y - c1.y)
-          const perpY = c2.x - c1.x
-          const len = Math.sqrt(perpX * perpX + perpY * perpY)
-          const nx = perpX / len * 3
-          const ny = perpY / len * 3
+          const midY = (c1.y + c2.y) / 2 + ry
+
+          const baseA = isBack ? 0.1 : (r === 1 ? 0.65 : r === 2 ? 0.5 : 0.35)
 
           const ropeGrad = ctx!.createLinearGradient(midX + nx, midY + ny, midX - nx, midY - ny)
-          const baseA = isBackSide ? 0.08 : (r === 1 ? 0.6 : r === 2 ? 0.45 : 0.3)
-          const ropeColor = r === 2 ? S : G
-          ropeGrad.addColorStop(0, rgba(ropeColor, baseA * 0.5))
-          ropeGrad.addColorStop(0.3, rgba(ropeColor, baseA))
-          ropeGrad.addColorStop(0.7, rgba(S, baseA * 0.7))
-          ropeGrad.addColorStop(1, rgba(ropeColor, baseA * 0.3))
+          ropeGrad.addColorStop(0, rgba(GOLD, baseA * 0.35))
+          ropeGrad.addColorStop(0.25, rgba(GOLD, baseA))
+          ropeGrad.addColorStop(0.5, rgba(WHITE, baseA * 0.5))
+          ropeGrad.addColorStop(0.75, rgba(GOLD, baseA * 0.9))
+          ropeGrad.addColorStop(1, rgba(GOLD, baseA * 0.25))
 
           ctx!.save()
-          if (!isBackSide) {
-            ctx!.shadowColor = rgba(ropeColor, baseA * 0.4)
+          if (!isBack) {
+            ctx!.shadowColor = rgba(GOLD, baseA * 0.3)
             ctx!.shadowBlur = 4
           }
           ctx!.strokeStyle = ropeGrad
-          ctx!.lineWidth = isBackSide ? 1.5 : ropeW
+          ctx!.lineWidth = isBack ? 1.5 : thickness
           ctx!.lineCap = 'round'
           ctx!.beginPath()
-          ctx!.moveTo(c1.x, c1.y + ropeY)
-          ctx!.lineTo(c2.x, c2.y + ropeY)
+          ctx!.moveTo(c1.x, c1.y + ry)
+          ctx!.lineTo(c2.x, c2.y + ry)
           ctx!.stroke()
           ctx!.restore()
         }
       }
 
-      // ==============================
-      // TRAVELING PARTICLES (on ropes)
-      // ==============================
-      const particleCount = 12
+      // ============================================
+      // 6. PARTICLES — ONLY ON ROPES
+      // ============================================
+      const particleCount = 10
       for (let p = 0; p < particleCount; p++) {
-        const t = ((time * 0.3 + p / particleCount) % 1)
-        const sideIndex = Math.floor(t * 3)
+        const t = ((time * 0.25 + p / particleCount) % 1)
+        const sideIdx = Math.floor(t * 3)
         const localT = (t * 3) % 1
-        const sides = [[3, 0], [0, 1], [2, 3]]
-        if (sideIndex >= sides.length) continue
-        const [s1, s2] = sides[sideIndex]
-        const c1 = corners[s1]
-        const c2 = corners[s2]
+        // Only front-facing sides: left(3→0), front(0→... skip back), right(2→3)
+        const sides = [[3, 0], [0, 3], [2, 3]]
+        if (sideIdx >= sides.length) continue
+        const [s1, s2] = sides[sideIdx]
+        const c1 = C[s1], c2 = C[s2]
         const ropeLevel = (p % 3) + 1
         const ry = -ropeLevel * ropeGap
 
         const px = c1.x + (c2.x - c1.x) * localT
         const py = c1.y + (c2.y - c1.y) * localT + ry
 
-        const col = p % 2 === 0 ? G : S
         // Glow halo
         ctx!.save()
-        ctx!.shadowColor = rgba(col, 0.8)
-        ctx!.shadowBlur = 15
-        const pGrad = ctx!.createRadialGradient(px, py, 0, px, py, 8)
-        pGrad.addColorStop(0, rgba(col, 0.7))
-        pGrad.addColorStop(0.5, rgba(col, 0.15))
-        pGrad.addColorStop(1, 'rgba(0,0,0,0)')
-        ctx!.fillStyle = pGrad
+        ctx!.shadowColor = rgba(GOLD, 0.7)
+        ctx!.shadowBlur = 12
+        const pg = ctx!.createRadialGradient(px, py, 0, px, py, 7)
+        pg.addColorStop(0, rgba(WHITE, 0.8))
+        pg.addColorStop(0.3, rgba(GOLD, 0.4))
+        pg.addColorStop(1, 'rgba(0,0,0,0)')
+        ctx!.fillStyle = pg
         ctx!.beginPath()
-        ctx!.arc(px, py, 8, 0, Math.PI * 2)
+        ctx!.arc(px, py, 7, 0, Math.PI * 2)
         ctx!.fill()
-        // Core
-        ctx!.fillStyle = 'rgba(255, 250, 235, 0.9)'
+        // Bright core
+        ctx!.fillStyle = rgba(WHITE, 0.95)
         ctx!.beginPath()
         ctx!.arc(px, py, 1.5, 0, Math.PI * 2)
-        ctx!.fill()
-        ctx!.restore()
-      }
-
-      // ==============================
-      // TRAVELING PARTICLES (on mat circuits)
-      // ==============================
-      const matParticles = 6
-      for (let p = 0; p < matParticles; p++) {
-        const circuitIdx = (Math.floor(time * 2 + p * 4.1)) % matCircuits.length
-        const circuit = matCircuits[circuitIdx]
-        if (!circuit || circuit.points.length < 2 || circuit.speed === 0) continue
-
-        const t = ((time * circuit.speed * 0.5 + p * 0.17) % 1)
-        const totalLen = circuit.points.length - 1
-        const segF = t * totalLen
-        const segIdx = Math.min(Math.floor(segF), totalLen - 1)
-        const segT = segF - segIdx
-        const pt1 = circuit.points[segIdx]
-        const pt2 = circuit.points[segIdx + 1]
-
-        const px = pt1.x + (pt2.x - pt1.x) * segT
-        const py = pt1.y + (pt2.y - pt1.y) * segT
-
-        ctx!.save()
-        ctx!.shadowColor = rgba(circuit.color, 0.6)
-        ctx!.shadowBlur = 10
-        const mg = ctx!.createRadialGradient(px, py, 0, px, py, 5)
-        mg.addColorStop(0, 'rgba(255,250,240,0.7)')
-        mg.addColorStop(0.5, rgba(circuit.color, 0.3))
-        mg.addColorStop(1, 'rgba(0,0,0,0)')
-        ctx!.fillStyle = mg
-        ctx!.beginPath()
-        ctx!.arc(px, py, 5, 0, Math.PI * 2)
         ctx!.fill()
         ctx!.restore()
       }
@@ -507,12 +482,9 @@ export function HeroRing() {
       <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-neon-pink/3 rounded-full blur-[120px]" />
 
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 text-center">
-        {/* Ring canvas */}
         <div className="relative w-full max-w-3xl mx-auto" style={{ aspectRatio: '16/9' }}>
           <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
         </div>
-
-        {/* Title */}
         <div className="relative -mt-2 sm:-mt-6 z-10">
           <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-bold text-text-white tracking-tight mb-3">
             <span className="text-neon-blue text-glow-blue">PINFALL</span>{' '}
