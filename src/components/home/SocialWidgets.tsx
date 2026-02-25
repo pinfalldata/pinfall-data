@@ -14,9 +14,9 @@ const ICONS: Record<string, { svg: JSX.Element; color: string; bg: string }> = {
     color: '#FF0000',
     bg: 'rgba(255,0,0,0.08)',
     svg: (
-      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
         <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/>
-        <polygon fill="#0a0c14" points="9.545,15.568 15.818,12 9.545,8.432"/>
+        <polygon fill="#fff" points="9.545,15.568 15.818,12 9.545,8.432"/>
       </svg>
     ),
   },
@@ -24,7 +24,7 @@ const ICONS: Record<string, { svg: JSX.Element; color: string; bg: string }> = {
     color: '#FFFFFF',
     bg: 'rgba(255,255,255,0.06)',
     svg: (
-      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
       </svg>
     ),
@@ -38,6 +38,35 @@ const ICONS: Record<string, { svg: JSX.Element; color: string; bg: string }> = {
       </svg>
     ),
   },
+  'Facebook': {
+    color: '#1877F2',
+    bg: 'rgba(24,119,242,0.08)',
+    svg: (
+      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+      </svg>
+    ),
+  },
+  'TikTok': {
+    color: '#00F2EA',
+    bg: 'rgba(0,242,234,0.06)',
+    svg: (
+      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+      </svg>
+    ),
+  },
+}
+
+// Fallback icon for unknown platforms
+const FALLBACK_ICON = {
+  color: '#888888',
+  bg: 'rgba(128,128,128,0.08)',
+  svg: (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+    </svg>
+  ),
 }
 
 export function SocialWidgets({ mode = 'full' }: { mode?: 'full' | 'compact' }) {
@@ -53,9 +82,9 @@ export function SocialWidgets({ mode = 'full' }: { mode?: 'full' | 'compact' }) 
 
   if (loading) {
     return (
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2.5">
         {[1, 2, 3].map(i => (
-          <div key={i} className="h-20 rounded-xl bg-bg-secondary/20 animate-pulse" />
+          <div key={i} className="h-16 rounded-xl bg-bg-secondary/20 animate-pulse" />
         ))}
       </div>
     )
@@ -63,22 +92,24 @@ export function SocialWidgets({ mode = 'full' }: { mode?: 'full' | 'compact' }) 
 
   if (links.length === 0) return null
 
-  // ===== COMPACT (mobile) — horizontal row =====
+  const getIcon = (platform: string) => ICONS[platform] || FALLBACK_ICON
+
+  // ===== COMPACT (mobile) — horizontal scrollable row =====
   if (mode === 'compact') {
     return (
-      <div className="flex gap-3 justify-center">
+      <div className="flex gap-2.5 overflow-x-auto scrollbar-hide pb-1">
         {links.map(link => {
-          const meta = ICONS[link.platform]
+          const meta = getIcon(link.platform)
           return (
             <a
               key={link.id}
               href={link.embed_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-3 rounded-xl border border-border-subtle/20 bg-bg-secondary/20 hover:bg-bg-secondary/40 hover:border-neon-blue/20 transition-all"
+              className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl border border-border-subtle/20 bg-bg-secondary/20 hover:bg-bg-secondary/40 hover:border-neon-blue/20 transition-all shrink-0"
             >
-              <span style={{ color: meta?.color || '#888' }}>{meta?.svg}</span>
-              <span className="text-xs font-medium text-text-white">{link.platform}</span>
+              <span style={{ color: meta.color }}>{meta.svg}</span>
+              <span className="text-xs font-medium text-text-white whitespace-nowrap">{link.platform}</span>
             </a>
           )
         })}
@@ -88,35 +119,35 @@ export function SocialWidgets({ mode = 'full' }: { mode?: 'full' | 'compact' }) 
 
   // ===== FULL (desktop sidebar) — vertical cards =====
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-2.5">
       <h3 className="font-display text-xs font-bold text-text-secondary uppercase tracking-wider px-1 mb-1">
         WWE Official
       </h3>
       {links.map(link => {
-        const meta = ICONS[link.platform]
+        const meta = getIcon(link.platform)
         return (
           <a
             key={link.id}
             href={link.embed_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center gap-3 p-3.5 rounded-xl border border-border-subtle/20 bg-bg-secondary/15 hover:bg-bg-secondary/35 hover:border-neon-blue/20 transition-all duration-200"
+            className="group flex items-center gap-3 p-3 rounded-xl border border-border-subtle/20 bg-bg-secondary/15 hover:bg-bg-secondary/35 hover:border-neon-blue/20 transition-all duration-200"
           >
             <div
-              className="w-11 h-11 rounded-lg flex items-center justify-center shrink-0 transition-transform group-hover:scale-110"
-              style={{ background: meta?.bg || 'rgba(128,128,128,0.1)', color: meta?.color || '#888' }}
+              className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 transition-transform group-hover:scale-110"
+              style={{ background: meta.bg, color: meta.color }}
             >
-              {meta?.svg || <span className="text-lg">🔗</span>}
+              {meta.svg}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-sm font-semibold text-text-white group-hover:text-neon-blue transition-colors">
+              <div className="text-sm font-semibold text-text-white group-hover:text-neon-blue transition-colors leading-tight">
                 {link.platform}
               </div>
               <p className="text-[10px] text-text-secondary leading-snug mt-0.5 truncate">
                 {link.display_name}
               </p>
             </div>
-            <svg className="w-4 h-4 text-text-secondary/20 group-hover:text-neon-blue/40 transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-3.5 h-3.5 text-text-secondary/20 group-hover:text-neon-blue/40 transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg>
           </a>

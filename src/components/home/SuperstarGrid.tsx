@@ -15,59 +15,112 @@ interface Cell {
   superstar: Superstar
   phase: 'visible' | 'fading-out' | 'fading-in'
   nextSuperstar?: Superstar
+}
+
+// Explicit grid positions for each breakpoint — guaranteed full rectangle
+interface GridSlot {
+  col: string // CSS grid-column value e.g. "1 / 3" for span-2
+  row: string // CSS grid-row value
   featured: boolean
 }
 
-// Which indices should be featured (2x2) per breakpoint
-// Desktop: 8 cols → items 1, 6, 10 are featured (2x2)
-// Tablet: 6 cols → items 0, 4 are featured
-// Mobile: 4 cols → items 0, 5 are featured
-const FEATURED_DESKTOP = new Set([1, 6, 10])
-const FEATURED_TABLET = new Set([0, 4])
-const FEATURED_MOBILE = new Set([0, 5])
+// DESKTOP: 6 cols × 4 rows = 24 cells, 3 featured, 12 normal = 15 items
+const DESKTOP_SLOTS: GridSlot[] = [
+  { col: '1 / 3', row: '1 / 3', featured: true },  // 0: top-left featured
+  { col: '3 / 4', row: '1 / 2', featured: false },
+  { col: '4 / 5', row: '1 / 2', featured: false },
+  { col: '5 / 7', row: '1 / 3', featured: true },   // 3: top-right featured
+  { col: '3 / 4', row: '2 / 3', featured: false },
+  { col: '4 / 5', row: '2 / 3', featured: false },
+  { col: '1 / 2', row: '3 / 4', featured: false },
+  { col: '2 / 3', row: '3 / 4', featured: false },
+  { col: '3 / 5', row: '3 / 5', featured: true },   // 8: center featured
+  { col: '5 / 6', row: '3 / 4', featured: false },
+  { col: '6 / 7', row: '3 / 4', featured: false },
+  { col: '1 / 2', row: '4 / 5', featured: false },
+  { col: '2 / 3', row: '4 / 5', featured: false },
+  { col: '5 / 6', row: '4 / 5', featured: false },
+  { col: '6 / 7', row: '4 / 5', featured: false },
+]
+
+// TABLET: 5 cols × 4 rows = 20 cells, 2 featured, 12 normal = 14 items
+const TABLET_SLOTS: GridSlot[] = [
+  { col: '1 / 3', row: '1 / 3', featured: true },   // 0: top-left featured
+  { col: '3 / 4', row: '1 / 2', featured: false },
+  { col: '4 / 5', row: '1 / 2', featured: false },
+  { col: '5 / 6', row: '1 / 2', featured: false },
+  { col: '3 / 4', row: '2 / 3', featured: false },
+  { col: '4 / 6', row: '2 / 4', featured: true },   // 5: mid-right featured
+  { col: '1 / 2', row: '3 / 4', featured: false },
+  { col: '2 / 3', row: '3 / 4', featured: false },
+  { col: '3 / 4', row: '3 / 4', featured: false },
+  { col: '1 / 2', row: '4 / 5', featured: false },
+  { col: '2 / 3', row: '4 / 5', featured: false },
+  { col: '3 / 4', row: '4 / 5', featured: false },
+  { col: '4 / 5', row: '4 / 5', featured: false },
+  { col: '5 / 6', row: '4 / 5', featured: false },
+]
+
+// MOBILE: 4 cols × 4 rows = 16 cells, 2 featured, 8 normal = 10 items
+const MOBILE_SLOTS: GridSlot[] = [
+  { col: '1 / 3', row: '1 / 3', featured: true },   // 0: top-left featured
+  { col: '3 / 4', row: '1 / 2', featured: false },
+  { col: '4 / 5', row: '1 / 2', featured: false },
+  { col: '3 / 4', row: '2 / 3', featured: false },
+  { col: '4 / 5', row: '2 / 3', featured: false },
+  { col: '1 / 2', row: '3 / 4', featured: false },
+  { col: '2 / 3', row: '3 / 4', featured: false },
+  { col: '3 / 5', row: '3 / 5', featured: true },   // 7: bottom-right featured
+  { col: '1 / 2', row: '4 / 5', featured: false },
+  { col: '2 / 3', row: '4 / 5', featured: false },
+]
 
 export function SuperstarGrid() {
   const [cells, setCells] = useState<Cell[]>([])
   const poolRef = useRef<Superstar[]>([])
   const [bp, setBp] = useState<'mobile' | 'tablet' | 'desktop'>('desktop')
+  const containerRef = useRef<HTMLDivElement>(null)
 
+  // Detect breakpoint based on container width (not window)
   useEffect(() => {
-    const update = () => {
-      const w = window.innerWidth
-      setBp(w < 640 ? 'mobile' : w < 1024 ? 'tablet' : 'desktop')
+    const el = containerRef.current
+    if (!el) return
+
+    const check = () => {
+      const w = el.getBoundingClientRect().width
+      setBp(w < 480 ? 'mobile' : w < 700 ? 'tablet' : 'desktop')
     }
-    update()
-    window.addEventListener('resize', update)
-    return () => window.removeEventListener('resize', update)
+    check()
+
+    const ro = new ResizeObserver(check)
+    ro.observe(el)
+    return () => ro.disconnect()
   }, [])
 
-  // Number of items to show: enough to fill ~3 rows
-  // Desktop 8cols: 3 featured(=4cells each) + ~14 normal ≈ 18 items → ~3 rows
-  // We'll use a fixed count and let auto-flow handle it
-  const total = bp === 'mobile' ? 12 : bp === 'tablet' ? 15 : 18
-  const featuredSet = bp === 'mobile' ? FEATURED_MOBILE : bp === 'tablet' ? FEATURED_TABLET : FEATURED_DESKTOP
-  const gridCols = bp === 'mobile' ? 4 : bp === 'tablet' ? 6 : 8
+  const slots = bp === 'mobile' ? MOBILE_SLOTS : bp === 'tablet' ? TABLET_SLOTS : DESKTOP_SLOTS
+  const cols = bp === 'mobile' ? 4 : bp === 'tablet' ? 5 : 6
+  const rows = 4
+  const total = slots.length
 
+  // Fetch superstars
   useEffect(() => {
     fetch(`/api/random-superstars?count=${total + 30}`)
       .then(r => r.json())
       .then(data => {
         const all = (data.superstars || []).filter((s: Superstar) => s.photo_url && s.photo_url.trim() !== '')
-        if (all.length < 6) return
+        if (all.length < total) return
 
-        const count = Math.min(total, all.length)
-        const initial: Cell[] = all.slice(0, count).map((s: Superstar, i: number) => ({
+        const initial: Cell[] = all.slice(0, total).map((s: Superstar) => ({
           superstar: s,
           phase: 'visible' as const,
-          featured: featuredSet.has(i),
         }))
         setCells(initial)
-        poolRef.current = all.slice(count)
+        poolRef.current = all.slice(total)
       })
       .catch(() => {})
   }, [total])
 
-  // Slow dramatic transitions — 5.5s between swaps
+  // Slow transitions — 5.5s between swaps
   useEffect(() => {
     if (cells.length === 0) return
 
@@ -84,12 +137,10 @@ export function SuperstarGrid() {
       const cellIndex = Math.floor(Math.random() * cells.length)
       const nextSuperstar = poolRef.current.shift()!
 
-      // Phase 1: fade out (1.5s)
       setCells(prev => prev.map((c, i) =>
         i === cellIndex ? { ...c, phase: 'fading-out' as const, nextSuperstar } : c
       ))
 
-      // Phase 2: swap + fade in (after 1.5s)
       setTimeout(() => {
         setCells(prev => prev.map((c, i) =>
           i === cellIndex && c.nextSuperstar
@@ -98,7 +149,6 @@ export function SuperstarGrid() {
         ))
       }, 1500)
 
-      // Phase 3: fully visible
       setTimeout(() => {
         setCells(prev => prev.map((c, i) =>
           i === cellIndex ? { ...c, phase: 'visible' as const } : c
@@ -109,62 +159,70 @@ export function SuperstarGrid() {
     return () => clearInterval(interval)
   }, [cells.length])
 
-  if (cells.length === 0) return null
-
   return (
-    <div
-      className="grid gap-1.5 sm:gap-2"
-      style={{
-        gridTemplateColumns: `repeat(${gridCols}, 1fr)`,
-        gridAutoRows: bp === 'mobile' ? '85px' : bp === 'tablet' ? '100px' : '115px',
-        gridAutoFlow: 'dense',
-      }}
-    >
-      {cells.map((cell, i) => (
-        <Link
-          key={`cell-${i}-${cell.superstar.id}`}
-          href={`/superstars/${cell.superstar.slug}`}
-          className={`relative group overflow-hidden rounded-lg border border-border-subtle/15 hover:border-neon-blue/40 transition-all duration-300 ${
-            cell.featured ? 'col-span-2 row-span-2' : ''
-          }`}
+    <div ref={containerRef}>
+      {cells.length > 0 && (
+        <div
+          className="grid gap-1.5 sm:gap-2"
+          style={{
+            gridTemplateColumns: `repeat(${cols}, 1fr)`,
+            gridTemplateRows: `repeat(${rows}, ${bp === 'mobile' ? '80px' : bp === 'tablet' ? '95px' : '105px'})`,
+          }}
         >
-          {/* Image with phase-based opacity */}
-          <div
-            className="absolute inset-0 transition-all ease-in-out"
-            style={{
-              transitionDuration: '1500ms',
-              opacity: cell.phase === 'fading-out' ? 0 : 1,
-              transform: cell.phase === 'fading-out' ? 'scale(1.05)' : 'scale(1)',
-            }}
-          >
-            <Image
-              src={cell.superstar.photo_url}
-              alt={cell.superstar.name}
-              fill
-              sizes={cell.featured ? '(max-width: 640px) 50vw, 25vw' : '(max-width: 640px) 25vw, 12vw'}
-              className="object-cover"
-            />
-          </div>
+          {cells.map((cell, i) => {
+            const slot = slots[i]
+            if (!slot) return null
 
-          {/* Dark overlay when fading */}
-          <div
-            className="absolute inset-0 bg-bg-primary transition-opacity ease-in-out"
-            style={{
-              transitionDuration: '1500ms',
-              opacity: cell.phase === 'fading-out' ? 0.9 : 0,
-            }}
-          />
+            return (
+              <Link
+                key={`cell-${i}-${cell.superstar.id}`}
+                href={`/superstars/${cell.superstar.slug}`}
+                className="relative group overflow-hidden rounded-lg border border-border-subtle/15 hover:border-neon-blue/40 transition-all duration-300"
+                style={{
+                  gridColumn: slot.col,
+                  gridRow: slot.row,
+                }}
+              >
+                {/* Image */}
+                <div
+                  className="absolute inset-0 transition-all ease-in-out"
+                  style={{
+                    transitionDuration: '1500ms',
+                    opacity: cell.phase === 'fading-out' ? 0 : 1,
+                    transform: cell.phase === 'fading-out' ? 'scale(1.05)' : 'scale(1)',
+                  }}
+                >
+                  <Image
+                    src={cell.superstar.photo_url}
+                    alt={cell.superstar.name}
+                    fill
+                    sizes={slot.featured ? '(max-width: 640px) 50vw, 25vw' : '(max-width: 640px) 25vw, 15vw'}
+                    className="object-cover"
+                  />
+                </div>
 
-          {/* Hover overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-end pb-2 sm:pb-3 px-2">
-            <span className={`text-text-white font-display font-bold text-center leading-tight ${
-              cell.featured ? 'text-sm sm:text-base' : 'text-[10px] sm:text-xs'
-            }`}>
-              {cell.superstar.name}
-            </span>
-          </div>
-        </Link>
-      ))}
+                {/* Dark overlay when fading */}
+                <div
+                  className="absolute inset-0 bg-bg-primary transition-opacity ease-in-out"
+                  style={{
+                    transitionDuration: '1500ms',
+                    opacity: cell.phase === 'fading-out' ? 0.9 : 0,
+                  }}
+                />
+
+                {/* Hover overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-end pb-2 sm:pb-3 px-2">
+                  <span className={`text-text-white font-display font-bold text-center leading-tight ${
+                    slot.featured ? 'text-sm sm:text-base' : 'text-[10px] sm:text-xs'
+                  }`}>
+                    {cell.superstar.name}
+                  </span>
+                </div>
+              </Link>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }
