@@ -29,10 +29,10 @@ export default function HomePage() {
 
       {/* ===== MATCH OF THE DAY + SOCIAL WIDGETS ===== */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
           <MatchOfDay />
           <div className="hidden lg:block">
-            <SocialWidgets />
+            <SocialWidgets mode="full" />
           </div>
         </div>
       </section>
@@ -49,9 +49,9 @@ export default function HomePage() {
       {/* ===== SHOW CALENDAR ===== */}
       <ShowCalendar />
 
-      {/* ===== SOCIAL WIDGETS (mobile only) ===== */}
+      {/* ===== SOCIAL WIDGETS (mobile only — compact) ===== */}
       <section className="lg:hidden max-w-[1440px] mx-auto px-4 sm:px-6 py-6">
-        <SocialWidgets />
+        <SocialWidgets mode="compact" />
       </section>
     </div>
   )

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -13,92 +13,114 @@ interface Superstar {
 
 interface Cell {
   superstar: Superstar
-  opacity: number
-  fading: boolean
+  phase: 'visible' | 'fading-out' | 'fading-in'
   nextSuperstar?: Superstar
+  span: 1 | 2 // 1 = normal, 2 = featured (2x2)
 }
+
+// Bento layout patterns: { col, row, span } — span 2 = takes 2col x 2row
+// Desktop: 8 columns, 3 rows — 12 cells shown
+const DESKTOP_LAYOUT = [
+  { col: 1, row: 1, span: 1 }, { col: 2, row: 1, span: 2 }, { col: 4, row: 1, span: 1 },
+  { col: 5, row: 1, span: 1 }, { col: 6, row: 1, span: 1 }, { col: 7, row: 1, span: 2 },
+  { col: 1, row: 2, span: 1 }, { col: 4, row: 2, span: 2 }, { col: 6, row: 2, span: 1 },
+  { col: 1, row: 3, span: 2 }, { col: 3, row: 3, span: 1 }, { col: 4, row: 3, span: 1 },
+  { col: 6, row: 3, span: 1 }, { col: 7, row: 3, span: 1 }, { col: 8, row: 3, span: 1 },
+  { col: 3, row: 2, span: 1 }, { col: 8, row: 1, span: 1 }, { col: 8, row: 2, span: 1 },
+]
+
+// Tablet: 6 columns, 3 rows
+const TABLET_LAYOUT = [
+  { col: 1, row: 1, span: 2 }, { col: 3, row: 1, span: 1 }, { col: 4, row: 1, span: 1 },
+  { col: 5, row: 1, span: 2 }, { col: 3, row: 2, span: 2 }, { col: 5, row: 2, span: 1 },
+  { col: 1, row: 2, span: 1 }, { col: 2, row: 2, span: 1 }, { col: 6, row: 2, span: 1 },
+  { col: 1, row: 3, span: 1 }, { col: 2, row: 3, span: 1 }, { col: 5, row: 3, span: 1 },
+  { col: 6, row: 3, span: 1 },
+]
+
+// Mobile: 4 columns, 3 rows
+const MOBILE_LAYOUT = [
+  { col: 1, row: 1, span: 2 }, { col: 3, row: 1, span: 1 }, { col: 4, row: 1, span: 1 },
+  { col: 3, row: 2, span: 2 }, { col: 1, row: 2, span: 1 }, { col: 2, row: 2, span: 1 },
+  { col: 1, row: 3, span: 1 }, { col: 2, row: 3, span: 1 }, { col: 3, row: 3, span: 1 },
+  { col: 4, row: 3, span: 1 },
+]
 
 export function SuperstarGrid() {
   const [cells, setCells] = useState<Cell[]>([])
-  const [pool, setPool] = useState<Superstar[]>([])
-  const [hoveredId, setHoveredId] = useState<number | null>(null)
-  const [cols, setCols] = useState(8)
   const poolRef = useRef<Superstar[]>([])
+  const [bp, setBp] = useState<'mobile' | 'tablet' | 'desktop'>('desktop')
 
-  // Determine grid size based on screen
   useEffect(() => {
-    const updateCols = () => {
+    const update = () => {
       const w = window.innerWidth
-      if (w < 640) setCols(4)
-      else if (w < 1024) setCols(6)
-      else setCols(8)
+      setBp(w < 640 ? 'mobile' : w < 1024 ? 'tablet' : 'desktop')
     }
-    updateCols()
-    window.addEventListener('resize', updateCols)
-    return () => window.removeEventListener('resize', updateCols)
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
   }, [])
 
-  const rows = 2
-  const total = cols * rows
+  const layout = bp === 'mobile' ? MOBILE_LAYOUT : bp === 'tablet' ? TABLET_LAYOUT : DESKTOP_LAYOUT
+  const total = layout.length
+  const gridCols = bp === 'mobile' ? 4 : bp === 'tablet' ? 6 : 8
 
   // Fetch superstars
   useEffect(() => {
-    fetch(`/api/random-superstars?count=${total + 20}`)
+    fetch(`/api/random-superstars?count=${total + 30}`)
       .then(r => r.json())
       .then(data => {
         const all = (data.superstars || []).filter((s: Superstar) => s.photo_url)
         if (all.length < total) return
-
-        const initial = all.slice(0, total).map((s: Superstar) => ({
+        const initial = all.slice(0, total).map((s: Superstar, i: number) => ({
           superstar: s,
-          opacity: 1,
-          fading: false,
+          phase: 'visible' as const,
+          span: (layout[i]?.span || 1) as 1 | 2,
         }))
         setCells(initial)
-        setPool(all.slice(total))
         poolRef.current = all.slice(total)
       })
       .catch(() => {})
   }, [total])
 
-  // Periodic swap animation
+  // Slow dramatic transitions — 5.5s between swaps, 1.5s fade out + 1.5s fade in
   useEffect(() => {
     if (cells.length === 0) return
 
     const interval = setInterval(() => {
-      const currentPool = poolRef.current
-      if (currentPool.length === 0) {
-        // Refetch pool
-        fetch(`/api/random-superstars?count=20`)
+      if (poolRef.current.length === 0) {
+        fetch(`/api/random-superstars?count=30`)
           .then(r => r.json())
           .then(data => {
-            const fresh = (data.superstars || []).filter((s: Superstar) => s.photo_url)
-            setPool(fresh)
-            poolRef.current = fresh
+            poolRef.current = (data.superstars || []).filter((s: Superstar) => s.photo_url)
           })
         return
       }
 
-      // Pick random cell to swap
       const cellIndex = Math.floor(Math.random() * cells.length)
-      const nextSuperstar = currentPool[0]
-      poolRef.current = currentPool.slice(1)
-      setPool(prev => prev.slice(1))
+      const nextSuperstar = poolRef.current.shift()!
 
-      // Start fade out
+      // Phase 1: fade out (1.5s)
       setCells(prev => prev.map((c, i) =>
-        i === cellIndex ? { ...c, fading: true, nextSuperstar } : c
+        i === cellIndex ? { ...c, phase: 'fading-out' as const, nextSuperstar } : c
       ))
 
-      // After fade out, swap and fade in
+      // Phase 2: swap + fade in (after 1.5s)
       setTimeout(() => {
         setCells(prev => prev.map((c, i) =>
           i === cellIndex && c.nextSuperstar
-            ? { superstar: c.nextSuperstar, opacity: 1, fading: false }
+            ? { superstar: c.nextSuperstar, phase: 'fading-in' as const, span: c.span }
             : c
         ))
-      }, 600)
-    }, 2500)
+      }, 1500)
+
+      // Phase 3: fully visible (after 3s total)
+      setTimeout(() => {
+        setCells(prev => prev.map((c, i) =>
+          i === cellIndex ? { ...c, phase: 'visible' as const } : c
+        ))
+      }, 3000)
+    }, 5500)
 
     return () => clearInterval(interval)
   }, [cells.length])
@@ -113,37 +135,67 @@ export function SuperstarGrid() {
 
       <div
         className="grid gap-1.5 sm:gap-2"
-        style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
+        style={{
+          gridTemplateColumns: `repeat(${gridCols}, 1fr)`,
+          gridAutoRows: bp === 'mobile' ? '90px' : bp === 'tablet' ? '110px' : '120px',
+        }}
       >
-        {cells.map((cell, i) => (
-          <Link
-            key={`${cell.superstar.id}-${i}`}
-            href={`/superstars/${cell.superstar.slug}`}
-            className="relative group aspect-square rounded-lg overflow-hidden border border-border-subtle/20 hover:border-neon-blue/30 transition-all duration-300"
-            onMouseEnter={() => setHoveredId(cell.superstar.id)}
-            onMouseLeave={() => setHoveredId(null)}
-          >
-            <div
-              className="absolute inset-0 transition-opacity duration-600"
-              style={{ opacity: cell.fading ? 0 : 1 }}
-            >
-              <Image
-                src={cell.superstar.photo_url}
-                alt={cell.superstar.name}
-                fill
-                sizes="(max-width: 640px) 25vw, (max-width: 1024px) 16vw, 12vw"
-                className="object-cover"
-              />
-            </div>
+        {cells.map((cell, i) => {
+          const pos = layout[i]
+          if (!pos) return null
+          const isFeatured = pos.span === 2
 
-            {/* Hover overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-end justify-center pb-2 sm:pb-3">
-              <span className="text-[10px] sm:text-xs text-text-white font-medium text-center px-1 truncate max-w-full">
-                {cell.superstar.name}
-              </span>
-            </div>
-          </Link>
-        ))}
+          return (
+            <Link
+              key={`cell-${i}`}
+              href={`/superstars/${cell.superstar.slug}`}
+              className="relative group overflow-hidden rounded-lg border border-border-subtle/15 hover:border-neon-blue/40 transition-all duration-300 hover:shadow-neon-blue"
+              style={{
+                gridColumn: `${pos.col} / span ${pos.span}`,
+                gridRow: `${pos.row} / span ${pos.span}`,
+              }}
+            >
+              {/* Image with phase-based opacity */}
+              <div
+                className="absolute inset-0 transition-all duration-[1500ms] ease-in-out"
+                style={{
+                  opacity: cell.phase === 'fading-out' ? 0 : cell.phase === 'fading-in' ? 1 : 1,
+                  transform: cell.phase === 'fading-out' ? 'scale(1.05)' : 'scale(1)',
+                }}
+              >
+                <Image
+                  src={cell.superstar.photo_url}
+                  alt={cell.superstar.name}
+                  fill
+                  sizes={isFeatured ? '(max-width: 640px) 50vw, 25vw' : '(max-width: 640px) 25vw, 12vw'}
+                  className="object-cover"
+                />
+              </div>
+
+              {/* Dark vignette when fading */}
+              <div
+                className="absolute inset-0 bg-bg-primary transition-opacity duration-[1500ms]"
+                style={{ opacity: cell.phase === 'fading-out' ? 0.9 : 0 }}
+              />
+
+              {/* Hover overlay with name */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-end pb-2 sm:pb-3 px-2">
+                <span className={`text-text-white font-display font-bold text-center leading-tight ${
+                  isFeatured ? 'text-sm sm:text-lg' : 'text-[10px] sm:text-xs'
+                }`}>
+                  {cell.superstar.name}
+                </span>
+              </div>
+
+              {/* Featured cell gold corner accent */}
+              {isFeatured && (
+                <div className="absolute top-0 left-0 w-8 h-8 overflow-hidden">
+                  <div className="absolute -top-4 -left-4 w-8 h-8 rotate-45 bg-neon-blue/20" />
+                </div>
+              )}
+            </Link>
+          )
+        })}
       </div>
     </section>
   )
