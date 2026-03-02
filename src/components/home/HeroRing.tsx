@@ -231,7 +231,8 @@ export function HeroRing() {
             <span className="text-neon-pink">DATA</span>
           </h1>
           <p className="text-text-secondary text-base sm:text-lg lg:text-xl font-body max-w-xl mx-auto">
-            The ultimate WWE statistics database. Every Superstar. Every match. Every era. From 1953 to today.
+            <span className="block">The ultimate WWE statistics database.</span>
+            <span className="block">Every Superstar. Every match. Every era. From 1953 to today.</span>
           </p>
         </div>
       </div>
