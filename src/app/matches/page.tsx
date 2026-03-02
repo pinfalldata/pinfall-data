@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     title: 'Matches & Shows — Complete WWE Match Database',
     description: 'Search 100,000+ WWE matches. Every show. Every PLE. Every stipulation. The most complete wrestling match database ever built.',
     type: 'website',
-    images: ['https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page/matchsshows.webp'],
+    images: ['https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page/pagematchshow.webp'],
   },
   twitter: {
     card: 'summary_large_image',

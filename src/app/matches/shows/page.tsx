@@ -31,7 +31,7 @@ export default function AllShowsPage() {
     <div className="relative">
       {/* ===== HERO ===== */}
       <section className="relative w-full h-[200px] sm:h-[260px] lg:h-[340px] xl:h-[380px] overflow-hidden">
-        <Image src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page/showpage.jpg"
+        <Image src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page/showspage.webp"
           alt="All WWE Shows" fill priority sizes="100vw" quality={90}
           className="object-cover object-center" />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/50 to-transparent" />

@@ -54,7 +54,7 @@ export default function AllPLEsPage() {
     <div className="relative">
       {/* ===== HERO ===== */}
       <section className="relative w-full h-[200px] sm:h-[260px] lg:h-[340px] xl:h-[380px] overflow-hidden">
-        <Image src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page/showple.jpg"
+        <Image src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page/plepage.webp"
           alt="All WWE PLEs" fill priority sizes="100vw" quality={90}
           className="object-cover object-top" />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/50 to-transparent" />
