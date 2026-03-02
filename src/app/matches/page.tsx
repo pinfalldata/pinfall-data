@@ -86,6 +86,7 @@ export default function MatchesPage() {
           fill
           priority
           sizes="100vw"
+          unoptimized
           quality={90}
           className="object-cover object-center"
         />

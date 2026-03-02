@@ -230,11 +230,14 @@ export function HeroRing() {
             <span className="text-neon-blue text-glow-blue">PINFALL</span>{' '}
             <span className="text-neon-pink">DATA</span>
           </h1>
-          <p className="text-text-secondary text-base sm:text-lg lg:text-xl font-body max-w-xl mx-auto">
-            <span className="block">The ultimate WWE statistics database.</span>
-            <span className="block">Every Superstar. Every match. Every era. From 1953 to today.</span>
-          </p>
-        </div>
+          <p className="text-sm sm:text-base md:text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
+          <span className="block sm:hidden">The ultimate WWE statistics database.</span>
+          <span className="block sm:hidden">Every Superstar. Every match.</span>
+          <span className="block sm:hidden">Every era. From 1953 to today.</span>
+          <span className="hidden sm:block">The ultimate WWE statistics database.</span>
+          <span className="hidden sm:block">Every Superstar. Every match. Every era. From 1953 to today.</span>
+        </p>        
+</div>
       </div>
     </section>
   )

@@ -1,36 +1,114 @@
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
-import { getSegmentBySlug } from '@/lib/queries'
-import { SegmentDetail } from '@/components/segment/SegmentDetail'
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { createClient } from '@supabase/supabase-js';
+import SegmentDetail from '@/components/segment/SegmentDetail';
 
-interface Props {
-  params: { slug: string; segmentSlug: string }
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+interface PageProps {
+  params: { slug: string; segmentSlug: string };
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const segment = await getSegmentBySlug(params.slug, params.segmentSlug)
-  if (!segment) return { title: 'Segment not found — Pinfall Data' }
+async function getSegment(showSlug: string, segmentSlug: string) {
+  const { data: show } = await supabase
+    .from('shows')
+    .select('id')
+    .eq('slug', showSlug)
+    .single();
 
-  const showName = (segment as any).show?.name || ''
-  const participants = (segment as any).participants || []
-  const names = participants.map((p: any) => p.superstar?.name).filter(Boolean).slice(0, 3)
+  if (!show) return null;
+
+  const { data } = await supabase
+    .from('show_segments')
+    .select(`
+      *,
+      shows (
+        id, name, slug, date, venue, city, state, country,
+        attendance, tv_rating, start_time,
+        show_series ( name, slug, logo_url ),
+        show_commentators ( name ),
+        show_producers ( name ),
+        show_announcers ( name )
+      ),
+      show_segments_media ( id, media_type, media_url, thumbnail_url, caption, sort_order ),
+      show_segments_participants (
+        id, role,
+        superstars ( id, name, slug, image_url )
+      )
+    `)
+    .eq('show_id', show.id)
+    .eq('slug', segmentSlug)
+    .single();
+
+  return data;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const segment = await getSegment(params.slug, params.segmentSlug);
+  if (!segment) return { title: 'Segment Not Found' };
+
+  const show = segment.shows;
+  const participants = segment.show_segments_participants?.map(
+    (p: any) => p.superstars.name
+  ).join(', ');
+
+  const title = `${segment.title} — ${show.name} | Pinfall Data`;
+  const description = `${segment.title} segment from ${show.name} (${show.date}).${participants ? ` Featuring: ${participants}.` : ''} Full details, media, and description on Pinfall Data.`;
 
   return {
-    title: `${(segment as any).title} — ${showName} | Pinfall Data`,
-    description: `${(segment as any).title} at ${showName}. ${names.length > 0 ? `Featuring ${names.join(', ')}.` : ''} Full details and media.`,
-    alternates: {
-      canonical: `/shows/${params.slug}/segments/${params.segmentSlug}`,
+    title,
+    description,
+    keywords: [
+      segment.title, show.name, 'WWE segment', 'wrestling segment',
+      segment.segment_type, ...(participants ? participants.split(', ') : []),
+    ],
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+      ...(segment.image_url && { images: [{ url: segment.image_url, width: 1200, height: 630 }] }),
     },
-  }
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+  };
 }
 
-export default async function SegmentPage({ params }: Props) {
-  const segment = await getSegmentBySlug(params.slug, params.segmentSlug)
-  if (!segment) notFound()
+export default async function SegmentPage({ params }: PageProps) {
+  const segment = await getSegment(params.slug, params.segmentSlug);
+  if (!segment) notFound();
+
+  // JSON-LD structured data for SEO
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: segment.title,
+    startDate: segment.shows.date,
+    location: {
+      '@type': 'Place',
+      name: segment.shows.venue,
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: segment.shows.city,
+        addressRegion: segment.shows.state,
+        addressCountry: segment.shows.country,
+      },
+    },
+    ...(segment.image_url && { image: segment.image_url }),
+  };
 
   return (
-    <main className="min-h-screen">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <SegmentDetail segment={segment} />
-    </main>
-  )
+    </>
+  );
 }
