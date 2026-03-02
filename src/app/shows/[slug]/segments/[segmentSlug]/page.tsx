@@ -8,53 +8,73 @@ type Props = {
   params: Promise<{ slug: string; segmentSlug: string }>;
 };
 
-async function getSegment(showSlug: string, segmentSlug: string) {
+async function getSegmentData(showSlug: string, segmentSlug: string) {
+  // 1) Get the show with full info
   const { data: show, error: showError } = await supabase
     .from('shows')
-    .select('id')
+    .select(`
+      id, name, slug, date, venue, city, state_province, country,
+      attendance, tv_audience, start_time, primary_color, logo_url,
+      show_series:show_series_id ( id, name, slug, logo_url )
+    `)
     .eq('slug', showSlug)
     .single();
 
-  if (showError || !show) return null;
+  if (showError || !show) {
+    console.error('[segment] show query error:', showError);
+    return null;
+  }
 
-  const { data, error } = await supabase
+  // 2) Get the segment with participants + media (correct table names!)
+  const { data: segment, error: segError } = await supabase
     .from('show_segments')
     .select(`
       *,
-      shows (
-        id, name, slug, date, venue, city, state_province, country,
-        attendance, tv_rating, start_time,
-        show_series ( name, slug, logo_url ),
-        show_commentators ( name ),
-        show_producers ( name ),
-        show_announcers ( name )
+      participants:show_segment_participants (
+        id, role, sort_order,
+        superstar:superstars ( id, name, slug, photo_url )
       ),
-      show_segments_media ( id, media_type, media_url, thumbnail_url, caption, sort_order ),
-      show_segments_participants (
-        id, role,
-        superstars ( id, name, slug, photo_url )
-      )
+      media:segment_media ( id, media_type, url, thumbnail_url, title, sort_order )
     `)
     .eq('show_id', show.id)
     .eq('slug', segmentSlug)
     .single();
 
-  if (error) {
-    console.error('[segment] query error:', error);
+  if (segError || !segment) {
+    console.error('[segment] segment query error:', segError);
     return null;
   }
 
-  return data;
+  // 3) Optionally get commentators + ring announcers for the info bar
+  const [{ data: commentators }, { data: ringAnnouncers }] = await Promise.all([
+    supabase
+      .from('show_commentators')
+      .select('*, superstar:superstars(id, name, slug, photo_url)')
+      .eq('show_id', show.id),
+    supabase
+      .from('show_ring_announcers')
+      .select('*, superstar:superstars(id, name, slug, photo_url)')
+      .eq('show_id', show.id),
+  ]);
+
+  return {
+    ...segment,
+    show: {
+      ...show,
+      commentators: commentators || [],
+      ringAnnouncers: ringAnnouncers || [],
+    },
+  };
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params;
-  const segment = await getSegment(params.slug, params.segmentSlug);
+  const segment = await getSegmentData(params.slug, params.segmentSlug);
   if (!segment) return { title: 'Segment Not Found — Pinfall Data' };
 
-  const show = segment.shows;
-  const participants = segment.show_segments_participants?.map(
-    (p: any) => p.superstars?.name
+  const show = segment.show;
+  const participants = segment.participants?.map(
+    (p: any) => p.superstar?.name
   ).filter(Boolean).join(', ');
 
   const title = `${segment.title} — ${show.name} | Pinfall Data`;
@@ -65,7 +85,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     description,
     keywords: [
       segment.title, show.name, 'WWE segment', 'wrestling segment',
-      segment.segment_type, ...(participants ? participants.split(', ') : []),
+      segment.category, ...(participants ? participants.split(', ') : []),
     ],
     openGraph: {
       title,
@@ -83,7 +103,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 export default async function SegmentPage(props: Props) {
   const params = await props.params;
-  const segment = await getSegment(params.slug, params.segmentSlug);
+  const segment = await getSegmentData(params.slug, params.segmentSlug);
   if (!segment) notFound();
 
   // JSON-LD structured data for SEO
@@ -91,18 +111,23 @@ export default async function SegmentPage(props: Props) {
     '@context': 'https://schema.org',
     '@type': 'Event',
     name: segment.title,
-    startDate: segment.shows.date,
+    startDate: segment.show.date,
     location: {
       '@type': 'Place',
-      name: segment.shows.venue,
+      name: segment.show.venue,
       address: {
         '@type': 'PostalAddress',
-        addressLocality: segment.shows.city,
-        addressRegion: segment.shows.state_province,
-        addressCountry: segment.shows.country,
+        addressLocality: segment.show.city,
+        addressRegion: segment.show.state_province,
+        addressCountry: segment.show.country,
       },
     },
     ...(segment.image_url && { image: segment.image_url }),
+    ...(segment.duration_seconds && { duration: `PT${Math.floor(segment.duration_seconds / 60)}M${segment.duration_seconds % 60}S` }),
+    performer: segment.participants?.map((p: any) => ({
+      '@type': 'Person',
+      name: p.superstar?.name,
+    })).filter((p: any) => p.name) || [],
   };
 
   return (

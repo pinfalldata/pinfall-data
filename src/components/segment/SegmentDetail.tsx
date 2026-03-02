@@ -7,34 +7,45 @@ import Link from 'next/link';
 interface SegmentMedia {
   id: string;
   media_type: string;
-  media_url: string;
+  url: string;
   thumbnail_url?: string;
-  caption?: string;
+  title?: string;
   sort_order: number;
 }
 
 interface SegmentParticipant {
   id: string;
   role: string;
-  superstars: {
+  sort_order: number;
+  superstar: {
     id: string;
     name: string;
     slug: string;
-    photo_url?: string;  };
+    photo_url?: string;
+  };
+}
+
+interface CrewMember {
+  superstar: {
+    id: string;
+    name: string;
+    slug: string;
+    photo_url?: string;
+  };
 }
 
 interface Segment {
   id: string;
   title: string;
   slug: string;
-  segment_type: string;
+  category: string;
   description_md?: string;
   image_url?: string;
   sort_order: number;
   duration_seconds?: number;
-  show_segments_media?: SegmentMedia[];
-  show_segments_participants?: SegmentParticipant[];
-  shows: {
+  media?: SegmentMedia[];
+  participants?: SegmentParticipant[];
+  show: {
     id: string;
     name: string;
     slug: string;
@@ -44,22 +55,34 @@ interface Segment {
     state_province?: string;
     country?: string;
     attendance?: number;
-    tv_rating?: number;
+    tv_audience?: number;
     start_time?: string;
+    primary_color?: string;
+    logo_url?: string;
     show_series?: {
+      id: number;
       name: string;
       slug: string;
       logo_url?: string;
     };
-    show_commentators?: { name: string }[];
-    show_producers?: { name: string }[];
-    show_announcers?: { name: string }[];
+    commentators?: CrewMember[];
+    ringAnnouncers?: CrewMember[];
   };
 }
 
 const segmentTypeLabels: Record<string, string> = {
   in_ring_segment: '🎤 In-Ring Segment',
-  backstage_segment: '🚪 Backstage',
+  backstage: '🚪 Backstage',
+  interference: '⚡ Interference',
+  ceremony: '🏆 Ceremony',
+  authority: '👔 Authority',
+  psychology: '🧠 Psychology',
+  props_spectacle: '🎪 Props & Spectacle',
+  medical_injury: '🏥 Medical / Injury',
+  musical: '🎵 Musical',
+  fan_engagement: '📣 Fan Engagement',
+  broadcast: '📺 Broadcast',
+  digital: '💻 Digital',
   interview: '🎙️ Interview',
   promo: '📢 Promo',
   entrance: '🎵 Entrance',
@@ -83,7 +106,6 @@ function formatDuration(seconds: number) {
 
 function renderDescription(md?: string) {
   if (!md) return null;
-  // Split on double newlines for paragraphs, single newlines for <br>
   const paragraphs = md.split(/\n\s*\n/);
   return paragraphs.map((para, i) => {
     const lines = para.split('\n');
@@ -101,10 +123,10 @@ function renderDescription(md?: string) {
 }
 
 export default function SegmentDetail({ segment }: { segment: Segment }) {
-  const show = segment.shows;
-  const media = segment.show_segments_media?.sort((a, b) => a.sort_order - b.sort_order) || [];
-  const participants = segment.show_segments_participants || [];
-  const isInRing = segment.segment_type === 'in_ring_segment';
+  const show = segment.show;
+  const media = segment.media?.sort((a, b) => a.sort_order - b.sort_order) || [];
+  const participants = segment.participants?.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0)) || [];
+  const isInRing = segment.category === 'in_ring_segment';
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -119,19 +141,16 @@ export default function SegmentDetail({ segment }: { segment: Segment }) {
             priority
             quality={100}
             sizes="100vw"
+            unoptimized
           />
-          {/* Gradient overlays for depth */}
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30" />
-          
-          {/* Vignette effect */}
           <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.5)]" />
           
-          {/* Title overlay */}
           <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 lg:p-12">
             <div className="max-w-6xl mx-auto">
               <span className="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 bg-amber-500/20 text-amber-400 border border-amber-500/30">
-                {segmentTypeLabels[segment.segment_type] || segment.segment_type}
+                {segmentTypeLabels[segment.category] || segment.category}
               </span>
               <h1 className="text-2xl sm:text-3xl lg:text-5xl font-black">
                 <span className="text-amber-400">{segment.title.split(' ')[0]}</span>{' '}
@@ -147,10 +166,29 @@ export default function SegmentDetail({ segment }: { segment: Segment }) {
         </section>
       )}
 
-      {/* ===== SHOW INFO BAR (same as match pages) ===== */}
+      {/* ===== NO HERO FALLBACK ===== */}
+      {!segment.image_url && (
+        <section className="relative py-10 sm:py-14 lg:py-20 bg-gradient-to-b from-zinc-900 to-black">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
+            <span className="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 bg-amber-500/20 text-amber-400 border border-amber-500/30">
+              {segmentTypeLabels[segment.category] || segment.category}
+            </span>
+            <h1 className="text-2xl sm:text-3xl lg:text-5xl font-black">
+              <span className="text-amber-400">{segment.title.split(' ')[0]}</span>{' '}
+              <span className="text-white">{segment.title.split(' ').slice(1).join(' ')}</span>
+            </h1>
+            {segment.duration_seconds && (
+              <p className="text-gray-400 mt-3 text-sm">
+                ⏱️ {formatDuration(segment.duration_seconds)}
+              </p>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* ===== SHOW INFO BAR ===== */}
       <section className="bg-zinc-900/80 border-y border-amber-500/10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4">
-          {/* Show name + date */}
           <div className="flex flex-wrap items-center gap-3 mb-3">
             {show.show_series?.logo_url && (
               <Image
@@ -172,20 +210,18 @@ export default function SegmentDetail({ segment }: { segment: Segment }) {
             </div>
           </div>
 
-          {/* Stats row */}
           <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-gray-300">
             {show.attendance && (
               <span>🏟️ {show.attendance.toLocaleString()}</span>
             )}
-            {show.tv_rating && (
-              <span>📡 {show.tv_rating}M</span>
+            {show.tv_audience && (
+              <span>📡 {show.tv_audience}M</span>
             )}
             {show.start_time && (
               <span>🕐 {show.start_time}</span>
             )}
           </div>
 
-          {/* Location */}
           {(show.venue || show.city) && (
             <div className="mt-2 text-sm text-gray-400">
               <span>📍 </span>
@@ -199,19 +235,14 @@ export default function SegmentDetail({ segment }: { segment: Segment }) {
 
           {/* Crew */}
           <div className="flex flex-wrap gap-x-5 gap-y-1 mt-2 text-sm">
-            {show.show_producers && show.show_producers.length > 0 && (
+            {show.commentators && show.commentators.length > 0 && (
               <span className="text-gray-400">
-                🎧 <span className="text-gray-300">{show.show_producers.map(p => p.name).join(', ')}</span>
+                📺 <span className="text-gray-300">{show.commentators.map((c: any) => c.superstar?.name).filter(Boolean).join(', ')}</span>
               </span>
             )}
-            {show.show_announcers && show.show_announcers.length > 0 && (
+            {show.ringAnnouncers && show.ringAnnouncers.length > 0 && (
               <span className="text-gray-400">
-                🎙️ <span className="text-gray-300">{show.show_announcers.map(a => a.name).join(', ')}</span>
-              </span>
-            )}
-            {show.show_commentators && show.show_commentators.length > 0 && (
-              <span className="text-gray-400">
-                📺 <span className="text-gray-300">{show.show_commentators.map(c => c.name).join(', ')}</span>
+                🎙️ <span className="text-gray-300">{show.ringAnnouncers.map((a: any) => a.superstar?.name).filter(Boolean).join(', ')}</span>
               </span>
             )}
           </div>
@@ -220,7 +251,6 @@ export default function SegmentDetail({ segment }: { segment: Segment }) {
 
       {/* ===== MAIN CONTENT ===== */}
       <div className="relative">
-        {/* Microphone background for in-ring segments */}
         {isInRing && (
           <div className="absolute right-0 top-0 bottom-0 w-[300px] lg:w-[400px] pointer-events-none overflow-hidden opacity-[0.04]">
             <Image
@@ -244,27 +274,27 @@ export default function SegmentDetail({ segment }: { segment: Segment }) {
                 {participants.map((p) => (
                   <Link
                     key={p.id}
-                    href={`/superstars/${p.superstars.slug}`}
+                    href={`/superstars/${p.superstar.slug}`}
                     className="group flex items-center gap-3 bg-zinc-900/60 border border-zinc-800 rounded-xl px-4 py-3 hover:border-amber-500/40 transition-all"
                   >
                     <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-zinc-700 group-hover:border-amber-500/50 transition-colors">
-                      {p.superstars.photo_url ? (
+                      {p.superstar.photo_url ? (
                         <Image
-                          src={p.superstars.photo_url}
-                          alt={p.superstars.name}
+                          src={p.superstar.photo_url}
+                          alt={p.superstar.name}
                           fill
                           className="object-cover"
                           sizes="48px"
                         />
                       ) : (
                         <div className="w-full h-full bg-zinc-800 flex items-center justify-center text-amber-400 text-lg font-bold">
-                          {p.superstars.name[0]}
+                          {p.superstar.name[0]}
                         </div>
                       )}
                     </div>
                     <div>
                       <span className="text-white font-semibold group-hover:text-amber-400 transition-colors text-sm">
-                        {p.superstars.name}
+                        {p.superstar.name}
                       </span>
                       {p.role && p.role !== 'participant' && (
                         <span className="block text-xs text-gray-500 capitalize">{p.role}</span>
@@ -308,29 +338,29 @@ export default function SegmentDetail({ segment }: { segment: Segment }) {
                       ${media.length === 1 ? 'w-full max-w-2xl' : ''}
                     `}
                   >
-                    {m.media_type === 'video' || m.media_url?.includes('youtube') || m.media_url?.includes('youtu.be') ? (
+                    {m.media_type === 'video' || m.url?.includes('youtube') || m.url?.includes('youtu.be') ? (
                       <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
                         <iframe
-                          src={m.media_url.replace('watch?v=', 'embed/').replace('youtu.be/', 'www.youtube.com/embed/')}
+                          src={m.url.replace('watch?v=', 'embed/').replace('youtu.be/', 'www.youtube.com/embed/')}
                           className="absolute inset-0 w-full h-full"
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                           allowFullScreen
-                          title={m.caption || segment.title}
+                          title={m.title || segment.title}
                         />
                       </div>
                     ) : (
                       <div className="relative aspect-video">
                         <Image
-                          src={m.thumbnail_url || m.media_url}
-                          alt={m.caption || segment.title}
+                          src={m.thumbnail_url || m.url}
+                          alt={m.title || segment.title}
                           fill
                           className="object-cover"
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         />
                       </div>
                     )}
-                    {m.caption && (
-                      <p className="px-3 py-2 text-xs text-gray-400 text-center">{m.caption}</p>
+                    {m.title && (
+                      <p className="px-3 py-2 text-xs text-gray-400 text-center">{m.title}</p>
                     )}
                   </div>
                 ))}

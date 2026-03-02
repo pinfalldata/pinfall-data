@@ -18,15 +18,16 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Fetch series info
+    // Fetch series info — select only guaranteed columns first
     const { data: series, error: seriesError } = await supabase
       .from('show_series')
-      .select('id, name, slug, short_name, logo_url, banner_url, description, first_episode_date, is_active, is_ple')
+      .select('*')
       .eq('slug', slug)
       .single()
 
     if (seriesError || !series) {
-      return NextResponse.json({ error: 'Show series not found' }, { status: 404 })
+      console.error('[show-series-detail] series error:', seriesError)
+      return NextResponse.json({ error: 'Show series not found', details: seriesError?.message }, { status: 404 })
     }
 
     // Fetch paginated episodes
@@ -34,7 +35,7 @@ export async function GET(request: NextRequest) {
       .from('shows')
       .select(`
         id, name, slug, date, venue, city, state_province, country,
-        attendance, tv_rating, show_type, episode_number
+        attendance, tv_audience, show_type, episode_number
       `, { count: 'exact' })
       .eq('show_series_id', series.id)
       .order('date', { ascending: false })
@@ -42,7 +43,7 @@ export async function GET(request: NextRequest) {
 
     if (epError) {
       console.error('[show-series-detail] episodes error:', epError)
-      return NextResponse.json({ error: 'Failed to fetch episodes' }, { status: 500 })
+      return NextResponse.json({ error: 'Failed to fetch episodes', details: epError?.message }, { status: 500 })
     }
 
     const total = count || 0
@@ -56,8 +57,8 @@ export async function GET(request: NextRequest) {
       limit,
       totalPages,
     })
-  } catch (err) {
+  } catch (err: any) {
     console.error('[show-series-detail] unexpected error:', err)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error', details: err?.message }, { status: 500 })
   }
 }

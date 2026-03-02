@@ -18,15 +18,16 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Fetch match type info
+    // Fetch match type info — use * to avoid missing column errors
     const { data: matchType, error: mtError } = await supabase
       .from('match_types')
-      .select('id, name, slug, description, image_url, rules, category')
+      .select('*')
       .eq('slug', slug)
       .single()
 
     if (mtError || !matchType) {
-      return NextResponse.json({ error: 'Match type not found' }, { status: 404 })
+      console.error('[stipulation-detail] match type error:', mtError)
+      return NextResponse.json({ error: 'Match type not found', details: mtError?.message }, { status: 404 })
     }
 
     // Fetch paginated matches of this type
@@ -36,26 +37,25 @@ export async function GET(request: NextRequest) {
         id, slug, date, duration_seconds, rating, result_type, winner_team,
         is_title_change, card_position, match_order, is_dark_match,
         championship:championships(id, name, slug, image_url),
-        show:shows!matches_show_id_fkey(
-          id, name, slug, date, city, state_province, country, show_series_id,
+        show:shows(
+          id, name, slug, date, city, state_province, country,
           show_series:show_series_id(id, name, short_name, logo_url)
         ),
         participants:match_participants(
           id, team_number, is_winner, entry_number,
-          superstar:superstars!match_participants_superstar_id_fkey(id, name, slug, photo_url)
+          superstar:superstars(id, name, slug, photo_url)
         )
       `, { count: 'exact' })
       .eq('match_type_id', matchType.id)
       .order('date', { ascending: false })
-      .order('match_order', { ascending: false, nullsFirst: true })
       .range(offset, offset + limit - 1)
 
     if (mError) {
       console.error('[stipulation-detail] matches error:', mError)
-      return NextResponse.json({ error: 'Failed to fetch matches' }, { status: 500 })
+      return NextResponse.json({ error: 'Failed to fetch matches', details: mError?.message }, { status: 500 })
     }
 
-    // Enrich matches with teams structure (same as match-search)
+    // Enrich matches with teams structure
     const enriched = (matches || []).map((m: any) => {
       const participants = m.participants || []
       const teams = new Map<number, any[]>()
@@ -120,8 +120,8 @@ export async function GET(request: NextRequest) {
       limit,
       totalPages,
     })
-  } catch (err) {
+  } catch (err: any) {
     console.error('[stipulation-detail] unexpected error:', err)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error', details: err?.message }, { status: 500 })
   }
 }

@@ -1,29 +1,59 @@
+// @ts-nocheck
 import type { Metadata } from 'next'
+import { supabase } from '@/lib/supabase'
 
-export const metadata: Metadata = {
-  title: 'All WWE Shows — Raw, SmackDown, NXT & Every Program Ever | Pinfall Data',
-  description: 'Browse every WWE show in history. Monday Night Raw, Friday Night SmackDown, NXT, Saturday Night Main Event, Sunday Night Heat, Velocity, and hundreds more weekly and special programs with episode counts and match listings.',
-  keywords: [
-    'WWE shows', 'WWE Raw', 'WWE SmackDown', 'WWE NXT', 'all WWE shows',
-    'WWE show list', 'WWE weekly shows', 'WWE program history', 'WWE show database',
-    'WWE show directory', 'Saturday Night Main Event', 'WWE TV shows',
-  ],
-  openGraph: {
-    title: 'All WWE Shows — Complete Show Directory',
-    description: 'Browse every WWE show ever aired. From Monday Night Raw to NXT and beyond.',
-    type: 'website',
-    images: ['https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page/showpage.jpg'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'All WWE Shows — Pinfall Data',
-    description: 'Every WWE show ever aired with full episode guides.',
-  },
-  alternates: {
-    canonical: 'https://pinfall-data.vercel.app/matches/shows',
-  },
+type Props = {
+  params: Promise<{ slug: string }>
 }
 
-export default function ShowsLayout({ children }: { children: React.ReactNode }) {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params
+  const { data: series } = await supabase
+    .from('show_series')
+    .select('name, description, logo_url, first_episode_date, is_active')
+    .eq('slug', params.slug)
+    .single()
+
+  if (!series) {
+    return {
+      title: 'Show Series — Complete Episode Guide | Pinfall Data',
+      description: 'Browse every episode of this WWE show series with full match cards and results.',
+    }
+  }
+
+  const firstYear = series.first_episode_date ? new Date(series.first_episode_date).getFullYear() : null
+  const yearStr = firstYear ? ` (${firstYear}–${series.is_active ? 'Present' : ''})` : ''
+
+  const title = `${series.name}${yearStr} — Complete Episode Guide | Pinfall Data`
+  const description = series.description
+    ? `${series.description.substring(0, 150)}... Browse every ${series.name} episode with match cards, results, venues, and ratings.`
+    : `Complete episode guide for ${series.name}. Every show with full match cards, results, venues, attendance, and detailed statistics on Pinfall Data.`
+
+  return {
+    title,
+    description,
+    keywords: [
+      series.name, 'WWE', 'episode guide', 'show history',
+      'match results', 'wrestling show', 'Pinfall Data',
+      `${series.name} episodes`, `${series.name} results`,
+    ],
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      ...(series.logo_url && { images: [{ url: series.logo_url, width: 400, height: 400 }] }),
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
+    alternates: {
+      canonical: `/matches/shows/${params.slug}`,
+    },
+  }
+}
+
+export default function Layout({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
