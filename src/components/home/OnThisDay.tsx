@@ -20,7 +20,10 @@ export function OnThisDay() {
   const [current, setCurrent] = useState(0)
 
   useEffect(() => {
-    fetch('/api/on-this-day')
+    const now = new Date()
+    const m = now.getMonth() + 1
+    const d = now.getDate()
+    fetch(`/api/on-this-day?month=${m}&day=${d}`)
       .then(r => r.json())
       .then(data => {
         setEvents(data.events || [])

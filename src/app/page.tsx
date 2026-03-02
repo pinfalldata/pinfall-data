@@ -27,7 +27,7 @@ export default function HomePage() {
       {/* ===== NEON SEPARATOR ===== */}
       <div className="neon-line-pink max-w-5xl mx-auto" />
 
-      {/* ===== ON THIS DAY — Full Width ===== */}
+      {/* ===== ON THIS DAY ===== */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-10">
         <OnThisDay />
       </section>
@@ -36,20 +36,17 @@ export default function HomePage() {
       <div className="neon-line max-w-5xl mx-auto" />
 
       {/* ===== SUPERSTAR GRID + SOCIAL WIDGETS ===== */}
-      <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-10">
-        <h2 className="font-display text-2xl lg:text-3xl font-bold text-text-white mb-6 text-center">
+      <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8">
+        <h2 className="font-display text-2xl lg:text-3xl font-bold text-text-white mb-5 text-center">
           <span className="text-neon-pink">Hall</span> of Legends
         </h2>
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-6">
-          {/* Grid takes most of the width */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-5">
           <SuperstarGrid />
-          {/* Social widgets sidebar — desktop only */}
           <div className="hidden lg:flex lg:flex-col lg:justify-start">
             <SocialWidgets mode="full" />
           </div>
         </div>
-        {/* Social widgets — mobile/tablet only */}
-        <div className="lg:hidden mt-8">
+        <div className="lg:hidden mt-6">
           <SocialWidgets mode="compact" />
         </div>
       </section>

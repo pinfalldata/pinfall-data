@@ -2,6 +2,9 @@
 import { NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 
+// ISR: Revalidate every 30 minutes
+export const revalidate = 1800
+
 /**
  * GET /api/homepage-stats
  * Fetches real counts from Supabase for the homepage stats section.

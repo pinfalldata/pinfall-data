@@ -74,6 +74,94 @@
     border: 1px solid rgba(199, 160, 90, 0.1);
   }
 
+  /* ============================================
+     Championship Gold Header
+     ============================================ */
+  .header-champ {
+    background: linear-gradient(180deg, #0c0f18 0%, rgba(5, 5, 7, 0.97) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .header-champ-transparent {
+    background: linear-gradient(180deg, rgba(12, 15, 24, 0.8) 0%, rgba(5, 5, 7, 0.6) 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .champ-border-bottom {
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, #c7a05a 25%, #e8d5a0 50%, #c7a05a 75%, transparent 100%);
+    position: relative;
+  }
+
+  .champ-border-bottom::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: inherit;
+    filter: blur(4px);
+    opacity: 0.5;
+  }
+
+  /* Shimmer animation on the gold line */
+  .champ-border-bottom::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -60%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, #e8d5a0, transparent);
+    animation: champ-shimmer 4s ease-in-out infinite;
+  }
+
+  .champ-logo-text {
+    background: linear-gradient(180deg, #e8d5a0 0%, #c7a05a 50%, #a07830 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 8px rgba(199, 160, 90, 0.25));
+  }
+
+  .nav-link-champ {
+    color: rgba(192, 192, 192, 0.7);
+    position: relative;
+  }
+
+  .nav-link-champ:hover {
+    color: #c7a05a;
+  }
+
+  .nav-link-champ::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 1px;
+    background: #c7a05a;
+    box-shadow: 0 0 6px rgba(199, 160, 90, 0.4);
+    transition: width 0.25s;
+  }
+
+  .nav-link-champ:hover::after {
+    width: 70%;
+  }
+
+  .search-btn-champ {
+    color: rgba(192, 192, 192, 0.6);
+  }
+
+  .search-btn-champ:hover {
+    color: #c7a05a;
+    filter: drop-shadow(0 0 6px rgba(199, 160, 90, 0.3));
+  }
+
   /* Subtle grid background overlay */
   .bg-grid {
     background-image:
@@ -186,4 +274,9 @@
   0% { background-position: 200% 200%; }
   50% { background-position: -50% -50%; }
   100% { background-position: 200% 200%; }
+}
+
+@keyframes champ-shimmer {
+  0% { left: -60%; }
+  100% { left: 100%; }
 }

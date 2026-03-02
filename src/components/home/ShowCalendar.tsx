@@ -164,7 +164,7 @@ export function ShowCalendar() {
                     <Image src={s.logo_url} alt="" width={16} height={16} className="w-full h-full object-contain" />
                   </div>
                 )}
-                {s.short_name || s.name}
+                {s.name}
               </button>
             )
           })}
