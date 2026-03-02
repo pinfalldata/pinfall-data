@@ -32,7 +32,7 @@ export default function AllShowsPage() {
       {/* ===== HERO ===== */}
       <section className="relative w-full h-[200px] sm:h-[260px] lg:h-[340px] xl:h-[380px] overflow-hidden">
         <Image src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page/showspage.webp"
-          alt="All WWE Shows" fill priority sizes="100vw" quality={90}
+          alt="All WWE Shows" fill priority sizes="100vw" quality={100} unoptimized
           className="object-cover object-center" />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/50 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-bg-primary/30 via-transparent to-bg-primary/30" />
@@ -77,7 +77,7 @@ export default function AllShowsPage() {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
             {filtered.map(show => (
-              <Link key={show.id} href={`/shows/${show.slug}`}
+              <Link key={show.id} href={`/matches/shows/${show.slug}`}
                 className="group relative rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 overflow-hidden hover:border-neon-blue/25 hover:bg-bg-secondary/35 transition-all duration-300 flex flex-col">
                 {/* Logo area */}
                 <div className="aspect-square flex items-center justify-center p-4 sm:p-6 relative">

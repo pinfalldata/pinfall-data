@@ -19,10 +19,12 @@ export async function GET() {
       return NextResponse.json({ error: 'Failed to fetch shows' }, { status: 500 })
     }
 
-    // Get episode count per series for display
+    // Get episode count per series — IMPORTANT: Supabase defaults to 1000 rows max
     const { data: counts } = await supabase
       .from('shows')
       .select('show_series_id')
+      .not('show_series_id', 'is', null)
+      .limit(100000)
 
     const countMap = new Map<number, number>()
     if (counts) {

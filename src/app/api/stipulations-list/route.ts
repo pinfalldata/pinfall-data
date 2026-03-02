@@ -57,10 +57,12 @@ export async function GET(request) {
       return NextResponse.json({ error: 'Failed to fetch stipulations' }, { status: 500 })
     }
 
-    // Get match counts per type
+    // Get match counts per type — IMPORTANT: Supabase defaults to 1000 rows max
     const { data: matchCounts } = await supabase
       .from('matches')
       .select('match_type_id')
+      .not('match_type_id', 'is', null)
+      .limit(100000)
 
     const countMap = new Map<number, number>()
     if (matchCounts) {

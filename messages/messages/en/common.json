@@ -1,0 +1,76 @@
+{
+  "nav": {
+    "home": "Home",
+    "matches": "Matches & Shows",
+    "superstars": "Superstars",
+    "champions": "Champions",
+    "history": "WWE History",
+    "omg": "OMG Moments",
+    "tagTeams": "Tag Teams & Stables",
+    "rivalries": "Rivalries",
+    "records": "Records & Statistics",
+    "hallOfFame": "Hall of Fame & Awards",
+    "bonus": "Bonus",
+    "search": "Search superstars, matches, shows..."
+  },
+  "home": {
+    "hero": {
+      "title": "The Ultimate WWE Database",
+      "subtitle": "Every superstar. Every match. Every moment. From 1953 to today."
+    },
+    "stats": {
+      "superstars": "Superstars",
+      "matches": "Matches",
+      "shows": "Shows",
+      "years": "Years of History",
+      "championships": "Championships",
+      "matchTypes": "Match Types"
+    },
+    "sections": {
+      "matchOfTheDay": "Match of the Day",
+      "rivalryOfTheDay": "Rivalry of the Day",
+      "quickAccess": "Quick Access",
+      "latestResults": "Latest Results",
+      "timeline": "WWE Timeline"
+    }
+  },
+  "superstars": {
+    "title": "Superstars",
+    "subtitle": "Browse the complete roster across all eras",
+    "filters": {
+      "all": "All",
+      "active": "Active",
+      "retired": "Retired",
+      "search": "Search by name...",
+      "sortBy": "Sort by",
+      "alphabetical": "A-Z",
+      "debut": "Debut Date",
+      "matches": "Most Matches",
+      "titles": "Most Titles"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "noResults": "No results found",
+    "viewAll": "View All",
+    "share": "Share",
+    "wins": "Wins",
+    "losses": "Losses",
+    "draws": "Draws",
+    "winRate": "Win Rate",
+    "totalMatches": "Total Matches",
+    "championships": "Championships",
+    "reign": "Reign",
+    "reigns": "Reigns",
+    "days": "days",
+    "duration": "Duration",
+    "rating": "Rating",
+    "result": "Result",
+    "winner": "Winner"
+  },
+  "footer": {
+    "disclaimer": "Pinfall Data is a fan-made project created by a single passionate individual. All multimedia content, images, and YouTube videos are the property of WWE (World Wrestling Entertainment). This site is not affiliated with, endorsed by, or connected to WWE in any way.",
+    "legal": "Legal Notice",
+    "madeWith": "Made with passion for the WWE Universe"
+  }
+}

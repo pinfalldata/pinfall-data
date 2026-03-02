@@ -87,7 +87,7 @@ export default function MatchesPage() {
           priority
           sizes="100vw"
           unoptimized
-          quality={90}
+          quality={100}
           className="object-cover object-center"
         />
         {/* Gradient overlays */}

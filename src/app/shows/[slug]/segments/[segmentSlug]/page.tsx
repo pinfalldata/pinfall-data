@@ -1,32 +1,28 @@
+// @ts-nocheck
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/lib/supabase';
 import SegmentDetail from '@/components/segment/SegmentDetail';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
-interface PageProps {
-  params: { slug: string; segmentSlug: string };
-}
+type Props = {
+  params: Promise<{ slug: string; segmentSlug: string }>;
+};
 
 async function getSegment(showSlug: string, segmentSlug: string) {
-  const { data: show } = await supabase
+  const { data: show, error: showError } = await supabase
     .from('shows')
     .select('id')
     .eq('slug', showSlug)
     .single();
 
-  if (!show) return null;
+  if (showError || !show) return null;
 
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('show_segments')
     .select(`
       *,
       shows (
-        id, name, slug, date, venue, city, state, country,
+        id, name, slug, date, venue, city, state_province, country,
         attendance, tv_rating, start_time,
         show_series ( name, slug, logo_url ),
         show_commentators ( name ),
@@ -36,24 +32,30 @@ async function getSegment(showSlug: string, segmentSlug: string) {
       show_segments_media ( id, media_type, media_url, thumbnail_url, caption, sort_order ),
       show_segments_participants (
         id, role,
-        superstars ( id, name, slug, image_url )
+        superstars ( id, name, slug, photo_url )
       )
     `)
     .eq('show_id', show.id)
     .eq('slug', segmentSlug)
     .single();
 
+  if (error) {
+    console.error('[segment] query error:', error);
+    return null;
+  }
+
   return data;
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
   const segment = await getSegment(params.slug, params.segmentSlug);
-  if (!segment) return { title: 'Segment Not Found' };
+  if (!segment) return { title: 'Segment Not Found — Pinfall Data' };
 
   const show = segment.shows;
   const participants = segment.show_segments_participants?.map(
-    (p: any) => p.superstars.name
-  ).join(', ');
+    (p: any) => p.superstars?.name
+  ).filter(Boolean).join(', ');
 
   const title = `${segment.title} — ${show.name} | Pinfall Data`;
   const description = `${segment.title} segment from ${show.name} (${show.date}).${participants ? ` Featuring: ${participants}.` : ''} Full details, media, and description on Pinfall Data.`;
@@ -79,7 +81,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function SegmentPage({ params }: PageProps) {
+export default async function SegmentPage(props: Props) {
+  const params = await props.params;
   const segment = await getSegment(params.slug, params.segmentSlug);
   if (!segment) notFound();
 
@@ -95,7 +98,7 @@ export default async function SegmentPage({ params }: PageProps) {
       address: {
         '@type': 'PostalAddress',
         addressLocality: segment.shows.city,
-        addressRegion: segment.shows.state,
+        addressRegion: segment.shows.state_province,
         addressCountry: segment.shows.country,
       },
     },

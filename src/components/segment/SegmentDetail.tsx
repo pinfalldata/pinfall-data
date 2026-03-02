@@ -20,8 +20,7 @@ interface SegmentParticipant {
     id: string;
     name: string;
     slug: string;
-    image_url?: string;
-  };
+    photo_url?: string;  };
 }
 
 interface Segment {
@@ -42,7 +41,7 @@ interface Segment {
     date: string;
     venue?: string;
     city?: string;
-    state?: string;
+    state_province?: string;
     country?: string;
     attendance?: number;
     tv_rating?: number;
@@ -193,7 +192,7 @@ export default function SegmentDetail({ segment }: { segment: Segment }) {
               {show.venue && <span className="text-gray-300">{show.venue}</span>}
               {show.venue && show.city && <span> — </span>}
               {show.city && <span>{show.city}</span>}
-              {show.state && <span>, {show.state}</span>}
+              {show.state_province && <span>, {show.state_province}</span>}
               {show.country && <span>, {show.country}</span>}
             </div>
           )}
@@ -249,9 +248,9 @@ export default function SegmentDetail({ segment }: { segment: Segment }) {
                     className="group flex items-center gap-3 bg-zinc-900/60 border border-zinc-800 rounded-xl px-4 py-3 hover:border-amber-500/40 transition-all"
                   >
                     <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-zinc-700 group-hover:border-amber-500/50 transition-colors">
-                      {p.superstars.image_url ? (
+                      {p.superstars.photo_url ? (
                         <Image
-                          src={p.superstars.image_url}
+                          src={p.superstars.photo_url}
                           alt={p.superstars.name}
                           fill
                           className="object-cover"
