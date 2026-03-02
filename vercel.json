@@ -2,5 +2,10 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "regions": ["cdg1"],
-  "crons": []
+  "crons": [
+    {
+      "path": "/api/revalidate?secret=pinfall_secret_2026",
+      "schedule": "0 0 * * *"
+    }
+  ]
 }
