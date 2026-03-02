@@ -5,6 +5,10 @@ import { Oswald, Source_Sans_3, JetBrains_Mono } from 'next/font/google'
 import '@/styles/globals.css'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
+// --- AJOUT ICI ---
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/next'
+// -----------------
 
 const oswald = Oswald({
   subsets: ['latin'],
@@ -105,6 +109,12 @@ export default async function RootLayout({
             <main className="flex-1">{children}</main>
             <Footer />
           </div>
+          
+          {/* --- AJOUT ICI --- */}
+          <Analytics />
+          <SpeedInsights />
+          {/* ----------------- */}
+          
         </NextIntlClientProvider>
       </body>
     </html>
