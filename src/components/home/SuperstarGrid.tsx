@@ -81,6 +81,8 @@ export function SuperstarGrid() {
   const [bp, setBp] = useState<'mobile' | 'tablet' | 'desktop'>('desktop')
   const containerRef = useRef<HTMLDivElement>(null)
 
+  const [rowHeight, setRowHeight] = useState(105)
+
   // Detect breakpoint based on container width (not window)
   useEffect(() => {
     const el = containerRef.current
@@ -88,7 +90,20 @@ export function SuperstarGrid() {
 
     const check = () => {
       const w = el.getBoundingClientRect().width
-      setBp(w < 480 ? 'mobile' : w < 700 ? 'tablet' : 'desktop')
+      const newBp = w < 480 ? 'mobile' : w < 700 ? 'tablet' : 'desktop'
+      setBp(newBp)
+
+      // Compute row height to make cells square on desktop
+      const c = newBp === 'mobile' ? 4 : newBp === 'tablet' ? 5 : 6
+      const gap = newBp === 'mobile' ? 6 : 8 // gap-1.5 = 6px, gap-2 = 8px
+      const colWidth = (w - gap * (c - 1)) / c
+      if (newBp === 'desktop') {
+        setRowHeight(Math.round(colWidth))
+      } else if (newBp === 'tablet') {
+        setRowHeight(95)
+      } else {
+        setRowHeight(80)
+      }
     }
     check()
 
@@ -166,7 +181,7 @@ export function SuperstarGrid() {
           className="grid gap-1.5 sm:gap-2"
           style={{
             gridTemplateColumns: `repeat(${cols}, 1fr)`,
-            gridTemplateRows: `repeat(${rows}, ${bp === 'mobile' ? '80px' : bp === 'tablet' ? '95px' : '105px'})`,
+            gridTemplateRows: `repeat(${rows}, ${rowHeight}px)`,
           }}
         >
           {cells.map((cell, i) => {

@@ -1,7 +1,7 @@
 import { HeroRing } from '@/components/home/HeroRing'
 import { HomeStats } from '@/components/home/HomeStats'
 import { EraTimeline } from '@/components/home/EraTimeline'
-import { MatchOfDay } from '@/components/home/MatchOfDay'
+import { OnThisDay } from '@/components/home/OnThisDay'
 import { SuperstarGrid } from '@/components/home/SuperstarGrid'
 import { ShowCalendar } from '@/components/home/ShowCalendar'
 import { SocialWidgets } from '@/components/home/SocialWidgets'
@@ -27,9 +27,9 @@ export default function HomePage() {
       {/* ===== NEON SEPARATOR ===== */}
       <div className="neon-line-pink max-w-5xl mx-auto" />
 
-      {/* ===== MATCH OF THE DAY — Full Width ===== */}
+      {/* ===== ON THIS DAY — Full Width ===== */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-10">
-        <MatchOfDay />
+        <OnThisDay />
       </section>
 
       {/* ===== NEON SEPARATOR ===== */}

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Image from 'next/image'
 
 interface Era {
@@ -18,18 +18,12 @@ export function EraTimeline() {
   const [eras, setEras] = useState<Era[]>([])
   const [loading, setLoading] = useState(true)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const animRef = useRef<number | null>(null)
+  const isPaused = useRef(false)
+  const speedRef = useRef(0.5) // px per frame — smooth & slow
 
   useEffect(() => {
-    fetch('/api/match-filters') // Reuse or create dedicated endpoint
-      .then(r => r.json())
-      .catch(() => null)
-
-    // Fetch eras directly
-    fetch('/api/homepage-stats')
-      .then(() => {
-        // We need a separate call for eras - use inline fetch
-        return fetch('/api/eras')
-      })
+    fetch('/api/eras')
       .then(r => r.ok ? r.json() : { eras: [] })
       .then(data => {
         setEras(data.eras || [])
@@ -38,10 +32,46 @@ export function EraTimeline() {
       .catch(() => setLoading(false))
   }, [])
 
+  // Auto-scroll animation loop
+  const animate = useCallback(() => {
+    const el = scrollRef.current
+    if (!el || isPaused.current) {
+      animRef.current = requestAnimationFrame(animate)
+      return
+    }
+
+    el.scrollLeft += speedRef.current
+
+    // When we reach the halfway point (duplicated content), reset seamlessly
+    const halfScroll = el.scrollWidth / 2
+    if (el.scrollLeft >= halfScroll) {
+      el.scrollLeft = 0
+    }
+
+    animRef.current = requestAnimationFrame(animate)
+  }, [])
+
+  useEffect(() => {
+    if (eras.length === 0) return
+    animRef.current = requestAnimationFrame(animate)
+    return () => {
+      if (animRef.current) cancelAnimationFrame(animRef.current)
+    }
+  }, [eras, animate])
+
+  const handleMouseEnter = () => { isPaused.current = true }
+  const handleMouseLeave = () => { isPaused.current = false }
+  const handleTouchStart = () => { isPaused.current = true }
+  const handleTouchEnd = () => {
+    setTimeout(() => { isPaused.current = false }, 2000)
+  }
+
   const scroll = (dir: 'left' | 'right') => {
     if (!scrollRef.current) return
+    isPaused.current = true
     const amount = 320
     scrollRef.current.scrollBy({ left: dir === 'left' ? -amount : amount, behavior: 'smooth' })
+    setTimeout(() => { isPaused.current = false }, 3000)
   }
 
   if (loading) {
@@ -61,6 +91,9 @@ export function EraTimeline() {
 
   if (eras.length === 0) return null
 
+  // Duplicate eras for seamless infinite loop
+  const displayEras = [...eras, ...eras]
+
   return (
     <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-10">
       <div className="flex items-center justify-between mb-6">
@@ -79,17 +112,22 @@ export function EraTimeline() {
         </div>
       </div>
 
-      {/* Timeline line */}
       <div className="relative">
         <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-neon-blue/30 to-transparent z-0" />
 
-        <div ref={scrollRef} className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 relative z-10">
-          {eras.map((era, i) => (
+        <div
+          ref={scrollRef}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 relative z-10"
+        >
+          {displayEras.map((era, i) => (
             <div
-              key={era.id}
+              key={`${era.id}-${i}`}
               className="group relative w-72 sm:w-80 shrink-0 rounded-2xl border border-border-subtle/30 bg-bg-secondary/30 overflow-hidden hover:border-neon-blue/30 hover:bg-bg-secondary/50 transition-all duration-300"
             >
-              {/* Image */}
               <div className="relative w-full h-36 bg-bg-tertiary overflow-hidden">
                 {era.image_url ? (
                   <Image src={era.image_url} alt={era.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -98,9 +136,7 @@ export function EraTimeline() {
                     <span className="text-4xl opacity-30">📜</span>
                   </div>
                 )}
-                {/* Overlay gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/90 via-transparent to-transparent" />
-                {/* Year badge */}
                 <div className="absolute bottom-3 left-3 flex items-center gap-1.5">
                   <span className="px-2 py-0.5 rounded-md bg-neon-blue/20 border border-neon-blue/30 text-neon-blue text-xs font-mono font-bold">
                     {era.start_year}
@@ -112,7 +148,6 @@ export function EraTimeline() {
                 </div>
               </div>
 
-              {/* Info */}
               <div className="p-4">
                 <h3 className="font-display text-base font-bold text-text-white group-hover:text-neon-blue transition-colors">
                   {era.name}
@@ -124,7 +159,6 @@ export function EraTimeline() {
                 )}
               </div>
 
-              {/* Timeline dot */}
               <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full border-2 border-neon-blue bg-bg-primary flex items-center justify-center">
                 <div className="w-2 h-2 rounded-full bg-neon-blue" />
               </div>
