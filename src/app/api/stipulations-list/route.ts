@@ -5,9 +5,11 @@ import { supabase } from '@/lib/supabase'
 /**
  * GET /api/stipulations-list?category=environmental (optional)
  * Returns all match types sorted by popularity (match count), with optional category filter
+ * 
+ * FIX: Uses paginated fetching to get ALL match_type_ids (Supabase default limit is 1000)
  */
 
-// Client-side category mapping until Supabase column is added
+// Client-side category mapping
 const CATEGORY_MAP: Record<string, string[]> = {
   'Environmental': [
     'steel cage', 'hell in a cell', 'elimination chamber', 'tlc', 'punjabi prison',
@@ -41,6 +43,50 @@ function getCategoryForType(typeName: string): string {
   return 'Standard'
 }
 
+/**
+ * Fetch ALL match_type_ids by paginating through results
+ * Supabase defaults to 1000 rows max per request
+ */
+async function fetchAllMatchTypeCounts(): Promise<Map<number, number>> {
+  const countMap = new Map<number, number>()
+  const PAGE_SIZE = 1000
+  let offset = 0
+  let hasMore = true
+
+  while (hasMore) {
+    const { data, error } = await supabase
+      .from('matches')
+      .select('match_type_id')
+      .not('match_type_id', 'is', null)
+      .range(offset, offset + PAGE_SIZE - 1)
+
+    if (error) {
+      console.error('[stipulations-list] fetch batch error at offset', offset, error)
+      break
+    }
+
+    if (!data || data.length === 0) {
+      hasMore = false
+      break
+    }
+
+    for (const m of data) {
+      if (m.match_type_id) {
+        countMap.set(m.match_type_id, (countMap.get(m.match_type_id) || 0) + 1)
+      }
+    }
+
+    // If we got fewer than PAGE_SIZE, we've reached the end
+    if (data.length < PAGE_SIZE) {
+      hasMore = false
+    } else {
+      offset += PAGE_SIZE
+    }
+  }
+
+  return countMap
+}
+
 export async function GET(request) {
   const { searchParams } = new URL(request.url)
   const categoryFilter = searchParams.get('category')
@@ -49,7 +95,7 @@ export async function GET(request) {
     // Fetch all match types
     const { data: types, error } = await supabase
       .from('match_types')
-      .select('id, name, slug, description, image_url')
+      .select('id, name, slug, description, image_url, category')
       .order('name', { ascending: true })
 
     if (error) {
@@ -57,59 +103,35 @@ export async function GET(request) {
       return NextResponse.json({ error: 'Failed to fetch stipulations' }, { status: 500 })
     }
 
-    // Get match counts per type — IMPORTANT: Supabase defaults to 1000 rows max
-    const { data: matchCounts } = await supabase
-      .from('matches')
-      .select('match_type_id')
-      .not('match_type_id', 'is', null)
-      .limit(100000)
-
-    const countMap = new Map<number, number>()
-    if (matchCounts) {
-      for (const m of matchCounts) {
-        if (m.match_type_id) {
-          countMap.set(m.match_type_id, (countMap.get(m.match_type_id) || 0) + 1)
-        }
-      }
-    }
+    // Get accurate match counts by paginating through all matches
+    const countMap = await fetchAllMatchTypeCounts()
 
     let enriched = (types || []).map(t => ({
       ...t,
       match_count: countMap.get(t.id) || 0,
-      category: getCategoryForType(t.name),
+      category: t.category || getCategoryForType(t.name),
     }))
 
     // Sort by match count descending (most used first)
     enriched.sort((a, b) => b.match_count - a.match_count)
 
-    // Apply category filter
-    if (categoryFilter && categoryFilter !== 'all') {
-      enriched = enriched.filter(t => t.category === categoryFilter)
-    }
-
-    // Get all categories with counts
-    const categories = new Map<string, number>()
-    for (const t of enriched) {
-      categories.set(t.category, (categories.get(t.category) || 0) + 1)
-    }
-
-    const allTypes = (types || []).map(t => ({
-      ...t,
-      match_count: countMap.get(t.id) || 0,
-      category: getCategoryForType(t.name),
-    }))
-
-    const categoryList = [...new Set(allTypes.map(t => t.category))]
+    // Build category list BEFORE filtering
+    const allForCategories = [...enriched]
+    const categoryList = [...new Set(allForCategories.map(t => t.category))]
       .map(cat => ({
         name: cat,
-        count: allTypes.filter(t => t.category === cat).length,
+        count: allForCategories.filter(t => t.category === cat).length,
       }))
       .sort((a, b) => {
-        // Put 'Standard' last
         if (a.name === 'Standard') return 1
         if (b.name === 'Standard') return -1
         return b.count - a.count
       })
+
+    // Apply category filter
+    if (categoryFilter && categoryFilter !== 'all') {
+      enriched = enriched.filter(t => t.category === categoryFilter)
+    }
 
     return NextResponse.json({
       stipulations: enriched,

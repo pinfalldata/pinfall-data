@@ -4,7 +4,11 @@ import { supabase } from '@/lib/supabase'
 
 /**
  * GET /api/stipulation-detail?slug=steel-cage-match&page=1&limit=50
- * Returns match type info + paginated matches with participants
+ * 
+ * Additional filters:
+ * year, showSeriesId, minRating, maxRating, resultType, championshipOnly
+ * 
+ * Returns: matchType info, paginated matches, win method statistics
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
@@ -13,12 +17,21 @@ export async function GET(request: NextRequest) {
   const limit = Math.min(100, Math.max(10, parseInt(searchParams.get('limit') || '50')))
   const offset = (page - 1) * limit
 
+  // Filters
+  const year = searchParams.get('year')
+  const showSeriesId = searchParams.get('showSeriesId')
+  const minRating = searchParams.get('minRating')
+  const maxRating = searchParams.get('maxRating')
+  const resultType = searchParams.get('resultType')
+  const championshipOnly = searchParams.get('championshipOnly') === 'true'
+  const titleChangeOnly = searchParams.get('titleChangeOnly') === 'true'
+
   if (!slug) {
     return NextResponse.json({ error: 'slug is required' }, { status: 400 })
   }
 
   try {
-    // Fetch match type info — use * to avoid missing column errors
+    // Fetch match type info
     const { data: matchType, error: mtError } = await supabase
       .from('match_types')
       .select('*')
@@ -30,15 +43,15 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Match type not found', details: mtError?.message }, { status: 404 })
     }
 
-    // Fetch paginated matches of this type
-    const { data: matches, error: mError, count } = await supabase
+    // Build the query with filters
+    let query = supabase
       .from('matches')
       .select(`
         id, slug, date, duration_seconds, rating, result_type, winner_team,
         is_title_change, card_position, match_order, is_dark_match,
         championship:championships(id, name, slug, image_url),
         show:shows(
-          id, name, slug, date, city, state_province, country,
+          id, name, slug, date, city, state_province, country, show_series_id,
           show_series:show_series_id(id, name, short_name, logo_url)
         ),
         participants:match_participants(
@@ -48,15 +61,35 @@ export async function GET(request: NextRequest) {
       `, { count: 'exact' })
       .eq('match_type_id', matchType.id)
       .order('date', { ascending: false })
-      .range(offset, offset + limit - 1)
+
+    // Apply filters
+    if (year) {
+      query = query.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`)
+    }
+    if (minRating) query = query.gte('rating', parseFloat(minRating))
+    if (maxRating) query = query.lte('rating', parseFloat(maxRating))
+    if (resultType) query = query.eq('result_type', resultType)
+    if (championshipOnly) query = query.not('championship_id', 'is', null)
+    if (titleChangeOnly) query = query.eq('is_title_change', true)
+
+    // Pagination
+    query = query.range(offset, offset + limit - 1)
+
+    const { data: matches, error: mError, count } = await query
 
     if (mError) {
       console.error('[stipulation-detail] matches error:', mError)
       return NextResponse.json({ error: 'Failed to fetch matches', details: mError?.message }, { status: 500 })
     }
 
+    // Post-filter for showSeriesId (can't filter in Supabase nested join)
+    let filtered = matches || []
+    if (showSeriesId) {
+      filtered = filtered.filter((m: any) => m.show?.show_series_id === parseInt(showSeriesId))
+    }
+
     // Enrich matches with teams structure
-    const enriched = (matches || []).map((m: any) => {
+    const enriched = filtered.map((m: any) => {
       const participants = m.participants || []
       const teams = new Map<number, any[]>()
       for (const p of participants) {
@@ -112,6 +145,63 @@ export async function GET(request: NextRequest) {
     const total = count || 0
     const totalPages = Math.ceil(total / limit)
 
+    // ===== WIN METHOD STATISTICS =====
+    // Fetch all result_type values for this match type to build stats
+    // Use paginated approach to get accurate counts
+    let winMethodStats: Record<string, number> = {}
+    let totalForStats = 0
+    let avgRating: number | null = null
+    let avgDuration: number | null = null
+    let titleChangeCount = 0
+
+    try {
+      const PAGE_SIZE = 1000
+      let statsOffset = 0
+      let hasMore = true
+      const ratingValues: number[] = []
+      const durationValues: number[] = []
+
+      while (hasMore) {
+        const { data: statsData } = await supabase
+          .from('matches')
+          .select('result_type, rating, duration_seconds, is_title_change')
+          .eq('match_type_id', matchType.id)
+          .range(statsOffset, statsOffset + PAGE_SIZE - 1)
+
+        if (!statsData || statsData.length === 0) {
+          hasMore = false
+          break
+        }
+
+        for (const m of statsData) {
+          totalForStats++
+          if (m.result_type) {
+            winMethodStats[m.result_type] = (winMethodStats[m.result_type] || 0) + 1
+          }
+          if (m.rating) ratingValues.push(Number(m.rating))
+          if (m.duration_seconds) durationValues.push(m.duration_seconds)
+          if (m.is_title_change) titleChangeCount++
+        }
+
+        if (statsData.length < PAGE_SIZE) hasMore = false
+        else statsOffset += PAGE_SIZE
+      }
+
+      if (ratingValues.length > 0) {
+        avgRating = Math.round((ratingValues.reduce((a, b) => a + b, 0) / ratingValues.length) * 100) / 100
+      }
+      if (durationValues.length > 0) {
+        avgDuration = Math.round(durationValues.reduce((a, b) => a + b, 0) / durationValues.length)
+      }
+    } catch (statsErr) {
+      console.error('[stipulation-detail] stats error (non-blocking):', statsErr)
+    }
+
+    // Sort win methods by count descending
+    const sortedWinMethods = Object.entries(winMethodStats)
+      .map(([method, count]) => ({ method, count, percentage: totalForStats > 0 ? Math.round((count / totalForStats) * 1000) / 10 : 0 }))
+      .sort((a, b) => b.count - a.count)
+
     return NextResponse.json({
       matchType,
       matches: enriched,
@@ -119,6 +209,14 @@ export async function GET(request: NextRequest) {
       page,
       limit,
       totalPages,
+      stats: {
+        winMethods: sortedWinMethods,
+        totalMatches: totalForStats,
+        avgRating,
+        avgDuration,
+        titleChangeCount,
+        titleChangePercentage: totalForStats > 0 ? Math.round((titleChangeCount / totalForStats) * 1000) / 10 : 0,
+      },
     })
   } catch (err: any) {
     console.error('[stipulation-detail] unexpected error:', err)

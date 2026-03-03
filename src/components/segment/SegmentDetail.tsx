@@ -250,16 +250,29 @@ export default function SegmentDetail({ segment }: { segment: Segment }) {
       </section>
 
       {/* ===== MAIN CONTENT ===== */}
-      <div className="relative">
+      <div className="relative overflow-hidden">
+        {/* Microphone decoration — only for in_ring_segment, subtle and on the side */}
         {isInRing && (
-          <div className="absolute right-0 top-0 bottom-0 w-[300px] lg:w-[400px] pointer-events-none overflow-hidden opacity-[0.04]">
-            <Image
-              src={MIC_BG_URL}
-              alt=""
-              fill
-              className="object-contain object-right"
-              aria-hidden="true"
-            />
+          <div
+            className="absolute right-0 top-8 w-[220px] lg:w-[320px] pointer-events-none select-none"
+            style={{ height: 'calc(100% - 32px)' }}
+          >
+            <div
+              className="sticky top-20 w-full h-[400px] lg:h-[500px] opacity-[0.06]"
+              style={{
+                animation: 'mic-float 6s ease-in-out infinite',
+              }}
+            >
+              <Image
+                src={MIC_BG_URL}
+                alt=""
+                fill
+                className="object-contain object-right-top"
+                aria-hidden="true"
+                sizes="320px"
+                unoptimized
+              />
+            </div>
           </div>
         )}
 
@@ -369,6 +382,14 @@ export default function SegmentDetail({ segment }: { segment: Segment }) {
           )}
         </div>
       </div>
+
+      {/* CSS animation for microphone float */}
+      <style jsx global>{`
+        @keyframes mic-float {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-12px) rotate(1deg); }
+        }
+      `}</style>
     </div>
   );
 }

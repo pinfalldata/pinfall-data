@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase'
 
 /**
  * GET /api/show-series-detail?slug=raw&page=1&limit=50
- * Returns show series info + paginated list of episodes
+ * Returns show series info + paginated list of episodes with logos
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Fetch series info — select only guaranteed columns first
+    // Fetch series info — all columns including banner_url, description
     const { data: series, error: seriesError } = await supabase
       .from('show_series')
       .select('*')
@@ -30,12 +30,13 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Show series not found', details: seriesError?.message }, { status: 404 })
     }
 
-    // Fetch paginated episodes
+    // Fetch paginated episodes with logo_url for each show
     const { data: episodes, error: epError, count } = await supabase
       .from('shows')
       .select(`
         id, name, slug, date, venue, city, state_province, country,
-        attendance, tv_audience, show_type, episode_number
+        attendance, tv_audience, show_type, episode_number, logo_url,
+        arena:arena_id ( id, name )
       `, { count: 'exact' })
       .eq('show_series_id', series.id)
       .order('date', { ascending: false })
@@ -46,16 +47,46 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to fetch episodes', details: epError?.message }, { status: 500 })
     }
 
+    // Get first and last episode dates for stats
+    let firstDate = series.first_episode_date
+    let lastDate = null
+
+    if (!firstDate) {
+      const { data: firstEp } = await supabase
+        .from('shows')
+        .select('date')
+        .eq('show_series_id', series.id)
+        .order('date', { ascending: true })
+        .limit(1)
+        .single()
+      firstDate = firstEp?.date || null
+    }
+
+    // Latest episode date
+    const { data: lastEp } = await supabase
+      .from('shows')
+      .select('date')
+      .eq('show_series_id', series.id)
+      .order('date', { ascending: false })
+      .limit(1)
+      .single()
+    lastDate = lastEp?.date || null
+
     const total = count || 0
     const totalPages = Math.ceil(total / limit)
 
     return NextResponse.json({
-      series,
+      series: {
+        ...series,
+        first_episode_date: firstDate,
+      },
       episodes: episodes || [],
       total,
       page,
       limit,
       totalPages,
+      firstDate,
+      lastDate,
     })
   } catch (err: any) {
     console.error('[show-series-detail] unexpected error:', err)
