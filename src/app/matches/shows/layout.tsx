@@ -1,57 +1,27 @@
-// @ts-nocheck
 import type { Metadata } from 'next'
-import { supabase } from '@/lib/supabase'
 
-type Props = {
-  params: Promise<{ slug: string }>
-}
-
-export async function generateMetadata(props: Props): Promise<Metadata> {
-  const params = await props.params
-  const { data: series } = await supabase
-    .from('show_series')
-    .select('name, description, logo_url, first_episode_date, is_active')
-    .eq('slug', params.slug)
-    .single()
-
-  if (!series) {
-    return {
-      title: 'Show Series — Complete Episode Guide | Pinfall Data',
-      description: 'Browse every episode of this WWE show series with full match cards and results.',
-    }
-  }
-
-  const firstYear = series.first_episode_date ? new Date(series.first_episode_date).getFullYear() : null
-  const yearStr = firstYear ? ` (${firstYear}–${series.is_active ? 'Present' : ''})` : ''
-
-  const title = `${series.name}${yearStr} — Complete Episode Guide | Pinfall Data`
-  const description = series.description
-    ? `${series.description.substring(0, 150)}... Browse every ${series.name} episode with match cards, results, venues, and ratings.`
-    : `Complete episode guide for ${series.name}. Every show with full match cards, results, venues, attendance, and detailed statistics on Pinfall Data.`
-
-  return {
-    title,
-    description,
-    keywords: [
-      series.name, 'WWE', 'episode guide', 'show history',
-      'match results', 'wrestling show', 'Pinfall Data',
-      `${series.name} episodes`, `${series.name} results`,
-    ],
-    openGraph: {
-      title,
-      description,
-      type: 'website',
-      ...(series.logo_url && { images: [{ url: series.logo_url, width: 400, height: 400 }] }),
-    },
-    twitter: {
-      card: 'summary',
-      title,
-      description,
-    },
-    alternates: {
-      canonical: `/matches/shows/${params.slug}`,
-    },
-  }
+export const metadata: Metadata = {
+  title: 'WWE Shows — Browse All Show Series & Episodes | Pinfall Data',
+  description:
+    'Browse every WWE show series: Raw, SmackDown, NXT, Premium Live Events, and more. Complete episode guides with match cards, results, venues, and attendance figures.',
+  keywords: [
+    'WWE shows', 'Raw', 'SmackDown', 'NXT', 'Premium Live Events',
+    'WWE episode guide', 'wrestling shows', 'Pinfall Data',
+    'WWE show history', 'WWE events',
+  ],
+  openGraph: {
+    title: 'WWE Shows — Browse All Show Series & Episodes | Pinfall Data',
+    description: 'Complete guide to every WWE show series with full episode histories and match cards.',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'WWE Shows — Browse All Show Series | Pinfall Data',
+    description: 'Every WWE show series with full episode histories.',
+  },
+  alternates: {
+    canonical: '/matches/shows',
+  },
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {

@@ -6,7 +6,8 @@ import { supabase } from '@/lib/supabase'
  * GET /api/stipulations-list?category=environmental (optional)
  * Returns all match types sorted by popularity (match count), with optional category filter
  * 
- * FIX: Uses paginated fetching to get ALL match_type_ids (Supabase default limit is 1000)
+ * FIX: Uses individual COUNT queries per match type instead of fetching all rows.
+ * This avoids the Supabase 1000-row default limit issue.
  */
 
 // Client-side category mapping
@@ -43,50 +44,6 @@ function getCategoryForType(typeName: string): string {
   return 'Standard'
 }
 
-/**
- * Fetch ALL match_type_ids by paginating through results
- * Supabase defaults to 1000 rows max per request
- */
-async function fetchAllMatchTypeCounts(): Promise<Map<number, number>> {
-  const countMap = new Map<number, number>()
-  const PAGE_SIZE = 1000
-  let offset = 0
-  let hasMore = true
-
-  while (hasMore) {
-    const { data, error } = await supabase
-      .from('matches')
-      .select('match_type_id')
-      .not('match_type_id', 'is', null)
-      .range(offset, offset + PAGE_SIZE - 1)
-
-    if (error) {
-      console.error('[stipulations-list] fetch batch error at offset', offset, error)
-      break
-    }
-
-    if (!data || data.length === 0) {
-      hasMore = false
-      break
-    }
-
-    for (const m of data) {
-      if (m.match_type_id) {
-        countMap.set(m.match_type_id, (countMap.get(m.match_type_id) || 0) + 1)
-      }
-    }
-
-    // If we got fewer than PAGE_SIZE, we've reached the end
-    if (data.length < PAGE_SIZE) {
-      hasMore = false
-    } else {
-      offset += PAGE_SIZE
-    }
-  }
-
-  return countMap
-}
-
 export async function GET(request) {
   const { searchParams } = new URL(request.url)
   const categoryFilter = searchParams.get('category')
@@ -103,10 +60,33 @@ export async function GET(request) {
       return NextResponse.json({ error: 'Failed to fetch stipulations' }, { status: 500 })
     }
 
-    // Get accurate match counts by paginating through all matches
-    const countMap = await fetchAllMatchTypeCounts()
+    if (!types || types.length === 0) {
+      return NextResponse.json({ stipulations: [], categories: [], total: 0 })
+    }
 
-    let enriched = (types || []).map(t => ({
+    // Get match counts using individual COUNT queries (head: true = no data, just count)
+    // This is reliable regardless of Supabase row limits
+    const countResults = await Promise.all(
+      types.map(async (t) => {
+        const { count, error: countError } = await supabase
+          .from('matches')
+          .select('*', { count: 'exact', head: true })
+          .eq('match_type_id', t.id)
+
+        if (countError) {
+          console.error(`[stipulations-list] count error for type ${t.id}:`, countError)
+          return { id: t.id, count: 0 }
+        }
+        return { id: t.id, count: count || 0 }
+      })
+    )
+
+    const countMap = new Map<number, number>()
+    for (const r of countResults) {
+      countMap.set(r.id, r.count)
+    }
+
+    let enriched = types.map(t => ({
       ...t,
       match_count: countMap.get(t.id) || 0,
       category: t.category || getCategoryForType(t.name),

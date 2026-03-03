@@ -5,6 +5,9 @@ import { supabase } from '@/lib/supabase'
 /**
  * GET /api/shows-list
  * Returns all show series sorted by activity (active first) then by first_episode_date desc
+ * 
+ * FIX: Uses individual COUNT queries per show series instead of fetching all rows.
+ * This avoids the Supabase 1000-row default limit issue.
  */
 export async function GET() {
   try {
@@ -19,30 +22,38 @@ export async function GET() {
       return NextResponse.json({ error: 'Failed to fetch shows' }, { status: 500 })
     }
 
-    // Get episode count per series — IMPORTANT: Supabase defaults to 1000 rows max
-    const { data: counts } = await supabase
-      .from('shows')
-      .select('show_series_id')
-      .not('show_series_id', 'is', null)
-      .limit(100000)
+    if (!series || series.length === 0) {
+      return NextResponse.json({ shows: [] })
+    }
+
+    // Get episode count per series using individual COUNT queries (reliable)
+    const countResults = await Promise.all(
+      series.map(async (s) => {
+        const { count, error: countError } = await supabase
+          .from('shows')
+          .select('*', { count: 'exact', head: true })
+          .eq('show_series_id', s.id)
+
+        if (countError) {
+          console.error(`[shows-list] count error for series ${s.id}:`, countError)
+          return { id: s.id, count: 0 }
+        }
+        return { id: s.id, count: count || 0 }
+      })
+    )
 
     const countMap = new Map<number, number>()
-    if (counts) {
-      for (const c of counts) {
-        if (c.show_series_id) {
-          countMap.set(c.show_series_id, (countMap.get(c.show_series_id) || 0) + 1)
-        }
-      }
+    for (const r of countResults) {
+      countMap.set(r.id, r.count)
     }
 
     const enriched = (series || []).map(s => {
-      // Extract years from first_episode_date
       const startYear = s.first_episode_date ? new Date(s.first_episode_date).getFullYear() : null
       return {
         ...s,
         episode_count: countMap.get(s.id) || 0,
         start_year: startYear,
-        end_year: s.is_active ? null : null, // Would need last episode date; show "Present" if active
+        end_year: s.is_active ? null : null,
       }
     })
 

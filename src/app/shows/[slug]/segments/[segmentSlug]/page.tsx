@@ -16,7 +16,7 @@ async function getSegmentData(showSlug: string, segmentSlug: string) {
       .select(`
         id, name, slug, date, venue, city, state_province, country,
         attendance, tv_audience, start_time, primary_color, logo_url,
-        show_series:show_series_id ( id, name, slug, logo_url )
+        show_series:show_series_id ( id, name, slug, logo_url, short_name )
       `)
       .eq('slug', showSlug)
       .single();
@@ -133,6 +133,9 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       title,
       description,
     },
+    alternates: {
+      canonical: `/shows/${params.slug}/segments/${params.segmentSlug}`,
+    },
   };
 }
 
@@ -171,7 +174,9 @@ export default async function SegmentPage(props: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <SegmentDetail segment={segment} />
+      <main className="min-h-screen">
+        <SegmentDetail segment={segment} />
+      </main>
     </>
   );
 }

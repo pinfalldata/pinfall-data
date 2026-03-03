@@ -1,395 +1,289 @@
-'use client';
+'use client'
 
-import React from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from 'next/image'
+import Link from 'next/link'
+import { MediaCarousel } from '@/components/ui/MediaCarousel'
+import {
+  formatDate, formatDuration, formatNumber,
+  formatCompactNumber, formatTime,
+  getShowColorStyle, getSegmentCategoryLabel, getSegmentCategoryIcon,
+} from '@/lib/utils'
 
-interface SegmentMedia {
-  id: string;
-  media_type: string;
-  url: string;
-  thumbnail_url?: string;
-  title?: string;
-  sort_order: number;
-}
-
-interface SegmentParticipant {
-  id: string;
-  role: string;
-  sort_order: number;
-  superstar: {
-    id: string;
-    name: string;
-    slug: string;
-    photo_url?: string;
-  };
-}
-
-interface CrewMember {
-  superstar: {
-    id: string;
-    name: string;
-    slug: string;
-    photo_url?: string;
-  };
-}
-
-interface Segment {
-  id: string;
-  title: string;
-  slug: string;
-  category: string;
-  description_md?: string;
-  image_url?: string;
-  sort_order: number;
-  duration_seconds?: number;
-  media?: SegmentMedia[];
-  participants?: SegmentParticipant[];
-  show: {
-    id: string;
-    name: string;
-    slug: string;
-    date: string;
-    venue?: string;
-    city?: string;
-    state_province?: string;
-    country?: string;
-    attendance?: number;
-    tv_audience?: number;
-    start_time?: string;
-    primary_color?: string;
-    logo_url?: string;
-    show_series?: {
-      id: number;
-      name: string;
-      slug: string;
-      logo_url?: string;
-    };
-    commentators?: CrewMember[];
-    ringAnnouncers?: CrewMember[];
-  };
-}
-
-const segmentTypeLabels: Record<string, string> = {
-  in_ring_segment: '🎤 In-Ring Segment',
-  backstage: '🚪 Backstage',
-  interference: '⚡ Interference',
-  ceremony: '🏆 Ceremony',
-  authority: '👔 Authority',
-  psychology: '🧠 Psychology',
-  props_spectacle: '🎪 Props & Spectacle',
-  medical_injury: '🏥 Medical / Injury',
-  musical: '🎵 Musical',
-  fan_engagement: '📣 Fan Engagement',
-  broadcast: '📺 Broadcast',
-  digital: '💻 Digital',
-  interview: '🎙️ Interview',
-  promo: '📢 Promo',
-  entrance: '🎵 Entrance',
-  video_package: '📹 Video Package',
-  announcement: '📣 Announcement',
-  other: '📋 Other',
-};
-
-const MIC_BG_URL = 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Segments/microwwe.png';
-
-function formatDate(dateStr: string) {
-  const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-}
-
-function formatDuration(seconds: number) {
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-  return `${m}:${s.toString().padStart(2, '0')}`;
-}
+const MIC_BG_URL = 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Segments/microwwe.png'
 
 function renderDescription(md?: string) {
-  if (!md) return null;
-  const paragraphs = md.split(/\n\s*\n/);
+  if (!md) return null
+  const paragraphs = md.split(/\n\s*\n/)
   return paragraphs.map((para, i) => {
-    const lines = para.split('\n');
+    const lines = para.split('\n')
     return (
-      <p key={i} className="text-gray-300 leading-relaxed mb-4 last:mb-0">
+      <p key={i} className="text-text-primary leading-relaxed mb-4 last:mb-0">
         {lines.map((line, j) => (
-          <React.Fragment key={j}>
+          <span key={j}>
             {j > 0 && <br />}
             {line}
-          </React.Fragment>
+          </span>
         ))}
       </p>
-    );
-  });
+    )
+  })
 }
 
-export default function SegmentDetail({ segment }: { segment: Segment }) {
-  const show = segment.show;
-  const media = segment.media?.sort((a, b) => a.sort_order - b.sort_order) || [];
-  const participants = segment.participants?.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0)) || [];
-  const isInRing = segment.category === 'in_ring_segment';
+export default function SegmentDetail({ segment }: { segment: any }) {
+  const show = segment.show
+  const color = show?.primary_color || '#c7a05a'
+  const colorStyle = getShowColorStyle(color) as React.CSSProperties
+  const participants = (segment.participants || []).sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0))
+  const media = (segment.media || []).sort((a: any, b: any) => a.sort_order - b.sort_order)
+
+  const epNum = show?.episodeNumber || show?.episode_number
+  const seriesName = show?.show_series?.short_name || show?.show_series?.name || ''
+  const venue = [show?.venue, show?.city, show?.state_province, show?.country].filter(Boolean).join(', ')
+
+  const commentators = show?.commentators || []
+  const ringAnnouncers = show?.ringAnnouncers || []
+
+  const categoryLabel = getSegmentCategoryLabel(segment.category)
+  const categoryIcon = getSegmentCategoryIcon(segment.category)
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* ===== HERO IMAGE ===== */}
-      {segment.image_url && (
-        <section className="relative h-[280px] sm:h-[360px] lg:h-[440px] w-full overflow-hidden">
-          <Image
-            src={segment.image_url}
-            alt={segment.title}
-            fill
-            className="object-cover object-top transition-transform duration-700 hover:scale-105"
-            priority
-            quality={100}
-            sizes="100vw"
-            unoptimized
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30" />
-          <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.5)]" />
-          
-          <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 lg:p-12">
-            <div className="max-w-6xl mx-auto">
-              <span className="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 bg-amber-500/20 text-amber-400 border border-amber-500/30">
-                {segmentTypeLabels[segment.category] || segment.category}
-              </span>
-              <h1 className="text-2xl sm:text-3xl lg:text-5xl font-black">
-                <span className="text-amber-400">{segment.title.split(' ')[0]}</span>{' '}
-                <span className="text-white">{segment.title.split(' ').slice(1).join(' ')}</span>
-              </h1>
-              {segment.duration_seconds && (
-                <p className="text-gray-400 mt-2 text-sm">
-                  ⏱️ {formatDuration(segment.duration_seconds)}
-                </p>
+    <div style={colorStyle}>
+      {/* ===== Show header breadcrumb bar (same as MatchHero) ===== */}
+      <div className="bg-bg-secondary/60 border-b border-border-subtle/20">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-3">
+          {/* Top row: logo + name + info pills */}
+          <div className="flex items-center gap-3 flex-wrap">
+            {show?.logo_url && (
+              <Link href={`/shows/${show?.slug}`}>
+                <Image src={show.logo_url} alt="" width={48} height={48} className="h-10 sm:h-12 w-auto object-contain" />
+              </Link>
+            )}
+            <div className="min-w-0">
+              <Link href={`/shows/${show?.slug}`} className="text-sm sm:text-base font-bold hover:underline" style={{ color }}>
+                {show?.name}
+              </Link>
+              <p className="text-xs text-text-secondary">{formatDate(show?.date)}</p>
+            </div>
+            {/* Quick info pills */}
+            <div className="flex items-center gap-2 ml-auto flex-wrap">
+              {epNum && (
+                <span className="text-[10px] px-2 py-1 rounded-full border border-border-subtle/30 bg-bg-tertiary/50 text-text-secondary">
+                  📺 {seriesName} #{epNum}
+                </span>
+              )}
+              {show?.attendance && (
+                <span className="text-[10px] px-2 py-1 rounded-full border border-border-subtle/30 bg-bg-tertiary/50 text-text-secondary">
+                  🏟️ {formatNumber(show.attendance)}
+                </span>
+              )}
+              {show?.tv_audience && (
+                <span className="text-[10px] px-2 py-1 rounded-full border border-border-subtle/30 bg-bg-tertiary/50 text-text-secondary">
+                  📡 {formatCompactNumber(show.tv_audience)}
+                </span>
+              )}
+              {show?.start_time && (
+                <span className="text-[10px] px-2 py-1 rounded-full border border-border-subtle/30 bg-bg-tertiary/50 text-text-secondary">
+                  🕐 {formatTime(show.start_time)}
+                </span>
               )}
             </div>
           </div>
-        </section>
-      )}
 
-      {/* ===== NO HERO FALLBACK ===== */}
-      {!segment.image_url && (
-        <section className="relative py-10 sm:py-14 lg:py-20 bg-gradient-to-b from-zinc-900 to-black">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
-            <span className="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-3 bg-amber-500/20 text-amber-400 border border-amber-500/30">
-              {segmentTypeLabels[segment.category] || segment.category}
-            </span>
-            <h1 className="text-2xl sm:text-3xl lg:text-5xl font-black">
-              <span className="text-amber-400">{segment.title.split(' ')[0]}</span>{' '}
-              <span className="text-white">{segment.title.split(' ').slice(1).join(' ')}</span>
-            </h1>
-            {segment.duration_seconds && (
-              <p className="text-gray-400 mt-3 text-sm">
-                ⏱️ {formatDuration(segment.duration_seconds)}
-              </p>
-            )}
-          </div>
-        </section>
-      )}
-
-      {/* ===== SHOW INFO BAR ===== */}
-      <section className="bg-zinc-900/80 border-y border-amber-500/10">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4">
-          <div className="flex flex-wrap items-center gap-3 mb-3">
-            {show.show_series?.logo_url && (
-              <Image
-                src={show.show_series.logo_url}
-                alt={show.show_series.name}
-                width={40}
-                height={40}
-                className="rounded"
-              />
-            )}
-            <div>
-              <Link 
-                href={`/shows/${show.slug}`}
-                className="text-amber-400 font-bold text-lg hover:text-amber-300 transition-colors"
-              >
-                {show.name}
-              </Link>
-              <p className="text-gray-400 text-sm">{formatDate(show.date)}</p>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-gray-300">
-            {show.attendance && (
-              <span>🏟️ {show.attendance.toLocaleString()}</span>
-            )}
-            {show.tv_audience && (
-              <span>📡 {show.tv_audience}M</span>
-            )}
-            {show.start_time && (
-              <span>🕐 {show.start_time}</span>
-            )}
-          </div>
-
-          {(show.venue || show.city) && (
-            <div className="mt-2 text-sm text-gray-400">
-              <span>📍 </span>
-              {show.venue && <span className="text-gray-300">{show.venue}</span>}
-              {show.venue && show.city && <span> — </span>}
-              {show.city && <span>{show.city}</span>}
-              {show.state_province && <span>, {show.state_province}</span>}
-              {show.country && <span>, {show.country}</span>}
-            </div>
-          )}
-
-          {/* Crew */}
-          <div className="flex flex-wrap gap-x-5 gap-y-1 mt-2 text-sm">
-            {show.commentators && show.commentators.length > 0 && (
-              <span className="text-gray-400">
-                📺 <span className="text-gray-300">{show.commentators.map((c: any) => c.superstar?.name).filter(Boolean).join(', ')}</span>
-              </span>
-            )}
-            {show.ringAnnouncers && show.ringAnnouncers.length > 0 && (
-              <span className="text-gray-400">
-                🎙️ <span className="text-gray-300">{show.ringAnnouncers.map((a: any) => a.superstar?.name).filter(Boolean).join(', ')}</span>
-              </span>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* ===== MAIN CONTENT ===== */}
-      <div className="relative overflow-hidden">
-        {/* Microphone decoration — only for in_ring_segment, subtle and on the side */}
-        {isInRing && (
-          <div
-            className="absolute right-0 top-8 w-[220px] lg:w-[320px] pointer-events-none select-none"
-            style={{ height: 'calc(100% - 32px)' }}
-          >
-            <div
-              className="sticky top-20 w-full h-[400px] lg:h-[500px] opacity-[0.06]"
-              style={{
-                animation: 'mic-float 6s ease-in-out infinite',
-              }}
-            >
-              <Image
-                src={MIC_BG_URL}
-                alt=""
-                fill
-                className="object-contain object-right-top"
-                aria-hidden="true"
-                sizes="320px"
-                unoptimized
-              />
-            </div>
-          </div>
-        )}
-
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-8 lg:py-12">
-          {/* ===== PARTICIPANTS ===== */}
-          {participants.length > 0 && (
-            <section className="mb-10">
-              <h2 className="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wider">
-                Participants
-              </h2>
-              <div className="flex flex-wrap gap-4">
-                {participants.map((p) => (
-                  <Link
-                    key={p.id}
-                    href={`/superstars/${p.superstar.slug}`}
-                    className="group flex items-center gap-3 bg-zinc-900/60 border border-zinc-800 rounded-xl px-4 py-3 hover:border-amber-500/40 transition-all"
-                  >
-                    <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-zinc-700 group-hover:border-amber-500/50 transition-colors">
-                      {p.superstar.photo_url ? (
-                        <Image
-                          src={p.superstar.photo_url}
-                          alt={p.superstar.name}
-                          fill
-                          className="object-cover"
-                          sizes="48px"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-zinc-800 flex items-center justify-center text-amber-400 text-lg font-bold">
-                          {p.superstar.name[0]}
-                        </div>
-                      )}
-                    </div>
-                    <div>
-                      <span className="text-white font-semibold group-hover:text-amber-400 transition-colors text-sm">
-                        {p.superstar.name}
-                      </span>
-                      {p.role && p.role !== 'participant' && (
-                        <span className="block text-xs text-gray-500 capitalize">{p.role}</span>
-                      )}
-                    </div>
+          {/* Bottom row: venue + commentary + ring announcers */}
+          <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-text-secondary">
+            {(show?.arena || venue) && (
+              <span className="flex items-center gap-1">
+                <span>📍</span>
+                {show?.arena?.slug ? (
+                  <Link href={`/arenas/${show.arena.slug}`} className="hover:underline" style={{ color }}>
+                    {show.arena.name || venue}
                   </Link>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* ===== DESCRIPTION ===== */}
-          {segment.description_md && (
-            <section className="mb-10">
-              <h2 className="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wider">
-                Description
-              </h2>
-              <div className="bg-zinc-900/40 border border-zinc-800 rounded-xl p-5 sm:p-6 max-w-3xl">
-                {renderDescription(segment.description_md)}
-              </div>
-            </section>
-          )}
-
-          {/* ===== MEDIA ===== */}
-          {media.length > 0 && (
-            <section className="mb-10">
-              <h2 className="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wider">
-                Media
-              </h2>
-              <div className={`
-                ${media.length === 1 
-                  ? 'flex justify-center' 
-                  : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'
-                }
-              `}>
-                {media.map((m) => (
-                  <div
-                    key={m.id}
-                    className={`
-                      bg-zinc-900/60 border border-zinc-800 rounded-xl overflow-hidden
-                      ${media.length === 1 ? 'w-full max-w-2xl' : ''}
-                    `}
-                  >
-                    {m.media_type === 'video' || m.url?.includes('youtube') || m.url?.includes('youtu.be') ? (
-                      <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-                        <iframe
-                          src={m.url.replace('watch?v=', 'embed/').replace('youtu.be/', 'www.youtube.com/embed/')}
-                          className="absolute inset-0 w-full h-full"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                          title={m.title || segment.title}
-                        />
-                      </div>
+                ) : (
+                  <span>{venue}</span>
+                )}
+                {show?.arena && (
+                  <span className="text-text-secondary/60">
+                    {[show.arena.city || show?.city, show.arena.state_province || show?.state_province, show.arena.country || show?.country].filter(Boolean).join(', ')}
+                  </span>
+                )}
+              </span>
+            )}
+            {commentators.length > 0 && (
+              <span className="flex items-center gap-1">
+                <span>🎧</span>
+                {commentators.map((c: any, i: number) => (
+                  <span key={c.id || i}>
+                    {c.superstar?.slug ? (
+                      <Link href={`/superstars/${c.superstar.slug}`} className="hover:underline" style={{ color }}>
+                        {c.superstar?.name}
+                      </Link>
                     ) : (
-                      <div className="relative aspect-video">
-                        <Image
-                          src={m.thumbnail_url || m.url}
-                          alt={m.title || segment.title}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        />
-                      </div>
+                      <span>{c.superstar?.name}</span>
                     )}
-                    {m.title && (
-                      <p className="px-3 py-2 text-xs text-gray-400 text-center">{m.title}</p>
-                    )}
-                  </div>
+                    {i < commentators.length - 1 && ', '}
+                  </span>
                 ))}
-              </div>
-            </section>
-          )}
+              </span>
+            )}
+            {ringAnnouncers.length > 0 && (
+              <span className="flex items-center gap-1">
+                <span>🎙️</span>
+                {ringAnnouncers.map((ra: any, i: number) => (
+                  <span key={ra.id || i}>
+                    {ra.superstar?.slug ? (
+                      <Link href={`/superstars/${ra.superstar.slug}`} className="hover:underline" style={{ color }}>
+                        {ra.superstar?.name}
+                      </Link>
+                    ) : (
+                      <span>{ra.superstar?.name}</span>
+                    )}
+                    {i < ringAnnouncers.length - 1 && ', '}
+                  </span>
+                ))}
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* CSS animation for microphone float */}
-      <style jsx global>{`
-        @keyframes mic-float {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-12px) rotate(1deg); }
-        }
-      `}</style>
+      {/* ===== Segment hero section (same structure as MatchHero) ===== */}
+      <section className="relative overflow-hidden bg-bg-primary">
+        <div className="relative py-8 sm:py-12 lg:py-16">
+          {/* Dynamic background glow */}
+          <div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-[220px] opacity-12 pointer-events-none"
+            style={{ backgroundColor: color }}
+          />
+
+          {/* Microphone background decoration — always visible, subtle */}
+          <div className="absolute right-4 lg:right-16 top-1/2 -translate-y-1/2 w-[180px] h-[280px] sm:w-[220px] sm:h-[340px] lg:w-[300px] lg:h-[460px] pointer-events-none select-none opacity-[0.05]">
+            <Image
+              src={MIC_BG_URL}
+              alt=""
+              fill
+              className="object-contain"
+              aria-hidden="true"
+              sizes="300px"
+              unoptimized
+            />
+          </div>
+
+          <div className="relative max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Category badge */}
+            <div className="text-center mb-4">
+              <span
+                className="inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border"
+                style={{
+                  backgroundColor: `${color}15`,
+                  borderColor: `${color}40`,
+                  color,
+                }}
+              >
+                {categoryIcon} {categoryLabel}
+              </span>
+            </div>
+
+            {/* Segment title */}
+            <div className="text-center mb-6">
+              <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold uppercase tracking-wide" style={{ color }}>
+                {segment.title}
+              </h1>
+            </div>
+
+            {/* Segment image if any */}
+            {segment.image_url && (
+              <div className="flex justify-center mb-8">
+                <div className="relative w-full max-w-2xl aspect-video rounded-2xl overflow-hidden border-2 border-border-subtle/30">
+                  <Image
+                    src={segment.image_url}
+                    alt={segment.title}
+                    fill
+                    className="object-cover"
+                    priority
+                    quality={100}
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 672px"
+                    unoptimized
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/40 to-transparent" />
+                </div>
+              </div>
+            )}
+
+            {/* Participants — match card style with photos */}
+            {participants.length > 0 && (
+              <div className="flex flex-wrap items-start justify-center gap-4 sm:gap-6 lg:gap-8 mb-6">
+                {participants.map((p: any) => {
+                  const s = p.superstar
+                  if (!s) return null
+                  return (
+                    <div key={p.id} className="flex flex-col items-center text-center" style={{ minWidth: '100px', maxWidth: '160px' }}>
+                      <Link href={`/superstars/${s.slug}`}>
+                        <div
+                          className="relative w-24 h-28 sm:w-32 sm:h-36 lg:w-36 lg:h-40 rounded-xl overflow-hidden border-2 transition-all hover:scale-105"
+                          style={{ borderColor: `${color}40` }}
+                        >
+                          {s.photo_url ? (
+                            <Image src={s.photo_url} alt={s.name} fill className="object-cover object-top" sizes="(max-width: 640px) 96px, 144px" />
+                          ) : (
+                            <div className="w-full h-full bg-bg-tertiary flex items-center justify-center">
+                              <span className="text-3xl text-border-subtle">?</span>
+                            </div>
+                          )}
+                        </div>
+                      </Link>
+                      <Link href={`/superstars/${s.slug}`} className="mt-2 text-sm font-medium text-text-white hover:underline" style={{ color }}>
+                        {s.name}
+                      </Link>
+                      {p.role && p.role !== 'participant' && (
+                        <span className="mt-0.5 text-[10px] text-text-secondary capitalize">{p.role}</span>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+
+            {/* Duration + Rating */}
+            <div className="text-center mt-4 space-y-3">
+              <div className="flex items-center justify-center gap-4 text-sm text-text-secondary flex-wrap">
+                {segment.duration_seconds && (
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
+                    ⏱️ {formatDuration(segment.duration_seconds)}
+                  </span>
+                )}
+                {segment.rating && (
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
+                    ⭐ {segment.rating}/10
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Description */}
+            {segment.description_md && (
+              <div className="mt-6 max-w-2xl mx-auto px-4 py-4 rounded-xl border border-border-subtle/20 bg-bg-secondary/20 text-sm leading-relaxed">
+                {renderDescription(segment.description_md)}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Neon separator */}
+        <div className="h-px" style={{ background: `linear-gradient(90deg, transparent, ${color}, transparent)` }} />
+      </section>
+
+      {/* ===== Media Carousel ===== */}
+      {media.length > 0 && (
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center mb-4">
+            <h2 className="font-display text-xl sm:text-2xl font-bold text-text-white uppercase tracking-wide">📹 Media</h2>
+            <div className="h-px mt-3 max-w-xs mx-auto" style={{ background: `linear-gradient(90deg, transparent, ${color}, transparent)` }} />
+          </div>
+          <MediaCarousel items={media} columns={2} color={color} />
+        </div>
+      )}
     </div>
-  );
+  )
 }
