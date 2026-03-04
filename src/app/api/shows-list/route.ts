@@ -4,17 +4,16 @@ import { supabase } from '@/lib/supabase'
 
 /**
  * GET /api/shows-list
- * Returns all show series sorted by activity (active first) then by first_episode_date desc
- * 
- * FIX: Uses individual COUNT queries per show series instead of fetching all rows.
- * This avoids the Supabase 1000-row default limit issue.
+ * Returns all show series with accurate episode counts and last show date
+ * Uses individual HEAD count queries to bypass PostgREST 1000-row limit
  */
 export async function GET() {
   try {
     const { data: series, error } = await supabase
       .from('show_series')
-      .select('id, name, slug, short_name, logo_url, description, first_episode_date, is_active, sort_order')
+      .select('id, name, slug, short_name, logo_url, description, first_episode_date, is_active, sort_order, is_ple')
       .order('is_active', { ascending: false })
+      .order('sort_order', { ascending: true })
       .order('first_episode_date', { ascending: false, nullsFirst: true })
 
     if (error) {
@@ -22,40 +21,46 @@ export async function GET() {
       return NextResponse.json({ error: 'Failed to fetch shows' }, { status: 500 })
     }
 
-    if (!series || series.length === 0) {
-      return NextResponse.json({ shows: [] })
-    }
-
-    // Get episode count per series using individual COUNT queries (reliable)
-    const countResults = await Promise.all(
-      series.map(async (s) => {
-        const { count, error: countError } = await supabase
+    // For each series: get accurate count + last episode date using individual queries
+    const enriched = await Promise.all(
+      (series || []).map(async (s) => {
+        // Get accurate episode count
+        const { count, error: countErr } = await supabase
           .from('shows')
           .select('*', { count: 'exact', head: true })
           .eq('show_series_id', s.id)
 
-        if (countError) {
-          console.error(`[shows-list] count error for series ${s.id}:`, countError)
-          return { id: s.id, count: 0 }
+        if (countErr) {
+          console.error(`[shows-list] count error for ${s.slug}:`, countErr)
         }
-        return { id: s.id, count: count || 0 }
+
+        // Get last episode date
+        const { data: lastEp, error: lastErr } = await supabase
+          .from('shows')
+          .select('date')
+          .eq('show_series_id', s.id)
+          .order('date', { ascending: false })
+          .limit(1)
+          .single()
+
+        if (lastErr && lastErr.code !== 'PGRST116') {
+          // PGRST116 = no rows found — that's ok
+          console.error(`[shows-list] last ep error for ${s.slug}:`, lastErr)
+        }
+
+        const startYear = s.first_episode_date ? new Date(s.first_episode_date).getFullYear() : null
+        const lastDate = lastEp?.date || null
+        const endYear = lastDate ? new Date(lastDate).getFullYear() : null
+
+        return {
+          ...s,
+          episode_count: count || 0,
+          start_year: startYear,
+          end_year: s.is_active ? null : endYear,
+          last_show_date: lastDate,
+        }
       })
     )
-
-    const countMap = new Map<number, number>()
-    for (const r of countResults) {
-      countMap.set(r.id, r.count)
-    }
-
-    const enriched = (series || []).map(s => {
-      const startYear = s.first_episode_date ? new Date(s.first_episode_date).getFullYear() : null
-      return {
-        ...s,
-        episode_count: countMap.get(s.id) || 0,
-        start_year: startYear,
-        end_year: s.is_active ? null : null,
-      }
-    })
 
     return NextResponse.json({ shows: enriched })
   } catch (err) {

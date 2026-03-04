@@ -4,7 +4,8 @@ import { supabase } from '@/lib/supabase'
 
 /**
  * GET /api/show-series-detail?slug=raw&page=1&limit=50
- * Returns show series info + paginated list of episodes with logos
+ * Returns show series info + paginated list of episodes
+ * Now includes prev/next series for navigation
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
@@ -18,7 +19,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Fetch series info — all columns including banner_url, description
+    // Fetch series info
     const { data: series, error: seriesError } = await supabase
       .from('show_series')
       .select('*')
@@ -30,7 +31,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Show series not found', details: seriesError?.message }, { status: 404 })
     }
 
-    // Fetch paginated episodes with logo_url for each show
+    // Fetch paginated episodes
     const { data: episodes, error: epError, count } = await supabase
       .from('shows')
       .select(`
@@ -47,30 +48,49 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to fetch episodes', details: epError?.message }, { status: 500 })
     }
 
-    // Get first and last episode dates for stats
+    // Get first and last episode dates
     let firstDate = series.first_episode_date
     let lastDate = null
 
-    if (!firstDate) {
-      const { data: firstEp } = await supabase
+    const [firstEpRes, lastEpRes] = await Promise.all([
+      !firstDate ? supabase
         .from('shows')
         .select('date')
         .eq('show_series_id', series.id)
         .order('date', { ascending: true })
         .limit(1)
-        .single()
-      firstDate = firstEp?.date || null
-    }
+        .single() : Promise.resolve({ data: null }),
+      supabase
+        .from('shows')
+        .select('date')
+        .eq('show_series_id', series.id)
+        .order('date', { ascending: false })
+        .limit(1)
+        .single(),
+    ])
 
-    // Latest episode date
-    const { data: lastEp } = await supabase
-      .from('shows')
-      .select('date')
-      .eq('show_series_id', series.id)
-      .order('date', { ascending: false })
-      .limit(1)
-      .single()
-    lastDate = lastEp?.date || null
+    if (!firstDate && firstEpRes.data) firstDate = firstEpRes.data.date
+    lastDate = lastEpRes.data?.date || null
+
+    // ===== PREV/NEXT SERIES NAVIGATION =====
+    // Get all series sorted by sort_order then name
+    const { data: allSeries } = await supabase
+      .from('show_series')
+      .select('id, name, slug, short_name, logo_url, sort_order')
+      .order('sort_order', { ascending: true })
+      .order('name', { ascending: true })
+
+    let prevSeries = null
+    let nextSeries = null
+    if (allSeries && allSeries.length > 1) {
+      const idx = allSeries.findIndex(s => s.id === series.id)
+      if (idx > 0) {
+        prevSeries = { slug: allSeries[idx - 1].slug, name: allSeries[idx - 1].name, short_name: allSeries[idx - 1].short_name, logo_url: allSeries[idx - 1].logo_url }
+      }
+      if (idx >= 0 && idx < allSeries.length - 1) {
+        nextSeries = { slug: allSeries[idx + 1].slug, name: allSeries[idx + 1].name, short_name: allSeries[idx + 1].short_name, logo_url: allSeries[idx + 1].logo_url }
+      }
+    }
 
     const total = count || 0
     const totalPages = Math.ceil(total / limit)
@@ -87,6 +107,8 @@ export async function GET(request: NextRequest) {
       totalPages,
       firstDate,
       lastDate,
+      prevSeries,
+      nextSeries,
     })
   } catch (err: any) {
     console.error('[show-series-detail] unexpected error:', err)

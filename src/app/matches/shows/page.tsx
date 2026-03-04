@@ -15,7 +15,10 @@ interface ShowSeries {
   is_active: boolean
   episode_count: number
   start_year: number | null
+  end_year: number | null
+  last_show_date: string | null
   sort_order: number | null
+  is_ple?: boolean | null
 }
 
 function formatYear(d: string | null) {
@@ -69,7 +72,7 @@ export default function ShowSeriesListPage() {
 
   return (
     <div className="relative min-h-screen">
-      {/* ===== HERO ===== */}
+      {/* ===== HERO with subtle ring ropes texture ===== */}
       <section className="relative overflow-hidden bg-bg-primary">
         <div className="relative py-12 sm:py-16 lg:py-20">
           {/* Grid background */}
@@ -80,6 +83,23 @@ export default function ShowSeriesListPage() {
               WebkitMaskImage: 'radial-gradient(ellipse 60% 50% at 50% 50%, black, transparent)',
             }}
           />
+
+          {/* Decorative ring ropes — subtle horizontal lines */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {[25, 40, 55].map((top) => (
+              <div
+                key={top}
+                className="absolute left-0 right-0 h-px"
+                style={{
+                  top: `${top}%`,
+                  background: `linear-gradient(90deg, transparent 5%, rgba(199,160,90,0.08) 20%, rgba(199,160,90,0.15) 50%, rgba(199,160,90,0.08) 80%, transparent 95%)`,
+                }}
+              />
+            ))}
+            {/* Corner turnbuckles */}
+            <div className="absolute top-[25%] left-[12%] w-3 h-3 rounded-full border border-neon-blue/10 bg-neon-blue/5" />
+            <div className="absolute top-[25%] right-[12%] w-3 h-3 rounded-full border border-neon-blue/10 bg-neon-blue/5" />
+          </div>
 
           {/* Gold glow */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full blur-[150px] opacity-15 pointer-events-none bg-neon-blue" />
@@ -119,7 +139,6 @@ export default function ShowSeriesListPage() {
       {/* ===== FILTERS ===== */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6">
         <div className="flex flex-col sm:flex-row items-center gap-3">
-          {/* Search */}
           <div className="relative flex-1 w-full sm:max-w-xs">
             <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -132,8 +151,6 @@ export default function ShowSeriesListPage() {
               className="w-full bg-bg-tertiary border border-border-subtle/30 rounded-xl pl-10 pr-4 py-2.5 text-xs text-text-white placeholder-text-secondary focus:border-neon-blue/50 focus:outline-none transition-colors"
             />
           </div>
-
-          {/* Filter buttons */}
           <div className="flex items-center gap-1">
             {(['all', 'active', 'inactive'] as const).map(f => (
               <button
@@ -169,7 +186,7 @@ export default function ShowSeriesListPage() {
         <section className="max-w-[1440px] mx-auto px-4 sm:px-6 pb-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {Array.from({ length: 12 }).map((_, i) => (
-              <div key={i} className="h-48 rounded-2xl bg-bg-secondary/30 animate-pulse" />
+              <div key={i} className="h-52 rounded-2xl bg-bg-secondary/30 animate-pulse" />
             ))}
           </div>
         </section>
@@ -178,7 +195,6 @@ export default function ShowSeriesListPage() {
       {/* ===== SHOW SERIES GRID ===== */}
       {!loading && !error && (
         <section className="max-w-[1440px] mx-auto px-4 sm:px-6 pb-12">
-          {/* Active shows */}
           {activeShows.length > 0 && (
             <div className="mb-10">
               {filter === 'all' && (
@@ -189,14 +205,11 @@ export default function ShowSeriesListPage() {
                 </div>
               )}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {activeShows.map(s => (
-                  <ShowSeriesCard key={s.id} series={s} />
-                ))}
+                {activeShows.map(s => <ShowSeriesCard key={s.id} series={s} />)}
               </div>
             </div>
           )}
 
-          {/* Inactive shows */}
           {inactiveShows.length > 0 && (
             <div>
               {filter === 'all' && (
@@ -206,9 +219,7 @@ export default function ShowSeriesListPage() {
                 </div>
               )}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {inactiveShows.map(s => (
-                  <ShowSeriesCard key={s.id} series={s} />
-                ))}
+                {inactiveShows.map(s => <ShowSeriesCard key={s.id} series={s} />)}
               </div>
             </div>
           )}
@@ -243,30 +254,33 @@ export default function ShowSeriesListPage() {
   )
 }
 
-/* ===== Show Series Card Component ===== */
+/* ===== Show Series Card — bigger logos + end year for inactive ===== */
 function ShowSeriesCard({ series }: { series: ShowSeries }) {
   const startYear = formatYear(series.first_episode_date)
-  const yearStr = startYear ? `${startYear}–${series.is_active ? 'Present' : ''}` : ''
+  const endYear = series.end_year || (series.last_show_date ? formatYear(series.last_show_date) : null)
+  const yearStr = startYear
+    ? `${startYear}–${series.is_active ? 'Present' : (endYear || '')}`
+    : ''
 
   return (
     <Link
       href={`/matches/shows/${series.slug}`}
       className="group relative flex flex-col rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 overflow-hidden transition-all hover:border-neon-blue/30 hover:bg-bg-secondary/25 card-glow"
     >
-      {/* Logo area */}
-      <div className="relative h-32 sm:h-36 flex items-center justify-center bg-bg-tertiary/30 p-4">
+      {/* Logo area — BIGGER logos */}
+      <div className="relative h-36 sm:h-40 flex items-center justify-center bg-bg-tertiary/30 p-4">
         {series.logo_url ? (
-          <div className="relative w-24 h-24 sm:w-28 sm:h-28">
+          <div className="relative w-28 h-28 sm:w-32 sm:h-32">
             <Image
               src={series.logo_url}
               alt={series.name}
               fill
               className="object-contain group-hover:scale-110 transition-transform duration-300"
-              sizes="112px"
+              sizes="128px"
             />
           </div>
         ) : (
-          <div className="w-24 h-24 rounded-2xl bg-bg-tertiary/50 flex items-center justify-center">
+          <div className="w-28 h-28 rounded-2xl bg-bg-tertiary/50 flex items-center justify-center">
             <span className="text-4xl opacity-30">📺</span>
           </div>
         )}

@@ -1,23 +1,13 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'WWE Shows — Browse All Show Series & Episodes | Pinfall Data',
-  description:
-    'Browse every WWE show series: Raw, SmackDown, NXT, Premium Live Events, and more. Complete episode guides with match cards, results, venues, and attendance figures.',
-  keywords: [
-    'WWE shows', 'Raw', 'SmackDown', 'NXT', 'Premium Live Events',
-    'WWE episode guide', 'wrestling shows', 'Pinfall Data',
-    'WWE show history', 'WWE events',
-  ],
+  title: 'WWE Shows — Complete Show Directory | Pinfall Data',
+  description: 'Browse every WWE show series from Raw and SmackDown to WrestleMania and Royal Rumble. Complete episode guides with match cards, results, venues, and ratings.',
+  keywords: ['WWE shows', 'Raw', 'SmackDown', 'WrestleMania', 'Royal Rumble', 'Premium Live Events', 'episode guide', 'Pinfall Data'],
   openGraph: {
-    title: 'WWE Shows — Browse All Show Series & Episodes | Pinfall Data',
-    description: 'Complete guide to every WWE show series with full episode histories and match cards.',
+    title: 'WWE Shows — Complete Show Directory | Pinfall Data',
+    description: 'Every WWE show series with full episode guides, match cards, and results.',
     type: 'website',
-  },
-  twitter: {
-    card: 'summary',
-    title: 'WWE Shows — Browse All Show Series | Pinfall Data',
-    description: 'Every WWE show series with full episode histories.',
   },
   alternates: {
     canonical: '/matches/shows',

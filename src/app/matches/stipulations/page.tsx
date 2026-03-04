@@ -57,12 +57,6 @@ export default function StipulationsListPage() {
     fetchData()
   }, [])
 
-  // Re-fetch with category filter
-  useEffect(() => {
-    if (activeCategory === 'all' && !loading) return
-    // We already have all data, filter client-side
-  }, [activeCategory])
-
   const filtered = stipulations.filter(s => {
     if (activeCategory !== 'all' && s.category !== activeCategory) return false
     if (search) {
@@ -76,7 +70,7 @@ export default function StipulationsListPage() {
 
   return (
     <div className="relative min-h-screen">
-      {/* ===== HERO ===== */}
+      {/* ===== HERO with chain-link fence texture ===== */}
       <section className="relative overflow-hidden bg-bg-primary">
         <div className="relative py-12 sm:py-16 lg:py-20">
           {/* Grid background */}
@@ -87,6 +81,18 @@ export default function StipulationsListPage() {
               WebkitMaskImage: 'radial-gradient(ellipse 60% 50% at 50% 50%, black, transparent)',
             }}
           />
+
+          {/* Subtle cage-like diagonal lines */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.04]">
+            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern id="cage" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M0 40L40 0M-10 10L10 -10M30 50L50 30" stroke="#c7a05a" strokeWidth="0.5" fill="none" />
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#cage)" />
+            </svg>
+          </div>
 
           {/* Gold glow */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full blur-[150px] opacity-15 pointer-events-none bg-neon-blue" />
@@ -99,7 +105,6 @@ export default function StipulationsListPage() {
               Every match type in WWE history — from Standard singles to Hell in a Cell. Browse complete match histories for each stipulation.
             </p>
 
-            {/* Quick stats */}
             {!loading && (
               <div className="flex items-center justify-center gap-6 sm:gap-8 mt-6">
                 <div className="text-center">
@@ -126,7 +131,6 @@ export default function StipulationsListPage() {
       {/* ===== FILTERS ===== */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6">
         <div className="flex flex-col gap-3">
-          {/* Search */}
           <div className="relative w-full sm:max-w-xs">
             <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -140,7 +144,6 @@ export default function StipulationsListPage() {
             />
           </div>
 
-          {/* Category tabs */}
           <div className="flex items-center gap-1.5 flex-wrap">
             <button
               onClick={() => setActiveCategory('all')}
@@ -234,14 +237,14 @@ export default function StipulationsListPage() {
   )
 }
 
-/* ===== Stipulation Card Component ===== */
+/* ===== Stipulation Card — CLEAN image, no category overlay ===== */
 function StipulationCard({ stipulation }: { stipulation: Stipulation }) {
   return (
     <Link
       href={`/matches/stipulations/${stipulation.slug}`}
       className="group relative flex flex-col rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 overflow-hidden transition-all hover:border-neon-blue/30 hover:bg-bg-secondary/25 card-glow"
     >
-      {/* Image area */}
+      {/* Image area — CLEAN, no overlay text */}
       <div className="relative h-36 sm:h-40 flex items-center justify-center bg-bg-tertiary/30 overflow-hidden">
         {stipulation.image_url ? (
           <Image
@@ -258,17 +261,10 @@ function StipulationCard({ stipulation }: { stipulation: Stipulation }) {
           </div>
         )}
         {stipulation.image_url && (
-          <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/60 via-transparent to-transparent" />
         )}
 
-        {/* Category pill */}
-        <div className="absolute top-3 left-3">
-          <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-bg-primary/80 backdrop-blur-sm border border-border-subtle/30 text-text-secondary">
-            {categoryIcons[stipulation.category] || '📋'} {stipulation.category}
-          </span>
-        </div>
-
-        {/* Match count — always visible */}
+        {/* Match count badge — bottom right */}
         <div className="absolute bottom-3 right-3">
           <span className="px-2 py-1 rounded-lg text-xs font-bold bg-bg-primary/80 backdrop-blur-sm border border-neon-blue/20 text-neon-blue">
             {stipulation.match_count.toLocaleString()}
@@ -281,13 +277,16 @@ function StipulationCard({ stipulation }: { stipulation: Stipulation }) {
         <h3 className="font-display text-sm font-bold text-text-white group-hover:text-neon-blue transition-colors">
           {stipulation.name}
         </h3>
+        {/* Category shown as subtle text below name instead of on image */}
+        <p className="text-[9px] text-text-secondary uppercase tracking-wider mt-0.5">
+          {categoryIcons[stipulation.category] || ''} {stipulation.category}
+        </p>
         {stipulation.description && (
           <p className="text-[11px] text-text-secondary mt-1.5 line-clamp-2 leading-relaxed">
             {stipulation.description}
           </p>
         )}
 
-        {/* Bottom bar */}
         <div className="mt-auto pt-3 flex items-center justify-between">
           <span className="text-[10px] text-text-secondary uppercase tracking-wider">
             {stipulation.match_count.toLocaleString()} match{stipulation.match_count !== 1 ? 'es' : ''}

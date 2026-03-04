@@ -4,11 +4,14 @@ import { supabase } from '@/lib/supabase'
 
 /**
  * GET /api/stipulation-detail?slug=steel-cage-match&page=1&limit=50
- * 
+ *
  * Additional filters:
  * year, showSeriesId, minRating, maxRating, resultType, championshipOnly
- * 
+ *
  * Returns: matchType info, paginated matches, win method statistics
+ *
+ * FIX: Separated count query from data query to avoid PostgREST issues
+ * with nested joins returning count=0 on large tables.
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
@@ -43,8 +46,32 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Match type not found', details: mtError?.message }, { status: 404 })
     }
 
-    // Build the query with filters
-    let query = supabase
+    // ===== STEP 1: Get accurate total count with a SIMPLE query (no nested joins) =====
+    let countQuery = supabase
+      .from('matches')
+      .select('id', { count: 'exact', head: true })
+      .eq('match_type_id', matchType.id)
+
+    if (year) {
+      countQuery = countQuery.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`)
+    }
+    if (minRating) countQuery = countQuery.gte('rating', parseFloat(minRating))
+    if (maxRating) countQuery = countQuery.lte('rating', parseFloat(maxRating))
+    if (resultType) countQuery = countQuery.eq('result_type', resultType)
+    if (championshipOnly) countQuery = countQuery.not('championship_id', 'is', null)
+    if (titleChangeOnly) countQuery = countQuery.eq('is_title_change', true)
+
+    const { count: totalCount, error: countError } = await countQuery
+
+    if (countError) {
+      console.error('[stipulation-detail] count error:', countError)
+    }
+
+    const total = totalCount || 0
+    const totalPages = Math.ceil(total / limit)
+
+    // ===== STEP 2: Fetch paginated matches with full data =====
+    let dataQuery = supabase
       .from('matches')
       .select(`
         id, slug, date, duration_seconds, rating, result_type, winner_team,
@@ -58,24 +85,24 @@ export async function GET(request: NextRequest) {
           id, team_number, is_winner, entry_number,
           superstar:superstars(id, name, slug, photo_url)
         )
-      `, { count: 'exact' })
+      `)
       .eq('match_type_id', matchType.id)
       .order('date', { ascending: false })
 
-    // Apply filters
+    // Apply same filters to data query
     if (year) {
-      query = query.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`)
+      dataQuery = dataQuery.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`)
     }
-    if (minRating) query = query.gte('rating', parseFloat(minRating))
-    if (maxRating) query = query.lte('rating', parseFloat(maxRating))
-    if (resultType) query = query.eq('result_type', resultType)
-    if (championshipOnly) query = query.not('championship_id', 'is', null)
-    if (titleChangeOnly) query = query.eq('is_title_change', true)
+    if (minRating) dataQuery = dataQuery.gte('rating', parseFloat(minRating))
+    if (maxRating) dataQuery = dataQuery.lte('rating', parseFloat(maxRating))
+    if (resultType) dataQuery = dataQuery.eq('result_type', resultType)
+    if (championshipOnly) dataQuery = dataQuery.not('championship_id', 'is', null)
+    if (titleChangeOnly) dataQuery = dataQuery.eq('is_title_change', true)
 
     // Pagination
-    query = query.range(offset, offset + limit - 1)
+    dataQuery = dataQuery.range(offset, offset + limit - 1)
 
-    const { data: matches, error: mError, count } = await query
+    const { data: matches, error: mError } = await dataQuery
 
     if (mError) {
       console.error('[stipulation-detail] matches error:', mError)
@@ -142,19 +169,15 @@ export async function GET(request: NextRequest) {
       }
     })
 
-    const total = count || 0
-    const totalPages = Math.ceil(total / limit)
-
-    // ===== WIN METHOD STATISTICS =====
-    // Fetch all result_type values for this match type to build stats
-    // Use paginated approach to get accurate counts
+    // ===== STEP 3: WIN METHOD STATISTICS (using individual count queries) =====
     let winMethodStats: Record<string, number> = {}
-    let totalForStats = 0
+    let totalForStats = total // use the already-computed total
     let avgRating: number | null = null
     let avgDuration: number | null = null
     let titleChangeCount = 0
 
     try {
+      // Get aggregate stats using paginated approach only for stats
       const PAGE_SIZE = 1000
       let statsOffset = 0
       let hasMore = true
@@ -174,7 +197,6 @@ export async function GET(request: NextRequest) {
         }
 
         for (const m of statsData) {
-          totalForStats++
           if (m.result_type) {
             winMethodStats[m.result_type] = (winMethodStats[m.result_type] || 0) + 1
           }

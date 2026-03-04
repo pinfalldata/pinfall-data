@@ -11,6 +11,7 @@ export function ShowHero({ show }: { show: any }) {
   const colorStyle = getShowColorStyle(color) as React.CSSProperties
   const hasLogo = show.logo_url && !logoError
   const seriesName = show.show_series?.short_name || ''
+  const seriesSlug = show.show_series?.slug || null
 
   return (
     <section className="relative overflow-hidden bg-bg-primary" style={colorStyle}>
@@ -77,18 +78,34 @@ export function ShowHero({ show }: { show: any }) {
                   {seriesName}
                 </span>
               )}
-              <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-bold text-text-white tracking-tight">
-                {show.name.toUpperCase()}
-              </h1>
+              {seriesSlug ? (
+                <Link href={`/matches/shows/${seriesSlug}`} className="group">
+                  <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-bold text-text-white tracking-tight group-hover:opacity-80 transition-opacity">
+                    {show.name.toUpperCase()}
+                  </h1>
+                </Link>
+              ) : (
+                <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-bold text-text-white tracking-tight">
+                  {show.name.toUpperCase()}
+                </h1>
+              )}
             </div>
           )}
 
-          {/* Show name below logo */}
+          {/* Show name below logo — CLICKABLE to series page */}
           {hasLogo && (
             <div className="mt-4 text-center">
-              <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-text-white tracking-tight">
-                {show.name.toUpperCase()}
-              </h1>
+              {seriesSlug ? (
+                <Link href={`/matches/shows/${seriesSlug}`} className="group">
+                  <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-text-white tracking-tight group-hover:opacity-80 transition-opacity">
+                    {show.name.toUpperCase()}
+                  </h1>
+                </Link>
+              ) : (
+                <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-text-white tracking-tight">
+                  {show.name.toUpperCase()}
+                </h1>
+              )}
             </div>
           )}
 
