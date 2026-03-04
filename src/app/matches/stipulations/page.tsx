@@ -277,10 +277,6 @@ function StipulationCard({ stipulation }: { stipulation: Stipulation }) {
         <h3 className="font-display text-sm font-bold text-text-white group-hover:text-neon-blue transition-colors">
           {stipulation.name}
         </h3>
-        {/* Category shown as subtle text below name instead of on image */}
-        <p className="text-[9px] text-text-secondary uppercase tracking-wider mt-0.5">
-          {categoryIcons[stipulation.category] || ''} {stipulation.category}
-        </p>
         {stipulation.description && (
           <p className="text-[11px] text-text-secondary mt-1.5 line-clamp-2 leading-relaxed">
             {stipulation.description}

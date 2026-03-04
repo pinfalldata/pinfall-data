@@ -268,19 +268,19 @@ function ShowSeriesCard({ series }: { series: ShowSeries }) {
       className="group relative flex flex-col rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 overflow-hidden transition-all hover:border-neon-blue/30 hover:bg-bg-secondary/25 card-glow"
     >
       {/* Logo area — BIGGER logos */}
-      <div className="relative h-36 sm:h-40 flex items-center justify-center bg-bg-tertiary/30 p-4">
+      <div className="relative h-40 sm:h-44 flex items-center justify-center bg-bg-tertiary/30 p-4">
         {series.logo_url ? (
-          <div className="relative w-28 h-28 sm:w-32 sm:h-32">
+          <div className="relative w-32 h-32 sm:w-36 sm:h-36">
             <Image
               src={series.logo_url}
               alt={series.name}
               fill
               className="object-contain group-hover:scale-110 transition-transform duration-300"
-              sizes="128px"
+              sizes="144px"
             />
           </div>
         ) : (
-          <div className="w-28 h-28 rounded-2xl bg-bg-tertiary/50 flex items-center justify-center">
+          <div className="w-32 h-32 rounded-2xl bg-bg-tertiary/50 flex items-center justify-center">
             <span className="text-4xl opacity-30">📺</span>
           </div>
         )}

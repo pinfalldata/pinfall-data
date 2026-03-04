@@ -80,7 +80,7 @@ function formatDuration(seconds: number) {
 function getYearOptions() {
   const years = []
   const now = new Date().getFullYear()
-  for (let y = now; y >= 1980; y--) years.push(y.toString())
+  for (let y = now; y >= 1940; y--) years.push(y.toString())
   return years
 }
 
@@ -102,6 +102,8 @@ export default function StipulationDetailPage() {
   })
   const [showSeries, setShowSeries] = useState<{ id: number; name: string; short_name: string | null }[]>([])
 
+  const [error, setError] = useState<string | null>(null)
+
   // Fetch show series for filter dropdown
   useEffect(() => {
     fetch('/api/match-search-filters')
@@ -112,6 +114,7 @@ export default function StipulationDetailPage() {
 
   const fetchData = useCallback(async (p: number, f?: Filters) => {
     setLoading(true)
+    setError(null)
     const activeFilters = f || filters
     try {
       const params = new URLSearchParams({ slug, page: p.toString(), limit: '50' })
@@ -125,13 +128,20 @@ export default function StipulationDetailPage() {
 
       const r = await fetch(`/api/stipulation-detail?${params.toString()}`)
       const d = await r.json()
+      if (!r.ok) {
+        setError(d.error || `Error ${r.status}`)
+        setLoading(false)
+        return
+      }
       if (d.matchType) setMatchType(d.matchType)
       setMatches(d.matches || [])
       setTotal(d.total || 0)
       setTotalPages(d.totalPages || 1)
       setPage(d.page || 1)
       if (d.stats) setStats(d.stats)
-    } catch { }
+    } catch (e: any) {
+      setError(e.message || 'Network error')
+    }
     setLoading(false)
   }, [slug, filters])
 
@@ -237,6 +247,18 @@ export default function StipulationDetailPage() {
           </div>
         </div>
       </section>
+
+      {/* ===== ERROR DISPLAY ===== */}
+      {error && (
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6">
+          <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-center">
+            <p className="text-red-400 text-sm">Error loading data: {error}</p>
+            <button onClick={() => fetchData(1)} className="mt-2 px-4 py-1.5 text-xs bg-red-500/20 border border-red-500/30 rounded-lg text-red-300 hover:bg-red-500/30 transition-colors">
+              Retry
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ===== DESCRIPTION + RULES ===== */}
       {(matchType?.description || matchType?.rules) && (
