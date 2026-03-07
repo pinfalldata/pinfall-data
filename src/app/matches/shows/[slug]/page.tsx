@@ -188,7 +188,7 @@ export default function ShowSeriesDetailPage() {
 
   return (
     <div className="relative">
-      {/* ===== HERO ===== */}
+      {/* ===== HERO with styled logo card ===== */}
       <section className="relative w-full h-[220px] sm:h-[300px] lg:h-[380px] overflow-hidden">
         {series?.banner_url ? (
           <Image src={series.banner_url} alt={series?.name || ''} fill priority
@@ -200,12 +200,30 @@ export default function ShowSeriesDetailPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-bg-primary/30 via-transparent to-bg-primary/30" />
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
 
+        {/* Grid bg */}
+        <div
+          className="absolute inset-0 bg-grid opacity-15 animate-grid-pulse pointer-events-none"
+          style={{
+            maskImage: 'radial-gradient(ellipse 60% 50% at 50% 50%, black, transparent)',
+            WebkitMaskImage: 'radial-gradient(ellipse 60% 50% at 50% 50%, black, transparent)',
+          }}
+        />
+
+        {/* Glow orb */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full blur-[150px] opacity-20 pointer-events-none bg-neon-blue" />
+
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">
-          {series?.logo_url && (
-            <div className="relative w-20 h-20 sm:w-28 sm:h-28 lg:w-36 lg:h-36 mb-3">
-              <Image src={series.logo_url} alt={series.name} fill className="object-contain drop-shadow-2xl" sizes="144px" />
+          {/* Logo in styled card — like ShowHero */}
+          {series?.logo_url ? (
+            <div className="relative w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 mb-3">
+              <div className="absolute -inset-2 rounded-2xl opacity-40 blur-xl pointer-events-none bg-neon-blue" />
+              <div className="absolute -inset-1 rounded-2xl opacity-60 pointer-events-none"
+                style={{ boxShadow: '0 0 30px rgba(199,160,90,0.25), 0 0 60px rgba(199,160,90,0.12)' }} />
+              <div className="relative w-full h-full rounded-2xl overflow-hidden border-2 border-neon-blue/30 bg-bg-tertiary/50 backdrop-blur-sm">
+                <Image src={series.logo_url} alt={series.name} fill className="object-contain p-3 drop-shadow-2xl" sizes="160px" />
+              </div>
             </div>
-          )}
+          ) : null}
           <h1 className="font-display text-2xl sm:text-3xl lg:text-5xl font-bold text-text-white text-center tracking-tight">
             {series?.name || <span className="bg-bg-secondary/50 rounded w-60 h-10 inline-block animate-pulse" />}
           </h1>
@@ -388,7 +406,7 @@ export default function ShowSeriesDetailPage() {
                 {roster.map(m => (
                   <Link key={m.id} href={`/superstars/${m.slug}`}
                     className="group rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 overflow-hidden transition-all hover:border-neon-blue/30 card-glow">
-                    <div className="relative h-32 sm:h-36 bg-bg-tertiary/30 overflow-hidden">
+                    <div className="relative aspect-square bg-bg-tertiary/30 overflow-hidden">
                       {m.photo_url ? (
                         <Image src={m.photo_url} alt={m.name} fill className="object-cover object-top group-hover:scale-105 transition-transform duration-300" sizes="200px" />
                       ) : (
@@ -436,7 +454,7 @@ export default function ShowSeriesDetailPage() {
                 {roster.map(m => (
                   <Link key={m.id} href={`/superstars/${m.slug}`}
                     className="group rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 overflow-hidden transition-all hover:border-neon-blue/30 card-glow">
-                    <div className="relative h-28 sm:h-32 bg-bg-tertiary/30 overflow-hidden">
+                    <div className="relative aspect-square bg-bg-tertiary/30 overflow-hidden">
                       {m.photo_url ? (
                         <Image src={m.photo_url} alt={m.name} fill className="object-cover object-top group-hover:scale-105 transition-transform duration-300" sizes="200px" />
                       ) : (

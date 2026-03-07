@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -28,9 +28,7 @@ interface Match {
   participantCount: number
 }
 
-interface WinMethod {
-  method: string; count: number; percentage: number
-}
+interface WinMethod { method: string; count: number; percentage: number }
 
 interface Stats {
   winMethods: WinMethod[]; totalMatches: number
@@ -39,8 +37,17 @@ interface Stats {
 }
 
 interface Filters {
-  year: string; showSeriesId: string; minRating: string; maxRating: string
+  year: string; month: string; showSeriesId: string; minRating: string; maxRating: string
   resultType: string; championshipOnly: boolean; titleChangeOnly: boolean
+  superstarId: string; superstarName: string
+  opponentId: string; opponentName: string
+  country: string; city: string; championshipId: string
+}
+
+interface FilterOptions {
+  showSeries: { id: number; name: string; short_name: string | null }[]
+  championships: { id: number; name: string; image_url: string | null }[]
+  countries: string[]
 }
 
 const categoryIcons: Record<string, string> = {
@@ -64,6 +71,8 @@ const resultColors: Record<string, string> = {
   time_limit_draw: 'bg-gray-400', other: 'bg-zinc-500',
 }
 
+const RESULT_TYPES = Object.entries(resultLabels).map(([k, v]) => ({ value: k, label: v }))
+
 function formatDate(d: string) {
   return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
 }
@@ -76,12 +85,16 @@ function formatDuration(seconds: number) {
   return `${m}:${s.toString().padStart(2, '0')}`
 }
 
-// Generate year options
-function getYearOptions() {
-  const years = []
-  const now = new Date().getFullYear()
-  for (let y = now; y >= 1940; y--) years.push(y.toString())
-  return years
+const YEAR0 = 1940
+const NOW_YEAR = new Date().getFullYear()
+const YEARS = Array.from({ length: NOW_YEAR - YEAR0 + 1 }, (_, i) => NOW_YEAR - i)
+
+const defaultFilters: Filters = {
+  year: '', month: '', showSeriesId: '', minRating: '', maxRating: '',
+  resultType: '', championshipOnly: false, titleChangeOnly: false,
+  superstarId: '', superstarName: '',
+  opponentId: '', opponentName: '',
+  country: '', city: '', championshipId: '',
 }
 
 export default function StipulationDetailPage() {
@@ -96,19 +109,22 @@ export default function StipulationDetailPage() {
   const [totalPages, setTotalPages] = useState(1)
   const [total, setTotal] = useState(0)
   const [showFilters, setShowFilters] = useState(false)
-  const [filters, setFilters] = useState<Filters>({
-    year: '', showSeriesId: '', minRating: '', maxRating: '',
-    resultType: '', championshipOnly: false, titleChangeOnly: false,
-  })
-  const [showSeries, setShowSeries] = useState<{ id: number; name: string; short_name: string | null }[]>([])
-
+  const [filters, setFilters] = useState<Filters>(defaultFilters)
+  const [opts, setOpts] = useState<FilterOptions>({ showSeries: [], championships: [], countries: [] })
   const [error, setError] = useState<string | null>(null)
+  const ref = useRef<HTMLDivElement>(null)
 
-  // Fetch show series for filter dropdown
+  // Fetch filter options
   useEffect(() => {
     fetch('/api/match-search-filters')
       .then(r => r.json())
-      .then(d => { if (d.showSeries) setShowSeries(d.showSeries) })
+      .then(d => {
+        setOpts({
+          showSeries: d.showSeries || [],
+          championships: d.championships || [],
+          countries: d.countries || [],
+        })
+      })
       .catch(() => {})
   }, [])
 
@@ -119,12 +135,18 @@ export default function StipulationDetailPage() {
     try {
       const params = new URLSearchParams({ slug, page: p.toString(), limit: '50' })
       if (activeFilters.year) params.set('year', activeFilters.year)
+      if (activeFilters.year && activeFilters.month) params.set('month', activeFilters.month)
       if (activeFilters.showSeriesId) params.set('showSeriesId', activeFilters.showSeriesId)
       if (activeFilters.minRating) params.set('minRating', activeFilters.minRating)
       if (activeFilters.maxRating) params.set('maxRating', activeFilters.maxRating)
       if (activeFilters.resultType) params.set('resultType', activeFilters.resultType)
       if (activeFilters.championshipOnly) params.set('championshipOnly', 'true')
       if (activeFilters.titleChangeOnly) params.set('titleChangeOnly', 'true')
+      if (activeFilters.superstarId) params.set('superstarId', activeFilters.superstarId)
+      if (activeFilters.opponentId) params.set('opponentId', activeFilters.opponentId)
+      if (activeFilters.country) params.set('country', activeFilters.country)
+      if (activeFilters.city) params.set('city', activeFilters.city)
+      if (activeFilters.championshipId) params.set('championshipId', activeFilters.championshipId)
 
       const r = await fetch(`/api/stipulation-detail?${params.toString()}`)
       const d = await r.json()
@@ -150,20 +172,14 @@ export default function StipulationDetailPage() {
   const goPage = (n: number) => {
     if (n < 1 || n > totalPages) return
     fetchData(n)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
-  const applyFilters = () => {
-    fetchData(1, filters)
-  }
+  const upd = (k: keyof Filters, v: string | boolean) => { setFilters(p => ({ ...p, [k]: v })); setPage(1) }
+  const resetFilters = () => { setFilters(defaultFilters); fetchData(1, defaultFilters) }
 
-  const resetFilters = () => {
-    const empty: Filters = { year: '', showSeriesId: '', minRating: '', maxRating: '', resultType: '', championshipOnly: false, titleChangeOnly: false }
-    setFilters(empty)
-    fetchData(1, empty)
-  }
-
-  const hasActiveFilters = filters.year || filters.showSeriesId || filters.minRating || filters.maxRating || filters.resultType || filters.championshipOnly || filters.titleChangeOnly
+  const hasActiveFilters = Object.entries(filters).some(([, v]) => v !== '' && v !== false)
+  const fCount = Object.entries(filters).filter(([, v]) => v !== '' && v !== false).length
 
   return (
     <div className="relative">
@@ -192,7 +208,7 @@ export default function StipulationDetailPage() {
         </div>
       </section>
 
-      {/* ===== DESKTOP HERO — split layout with FULL image ===== */}
+      {/* ===== DESKTOP HERO ===== */}
       <section className="hidden lg:block relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 via-black to-zinc-900" />
         {matchType?.image_url && (
@@ -201,30 +217,18 @@ export default function StipulationDetailPage() {
           </div>
         )}
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
-
         <div className="relative max-w-[1440px] mx-auto px-6 py-10">
           <div className="flex items-center gap-10">
-            {/* Image — FIXED: use object-contain in a proper container */}
             {matchType?.image_url ? (
               <div className="relative w-[460px] h-[300px] shrink-0 rounded-2xl overflow-hidden border border-border-subtle/20 bg-black/40">
-                <Image
-                  src={matchType.image_url}
-                  alt={matchType?.name || ''}
-                  fill
-                  priority
-                  quality={100}
-                  unoptimized
-                  className="object-contain p-2"
-                  sizes="460px"
-                />
+                <Image src={matchType.image_url} alt={matchType?.name || ''} fill priority quality={100} unoptimized
+                  className="object-contain p-2" sizes="460px" />
               </div>
             ) : (
               <div className="w-[460px] h-[300px] shrink-0 rounded-2xl bg-gradient-to-br from-zinc-800 to-zinc-900 border border-border-subtle/20 flex items-center justify-center">
                 <span className="text-6xl opacity-30">🤼</span>
               </div>
             )}
-
-            {/* Info */}
             <div className="flex-1 min-w-0">
               {matchType?.category && (
                 <span className="inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-3 bg-neon-blue/10 text-neon-blue border border-neon-blue/20">
@@ -237,11 +241,8 @@ export default function StipulationDetailPage() {
               <p className="text-text-secondary text-lg mb-5">
                 <span className="text-neon-blue font-bold text-2xl">{total.toLocaleString()}</span> match{total !== 1 ? 'es' : ''} recorded in WWE history
               </p>
-
               {matchType?.description && (
-                <p className="text-text-secondary text-sm leading-relaxed max-w-xl">
-                  {matchType.description}
-                </p>
+                <p className="text-text-secondary text-sm leading-relaxed max-w-xl">{matchType.description}</p>
               )}
             </div>
           </div>
@@ -288,8 +289,6 @@ export default function StipulationDetailPage() {
               <h2 className="font-display text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">
                 How are {matchType?.name || 'these matches'} won?
               </h2>
-
-              {/* Quick stats row */}
               <div className="flex flex-wrap gap-4 mb-5">
                 {stats.avgRating && (
                   <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-bg-tertiary/50 border border-border-subtle/20">
@@ -310,38 +309,27 @@ export default function StipulationDetailPage() {
                   </div>
                 )}
               </div>
-
-              {/* Win method bars */}
               <div className="space-y-2.5">
-                {stats.winMethods.slice(0, 8).map((wm) => {
-                  const barColor = resultColors[wm.method] || 'bg-zinc-500'
-                  return (
-                    <div key={wm.method} className="group">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs text-text-white font-medium">
-                          {resultLabels[wm.method] || wm.method}
-                        </span>
-                        <span className="text-[11px] text-text-secondary font-mono">
-                          {wm.count} ({wm.percentage}%)
-                        </span>
-                      </div>
-                      <div className="h-2 w-full rounded-full bg-bg-tertiary/80 overflow-hidden">
-                        <div
-                          className={`h-full rounded-full ${barColor} transition-all duration-700 ease-out`}
-                          style={{ width: `${Math.max(wm.percentage, 1)}%` }}
-                        />
-                      </div>
+                {stats.winMethods.slice(0, 8).map((wm) => (
+                  <div key={wm.method} className="group">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs text-text-white font-medium">{resultLabels[wm.method] || wm.method}</span>
+                      <span className="text-[11px] text-text-secondary font-mono">{wm.count} ({wm.percentage}%)</span>
                     </div>
-                  )
-                })}
+                    <div className="h-2 w-full rounded-full bg-bg-tertiary/80 overflow-hidden">
+                      <div className={`h-full rounded-full ${resultColors[wm.method] || 'bg-zinc-500'} transition-all duration-700 ease-out`}
+                        style={{ width: `${Math.max(wm.percentage, 1)}%` }} />
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </section>
       )}
 
-      {/* ===== FILTERS ===== */}
-      <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-4">
+      {/* ===== FILTERS — Same as Match Search ===== */}
+      <section ref={ref} className="max-w-[1440px] mx-auto px-4 sm:px-6 py-4">
         <div className="flex items-center gap-3 mb-3">
           <button
             onClick={() => setShowFilters(!showFilters)}
@@ -355,10 +343,11 @@ export default function StipulationDetailPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
             </svg>
             Filters
-            {hasActiveFilters && <span className="w-1.5 h-1.5 rounded-full bg-neon-blue" />}
+            {fCount > 0 && <span className="w-5 h-5 rounded-full bg-neon-blue text-[10px] text-black font-bold flex items-center justify-center">{fCount}</span>}
           </button>
           {hasActiveFilters && (
-            <button onClick={resetFilters} className="text-[11px] text-text-secondary hover:text-red-400 transition-colors">
+            <button onClick={resetFilters} className="text-[11px] text-text-secondary hover:text-red-400 transition-colors flex items-center gap-1">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
               Clear all
             </button>
           )}
@@ -366,63 +355,51 @@ export default function StipulationDetailPage() {
 
         {showFilters && (
           <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-4 sm:p-5 mb-6 animate-fade-in">
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-              {/* Year */}
-              <div>
-                <label className="block text-[10px] text-text-secondary uppercase tracking-wider mb-1">Year</label>
-                <select value={filters.year} onChange={e => setFilters(f => ({ ...f, year: e.target.value }))}
-                  className="w-full bg-bg-tertiary border border-border-subtle/30 rounded-lg px-3 py-2 text-xs text-text-white focus:border-neon-blue/50 focus:outline-none">
-                  <option value="">All Years</option>
-                  {getYearOptions().map(y => <option key={y} value={y}>{y}</option>)}
-                </select>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+              <FilterSel label="Year" value={filters.year} set={v => upd('year', v)}
+                opts={YEARS.map(y => ({ value: String(y), label: String(y) }))} ph="All years" />
+              {filters.year && <FilterSel label="Month" value={filters.month} set={v => upd('month', v)}
+                opts={Array.from({ length: 12 }, (_, i) => ({ value: String(i + 1), label: new Date(2000, i).toLocaleString('en-US', { month: 'long' }) }))} ph="All months" />}
+              <FilterSel label="Show" value={filters.showSeriesId} set={v => upd('showSeriesId', v)}
+                opts={opts.showSeries.map(s => ({ value: String(s.id), label: s.name }))} ph="All promotions" />
+              <FilterSel label="Min Rating" value={filters.minRating} set={v => upd('minRating', v)}
+                opts={Array.from({ length: 11 }, (_, i) => ({ value: String(i), label: `${i}+/10` }))} ph="Any rating" />
+              <FilterSel label="Finish Type" value={filters.resultType} set={v => upd('resultType', v)}
+                opts={RESULT_TYPES} ph="Any finish" />
+              <FilterSel label="Country" value={filters.country} set={v => upd('country', v)}
+                opts={opts.countries.map(c => ({ value: c, label: c }))} ph="All countries" />
+              <div className="flex flex-col gap-1">
+                <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">City</label>
+                <input type="text" value={filters.city} onChange={e => upd('city', e.target.value)} placeholder="e.g. New York"
+                  className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-border-subtle/40 text-sm text-text-white placeholder:text-text-secondary/50 focus:outline-none focus:border-neon-blue/50 transition-colors" />
               </div>
-
-              {/* Show Series */}
-              <div>
-                <label className="block text-[10px] text-text-secondary uppercase tracking-wider mb-1">Show</label>
-                <select value={filters.showSeriesId} onChange={e => setFilters(f => ({ ...f, showSeriesId: e.target.value }))}
-                  className="w-full bg-bg-tertiary border border-border-subtle/30 rounded-lg px-3 py-2 text-xs text-text-white focus:border-neon-blue/50 focus:outline-none">
-                  <option value="">All Shows</option>
-                  {showSeries.map(s => <option key={s.id} value={s.id.toString()}>{s.short_name || s.name}</option>)}
-                </select>
-              </div>
-
-              {/* Min Rating */}
-              <div>
-                <label className="block text-[10px] text-text-secondary uppercase tracking-wider mb-1">Min Rating</label>
-                <select value={filters.minRating} onChange={e => setFilters(f => ({ ...f, minRating: e.target.value }))}
-                  className="w-full bg-bg-tertiary border border-border-subtle/30 rounded-lg px-3 py-2 text-xs text-text-white focus:border-neon-blue/50 focus:outline-none">
-                  <option value="">Any</option>
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(r => <option key={r} value={r}>★ {r}+</option>)}
-                </select>
-              </div>
-
-              {/* Result Type */}
-              <div>
-                <label className="block text-[10px] text-text-secondary uppercase tracking-wider mb-1">Result</label>
-                <select value={filters.resultType} onChange={e => setFilters(f => ({ ...f, resultType: e.target.value }))}
-                  className="w-full bg-bg-tertiary border border-border-subtle/30 rounded-lg px-3 py-2 text-xs text-text-white focus:border-neon-blue/50 focus:outline-none">
-                  <option value="">All Results</option>
-                  {Object.entries(resultLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
-                </select>
-              </div>
-
-              {/* Championship Only */}
-              <div className="flex flex-col justify-end">
-                <label className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-lg bg-bg-tertiary border border-border-subtle/30 hover:border-border-subtle/50 transition-colors">
-                  <input type="checkbox" checked={filters.championshipOnly}
-                    onChange={e => setFilters(f => ({ ...f, championshipOnly: e.target.checked }))}
-                    className="w-3.5 h-3.5 rounded border-border-subtle accent-neon-blue" />
-                  <span className="text-xs text-text-secondary">🏆 Title</span>
+              <SuperstarSearch label="Superstar" ph="Search superstar…" value={filters.superstarName}
+                onSel={(id, n) => { upd('superstarId', id); setFilters(p => ({ ...p, superstarName: n })) }}
+                onClr={() => { upd('superstarId', ''); setFilters(p => ({ ...p, superstarName: '' })) }} />
+              {filters.superstarId && (
+                <SuperstarSearch label="Opponent" ph="Search opponent…" value={filters.opponentName}
+                  onSel={(id, n) => { upd('opponentId', id); setFilters(p => ({ ...p, opponentName: n })) }}
+                  onClr={() => { upd('opponentId', ''); setFilters(p => ({ ...p, opponentName: '' })) }} />
+              )}
+              <FilterSel label="Championship" value={filters.championshipId} set={v => upd('championshipId', v)}
+                opts={opts.championships.map(c => ({ value: String(c.id), label: c.name }))} ph="All championships" />
+            </div>
+            <div className="flex items-center justify-between mt-4 pt-3 border-t border-border-subtle/20">
+              <div className="flex items-center gap-4">
+                <label className="flex items-center gap-2 cursor-pointer group">
+                  <div className={`w-9 h-5 rounded-full relative transition-colors cursor-pointer ${filters.championshipOnly ? 'bg-yellow-500/40' : 'bg-bg-tertiary'}`}
+                    onClick={() => upd('championshipOnly', !filters.championshipOnly)}>
+                    <div className={`absolute top-0.5 w-4 h-4 rounded-full transition-transform ${filters.championshipOnly ? 'translate-x-[18px] bg-yellow-400' : 'translate-x-[2px] bg-text-secondary'}`} />
+                  </div>
+                  <span className="text-xs text-text-secondary group-hover:text-text-white transition-colors">🏆 Title matches</span>
                 </label>
-              </div>
-
-              {/* Apply button */}
-              <div className="flex flex-col justify-end">
-                <button onClick={applyFilters}
-                  className="px-4 py-2 rounded-lg bg-neon-blue/20 border border-neon-blue/30 text-neon-blue text-xs font-bold hover:bg-neon-blue/30 transition-all">
-                  Apply
-                </button>
+                <label className="flex items-center gap-2 cursor-pointer group">
+                  <div className={`w-9 h-5 rounded-full relative transition-colors cursor-pointer ${filters.titleChangeOnly ? 'bg-yellow-500/40' : 'bg-bg-tertiary'}`}
+                    onClick={() => upd('titleChangeOnly', !filters.titleChangeOnly)}>
+                    <div className={`absolute top-0.5 w-4 h-4 rounded-full transition-transform ${filters.titleChangeOnly ? 'translate-x-[18px] bg-yellow-400' : 'translate-x-[2px] bg-text-secondary'}`} />
+                  </div>
+                  <span className="text-xs text-text-secondary group-hover:text-text-white transition-colors">🔄 Title changes only</span>
+                </label>
               </div>
             </div>
           </div>
@@ -573,7 +550,66 @@ export default function StipulationDetailPage() {
   )
 }
 
-/* Pagination component */
+/* ===== FILTER SELECT ===== */
+function FilterSel({ label, value, set, opts, ph }: { label: string; value: string; set: (v: string) => void; opts: { value: string; label: string }[]; ph: string }) {
+  return (
+    <div className="flex flex-col gap-1">
+      <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">{label}</label>
+      <select value={value} onChange={e => set(e.target.value)}
+        className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-border-subtle/40 text-sm text-text-white focus:outline-none focus:border-neon-blue/50 transition-colors appearance-none cursor-pointer"
+        style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 8px center', backgroundRepeat: 'no-repeat', backgroundSize: '16px', paddingRight: '32px' }}>
+        <option value="">{ph}</option>
+        {opts.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+      </select>
+    </div>
+  )
+}
+
+/* ===== SUPERSTAR SEARCH ===== */
+function SuperstarSearch({ label, ph, value, onSel, onClr }: { label: string; ph: string; value: string; onSel: (id: string, n: string) => void; onClr: () => void }) {
+  const [q, setQ] = useState(value)
+  const [res, setRes] = useState<any[]>([])
+  const [open, setOpen] = useState(false)
+  const db = useRef<NodeJS.Timeout>()
+  const cRef = useRef<HTMLDivElement>(null)
+  useEffect(() => { setQ(value) }, [value])
+  useEffect(() => {
+    const h = (e: MouseEvent) => { if (cRef.current && !cRef.current.contains(e.target as Node)) setOpen(false) }
+    document.addEventListener('mousedown', h); return () => document.removeEventListener('mousedown', h)
+  }, [])
+  const search = (v: string) => {
+    setQ(v); if (v.length < 2) { setRes([]); setOpen(false); return }
+    clearTimeout(db.current)
+    db.current = setTimeout(async () => {
+      try { const r = await fetch(`/api/search-superstars?q=${encodeURIComponent(v)}`); const d = await r.json(); setRes(d.results || []); setOpen(true) } catch { setRes([]) }
+    }, 300)
+  }
+  return (
+    <div ref={cRef} className="flex flex-col gap-1 relative">
+      <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">{label}</label>
+      <div className="relative">
+        <input type="text" value={q} onChange={e => search(e.target.value)} onFocus={() => res.length > 0 && setOpen(true)} placeholder={ph}
+          className="w-full px-3 py-2 pr-8 rounded-lg bg-bg-primary border border-border-subtle/40 text-sm text-text-white placeholder:text-text-secondary/50 focus:outline-none focus:border-neon-blue/50 transition-colors" />
+        {value && <button onClick={() => { onClr(); setQ(''); setRes([]); setOpen(false) }} className="absolute right-2 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-white">
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>}
+      </div>
+      {open && res.length > 0 && (
+        <div className="absolute top-full left-0 right-0 mt-1 bg-bg-secondary border border-border-subtle/40 rounded-xl overflow-hidden shadow-xl z-50 max-h-48 overflow-y-auto">
+          {res.map((s: any) => (
+            <button key={s.id} onClick={() => { onSel(String(s.id), s.name); setQ(s.name); setOpen(false) }}
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-text-white hover:bg-bg-tertiary transition-colors text-left">
+              {s.photo_url && <div className="w-6 h-6 rounded-full overflow-hidden shrink-0"><Image src={s.photo_url} alt="" width={24} height={24} className="w-full h-full object-cover" /></div>}
+              <span className="truncate">{s.name}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ===== PAGINATION ===== */
 function Pag({ page, tp, total, go }: { page: number; tp: number; total: number; go: (n: number) => void }) {
   const vis = () => {
     const p: (number | 'e')[] = []

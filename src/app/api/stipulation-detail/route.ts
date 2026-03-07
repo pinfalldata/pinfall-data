@@ -22,12 +22,18 @@ export async function GET(request: NextRequest) {
 
   // Filters
   const year = searchParams.get('year')
+  const month = searchParams.get('month')
   const showSeriesId = searchParams.get('showSeriesId')
   const minRating = searchParams.get('minRating')
   const maxRating = searchParams.get('maxRating')
   const resultType = searchParams.get('resultType')
   const championshipOnly = searchParams.get('championshipOnly') === 'true'
   const titleChangeOnly = searchParams.get('titleChangeOnly') === 'true'
+  const superstarId = searchParams.get('superstarId')
+  const opponentId = searchParams.get('opponentId')
+  const country = searchParams.get('country')
+  const city = searchParams.get('city')
+  const championshipId = searchParams.get('championshipId')
 
   if (!slug) {
     return NextResponse.json({ error: 'slug is required' }, { status: 400 })
@@ -49,24 +55,57 @@ export async function GET(request: NextRequest) {
     // ===== STEP 2: Build base filter helper =====
     function applyFilters(query: any) {
       query = query.eq('match_type_id', matchType.id)
-      if (year) query = query.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`)
+      if (year && month) {
+        const m = parseInt(month)
+        const startDate = `${year}-${String(m).padStart(2, '0')}-01`
+        const endDate = m === 12 ? `${parseInt(year) + 1}-01-01` : `${year}-${String(m + 1).padStart(2, '0')}-01`
+        query = query.gte('date', startDate).lt('date', endDate)
+      } else if (year) {
+        query = query.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`)
+      }
       if (minRating) query = query.gte('rating', parseFloat(minRating))
       if (maxRating) query = query.lte('rating', parseFloat(maxRating))
       if (resultType) query = query.eq('result_type', resultType)
       if (championshipOnly) query = query.not('championship_id', 'is', null)
       if (titleChangeOnly) query = query.eq('is_title_change', true)
+      if (championshipId) query = query.eq('championship_id', parseInt(championshipId))
       return query
     }
 
     // If showSeriesId filter is active, pre-filter show IDs
     let showIdFilter: number[] | null = null
-    if (showSeriesId) {
-      const { data: filteredShows } = await supabase
-        .from('shows')
-        .select('id')
-        .eq('show_series_id', parseInt(showSeriesId))
+    if (showSeriesId || country || city) {
+      let showQuery = supabase.from('shows').select('id')
+      if (showSeriesId) showQuery = showQuery.eq('show_series_id', parseInt(showSeriesId))
+      if (country) showQuery = showQuery.eq('country', country)
+      if (city) showQuery = showQuery.ilike('city', city)
+      const { data: filteredShows } = await showQuery
       showIdFilter = (filteredShows || []).map(s => s.id)
       if (showIdFilter.length === 0) {
+        return NextResponse.json({
+          matchType, matches: [], total: 0, page, limit, totalPages: 0,
+          stats: { winMethods: [], totalMatches: 0, avgRating: null, avgDuration: null, titleChangeCount: 0, titleChangePercentage: 0 },
+        })
+      }
+    }
+
+    // If superstarId filter is active, pre-filter match IDs
+    let superstarMatchFilter: number[] | null = null
+    if (superstarId) {
+      let participantQuery = supabase.from('match_participants').select('match_id').eq('superstar_id', parseInt(superstarId))
+      const { data: sMatches } = await participantQuery
+      const sMatchIds = (sMatches || []).map(m => m.match_id)
+      
+      if (opponentId) {
+        // Find matches where opponent is on a different team
+        const { data: oMatches } = await supabase.from('match_participants').select('match_id').eq('superstar_id', parseInt(opponentId))
+        const oMatchIds = new Set((oMatches || []).map(m => m.match_id))
+        superstarMatchFilter = sMatchIds.filter(id => oMatchIds.has(id))
+      } else {
+        superstarMatchFilter = sMatchIds
+      }
+      
+      if (superstarMatchFilter.length === 0) {
         return NextResponse.json({
           matchType, matches: [], total: 0, page, limit, totalPages: 0,
           stats: { winMethods: [], totalMatches: 0, avgRating: null, avgDuration: null, titleChangeCount: 0, titleChangePercentage: 0 },
@@ -78,6 +117,7 @@ export async function GET(request: NextRequest) {
     let countQuery = supabase.from('matches').select('id', { count: 'exact', head: true })
     countQuery = applyFilters(countQuery)
     if (showIdFilter) countQuery = countQuery.in('show_id', showIdFilter)
+    if (superstarMatchFilter) countQuery = countQuery.in('id', superstarMatchFilter.slice(0, 500))
 
     const { count: totalCount, error: countError } = await countQuery
     if (countError) console.error('[stipulation-detail] count error:', countError)
@@ -93,6 +133,7 @@ export async function GET(request: NextRequest) {
 
     dataQuery = applyFilters(dataQuery)
     if (showIdFilter) dataQuery = dataQuery.in('show_id', showIdFilter)
+    if (superstarMatchFilter) dataQuery = dataQuery.in('id', superstarMatchFilter.slice(0, 500))
     dataQuery = dataQuery.range(offset, offset + limit - 1)
 
     const { data: matchRows, error: mError } = await dataQuery
