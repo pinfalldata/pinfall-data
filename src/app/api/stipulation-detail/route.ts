@@ -163,7 +163,7 @@ export async function GET(request: NextRequest) {
         ? supabase.from('championships').select('id, name, slug, image_url').in('id', champIds)
         : Promise.resolve({ data: [] }),
       supabase.from('match_participants')
-        .select('match_id, team_number, is_winner, entry_number, superstar:superstars(id, name, slug, photo_url)')
+        .select('match_id, team_number, is_winner, entry_number, superstar:superstars!match_participants_superstar_id_fkey(id, name, slug, photo_url)')
         .in('match_id', matchIds),
     ])
 

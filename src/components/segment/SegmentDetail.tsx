@@ -321,41 +321,33 @@ export default function SegmentDetail({ segment }: { segment: Segment }) {
 
       {/* ===== MAIN CONTENT with decorative objects ===== */}
       <div className="relative overflow-hidden">
-        {/* ===== DECORATIVE OBJECTS — more visible, better placed ===== */}
+        {/* ===== DECORATIVE OBJECTS — pushed far from content, no overlap ===== */}
 
-        {/* Microphone — right side, top */}
-        <div className="hidden lg:block absolute right-[-20px] top-4 w-[300px] pointer-events-none select-none" style={{ height: 'calc(100% - 16px)' }}>
-          <div className="sticky top-16 w-full h-[450px] opacity-[0.08]" style={{ animation: 'deco-float-1 6s ease-in-out infinite' }}>
-            <Image src={DECO_OBJECTS.mic} alt="" fill className="object-contain object-right-top" aria-hidden="true" sizes="300px" unoptimized />
+        {/* Microphone — far right edge */}
+        <div className="hidden xl:block absolute right-0 top-4 w-[200px] pointer-events-none select-none" style={{ height: 'calc(100% - 16px)' }}>
+          <div className="sticky top-16 w-full h-[350px] opacity-[0.06]" style={{ animation: 'deco-float-1 6s ease-in-out infinite' }}>
+            <Image src={DECO_OBJECTS.mic} alt="" fill className="object-contain object-right" aria-hidden="true" sizes="200px" unoptimized />
           </div>
         </div>
 
-        {/* Chair — left side */}
-        <div className="hidden lg:block absolute left-[-20px] top-[10%] w-[220px] h-[250px] pointer-events-none select-none opacity-[0.07]" style={{ animation: 'deco-float-2 8s ease-in-out infinite', transform: 'rotate(-12deg)' }}>
-          <Image src={DECO_OBJECTS.chair} alt="" fill className="object-contain" aria-hidden="true" sizes="220px" unoptimized />
+        {/* Chair — far left edge */}
+        <div className="hidden xl:block absolute left-0 top-[15%] w-[180px] h-[200px] pointer-events-none select-none opacity-[0.05]" style={{ animation: 'deco-float-2 8s ease-in-out infinite', transform: 'rotate(-12deg)' }}>
+          <Image src={DECO_OBJECTS.chair} alt="" fill className="object-contain object-left" aria-hidden="true" sizes="180px" unoptimized />
         </div>
 
-        {/* Urn — right side, middle */}
-        <div className="hidden lg:block absolute right-[4%] top-[50%] w-[180px] h-[200px] pointer-events-none select-none opacity-[0.07]" style={{ animation: 'deco-float-3 7s ease-in-out infinite' }}>
-          <Image src={DECO_OBJECTS.urn} alt="" fill className="object-contain" aria-hidden="true" sizes="180px" unoptimized />
+        {/* Urn — far right, lower section */}
+        <div className="hidden xl:block absolute right-0 top-[55%] w-[150px] h-[170px] pointer-events-none select-none opacity-[0.05]" style={{ animation: 'deco-float-3 7s ease-in-out infinite' }}>
+          <Image src={DECO_OBJECTS.urn} alt="" fill className="object-contain object-right" aria-hidden="true" sizes="150px" unoptimized />
         </div>
 
-        {/* Ula Fala — left side, lower */}
-        <div className="hidden lg:block absolute left-[2%] top-[60%] w-[200px] h-[220px] pointer-events-none select-none opacity-[0.07]" style={{ animation: 'deco-float-2 9s ease-in-out infinite', transform: 'rotate(8deg)' }}>
-          <Image src={DECO_OBJECTS.ulaFala} alt="" fill className="object-contain" aria-hidden="true" sizes="200px" unoptimized />
+        {/* Ula Fala — far left, lower */}
+        <div className="hidden xl:block absolute left-0 top-[65%] w-[170px] h-[190px] pointer-events-none select-none opacity-[0.05]" style={{ animation: 'deco-float-2 9s ease-in-out infinite', transform: 'rotate(8deg)' }}>
+          <Image src={DECO_OBJECTS.ulaFala} alt="" fill className="object-contain object-left" aria-hidden="true" sizes="170px" unoptimized />
         </div>
 
-        {/* Contract — right side, bottom */}
-        <div className="hidden lg:block absolute right-[6%] bottom-[8%] w-[190px] h-[210px] pointer-events-none select-none opacity-[0.07]" style={{ animation: 'deco-float-1 10s ease-in-out infinite', transform: 'rotate(-5deg)' }}>
-          <Image src={DECO_OBJECTS.contract} alt="" fill className="object-contain" aria-hidden="true" sizes="190px" unoptimized />
-        </div>
-
-        {/* ===== Tablet / Medium screen — smaller decorations ===== */}
-        <div className="hidden md:block lg:hidden absolute right-[-10px] top-8 w-[140px] h-[180px] pointer-events-none select-none opacity-[0.06]" style={{ animation: 'deco-float-1 6s ease-in-out infinite' }}>
-          <Image src={DECO_OBJECTS.mic} alt="" fill className="object-contain" aria-hidden="true" sizes="140px" unoptimized />
-        </div>
-        <div className="hidden md:block lg:hidden absolute left-[-10px] top-[40%] w-[120px] h-[140px] pointer-events-none select-none opacity-[0.06]" style={{ animation: 'deco-float-2 8s ease-in-out infinite' }}>
-          <Image src={DECO_OBJECTS.chair} alt="" fill className="object-contain" aria-hidden="true" sizes="120px" unoptimized />
+        {/* Contract — far right, bottom */}
+        <div className="hidden xl:block absolute right-0 bottom-[10%] w-[160px] h-[180px] pointer-events-none select-none opacity-[0.05]" style={{ animation: 'deco-float-1 10s ease-in-out infinite', transform: 'rotate(-5deg)' }}>
+          <Image src={DECO_OBJECTS.contract} alt="" fill className="object-contain object-right" aria-hidden="true" sizes="160px" unoptimized />
         </div>
 
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 py-8 lg:py-12">
