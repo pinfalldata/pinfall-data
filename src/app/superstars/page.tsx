@@ -1,33 +1,55 @@
 import type { Metadata } from 'next'
+import SuperstarsPageClient from '@/components/superstar/SuperstarsPageClient'
 
 export const metadata: Metadata = {
-  title: 'Superstars',
-  description: 'Browse the complete WWE roster across all eras',
+  title: 'WWE Superstars — Browse Wrestlers, Managers, Referees & More | Pinfall Data',
+  description:
+    'Explore the complete roster of WWE Superstars across all eras. Browse wrestlers, managers, commentators, ring announcers, referees, interviewers, general managers, and executives. Full profiles, career stats, and match histories.',
+  keywords: [
+    'WWE superstars',
+    'WWE roster',
+    'WWE wrestlers',
+    'WWE managers',
+    'WWE commentators',
+    'WWE referees',
+    'WWE ring announcers',
+    'WWE interviewers',
+    'WWE general managers',
+    'WWE executives',
+    'professional wrestling',
+    'wrestling database',
+  ],
+  openGraph: {
+    title: 'WWE Superstars — Complete Roster Database | Pinfall Data',
+    description:
+      'Browse the complete roster of WWE Superstars. Wrestlers, managers, commentators, referees, and more across every era of professional wrestling.',
+    type: 'website',
+  },
+  twitter: { card: 'summary_large_image' },
+  alternates: { canonical: '/superstars' },
 }
 
-export default function superstarsPage() {
-  return (
-    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-12 lg:py-20">
-      {/* Page header */}
-      <div className="text-center mb-12">
-        <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-white mb-4">
-          Superstars
-        </h1>
-        <p className="text-text-secondary text-lg max-w-2xl mx-auto">
-          Browse the complete WWE roster across all eras
-        </p>
-        <div className="neon-line mt-8 max-w-md mx-auto" />
-      </div>
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'WWE Superstars',
+  description: 'Complete roster of WWE Superstars across all eras and roles.',
+  url: 'https://pinfall-data.vercel.app/superstars',
+  isPartOf: {
+    '@type': 'WebSite',
+    name: 'Pinfall Data',
+    url: 'https://pinfall-data.vercel.app',
+  },
+}
 
-      {/* Placeholder content */}
-      <div className="glass rounded-2xl p-12 border border-border-subtle text-center">
-        <p className="text-text-secondary text-lg mb-4">
-          This page is under construction.
-        </p>
-        <p className="text-text-secondary text-sm">
-          Content will be added in Phase 1-3 of development.
-        </p>
-      </div>
-    </div>
+export default function SuperstarsPage() {
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <SuperstarsPageClient />
+    </>
   )
 }

@@ -33,6 +33,7 @@ export async function GET(request: NextRequest) {
   const city = searchParams.get('city')
   const championshipId = searchParams.get('championshipId')
   const championshipOnly = searchParams.get('championshipOnly') === 'true'
+  const titleChangeOnly = searchParams.get('titleChangeOnly') === 'true'
 
   try {
     // If superstarId filter is set, first get match IDs from participants
@@ -135,6 +136,7 @@ export async function GET(request: NextRequest) {
     // Championship
     if (championshipId) query = query.eq('championship_id', parseInt(championshipId))
     if (championshipOnly) query = query.not('championship_id', 'is', null)
+    if (titleChangeOnly) query = query.eq('is_title_change', true)
 
     // Rating
     if (minRating) query = query.gte('rating', parseFloat(minRating))

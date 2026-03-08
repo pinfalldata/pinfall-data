@@ -37,6 +37,7 @@ interface Filters {
   minRating: string; resultType: string
   country: string; city: string
   championshipId: string; championshipOnly: boolean
+  titleChangeOnly: boolean
 }
 
 interface FilterOptions {
@@ -51,6 +52,7 @@ const defaultFilters: Filters = {
   year:'',month:'',superstarId:'',superstarName:'',opponentId:'',opponentName:'',
   teammateId:'',teammateName:'',showSeriesId:'',matchTypeId:'',minRating:'',
   resultType:'',country:'',city:'',championshipId:'',championshipOnly:false,
+  titleChangeOnly:false,
 }
 
 const YEAR0 = 1953
@@ -104,6 +106,7 @@ export default function MatchSearchPage() {
     if (filters.city) p.set('city', filters.city)
     if (filters.championshipId) p.set('championshipId', filters.championshipId)
     if (filters.championshipOnly) p.set('championshipOnly', 'true')
+    if (filters.titleChangeOnly) p.set('titleChangeOnly', 'true')
     try {
       const r = await fetch(`/api/match-search?${p.toString()}`)
       const d = await r.json()
@@ -191,13 +194,22 @@ export default function MatchSearchPage() {
                 opts={opts.championships.map(c=>({value:String(c.id),label:c.name}))} ph="All championships"/>
             </div>
             <div className="flex items-center justify-between mt-4 pt-3 border-t border-border-subtle/20">
-              <label className="flex items-center gap-2 cursor-pointer group">
-                <div className={`w-9 h-5 rounded-full relative transition-colors cursor-pointer ${filters.championshipOnly?'bg-yellow-500/40':'bg-bg-tertiary'}`}
-                  onClick={()=>upd('championshipOnly',!filters.championshipOnly)}>
-                  <div className={`absolute top-0.5 w-4 h-4 rounded-full transition-transform ${filters.championshipOnly?'translate-x-[18px] bg-yellow-400':'translate-x-[2px] bg-text-secondary'}`}/>
-                </div>
-                <span className="text-xs text-text-secondary group-hover:text-text-white transition-colors">🏆 Championship matches only</span>
-              </label>
+              <div className="flex items-center gap-4 flex-wrap">
+                <label className="flex items-center gap-2 cursor-pointer group">
+                  <div className={`w-9 h-5 rounded-full relative transition-colors cursor-pointer ${filters.championshipOnly?'bg-yellow-500/40':'bg-bg-tertiary'}`}
+                    onClick={()=>upd('championshipOnly',!filters.championshipOnly)}>
+                    <div className={`absolute top-0.5 w-4 h-4 rounded-full transition-transform ${filters.championshipOnly?'translate-x-[18px] bg-yellow-400':'translate-x-[2px] bg-text-secondary'}`}/>
+                  </div>
+                  <span className="text-xs text-text-secondary group-hover:text-text-white transition-colors">🏆 Championship matches only</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer group">
+                  <div className={`w-9 h-5 rounded-full relative transition-colors cursor-pointer ${filters.titleChangeOnly?'bg-yellow-500/40':'bg-bg-tertiary'}`}
+                    onClick={()=>upd('titleChangeOnly',!filters.titleChangeOnly)}>
+                    <div className={`absolute top-0.5 w-4 h-4 rounded-full transition-transform ${filters.titleChangeOnly?'translate-x-[18px] bg-yellow-400':'translate-x-[2px] bg-text-secondary'}`}/>
+                  </div>
+                  <span className="text-xs text-text-secondary group-hover:text-text-white transition-colors">🔄 Title changes only</span>
+                </label>
+              </div>
               {hasF && <button onClick={reset} className="text-xs text-neon-pink hover:text-neon-pink/80 transition-colors flex items-center gap-1">
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/></svg>
                 Clear all filters

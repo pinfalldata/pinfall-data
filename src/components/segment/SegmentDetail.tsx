@@ -321,33 +321,20 @@ export default function SegmentDetail({ segment }: { segment: Segment }) {
 
       {/* ===== MAIN CONTENT with decorative objects ===== */}
       <div className="relative overflow-hidden">
-        {/* ===== DECORATIVE OBJECTS — pushed far from content, no overlap ===== */}
+        {/* ===== DECORATIVE OBJECTS — mic right, contract left ===== */}
 
-        {/* Microphone — far right edge */}
+        {/* Microphone — far right edge, floating */}
         <div className="hidden xl:block absolute right-0 top-4 w-[200px] pointer-events-none select-none" style={{ height: 'calc(100% - 16px)' }}>
           <div className="sticky top-16 w-full h-[350px] opacity-[0.06]" style={{ animation: 'deco-float-1 6s ease-in-out infinite' }}>
             <Image src={DECO_OBJECTS.mic} alt="" fill className="object-contain object-right" aria-hidden="true" sizes="200px" unoptimized />
           </div>
         </div>
 
-        {/* Chair — far left edge */}
-        <div className="hidden xl:block absolute left-0 top-[15%] w-[180px] h-[200px] pointer-events-none select-none opacity-[0.05]" style={{ animation: 'deco-float-2 8s ease-in-out infinite', transform: 'rotate(-12deg)' }}>
-          <Image src={DECO_OBJECTS.chair} alt="" fill className="object-contain object-left" aria-hidden="true" sizes="180px" unoptimized />
-        </div>
-
-        {/* Urn — far right, lower section */}
-        <div className="hidden xl:block absolute right-0 top-[55%] w-[150px] h-[170px] pointer-events-none select-none opacity-[0.05]" style={{ animation: 'deco-float-3 7s ease-in-out infinite' }}>
-          <Image src={DECO_OBJECTS.urn} alt="" fill className="object-contain object-right" aria-hidden="true" sizes="150px" unoptimized />
-        </div>
-
-        {/* Ula Fala — far left, lower */}
-        <div className="hidden xl:block absolute left-0 top-[65%] w-[170px] h-[190px] pointer-events-none select-none opacity-[0.05]" style={{ animation: 'deco-float-2 9s ease-in-out infinite', transform: 'rotate(8deg)' }}>
-          <Image src={DECO_OBJECTS.ulaFala} alt="" fill className="object-contain object-left" aria-hidden="true" sizes="170px" unoptimized />
-        </div>
-
-        {/* Contract — far right, bottom */}
-        <div className="hidden xl:block absolute right-0 bottom-[10%] w-[160px] h-[180px] pointer-events-none select-none opacity-[0.05]" style={{ animation: 'deco-float-1 10s ease-in-out infinite', transform: 'rotate(-5deg)' }}>
-          <Image src={DECO_OBJECTS.contract} alt="" fill className="object-contain object-right" aria-hidden="true" sizes="160px" unoptimized />
+        {/* Contract — far left edge, more visible, floating */}
+        <div className="hidden xl:block absolute left-0 top-4 w-[200px] pointer-events-none select-none" style={{ height: 'calc(100% - 16px)' }}>
+          <div className="sticky top-20 w-full h-[320px] opacity-[0.10]" style={{ animation: 'deco-float-2 8s ease-in-out infinite', transform: 'rotate(-5deg)' }}>
+            <Image src={DECO_OBJECTS.contract} alt="" fill className="object-contain object-left" aria-hidden="true" sizes="200px" unoptimized />
+          </div>
         </div>
 
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 py-8 lg:py-12">
@@ -436,12 +423,8 @@ export default function SegmentDetail({ segment }: { segment: Segment }) {
           50% { transform: translateY(-15px); }
         }
         @keyframes deco-float-2 {
-          0%, 100% { transform: translateY(0px) rotate(-12deg); }
-          50% { transform: translateY(-12px) rotate(-10deg); }
-        }
-        @keyframes deco-float-3 {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
+          0%, 100% { transform: translateY(0px) rotate(-5deg); }
+          50% { transform: translateY(-12px) rotate(-3deg); }
         }
       `}</style>
     </div>
