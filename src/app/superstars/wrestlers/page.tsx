@@ -1,25 +1,48 @@
 import type { Metadata } from 'next'
-import RoleSubpageShell from '@/components/superstar/RoleSubpageShell'
+import WrestlersPageClient from '@/components/superstar/WrestlersPageClient'
 
 export const metadata: Metadata = {
-  title: 'WWE Wrestlers — Complete Roster of In-Ring Competitors | Pinfall Data',
-  description: 'Browse every WWE wrestler in history. Full career profiles, match stats, championship reigns, and rivalries for in-ring competitors across all eras.',
-  keywords: ['WWE wrestlers', 'WWE roster', 'professional wrestlers', 'in-ring competitors', 'wrestling stats', 'WWE career profiles'],
+  title: 'WWE Wrestlers — Complete Roster of Every In-Ring Competitor | Pinfall Data',
+  description:
+    'Browse every WWE wrestler in history. Search by name, alias, or nickname. Filter by era, weight class, gender, championship, Hall of Fame status, and nationality. Full career profiles with stats, match history, and title reigns.',
+  keywords: [
+    'WWE wrestlers', 'WWE roster', 'professional wrestlers', 'WWE superstars list',
+    'WWE active roster', 'WWE legends', 'WWE alumni', 'cruiserweight wrestlers',
+    'heavyweight wrestlers', 'WWE women wrestlers', 'wrestling database',
+    'WWE Hall of Fame', 'WWE champions', 'wrestler search',
+  ],
   openGraph: {
-    title: 'WWE Wrestlers — Complete Roster | Pinfall Data',
-    description: 'Every WWE wrestler in history with full career statistics and match history.',
+    title: 'WWE Wrestlers — Complete In-Ring Competitor Database | Pinfall Data',
+    description:
+      'Search and filter every WWE wrestler ever. Full career stats, match histories, and championship reigns across all eras.',
+    images: ['https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/64216f678940c1.72076216.webp'],
     type: 'website',
   },
+  twitter: { card: 'summary_large_image' },
   alternates: { canonical: '/superstars/wrestlers' },
+}
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'WWE Wrestlers — Complete Roster',
+  description: 'Browse every WWE wrestler in history with advanced search and filters.',
+  url: 'https://pinfall-data.vercel.app/superstars/wrestlers',
+  isPartOf: {
+    '@type': 'WebSite',
+    name: 'Pinfall Data',
+    url: 'https://pinfall-data.vercel.app',
+  },
 }
 
 export default function WrestlersPage() {
   return (
-    <RoleSubpageShell
-      title="Wrestlers"
-      roleKey="wrestler"
-      description="The in-ring competitors who define WWE. From legendary icons to rising stars, explore the complete roster of every wrestler across every era of professional wrestling."
-      imageUrl="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/wrestler.webp"
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <WrestlersPageClient />
+    </>
   )
 }

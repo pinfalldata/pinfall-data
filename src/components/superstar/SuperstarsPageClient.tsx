@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import SuperstarsWorldMap from './SuperstarsWorldMap'
 
 /* ============================================================
    ROLE CATEGORIES
@@ -371,6 +372,24 @@ export default function SuperstarsPageClient() {
               </button>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* ===== WORLD MAP SECTION ===== */}
+      <div className="neon-line max-w-5xl mx-auto" />
+
+      <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-10 sm:py-14">
+        <div className="text-center mb-6 sm:mb-8">
+          <h2 className="font-display text-2xl sm:text-3xl font-bold text-text-white mb-2">
+            Superstars <span className="text-neon-blue">Around the World</span>
+          </h2>
+          <p className="text-text-secondary text-sm sm:text-base max-w-lg mx-auto">
+            Discover where WWE superstars come from. Click any country to browse its wrestlers.
+          </p>
+        </div>
+
+        <div className="max-w-3xl mx-auto rounded-2xl border border-border-subtle/30 bg-bg-secondary/20 backdrop-blur-sm p-5 sm:p-6">
+          <SuperstarsWorldMap />
         </div>
       </section>
 
