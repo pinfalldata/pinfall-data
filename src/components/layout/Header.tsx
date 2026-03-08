@@ -24,7 +24,16 @@ const NAV_ITEMS: NavItem[] = [
       { label: 'Match Stipulations', href: '/matches/stipulations', icon: '⚔️' },
     ],
   },
-  { key: 'superstars', href: '/superstars' },
+  { key: 'superstars', href: '/superstars', children: [
+    { label: 'Wrestlers', href: '/superstars/wrestlers', icon: '💪' },
+    { label: 'Managers', href: '/superstars/managers', icon: '🎩' },
+    { label: 'Commentators', href: '/superstars/commentators', icon: '🎙️' },
+    { label: 'Ring Announcers', href: '/superstars/ring-announcers', icon: '📢' },
+    { label: 'Referees', href: '/superstars/referees', icon: '🦓' },
+    { label: 'Interviewers', href: '/superstars/interviewers', icon: '🎤' },
+    { label: 'General Managers', href: '/superstars/general-managers', icon: '👔' },
+    { label: 'WWE Executives', href: '/superstars/executives', icon: '🏛️' },
+  ]},
   { key: 'champions', href: '/champions' },
   { key: 'history', href: '/history' },
   { key: 'omg', href: '/omg-moments' },
@@ -209,7 +218,7 @@ export function Header() {
                           onClick={() => setIsMobileMenuOpen(false)}
                           className="block py-2 text-sm text-text-secondary hover:text-neon-blue transition-colors"
                         >
-                          All Matches & Shows
+                          All {t(item.key)}
                         </Link>
                         {item.children.map((child) => (
                           <Link

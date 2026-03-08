@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 /* ============================================================
-   ROLE CATEGORIES — images + routes
+   ROLE CATEGORIES
    ============================================================ */
 const CATEGORIES = [
   {
@@ -14,6 +14,7 @@ const CATEGORIES = [
     href: '/superstars/wrestlers',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/wrestler.webp',
     description: 'In-ring competitors across every era',
+    icon: '💪',
   },
   {
     key: 'manager',
@@ -21,6 +22,7 @@ const CATEGORIES = [
     href: '/superstars/managers',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/manager.webp',
     description: 'The masterminds behind the superstars',
+    icon: '🎩',
   },
   {
     key: 'commentator',
@@ -28,6 +30,7 @@ const CATEGORIES = [
     href: '/superstars/commentators',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/commentator.webp',
     description: 'The voices of WWE programming',
+    icon: '🎙️',
   },
   {
     key: 'ring_announcer',
@@ -35,6 +38,7 @@ const CATEGORIES = [
     href: '/superstars/ring-announcers',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/Ring%20Announcer.webp',
     description: 'Introducing the competitors to the world',
+    icon: '📢',
   },
   {
     key: 'referee',
@@ -42,6 +46,7 @@ const CATEGORIES = [
     href: '/superstars/referees',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/referee.webp',
     description: 'Keepers of the rules inside the ring',
+    icon: '🦓',
   },
   {
     key: 'interviewer',
@@ -49,6 +54,7 @@ const CATEGORIES = [
     href: '/superstars/interviewers',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/Interviewer.webp',
     description: 'Getting the stories behind the action',
+    icon: '🎤',
   },
   {
     key: 'general_manager',
@@ -56,6 +62,7 @@ const CATEGORIES = [
     href: '/superstars/general-managers',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/general%20manager.webp',
     description: 'The authority figures running the show',
+    icon: '👔',
   },
   {
     key: 'executive',
@@ -63,6 +70,7 @@ const CATEGORIES = [
     href: '/superstars/executives',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/Executives.webp',
     description: 'The power players behind the curtain',
+    icon: '🏛️',
   },
 ]
 
@@ -96,7 +104,8 @@ export default function SuperstarsPageClient() {
   const loadRandom = useCallback(async () => {
     setLoadingStar(true)
     try {
-      const r = await fetch('/api/random-superstar-detail')
+      // Cache-bust with timestamp to always get a fresh result
+      const r = await fetch(`/api/random-superstar-detail?t=${Date.now()}`, { cache: 'no-store' })
       const d = await r.json()
       if (d.superstar) setRandomStar(d.superstar)
     } catch { /* ignore */ }
@@ -111,58 +120,56 @@ export default function SuperstarsPageClient() {
   return (
     <div className="min-h-screen bg-bg-primary">
 
-      {/* ===== HERO SECTION ===== */}
-      <section className="relative w-full overflow-hidden">
-        {/* Background glow */}
-        <div className="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-secondary/40 to-bg-primary" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-neon-blue/5 rounded-full blur-[120px]" />
+      {/* ===== HERO IMAGE — same style as /matches ===== */}
+      <section className="relative w-full h-[240px] sm:h-[320px] lg:h-[400px] xl:h-[440px] overflow-hidden">
+        <Image
+          src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/wwe-wrestlemania-38-WM38_Overall_Master_Frame_Final_2-copy.webp"
+          alt="WWE Superstars"
+          fill
+          priority
+          sizes="100vw"
+          unoptimized
+          quality={100}
+          className="object-cover object-center"
+        />
+        {/* Gradient overlays */}
+        <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-bg-primary/30 via-transparent to-bg-primary/30" />
+        {/* Gold line bottom */}
+        <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
 
-        <div className="relative max-w-[1440px] mx-auto px-4 sm:px-6 pt-12 pb-8 sm:pt-16 sm:pb-10 lg:pt-20 lg:pb-12">
-          {/* Title */}
-          <div className="text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-neon-blue/20 bg-neon-blue/5 mb-4">
-              <span className="w-1.5 h-1.5 rounded-full bg-neon-blue animate-pulse" />
-              <span className="text-[11px] uppercase tracking-wider text-neon-blue font-medium">Complete Roster Database</span>
-            </div>
-
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-text-white tracking-tight mb-4">
-              <span className="text-neon-blue">WWE</span> Superstars
-            </h1>
-
-            <p className="text-text-secondary text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-              Explore the full roster of every WWE personality — from legendary wrestlers and iconic managers
-              to the commentators, referees, and authority figures who shaped the industry.
-            </p>
-
-            <div className="neon-line mt-8 max-w-md mx-auto" />
-          </div>
+        {/* Title overlay */}
+        <div className="absolute inset-0 flex flex-col items-center justify-end pb-8 sm:pb-10 lg:pb-12 px-4">
+          <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-white text-center tracking-tight mb-2">
+            <span className="text-neon-blue">WWE</span> Superstars
+          </h1>
+          <p className="text-text-secondary text-sm sm:text-base lg:text-lg text-center max-w-2xl">
+            Explore the full roster of every WWE personality — wrestlers, managers, commentators, referees, and more across every era.
+          </p>
         </div>
       </section>
 
       {/* ===== CATEGORY BUTTONS GRID ===== */}
-      <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6 sm:py-10">
-        <h2 className="sr-only">Browse by Role</h2>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
-          {CATEGORIES.map((cat, idx) => (
+      <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+          {CATEGORIES.map((cat) => (
             <Link
               key={cat.key}
               href={cat.href}
-              className="group relative overflow-hidden rounded-2xl border border-border-subtle/30 bg-bg-secondary/40 backdrop-blur-sm transition-all duration-300 hover:border-neon-blue/40 hover:shadow-neon-blue hover:scale-[1.02] active:scale-[0.98]"
-              style={{ animationDelay: `${idx * 60}ms` }}
+              className="group relative overflow-hidden rounded-2xl border border-border-subtle/30 bg-bg-secondary/30 backdrop-blur-sm transition-all duration-300 hover:border-neon-blue/40 hover:shadow-neon-blue hover:scale-[1.02] active:scale-[0.98]"
             >
               {/* Gold accent line top */}
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue/0 to-transparent group-hover:via-neon-blue/60 transition-all duration-500" />
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue/0 to-transparent group-hover:via-neon-blue/60 transition-all duration-500 z-10" />
 
-              <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 lg:p-5">
-                {/* Avatar image */}
-                <div className="relative w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl overflow-hidden border-2 border-border-subtle/30 group-hover:border-neon-blue/40 transition-all shrink-0 bg-bg-tertiary">
+              <div className="flex items-center gap-4 p-4 sm:p-5">
+                {/* Avatar image — square */}
+                <div className="relative w-16 h-16 sm:w-[72px] sm:h-[72px] lg:w-20 lg:h-20 rounded-xl overflow-hidden border-2 border-border-subtle/30 group-hover:border-neon-blue/40 transition-all shrink-0 bg-bg-tertiary">
                   <Image
                     src={cat.image}
                     alt={cat.label}
                     fill
                     className="object-cover object-top transition-transform duration-500 group-hover:scale-110"
-                    sizes="(max-width: 640px) 48px, (max-width: 1024px) 56px, 64px"
+                    sizes="(max-width: 640px) 64px, (max-width: 1024px) 72px, 80px"
                     unoptimized
                   />
                   {/* Shine overlay */}
@@ -171,16 +178,19 @@ export default function SuperstarsPageClient() {
 
                 {/* Text */}
                 <div className="min-w-0 flex-1">
-                  <h3 className="font-display text-sm sm:text-base lg:text-lg font-bold text-text-white group-hover:text-neon-blue transition-colors truncate">
-                    {cat.label}
-                  </h3>
-                  <p className="text-[10px] sm:text-xs text-text-secondary leading-tight mt-0.5 line-clamp-2">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-lg">{cat.icon}</span>
+                    <h3 className="font-display text-base sm:text-lg font-bold text-text-white group-hover:text-neon-blue transition-colors truncate">
+                      {cat.label}
+                    </h3>
+                  </div>
+                  <p className="text-[11px] sm:text-xs text-text-secondary leading-snug line-clamp-2">
                     {cat.description}
                   </p>
                 </div>
 
                 {/* Arrow */}
-                <div className="hidden sm:flex w-8 h-8 rounded-lg items-center justify-center bg-bg-tertiary/50 group-hover:bg-neon-blue/10 border border-border-subtle/20 group-hover:border-neon-blue/30 transition-all shrink-0">
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-bg-tertiary/50 group-hover:bg-neon-blue/10 border border-border-subtle/20 group-hover:border-neon-blue/30 transition-all shrink-0">
                   <svg
                     className="w-4 h-4 text-text-secondary group-hover:text-neon-blue transition-all group-hover:translate-x-0.5"
                     fill="none"
@@ -193,16 +203,14 @@ export default function SuperstarsPageClient() {
               </div>
 
               {/* Bottom glow on hover */}
-              <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-neon-blue/0 to-transparent group-hover:from-neon-blue/5 transition-all duration-500" />
+              <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-neon-blue/0 to-transparent group-hover:from-neon-blue/5 transition-all duration-500" />
             </Link>
           ))}
         </div>
       </section>
 
       {/* ===== NEON SEPARATOR ===== */}
-      <div className="max-w-4xl mx-auto px-4">
-        <div className="neon-line-animated" />
-      </div>
+      <div className="neon-line max-w-5xl mx-auto" />
 
       {/* ===== RANDOM SUPERSTAR SECTION ===== */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-10 sm:py-14">
@@ -235,7 +243,7 @@ export default function SuperstarsPageClient() {
             /* Loading skeleton */
             <div className="rounded-2xl border border-border-subtle/30 bg-bg-secondary/40 p-6 animate-pulse">
               <div className="flex flex-col sm:flex-row items-center gap-5">
-                <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl bg-bg-tertiary shrink-0" />
+                <div className="w-32 h-32 sm:w-36 sm:h-36 rounded-2xl bg-bg-tertiary shrink-0" />
                 <div className="flex-1 w-full space-y-3">
                   <div className="h-6 bg-bg-tertiary rounded w-2/3 mx-auto sm:mx-0" />
                   <div className="h-4 bg-bg-tertiary rounded w-1/2 mx-auto sm:mx-0" />
@@ -246,22 +254,21 @@ export default function SuperstarsPageClient() {
           ) : randomStar ? (
             /* Superstar card */
             <div className="rounded-2xl border border-border-subtle/30 bg-bg-secondary/30 backdrop-blur-sm overflow-hidden animate-fade-in">
-              <div className="flex flex-col sm:flex-row items-center gap-0">
-                {/* Photo */}
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-0">
+                {/* Photo — SQUARE */}
                 <Link
                   href={`/superstars/${randomStar.slug}`}
-                  className="relative w-full sm:w-40 h-48 sm:h-full shrink-0 group overflow-hidden"
+                  className="relative shrink-0 group"
                 >
-                  <div className="relative w-full h-48 sm:h-52">
+                  <div className="relative w-44 h-44 sm:w-48 sm:h-48">
                     <Image
                       src={randomStar.photo_url}
                       alt={randomStar.name}
                       fill
                       className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width: 640px) 100vw, 160px"
+                      sizes="192px"
                       unoptimized
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-bg-secondary/80 via-transparent to-transparent sm:bg-gradient-to-r sm:from-transparent sm:via-transparent sm:to-bg-secondary/60" />
                   </div>
                 </Link>
 
@@ -274,7 +281,7 @@ export default function SuperstarsPageClient() {
                   </Link>
 
                   {/* Role badge */}
-                  <div className="flex items-center justify-center sm:justify-start gap-2 mt-2">
+                  <div className="flex items-center justify-center sm:justify-start gap-2 mt-2 flex-wrap">
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-neon-blue/10 border border-neon-blue/20 text-neon-blue text-xs font-medium">
                       {roleLabel(randomStar.role)}
                     </span>

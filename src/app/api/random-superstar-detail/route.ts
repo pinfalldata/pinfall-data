@@ -2,6 +2,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 /**
  * GET /api/random-superstar-detail
  * Returns one random superstar with photo, bio, stats, and role info.
@@ -79,6 +82,11 @@ export async function GET(request: NextRequest) {
         loss_count: s.loss_count,
         total_reigns: s.total_reigns,
         description,
+      },
+    }, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+        'Pragma': 'no-cache',
       },
     })
   } catch (err) {

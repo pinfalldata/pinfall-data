@@ -323,9 +323,9 @@ export default function SegmentDetail({ segment }: { segment: Segment }) {
       <div className="relative overflow-hidden">
         {/* ===== DECORATIVE OBJECTS — mic right, contract left ===== */}
 
-        {/* Microphone — far right edge, floating */}
+        {/* Microphone — far right edge, floating, visible */}
         <div className="hidden xl:block absolute right-0 top-4 w-[200px] pointer-events-none select-none" style={{ height: 'calc(100% - 16px)' }}>
-          <div className="sticky top-16 w-full h-[350px] opacity-[0.06]" style={{ animation: 'deco-float-1 6s ease-in-out infinite' }}>
+          <div className="sticky top-16 w-full h-[350px] opacity-[0.14]" style={{ animation: 'deco-float-1 6s ease-in-out infinite' }}>
             <Image src={DECO_OBJECTS.mic} alt="" fill className="object-contain object-right" aria-hidden="true" sizes="200px" unoptimized />
           </div>
         </div>
