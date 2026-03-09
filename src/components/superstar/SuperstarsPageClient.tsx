@@ -67,7 +67,7 @@ const CATEGORIES = [
   },
   {
     key: 'executive',
-    label: 'WWE Executives',
+    label: 'Executives',
     href: '/superstars/executives',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/Executives.webp',
     description: 'The power players behind the curtain',

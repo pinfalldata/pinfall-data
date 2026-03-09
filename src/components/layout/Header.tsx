@@ -32,7 +32,7 @@ const NAV_ITEMS: NavItem[] = [
     { label: 'Referees', href: '/superstars/referees', icon: '🦓' },
     { label: 'Interviewers', href: '/superstars/interviewers', icon: '🎤' },
     { label: 'General Managers', href: '/superstars/general-managers', icon: '👔' },
-    { label: 'WWE Executives', href: '/superstars/executives', icon: '🏛️' },
+    { label: 'Executives', href: '/superstars/executives', icon: '🏛️' },
   ]},
   { key: 'champions', href: '/champions' },
   { key: 'history', href: '/history' },
