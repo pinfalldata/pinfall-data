@@ -1,25 +1,39 @@
 import type { Metadata } from 'next'
-import RoleSubpageShell from '@/components/superstar/RoleSubpageShell'
+import ManagersPageClient from '@/components/superstar/ManagersPageClient'
 
 export const metadata: Metadata = {
-  title: 'WWE Managers — The Masterminds Behind the Superstars | Pinfall Data',
-  description: 'Browse every WWE manager in history. From Bobby Heenan to Paul Heyman, explore the legendary managers who shaped careers and championships.',
-  keywords: ['WWE managers', 'wrestling managers', 'Paul Heyman', 'Bobby Heenan', 'WWE valets', 'wrestling history'],
+  title: 'WWE Managers — Every Ringside Mastermind in History | Pinfall Data',
+  description:
+    'Browse every WWE manager in history. Search by name, alias, or nickname. Filter by era, status, gender, nationality, and Hall of Fame. View ringside records: matches managed, wins and losses as a manager.',
+  keywords: [
+    'WWE managers', 'wrestling managers', 'Paul Heyman', 'Bobby Heenan', 'Jimmy Hart',
+    'Sensational Sherri', 'WWE ringside managers', 'manager stats', 'manager wins losses',
+    'wrestling history', 'WWE Hall of Fame managers',
+  ],
   openGraph: {
     title: 'WWE Managers — Complete Directory | Pinfall Data',
-    description: 'Every WWE manager in history with full career profiles and client histories.',
+    description: 'Every WWE manager with ringside records. Matches managed, wins and losses as a manager across all eras.',
+    images: ['https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/WM2-Ex1.jpg'],
     type: 'website',
   },
+  twitter: { card: 'summary_large_image' },
   alternates: { canonical: '/superstars/managers' },
+}
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'WWE Managers',
+  description: 'Browse every WWE manager in history with ringside statistics.',
+  url: 'https://pinfall-data.vercel.app/superstars/managers',
+  isPartOf: { '@type': 'WebSite', name: 'Pinfall Data', url: 'https://pinfall-data.vercel.app' },
 }
 
 export default function ManagersPage() {
   return (
-    <RoleSubpageShell
-      title="Managers"
-      roleKey="manager"
-      description="The masterminds behind the superstars. Managers who shaped careers, turned the tide of championships, and became legends in their own right."
-      imageUrl="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/manager.webp"
-    />
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <ManagersPageClient />
+    </>
   )
 }
