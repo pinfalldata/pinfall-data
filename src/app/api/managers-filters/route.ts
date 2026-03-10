@@ -10,13 +10,11 @@ export async function GET(request: NextRequest) {
 
   try {
     // Get candidate IDs from match_managers + superstars.role
-    const [{ data: mmData }, { data: roleData }] = await Promise.all([
+    const [{ data: mmData }] = await Promise.all([
       supabase.from('match_managers').select('superstar_id'),
-      supabase.from('superstars').select('id').eq('role', 'manager'),
     ])
     const candidateIds = new Set<number>()
     for (const r of (mmData || [])) candidateIds.add(r.superstar_id)
-    for (const r of (roleData || [])) candidateIds.add(r.id)
     const ids = [...candidateIds].slice(0, 2000)
 
     const queries: Promise<any>[] = [

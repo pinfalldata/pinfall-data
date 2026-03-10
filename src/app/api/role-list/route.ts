@@ -40,14 +40,9 @@ export async function GET(request: NextRequest) {
       candidateIds = new Set()
       for (const r of (data || [])) candidateIds.add(r.superstar_id)
     } else if (role === 'manager') {
-      // FROM match_managers + superstars.role
-      const [{ data: a }, { data: b }] = await Promise.all([
-        supabase.from('match_managers').select('superstar_id'),
-        supabase.from('superstars').select('id').eq('role', 'manager'),
-      ])
+      const { data: a } = await supabase.from('match_managers').select('superstar_id')
       candidateIds = new Set()
       for (const r of (a || [])) candidateIds.add(r.superstar_id)
-      for (const r of (b || [])) candidateIds.add(r.id)
     } else if (role === 'ring_announcer') {
       const [{ data: a }, { data: b }] = await Promise.all([
         supabase.from('show_ring_announcers').select('superstar_id'),

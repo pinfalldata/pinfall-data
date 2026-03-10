@@ -245,6 +245,15 @@ function ShowSeriesCard({ series }: { series: ShowSeries }) {
             <span className="text-[9px] text-emerald-400 font-bold uppercase tracking-wider">Active</span>
           </div>
         )}
+
+        {/* Show type badge */}
+        <div className="absolute top-3 left-3">
+          <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
+            series.is_ple ? 'bg-yellow-500/15 border border-yellow-500/25 text-yellow-400' : 'bg-neon-blue/10 border border-neon-blue/20 text-neon-blue'
+          }`}>
+            {series.is_ple ? '🏟️ PLE' : '📺 Weekly'}
+          </span>
+        </div>
       </div>
 
       {/* Info */}

@@ -35,13 +35,11 @@ export async function GET(request: NextRequest) {
     const isManagerSort = ['manager_matches', 'manager_wins', 'manager_losses'].includes(sortBy)
 
     // Get all manager candidate IDs from match_managers + superstars.role
-    const [{ data: mmCandidates }, { data: roleCandidates }] = await Promise.all([
+    const [{ data: mmCandidates }] = await Promise.all([
       supabase.from('match_managers').select('superstar_id'),
-      supabase.from('superstars').select('id').eq('role', 'manager'),
     ])
     const candidateIds = new Set<number>()
     for (const r of (mmCandidates || [])) candidateIds.add(r.superstar_id)
-    for (const r of (roleCandidates || [])) candidateIds.add(r.id)
     if (candidateIds.size === 0) return NextResponse.json({ managers: [], total: 0, page, totalPages: 0 })
     const candidateArr = [...candidateIds]
 

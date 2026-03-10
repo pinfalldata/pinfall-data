@@ -32,13 +32,9 @@ export async function GET(request: NextRequest) {
       for (const r of (b || [])) set.add(r.id)
       candidateIds = [...set]
     } else if (role === 'manager') {
-      const [{ data: a }, { data: b }] = await Promise.all([
-        supabase.from('match_managers').select('superstar_id'),
-        supabase.from('superstars').select('id').eq('role', 'manager'),
-      ])
+      const { data: a } = await supabase.from('match_managers').select('superstar_id')
       const set = new Set<number>()
       for (const r of (a || [])) set.add(r.superstar_id)
-      for (const r of (b || [])) set.add(r.id)
       candidateIds = [...set]
     } else if (role === 'commentator') {
       const [{ data: a }, { data: b }] = await Promise.all([
