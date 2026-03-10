@@ -126,7 +126,7 @@ export default function MatchSearchPage() {
   return (
     <div className="relative">
       {/* ===== HERO ===== */}
-      <section className="relative w-full h-[200px] sm:h-[260px] lg:h-[340px] xl:h-[380px] overflow-hidden">
+      <section className="relative w-full h-[220px] sm:h-[300px] lg:h-[380px] xl:h-[420px] overflow-hidden">
         <Image src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page/pagesearchmatch.webp"
           alt="WWE Match Search" fill priority sizes="100vw" quality={100} unoptimized
           className="object-cover object-center" />

@@ -19,13 +19,11 @@ export async function GET(request: NextRequest) {
   const city = searchParams.get('city') || ''
   const birthYear = searchParams.get('birthYear') || ''
   const debutYear = searchParams.get('debutYear') || ''
-  const sortBy = searchParams.get('sortBy') || 'name'
   const guestsOnly = searchParams.get('guestsOnly') === 'true'
 
   if (!role) return NextResponse.json({ items: [], total: 0, page, totalPages: 0 })
 
   try {
-    // ======== STEP 1: Get candidate IDs ========
     let candidateIds: Set<number> | null = null
 
     if (role === 'commentator' && !guestsOnly) {
@@ -33,31 +31,29 @@ export async function GET(request: NextRequest) {
         supabase.from('show_commentators').select('superstar_id'),
         supabase.from('superstars').select('id').eq('role', 'commentator'),
       ])
-      candidateIds = new Set<number>()
+      candidateIds = new Set()
       for (const r of (a || [])) candidateIds.add(r.superstar_id)
       for (const r of (b || [])) candidateIds.add(r.id)
-      // EXCLUDE anyone only in match_commentators (guests)
     } else if (role === 'commentator' && guestsOnly) {
-      // Guest = in match_commentators BUT NOT a regular commentator
-      const { data: mc } = await supabase.from('match_commentators').select('superstar_id')
-      const guestSet = new Set<number>()
-      for (const r of (mc || [])) guestSet.add(r.superstar_id)
-      // Remove those who are regular commentators
-      const { data: sc } = await supabase.from('show_commentators').select('superstar_id')
-      const regularSet = new Set<number>()
-      for (const r of (sc || [])) regularSet.add(r.superstar_id)
-      const { data: byRole } = await supabase.from('superstars').select('id').eq('role', 'commentator')
-      for (const r of (byRole || [])) regularSet.add(r.id)
-      candidateIds = new Set<number>()
-      for (const id of guestSet) {
-        if (!regularSet.has(id)) candidateIds.add(id)
-      }
+      // Guest = everyone in match_commentators (don't exclude regulars)
+      const { data } = await supabase.from('match_commentators').select('superstar_id')
+      candidateIds = new Set()
+      for (const r of (data || [])) candidateIds.add(r.superstar_id)
+    } else if (role === 'manager') {
+      // FROM match_managers + superstars.role
+      const [{ data: a }, { data: b }] = await Promise.all([
+        supabase.from('match_managers').select('superstar_id'),
+        supabase.from('superstars').select('id').eq('role', 'manager'),
+      ])
+      candidateIds = new Set()
+      for (const r of (a || [])) candidateIds.add(r.superstar_id)
+      for (const r of (b || [])) candidateIds.add(r.id)
     } else if (role === 'ring_announcer') {
       const [{ data: a }, { data: b }] = await Promise.all([
         supabase.from('show_ring_announcers').select('superstar_id'),
         supabase.from('superstars').select('id').eq('role', 'ring_announcer'),
       ])
-      candidateIds = new Set<number>()
+      candidateIds = new Set()
       for (const r of (a || [])) candidateIds.add(r.superstar_id)
       for (const r of (b || [])) candidateIds.add(r.id)
     } else if (role === 'referee' && !guestsOnly) {
@@ -65,53 +61,49 @@ export async function GET(request: NextRequest) {
         supabase.from('match_referees').select('superstar_id').not('superstar_id', 'is', null).or('is_special_referee.is.null,is_special_referee.eq.false'),
         supabase.from('superstars').select('id').eq('role', 'referee'),
       ])
-      candidateIds = new Set<number>()
+      candidateIds = new Set()
       for (const r of (a || [])) if (r.superstar_id) candidateIds.add(r.superstar_id)
       for (const r of (b || [])) candidateIds.add(r.id)
     } else if (role === 'referee' && guestsOnly) {
       const { data } = await supabase.from('match_referees').select('superstar_id').eq('is_special_referee', true).not('superstar_id', 'is', null)
-      candidateIds = new Set<number>()
+      candidateIds = new Set()
       for (const r of (data || [])) if (r.superstar_id) candidateIds.add(r.superstar_id)
     } else if (role === 'interviewer') {
       const [{ data: a }, { data: b }] = await Promise.all([
         supabase.from('show_segment_participants').select('superstar_id').eq('role', 'interviewer'),
         supabase.from('superstars').select('id').eq('role', 'interviewer'),
       ])
-      candidateIds = new Set<number>()
+      candidateIds = new Set()
       for (const r of (a || [])) candidateIds.add(r.superstar_id)
       for (const r of (b || [])) candidateIds.add(r.id)
     } else if (role === 'general_manager') {
-      // FROM tenure table + superstars.role
       const [{ data: a }, { data: b }] = await Promise.all([
         supabase.from('general_manager_tenures').select('superstar_id'),
         supabase.from('superstars').select('id').eq('role', 'general_manager'),
       ])
-      candidateIds = new Set<number>()
+      candidateIds = new Set()
       for (const r of (a || [])) candidateIds.add(r.superstar_id)
       for (const r of (b || [])) candidateIds.add(r.id)
     } else if (role === 'executive') {
-      // FROM tenure table + superstars.role
       const [{ data: a }, { data: b }] = await Promise.all([
         supabase.from('executive_tenures').select('superstar_id'),
         supabase.from('superstars').select('id').eq('role', 'executive'),
       ])
-      candidateIds = new Set<number>()
+      candidateIds = new Set()
       for (const r of (a || [])) candidateIds.add(r.superstar_id)
       for (const r of (b || [])) candidateIds.add(r.id)
     }
 
-    if (candidateIds !== null && candidateIds.size === 0) {
+    if (candidateIds !== null && candidateIds.size === 0)
       return NextResponse.json({ items: [], total: 0, page, totalPages: 0 })
-    }
 
-    // ======== Pre-filters ========
+    // Pre-filters
     let eraIds = null
     if (eraId) {
       const { data } = await supabase.from('superstar_eras').select('superstar_id').eq('era_id', parseInt(eraId))
       eraIds = data?.map(r => r.superstar_id) || []
       if (eraIds.length === 0) return NextResponse.json({ items: [], total: 0, page, totalPages: 0 })
     }
-
     let searchIds = null
     if (search && search.length >= 2) {
       const clean = search.replace(/^the\s+/i, '')
@@ -130,13 +122,11 @@ export async function GET(request: NextRequest) {
       if (searchIds.length === 0) return NextResponse.json({ items: [], total: 0, page, totalPages: 0 })
     }
 
-    // ======== Build query ========
+    // Build query
     let query = supabase.from('superstars')
       .select('id, name, slug, photo_url, gender, status, is_hall_of_fame, birth_country, birth_date, debut_date, role', { count: 'exact' })
-
     if (candidateIds) query = query.in('id', [...candidateIds].slice(0, 2000))
     else query = query.eq('role', role)
-
     query = query.order('name', { ascending: true })
     if (letter) query = query.ilike('name', `${letter}%`)
     if (searchIds) query = query.in('id', searchIds.slice(0, 2000))
@@ -154,10 +144,31 @@ export async function GET(request: NextRequest) {
     const { data: items, error, count } = await query
     if (error) return NextResponse.json({ error: 'Failed' }, { status: 500 })
 
-    // Enrich with stats
+    // Enrich: for executives show titles, for GMs show brands, for others show counts
     const ids = (items || []).map(m => m.id)
-    const statsMap = ids.length > 0 ? await fetchStats(role, ids, guestsOnly) : new Map()
-    const enriched = (items || []).map(m => ({ ...m, role_stat: statsMap.get(m.id) || 0 }))
+    let enriched = items || []
+
+    if (role === 'executive' && ids.length > 0) {
+      const { data: tenures } = await supabase.from('executive_tenures').select('superstar_id, title').in('superstar_id', ids)
+      const titleMap = new Map<number, string[]>()
+      for (const t of (tenures || [])) {
+        if (!titleMap.has(t.superstar_id)) titleMap.set(t.superstar_id, [])
+        titleMap.get(t.superstar_id)!.push(t.title)
+      }
+      enriched = enriched.map(m => ({ ...m, role_stat: 0, role_titles: titleMap.get(m.id) || [] }))
+    } else if (role === 'general_manager' && ids.length > 0) {
+      const { data: tenures } = await supabase.from('general_manager_tenures').select('superstar_id, title, brand_name').in('superstar_id', ids)
+      const titleMap = new Map<number, string[]>()
+      for (const t of (tenures || [])) {
+        if (!titleMap.has(t.superstar_id)) titleMap.set(t.superstar_id, [])
+        const label = t.brand_name ? `${t.title} — ${t.brand_name}` : t.title
+        titleMap.get(t.superstar_id)!.push(label)
+      }
+      enriched = enriched.map(m => ({ ...m, role_stat: 0, role_titles: titleMap.get(m.id) || [] }))
+    } else {
+      const statsMap = ids.length > 0 ? await fetchStats(role, ids, guestsOnly) : new Map()
+      enriched = enriched.map(m => ({ ...m, role_stat: statsMap.get(m.id) || 0, role_titles: [] }))
+    }
 
     return NextResponse.json({ items: enriched, total: count || 0, page, totalPages: Math.ceil((count || 0) / PER_PAGE) })
   } catch (err) {
@@ -175,6 +186,9 @@ async function fetchStats(role, ids, guestsOnly) {
   } else if (role === 'commentator' && guestsOnly) {
     const { data } = await supabase.from('match_commentators').select('superstar_id').in('superstar_id', ids)
     for (const r of (data || [])) map.set(r.superstar_id, (map.get(r.superstar_id) || 0) + 1)
+  } else if (role === 'manager') {
+    const { data } = await supabase.from('match_managers').select('superstar_id').in('superstar_id', ids)
+    for (const r of (data || [])) map.set(r.superstar_id, (map.get(r.superstar_id) || 0) + 1)
   } else if (role === 'ring_announcer') {
     const { data } = await supabase.from('show_ring_announcers').select('superstar_id').in('superstar_id', ids)
     for (const r of (data || [])) map.set(r.superstar_id, (map.get(r.superstar_id) || 0) + 1)
@@ -186,12 +200,6 @@ async function fetchStats(role, ids, guestsOnly) {
     for (const r of (data || [])) if (r.superstar_id) map.set(r.superstar_id, (map.get(r.superstar_id) || 0) + 1)
   } else if (role === 'interviewer') {
     const { data } = await supabase.from('show_segment_participants').select('superstar_id').in('superstar_id', ids).eq('role', 'interviewer')
-    for (const r of (data || [])) map.set(r.superstar_id, (map.get(r.superstar_id) || 0) + 1)
-  } else if (role === 'general_manager') {
-    const { data } = await supabase.from('general_manager_tenures').select('superstar_id').in('superstar_id', ids)
-    for (const r of (data || [])) map.set(r.superstar_id, (map.get(r.superstar_id) || 0) + 1)
-  } else if (role === 'executive') {
-    const { data } = await supabase.from('executive_tenures').select('superstar_id').in('superstar_id', ids)
     for (const r of (data || [])) map.set(r.superstar_id, (map.get(r.superstar_id) || 0) + 1)
   }
   return map

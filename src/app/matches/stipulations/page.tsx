@@ -70,62 +70,21 @@ export default function StipulationsListPage() {
 
   return (
     <div className="relative min-h-screen">
-      {/* ===== HERO with chain-link fence texture ===== */}
-      <section className="relative overflow-hidden bg-bg-primary">
-        <div className="relative py-12 sm:py-16 lg:py-20">
-          {/* Grid background */}
-          <div
-            className="absolute inset-0 bg-grid opacity-15 animate-grid-pulse pointer-events-none"
-            style={{
-              maskImage: 'radial-gradient(ellipse 60% 50% at 50% 50%, black, transparent)',
-              WebkitMaskImage: 'radial-gradient(ellipse 60% 50% at 50% 50%, black, transparent)',
-            }}
-          />
-
-          {/* Subtle cage-like diagonal lines */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.04]">
-            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="cage" width="40" height="40" patternUnits="userSpaceOnUse">
-                  <path d="M0 40L40 0M-10 10L10 -10M30 50L50 30" stroke="#c7a05a" strokeWidth="0.5" fill="none" />
-                </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#cage)" />
-            </svg>
-          </div>
-
-          {/* Gold glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full blur-[150px] opacity-15 pointer-events-none bg-neon-blue" />
-
-          <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 text-center">
-            <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-white tracking-tight">
-              Match <span className="text-neon-blue">Stipulations</span>
-            </h1>
-            <p className="mt-3 text-text-secondary text-sm sm:text-base max-w-xl mx-auto">
-              Every match type in WWE history — from Standard singles to Hell in a Cell. Browse complete match histories for each stipulation.
-            </p>
-
-            {!loading && (
-              <div className="flex items-center justify-center gap-6 sm:gap-8 mt-6">
-                <div className="text-center">
-                  <span className="block text-2xl sm:text-3xl font-bold text-neon-blue font-display">{stipulations.length}</span>
-                  <span className="block text-[10px] text-text-secondary uppercase tracking-wider">Stipulations</span>
-                </div>
-                <div className="w-px h-8 bg-border-subtle/30" />
-                <div className="text-center">
-                  <span className="block text-2xl sm:text-3xl font-bold text-text-white font-display">{totalMatches.toLocaleString()}</span>
-                  <span className="block text-[10px] text-text-secondary uppercase tracking-wider">Total Matches</span>
-                </div>
-                <div className="w-px h-8 bg-border-subtle/30" />
-                <div className="text-center">
-                  <span className="block text-2xl sm:text-3xl font-bold text-text-white font-display">{categories.length}</span>
-                  <span className="block text-[10px] text-text-secondary uppercase tracking-wider">Categories</span>
-                </div>
-              </div>
-            )}
-          </div>
+      {/* ===== HERO IMAGE ===== */}
+      <section className="relative w-full h-[220px] sm:h-[300px] lg:h-[380px] xl:h-[420px] overflow-hidden">
+        <Image src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page/stipu.jpeg"
+          alt="Match Stipulations" fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-center" />
+        <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-bg-primary/30 via-transparent to-bg-primary/30" />
+        <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
+        <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">
+          <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-white text-center tracking-tight mb-2">
+            Match <span className="text-neon-blue">Stipulations</span>
+          </h1>
+          <p className="text-text-secondary text-sm sm:text-base lg:text-lg text-center max-w-2xl">
+            Every match type in WWE history — from Standard singles to Hell in a Cell.
+          </p>
         </div>
-        <div className="h-px bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
       </section>
 
       {/* ===== FILTERS ===== */}

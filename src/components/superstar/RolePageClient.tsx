@@ -9,7 +9,7 @@ interface Person {
   id: number; name: string; slug: string; photo_url: string | null
   gender: string | null; status: string | null; is_hall_of_fame: boolean
   birth_country: string | null; birth_date: string | null; debut_date: string | null
-  role: string | null; role_stat: number
+  role: string | null; role_stat: number; role_titles?: string[]
 }
 interface Filters {
   letter: string; search: string; eraId: string; status: string; gender: string
@@ -219,14 +219,19 @@ function PCard({p,config,guestsOnly}:{p:Person;config:RoleConfig;guestsOnly:bool
       </div>
       <div className="p-3 text-center">
         <h3 className="font-display text-sm sm:text-base font-bold text-text-white group-hover:text-neon-blue transition-colors truncate">{p.name}</h3>
-        {/* Role-specific stat */}
-        {config.statLabel && p.role_stat > 0 ? (
+        {/* Role-specific stat or titles */}
+        {p.role_titles && p.role_titles.length > 0 ? (
+          <div className="mt-1 space-y-0.5">
+            {p.role_titles.slice(0, 2).map((t, i) => (
+              <span key={i} className="text-[10px] text-neon-blue block truncate">{t}</span>
+            ))}
+            {p.role_titles.length > 2 && <span className="text-[9px] text-text-secondary">+{p.role_titles.length - 2} more</span>}
+          </div>
+        ) : config.statLabel && p.role_stat > 0 ? (
           <div className="flex items-center justify-center gap-1.5 mt-1">
             <span className="text-[10px] text-neon-blue font-mono font-bold">{p.role_stat}</span>
             <span className="text-[10px] text-text-secondary">{config.statLabel}</span>
           </div>
-        ) : config.roleKey === 'executive' && p.role ? (
-          <span className="text-[10px] text-neon-blue mt-1 block">{roleLabel(p.role)}</span>
         ) : config.statLabel ? (
           <p className="text-[10px] text-text-secondary/50 mt-1">No data yet</p>
         ) : null}

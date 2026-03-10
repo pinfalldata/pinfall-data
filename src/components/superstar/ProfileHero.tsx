@@ -139,9 +139,6 @@ export function ProfileHero({ superstar }: { superstar: any }) {
               <div className="flex flex-col items-end gap-2">
                 {primaryEra && (
                   <div className="flex items-center gap-2 px-4 py-2 rounded-xl border border-neon-blue/20 bg-neon-blue/5">
-                    {primaryEra.eras?.image_url && (
-                      <Image src={primaryEra.eras.image_url} alt="" width={28} height={28} className="rounded" />
-                    )}
                     <span className="text-neon-blue text-sm font-medium">{primaryEra.eras?.name || 'Era'}</span>
                   </div>
                 )}

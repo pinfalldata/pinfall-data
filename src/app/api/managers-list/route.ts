@@ -34,6 +34,17 @@ export async function GET(request: NextRequest) {
   try {
     const isManagerSort = ['manager_matches', 'manager_wins', 'manager_losses'].includes(sortBy)
 
+    // Get all manager candidate IDs from match_managers + superstars.role
+    const [{ data: mmCandidates }, { data: roleCandidates }] = await Promise.all([
+      supabase.from('match_managers').select('superstar_id'),
+      supabase.from('superstars').select('id').eq('role', 'manager'),
+    ])
+    const candidateIds = new Set<number>()
+    for (const r of (mmCandidates || [])) candidateIds.add(r.superstar_id)
+    for (const r of (roleCandidates || [])) candidateIds.add(r.id)
+    if (candidateIds.size === 0) return NextResponse.json({ managers: [], total: 0, page, totalPages: 0 })
+    const candidateArr = [...candidateIds]
+
     // ---- Pre-filters ----
     let eraIds: number[] | null = null
     if (eraId) {
@@ -46,10 +57,10 @@ export async function GET(request: NextRequest) {
     if (search && search.length >= 2) {
       const cleanSearch = search.replace(/^the\s+/i, '')
       const [{ data: byName }, { data: byAlias }, { data: byNick }, { data: byReal }] = await Promise.all([
-        supabase.from('superstars').select('id').eq('role', 'manager').or(`name.ilike.%${search}%,name.ilike.%${cleanSearch}%`),
+        supabase.from('superstars').select('id').in('id', candidateArr.slice(0, 2000)).or(`name.ilike.%${search}%,name.ilike.%${cleanSearch}%`),
         supabase.from('superstar_aliases').select('superstar_id').or(`alias.ilike.%${search}%,alias.ilike.%${cleanSearch}%`),
         supabase.from('superstar_nicknames').select('superstar_id').or(`nickname.ilike.%${search}%,nickname.ilike.%${cleanSearch}%`),
-        supabase.from('superstars').select('id').eq('role', 'manager').or(`real_name.ilike.%${search}%,real_name.ilike.%${cleanSearch}%`),
+        supabase.from('superstars').select('id').in('id', candidateArr.slice(0, 2000)).or(`real_name.ilike.%${search}%,real_name.ilike.%${cleanSearch}%`),
       ])
       const set = new Set<number>()
       for (const r of (byName || [])) set.add(r.id)
@@ -95,7 +106,7 @@ export async function GET(request: NextRequest) {
       if (searchIds) { const set = new Set(searchIds); sortedIds = sortedIds.filter(id => set.has(id)) }
 
       // Now build base query to get superstars that match other filters
-      let filterQuery = supabase.from('superstars').select('id').eq('role', 'manager')
+      let filterQuery = supabase.from('superstars').select('id').in('id', candidateArr.slice(0, 2000))
       if (letter) filterQuery = filterQuery.ilike('name', `${letter}%`)
       if (status) filterQuery = filterQuery.eq('status', status)
       if (gender) filterQuery = filterQuery.eq('gender', gender)
@@ -144,7 +155,7 @@ export async function GET(request: NextRequest) {
     let query = supabase
       .from('superstars')
       .select('id, name, slug, photo_url, gender, status, height_cm, is_hall_of_fame, birth_country, birth_city, birth_date, debut_date, total_matches, win_count, loss_count, total_reigns', { count: 'exact' })
-      .eq('role', 'manager')
+      .in('id', candidateArr.slice(0, 2000))
       .order('name', { ascending: true })
 
     if (letter) query = query.ilike('name', `${letter}%`)

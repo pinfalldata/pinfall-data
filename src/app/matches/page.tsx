@@ -79,7 +79,7 @@ export default function MatchesPage() {
   return (
     <div className="relative">
       {/* ===== HERO IMAGE ===== */}
-      <section className="relative w-full h-[240px] sm:h-[320px] lg:h-[400px] xl:h-[440px] overflow-hidden">
+      <section className="relative w-full h-[220px] sm:h-[300px] lg:h-[380px] xl:h-[420px] overflow-hidden">
         <Image
           src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page/matchsshows.webp"
           alt="WWE Matches & Shows"

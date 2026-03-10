@@ -4,25 +4,29 @@ import { supabase } from '@/lib/supabase'
 
 export const revalidate = 3600
 
-/**
- * GET /api/managers-filters?country=United+States
- */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const country = searchParams.get('country') || ''
 
   try {
+    // Get candidate IDs from match_managers + superstars.role
+    const [{ data: mmData }, { data: roleData }] = await Promise.all([
+      supabase.from('match_managers').select('superstar_id'),
+      supabase.from('superstars').select('id').eq('role', 'manager'),
+    ])
+    const candidateIds = new Set<number>()
+    for (const r of (mmData || [])) candidateIds.add(r.superstar_id)
+    for (const r of (roleData || [])) candidateIds.add(r.id)
+    const ids = [...candidateIds].slice(0, 2000)
+
     const queries: Promise<any>[] = [
       supabase.from('eras').select('id, name, slug, start_year, end_year, sort_order').order('sort_order', { ascending: true }),
-      supabase.from('superstars').select('birth_country').eq('role', 'manager').not('birth_country', 'is', null).neq('birth_country', ''),
-      supabase.from('superstars').select('height_cm').eq('role', 'manager').not('height_cm', 'is', null).order('height_cm', { ascending: true }).limit(1),
-      supabase.from('superstars').select('height_cm').eq('role', 'manager').not('height_cm', 'is', null).order('height_cm', { ascending: false }).limit(1),
+      ids.length > 0 ? supabase.from('superstars').select('birth_country').in('id', ids).not('birth_country', 'is', null).neq('birth_country', '') : Promise.resolve({ data: [] }),
+      ids.length > 0 ? supabase.from('superstars').select('height_cm').in('id', ids).not('height_cm', 'is', null).order('height_cm', { ascending: true }).limit(1) : Promise.resolve({ data: [] }),
+      ids.length > 0 ? supabase.from('superstars').select('height_cm').in('id', ids).not('height_cm', 'is', null).order('height_cm', { ascending: false }).limit(1) : Promise.resolve({ data: [] }),
     ]
-
-    if (country) {
-      queries.push(
-        supabase.from('superstars').select('birth_city').eq('role', 'manager').eq('birth_country', country).not('birth_city', 'is', null).neq('birth_city', '')
-      )
+    if (country && ids.length > 0) {
+      queries.push(supabase.from('superstars').select('birth_city').in('id', ids).eq('birth_country', country).not('birth_city', 'is', null).neq('birth_city', ''))
     }
 
     const results = await Promise.all(queries)
