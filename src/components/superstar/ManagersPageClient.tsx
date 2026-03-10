@@ -89,7 +89,7 @@ export default function ManagersPageClient() {
         <div className="absolute inset-0 bg-gradient-to-r from-bg-primary/30 via-transparent to-bg-primary/30"/>
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60"/>
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">
-          <nav className="flex items-center gap-2 text-xs text-text-secondary mb-3">
+          <nav className="hidden sm:flex items-center gap-2 text-xs text-text-secondary mb-3">
             <Link href="/superstars" className="hover:text-neon-blue transition-colors">Superstars</Link>
             <span className="text-border-subtle">/</span>
             <span className="text-neon-blue">Managers</span>
