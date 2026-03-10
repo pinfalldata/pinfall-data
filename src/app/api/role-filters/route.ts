@@ -4,22 +4,34 @@ import { supabase } from '@/lib/supabase'
 
 export const revalidate = 3600
 
-/**
- * GET /api/role-filters?role=commentator&country=United+States
- * Uses activity tables to find real people for each role.
- */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const role = searchParams.get('role') || ''
   const country = searchParams.get('country') || ''
-
   if (!role) return NextResponse.json({ eras: [], countries: [], cities: [] })
 
   try {
-    // Step 1: Get candidate IDs from activity tables (same logic as role-list)
+    // Get candidate IDs (same logic as role-list)
     let candidateIds: number[] | null = null
-
-    if (role === 'commentator') {
+    if (role === 'general_manager') {
+      const [{ data: a }, { data: b }] = await Promise.all([
+        supabase.from('general_manager_tenures').select('superstar_id'),
+        supabase.from('superstars').select('id').eq('role', 'general_manager'),
+      ])
+      const set = new Set<number>()
+      for (const r of (a || [])) set.add(r.superstar_id)
+      for (const r of (b || [])) set.add(r.id)
+      candidateIds = [...set]
+    } else if (role === 'executive') {
+      const [{ data: a }, { data: b }] = await Promise.all([
+        supabase.from('executive_tenures').select('superstar_id'),
+        supabase.from('superstars').select('id').eq('role', 'executive'),
+      ])
+      const set = new Set<number>()
+      for (const r of (a || [])) set.add(r.superstar_id)
+      for (const r of (b || [])) set.add(r.id)
+      candidateIds = [...set]
+    } else if (role === 'commentator') {
       const [{ data: a }, { data: b }] = await Promise.all([
         supabase.from('show_commentators').select('superstar_id'),
         supabase.from('superstars').select('id').eq('role', 'commentator'),
@@ -39,7 +51,7 @@ export async function GET(request: NextRequest) {
       candidateIds = [...set]
     } else if (role === 'referee') {
       const [{ data: a }, { data: b }] = await Promise.all([
-        supabase.from('match_referees').select('superstar_id').not('superstar_id', 'is', null).or('is_special_referee.is.null,is_special_referee.eq.false'),
+        supabase.from('match_referees').select('superstar_id').not('superstar_id', 'is', null),
         supabase.from('superstars').select('id').eq('role', 'referee'),
       ])
       const set = new Set<number>()
@@ -56,14 +68,14 @@ export async function GET(request: NextRequest) {
       for (const r of (b || [])) set.add(r.id)
       candidateIds = [...set]
     }
-    // general_manager & executive: candidateIds stays null
 
-    // Step 2: Get countries from those candidates
-    let countryQuery
+    let countryQuery, cityQueryFn
     if (candidateIds && candidateIds.length > 0) {
       countryQuery = supabase.from('superstars').select('birth_country').in('id', candidateIds.slice(0, 2000)).not('birth_country', 'is', null).neq('birth_country', '')
+      cityQueryFn = () => supabase.from('superstars').select('birth_city').in('id', candidateIds.slice(0, 2000)).eq('birth_country', country).not('birth_city', 'is', null).neq('birth_city', '')
     } else {
       countryQuery = supabase.from('superstars').select('birth_country').eq('role', role).not('birth_country', 'is', null).neq('birth_country', '')
+      cityQueryFn = () => supabase.from('superstars').select('birth_city').eq('role', role).eq('birth_country', country).not('birth_city', 'is', null).neq('birth_city', '')
     }
 
     const [{ data: eras }, { data: countriesRaw }] = await Promise.all([
@@ -76,13 +88,7 @@ export async function GET(request: NextRequest) {
 
     let cities: string[] = []
     if (country) {
-      let cityQuery
-      if (candidateIds && candidateIds.length > 0) {
-        cityQuery = supabase.from('superstars').select('birth_city').in('id', candidateIds.slice(0, 2000)).eq('birth_country', country).not('birth_city', 'is', null).neq('birth_city', '')
-      } else {
-        cityQuery = supabase.from('superstars').select('birth_city').eq('role', role).eq('birth_country', country).not('birth_city', 'is', null).neq('birth_city', '')
-      }
-      const { data: citiesRaw } = await cityQuery
+      const { data: citiesRaw } = await cityQueryFn()
       const citySet = new Set<string>()
       for (const r of (citiesRaw || [])) if (r.birth_city) citySet.add(r.birth_city)
       cities = [...citySet].sort()
