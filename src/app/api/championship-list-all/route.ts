@@ -4,7 +4,8 @@ import { supabase } from '@/lib/supabase'
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
-  const superstarName = searchParams.get('superstar')
+  const superstarId = searchParams.get('superstarId')
+  const gender = searchParams.get('gender') // 'male' or 'female'
 
   try {
     const { data: championships, error } = await supabase
@@ -13,34 +14,30 @@ export async function GET(request: NextRequest) {
       .order('sort_order', { ascending: true })
       .order('name', { ascending: true })
 
-    if (error) {
-      return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 })
+    if (error) return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 })
+
+    // If superstar filter by ID
+    let filteredIds: number[] | null = null
+    if (superstarId) {
+      const { data: reigns } = await supabase
+        .from('championship_reigns')
+        .select('championship_id')
+        .eq('superstar_id', parseInt(superstarId))
+      filteredIds = reigns ? [...new Set(reigns.map(r => r.championship_id))] : []
     }
 
-    // If superstar filter — find which championships this superstar held
-    let filteredIds: number[] | null = null
-    if (superstarName) {
-      // Find superstar(s) matching the name
-      const { data: superstars } = await supabase
-        .from('superstars')
-        .select('id')
-        .ilike('name', `%${superstarName}%`)
-        .limit(20)
-
-      if (superstars && superstars.length > 0) {
-        const ssIds = superstars.map(s => s.id)
-        const { data: reigns } = await supabase
-          .from('championship_reigns')
-          .select('championship_id')
-          .in('superstar_id', ssIds)
-
-        if (reigns) {
-          filteredIds = [...new Set(reigns.map(r => r.championship_id))]
-        } else {
-          filteredIds = []
+    // If gender filter — find championships held by at least one person of that gender
+    let genderFilteredIds: number[] | null = null
+    if (gender) {
+      const { data: reigns } = await supabase
+        .from('championship_reigns')
+        .select('championship_id, superstar:superstar_id ( gender )')
+      if (reigns) {
+        const ids = new Set<number>()
+        for (const r of reigns) {
+          if (r.superstar?.gender === gender) ids.add(r.championship_id)
         }
-      } else {
-        filteredIds = []
+        genderFilteredIds = [...ids]
       }
     }
 
@@ -55,15 +52,11 @@ export async function GET(request: NextRequest) {
           .is('lost_date', null)
           .limit(1)
           .maybeSingle()
-        return {
-          ...c,
-          current_holder: reign?.superstar || null,
-          current_reign_start: reign?.won_date || null,
-        }
+        return { ...c, current_holder: reign?.superstar || null, current_reign_start: reign?.won_date || null }
       })
     )
 
-    return NextResponse.json({ championships: enriched, filteredIds })
+    return NextResponse.json({ championships: enriched, filteredIds, genderFilteredIds })
   } catch (err) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
