@@ -70,25 +70,63 @@ export default function TabRoleData({ superstar, tab }: { superstar: any; tab: s
       )}
 
       {loading && items.length === 0 ? (
-        <div className="space-y-1">{Array.from({ length: 8 }).map((_, i) => <div key={i} className="h-[52px] rounded-lg bg-bg-secondary/30 animate-pulse" />)}</div>
+        <div className="space-y-2">{Array.from({ length: 8 }).map((_, i) => <div key={i} className="h-16 rounded-xl bg-bg-secondary/30 animate-pulse" />)}</div>
       ) : items.length === 0 ? (
         <p className="text-center text-text-secondary py-16">No data found.</p>
       ) : (
         <>
           <div className={`transition-opacity ${loading ? 'opacity-50' : ''}`}>
-            {items.map((d, i) => {
-              const k = d.id || i
-              if (tab === 'segments') return <SegR key={k} d={d} />
-              if (tab === 'managed') return <MgrR key={k} d={d} />
-              if (tab === 'commentated') return <CommR key={k} d={d} />
-              if (tab === 'matchCommentated') return <GuestCommR key={k} d={d} />
-              if (tab === 'ringAnnounced') return <ShowR key={k} d={d} />
-              if (tab === 'refereed' || tab === 'guestRefereed') return <RefR key={k} d={d} />
-              if (tab === 'interviewed') return <IntR key={k} d={d} />
-              if (tab === 'gmTenures') return <GMC key={k} d={d} />
-              if (tab === 'execTenures') return <ExC key={k} d={d} />
-              return null
-            })}
+            {tab === 'managed' && (
+              <div className="hidden lg:grid lg:grid-cols-[100px_minmax(120px,1fr)_140px_minmax(180px,2fr)_minmax(160px,1.5fr)_60px_60px] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
+                <span>Date</span><span>Show</span><span>Match Type</span><span>Managed For</span><span>Opponents</span><span>Result</span><span>Rating</span>
+              </div>
+            )}
+            {tab === 'segments' && (
+              <div className="hidden lg:grid lg:grid-cols-[100px_minmax(120px,1fr)_40px_minmax(200px,2.5fr)_minmax(140px,1.5fr)] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
+                <span>Date</span><span>Show</span><span></span><span>Segment</span><span>Participants</span>
+              </div>
+            )}
+            {tab === 'commentated' && (
+              <div className="hidden lg:grid lg:grid-cols-[100px_minmax(200px,2fr)_minmax(200px,2fr)] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
+                <span>Date</span><span>Show</span><span>Co-Commentators</span>
+              </div>
+            )}
+            {tab === 'matchCommentated' && (
+              <div className="hidden lg:grid lg:grid-cols-[100px_minmax(120px,1fr)_140px_minmax(200px,2.5fr)_minmax(100px,1fr)] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
+                <span>Date</span><span>Show</span><span>Match Type</span><span>Match</span><span>Commentators</span>
+              </div>
+            )}
+            {tab === 'ringAnnounced' && (
+              <div className="hidden lg:grid lg:grid-cols-[100px_1fr] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
+                <span>Date</span><span>Show</span>
+              </div>
+            )}
+            {(tab === 'refereed' || tab === 'guestRefereed') && (
+              <div className="hidden lg:grid lg:grid-cols-[100px_minmax(120px,1fr)_140px_minmax(200px,2.5fr)_60px] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
+                <span>Date</span><span>Show</span><span>Match Type</span><span>Match</span><span>Rating</span>
+              </div>
+            )}
+            {tab === 'interviewed' && (
+              <div className="hidden lg:grid lg:grid-cols-[100px_minmax(120px,1fr)_minmax(200px,2.5fr)_minmax(160px,1.5fr)] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
+                <span>Date</span><span>Show</span><span>Segment</span><span>Participants</span>
+              </div>
+            )}
+
+            <div className="space-y-0.5">
+              {items.map((d, i) => {
+                const k = d.id || i
+                if (tab === 'segments') return <SegR key={k} d={d} />
+                if (tab === 'managed') return <MgrR key={k} d={d} />
+                if (tab === 'commentated') return <CommR key={k} d={d} />
+                if (tab === 'matchCommentated') return <GuestCommR key={k} d={d} />
+                if (tab === 'ringAnnounced') return <ShowR key={k} d={d} />
+                if (tab === 'refereed' || tab === 'guestRefereed') return <RefR key={k} d={d} />
+                if (tab === 'interviewed') return <IntR key={k} d={d} />
+                if (tab === 'gmTenures') return <GMC key={k} d={d} />
+                if (tab === 'execTenures') return <ExC key={k} d={d} />
+                return null
+              })}
+            </div>
           </div>
           {totalPages > 1 && <Pag page={page} tp={totalPages} total={total} go={goP} />}
         </>
@@ -97,126 +135,259 @@ export default function TabRoleData({ superstar, tab }: { superstar: any; tab: s
   )
 }
 
-/* ======== Date component — always on 1 line ======== */
+/* ======== Helpers ======== */
 function D({ v }: { v: string | null }) {
-  return <span className="text-[11px] text-text-secondary font-mono whitespace-nowrap shrink-0">{v ? formatDateShort(v) : '—'}</span>
+  return <span className="text-xs text-text-secondary font-mono whitespace-nowrap">{v ? formatDateShort(v) : '—'}</span>
 }
-function Logo({ src }: { src: string }) { return <div className="w-[18px] h-[18px] shrink-0"><Image src={src} alt="" width={18} height={18} className="w-full h-full object-contain" /></div> }
-function Av({ p, w }: { p: any; w?: boolean }) { return <div className={`w-6 h-6 rounded-full overflow-hidden border-2 shrink-0 ${w ? 'border-emerald-500/40' : 'border-bg-primary'}`}>{p.photo_url ? <Image src={p.photo_url} alt="" width={24} height={24} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-bg-tertiary" />}</div> }
-function Ov({ n }: { n: number }) { return <div className="w-6 h-6 rounded-full bg-bg-tertiary border-2 border-bg-primary flex items-center justify-center text-[8px] text-text-secondary shrink-0">+{n}</div> }
+function Logo({ src }: { src: string }) { return <div className="w-5 h-5 shrink-0 rounded overflow-hidden"><Image src={src} alt="" width={20} height={20} className="w-full h-full object-contain" /></div> }
+function Av({ p, w }: { p: any; w?: boolean }) { return <div className={`w-7 h-7 rounded-full overflow-hidden border-2 shrink-0 ${w ? 'border-emerald-500/40' : 'border-bg-primary'}`}>{p.photo_url ? <Image src={p.photo_url} alt="" width={28} height={28} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-bg-tertiary" />}</div> }
+function Ov({ n }: { n: number }) { return <div className="w-7 h-7 rounded-full bg-bg-tertiary border-2 border-bg-primary flex items-center justify-center text-[9px] text-text-secondary shrink-0">+{n}</div> }
 
 /* ======== SEGMENT ROW ======== */
 function SegR({ d }: { d: any }) {
-  return <Link href={`/shows/${d.show_slug}/segments/${d.slug}`} className="flex items-center gap-2 px-3 h-[52px] rounded-lg hover:bg-bg-secondary/30 transition-all group overflow-hidden">
-    <D v={d.show_date} /> {d.show_logo && <Logo src={d.show_logo} />}
-    <span className="text-[11px] text-text-white truncate max-w-[80px] shrink-0 hidden sm:inline">{d.show_name}</span>
-    <span className="text-sm shrink-0">{segI[d.category] || '📋'}</span>
-    <span className="text-[11px] text-neon-blue font-medium truncate flex-1 group-hover:underline min-w-0">{d.title}</span>
-    <div className="hidden md:flex -space-x-1.5 shrink-0">{(d.participants || []).slice(0, 4).map((p: any) => <Av key={p.id} p={p} />)}{(d.participants||[]).length > 4 && <Ov n={d.participants.length - 4} />}</div>
-  </Link>
+  return (
+    <Link href={`/shows/${d.show_slug}/segments/${d.slug}`} className="group block transition-all hover:bg-bg-secondary/30 rounded-xl">
+      <div className="hidden lg:grid lg:grid-cols-[100px_minmax(120px,1fr)_40px_minmax(200px,2.5fr)_minmax(140px,1.5fr)] gap-3 items-center px-4 py-3 border-b border-border-subtle/10">
+        <D v={d.show_date} />
+        <div className="flex items-center gap-2 min-w-0">
+          {d.show_logo && <Logo src={d.show_logo} />}
+          <span className="text-sm text-text-white truncate">{d.show_name}</span>
+        </div>
+        <span className="text-lg text-center">{segI[d.category] || '📋'}</span>
+        <span className="text-sm text-neon-blue font-medium truncate group-hover:underline">{d.title}</span>
+        <div className="flex items-center gap-1.5">
+          {(d.participants || []).slice(0, 5).map((p: any) => (
+            <div key={p.id} className="flex items-center gap-1 shrink-0">
+              <Av p={p} />
+              <span className="text-xs text-text-secondary hidden xl:inline truncate max-w-[80px]">{p.name}</span>
+            </div>
+          ))}
+          {(d.participants || []).length > 5 && <Ov n={d.participants.length - 5} />}
+        </div>
+      </div>
+      <div className="lg:hidden px-3 py-3 border-b border-border-subtle/10">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-lg shrink-0">{segI[d.category] || '📋'}</span>
+          <span className="text-sm text-neon-blue font-medium truncate flex-1 group-hover:underline">{d.title}</span>
+        </div>
+        <div className="flex items-center gap-2 text-[11px] text-text-secondary">
+          {d.show_logo && <Logo src={d.show_logo} />}
+          <span className="truncate">{d.show_name}</span>
+          <span className="text-text-secondary/30">•</span>
+          <span className="font-mono shrink-0">{d.show_date ? formatDateShort(d.show_date) : ''}</span>
+        </div>
+        {(d.participants || []).length > 0 && (
+          <div className="flex items-center gap-1 mt-2">{d.participants.slice(0, 4).map((p: any) => <Av key={p.id} p={p} />)}{d.participants.length > 4 && <Ov n={d.participants.length - 4} />}</div>
+        )}
+      </div>
+    </Link>
+  )
 }
 
 /* ======== MANAGER ROW ======== */
 function MgrR({ d }: { d: any }) {
-  return <Link href={`/shows/${d.show_slug}/matches/${d.slug}`} className="flex items-center gap-2 px-3 h-[52px] rounded-lg hover:bg-bg-secondary/30 transition-all group overflow-hidden">
-    <D v={d.date} /> {d.show_logo && <Logo src={d.show_logo} />}
-    <span className="text-[10px] text-neon-blue font-semibold uppercase shrink-0 max-w-[70px] truncate">{d.match_type?.name || 'Match'}</span>
-    <div className="flex items-center gap-1 shrink-0 border-l border-border-subtle/20 pl-2 ml-0.5">
-      <span className="text-[9px] text-yellow-400 font-bold shrink-0">MGR</span>
-      <div className="flex -space-x-1 shrink-0">{(d.managed_for || []).slice(0, 2).map((p: any) => <Av key={p.id} p={p} />)}</div>
-      <span className="text-[11px] text-text-white truncate max-w-[70px] hidden sm:inline">{(d.managed_for || []).map((p: any) => p.name).join(', ')}</span>
-    </div>
-    <span className="text-[10px] text-neon-blue mx-0.5 shrink-0">vs</span>
-    <div className="hidden sm:flex -space-x-1 shrink-0">{(d.opponents || []).slice(0, 2).map((p: any) => <Av key={p.id} p={p} />)}</div>
-    <span className="text-[11px] text-text-secondary truncate flex-1 min-w-0 hidden sm:inline">{(d.opponents || []).map((p: any) => p.name).join(', ')}</span>
-    <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold shrink-0 ${d.matchResult === 'win' ? 'text-emerald-400 bg-emerald-500/10' : d.matchResult === 'draw' ? 'text-yellow-400 bg-yellow-500/10' : 'text-red-400 bg-red-500/10'}`}>{d.matchResult === 'win' ? 'W' : d.matchResult === 'draw' ? 'D' : 'L'}</span>
-    {d.rating && <div className="shrink-0 hidden lg:block"><StarRating rating={d.rating} size="xs" /></div>}
-  </Link>
+  return (
+    <Link href={`/shows/${d.show_slug}/matches/${d.slug}`} className="group block transition-all hover:bg-bg-secondary/30 rounded-xl">
+      <div className="hidden lg:grid lg:grid-cols-[100px_minmax(120px,1fr)_140px_minmax(180px,2fr)_minmax(160px,1.5fr)_60px_60px] gap-3 items-center px-4 py-3 border-b border-border-subtle/10">
+        <D v={d.date} />
+        <div className="flex items-center gap-2 min-w-0">{d.show_logo && <Logo src={d.show_logo} />}<span className="text-sm text-text-white truncate">{d.show_name || '—'}</span></div>
+        <span className="text-xs text-neon-blue font-semibold uppercase truncate">{d.match_type?.name || 'Match'}</span>
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-[9px] text-yellow-400 font-bold bg-yellow-500/10 px-1.5 py-0.5 rounded shrink-0">MGR</span>
+          <div className="flex -space-x-1.5 shrink-0">{(d.managed_for || []).slice(0, 3).map((p: any) => <Av key={p.id} p={p} />)}</div>
+          <span className="text-sm text-text-white truncate">{(d.managed_for || []).map((p: any) => p.name).join(', ')}</span>
+        </div>
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-xs text-neon-blue font-bold shrink-0">vs</span>
+          <div className="flex -space-x-1.5 shrink-0">{(d.opponents || []).slice(0, 3).map((p: any) => <Av key={p.id} p={p} />)}</div>
+          <span className="text-xs text-text-secondary truncate">{(d.opponents || []).map((p: any) => p.name).join(', ')}</span>
+        </div>
+        <div className="flex justify-center">
+          <span className={`text-xs font-bold px-2.5 py-1 rounded border ${d.matchResult === 'win' ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : d.matchResult === 'draw' ? 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' : 'text-red-400 bg-red-500/10 border-red-500/20'}`}>
+            {d.matchResult === 'win' ? 'W' : d.matchResult === 'draw' ? 'D' : 'L'}
+          </span>
+        </div>
+        <div className="flex justify-center">{d.rating ? <StarRating rating={d.rating} size="xs" /> : <span className="text-[10px] text-text-secondary/30">—</span>}</div>
+      </div>
+      <div className="lg:hidden flex items-center gap-3 px-3 py-3 border-b border-border-subtle/10">
+        <div className={`w-9 h-9 rounded-lg border flex items-center justify-center shrink-0 ${d.matchResult === 'win' ? 'border-emerald-500/20 bg-emerald-500/10' : d.matchResult === 'draw' ? 'border-yellow-500/20 bg-yellow-500/10' : 'border-red-500/20 bg-red-500/10'}`}>
+          <span className={`text-xs font-bold ${d.matchResult === 'win' ? 'text-emerald-400' : d.matchResult === 'draw' ? 'text-yellow-400' : 'text-red-400'}`}>{d.matchResult === 'win' ? 'W' : d.matchResult === 'draw' ? 'D' : 'L'}</span>
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="text-[9px] text-yellow-400 font-bold bg-yellow-500/10 px-1.5 py-0.5 rounded shrink-0">MGR</span>
+            <span className="text-sm text-text-white font-medium truncate">{(d.managed_for || []).map((p: any) => p.name).join(', ')} vs {(d.opponents || []).map((p: any) => p.name).join(', ')}</span>
+          </div>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            {d.show_logo && <Logo src={d.show_logo} />}
+            <span className="text-[11px] text-text-secondary truncate">{d.show_name}</span>
+            <span className="text-[10px] text-text-secondary/50">•</span>
+            <span className="text-[10px] text-text-secondary font-mono">{d.date ? formatDateShort(d.date) : ''}</span>
+          </div>
+        </div>
+        {d.rating && <div className="shrink-0"><StarRating rating={d.rating} size="xs" /></div>}
+      </div>
+    </Link>
+  )
 }
 
 /* ======== COMMENTATOR ROW ======== */
 function CommR({ d }: { d: any }) {
-  return <Link href={`/shows/${d.show_slug}`} className="flex items-center gap-3 px-3 h-[52px] rounded-lg hover:bg-bg-secondary/30 transition-all group overflow-hidden">
-    <D v={d.show_date} /> {d.show_logo && <Logo src={d.show_logo} />}
-    <span className="text-sm text-text-white truncate flex-1 group-hover:text-neon-blue min-w-0">{d.show_name}</span>
-    {d.co_commentators?.length > 0 && <div className="hidden sm:flex items-center gap-1 shrink-0"><span className="text-[10px] text-text-secondary">with</span>{d.co_commentators.slice(0, 3).map((p: any) => <span key={p.id} className="flex items-center gap-0.5"><Av p={p} /><span className="text-[11px] text-text-secondary hidden md:inline">{p.name}</span></span>)}</div>}
-  </Link>
+  return (
+    <Link href={`/shows/${d.show_slug}`} className="group block transition-all hover:bg-bg-secondary/30 rounded-xl">
+      <div className="hidden lg:grid lg:grid-cols-[100px_minmax(200px,2fr)_minmax(200px,2fr)] gap-3 items-center px-4 py-3 border-b border-border-subtle/10">
+        <D v={d.show_date} />
+        <div className="flex items-center gap-2 min-w-0">{d.show_logo && <Logo src={d.show_logo} />}<span className="text-sm text-text-white group-hover:text-neon-blue transition-colors truncate">{d.show_name}</span></div>
+        <div className="flex items-center gap-2 min-w-0">
+          {d.co_commentators?.length > 0 ? (
+            <><span className="text-xs text-text-secondary shrink-0">with</span>
+              {d.co_commentators.slice(0, 4).map((p: any) => (
+                <div key={p.id} className="flex items-center gap-1 shrink-0"><Av p={p} /><span className="text-xs text-text-secondary truncate max-w-[100px]">{p.name}</span></div>
+              ))}{d.co_commentators.length > 4 && <Ov n={d.co_commentators.length - 4} />}</>
+          ) : <span className="text-xs text-text-secondary/30">—</span>}
+        </div>
+      </div>
+      <div className="lg:hidden px-3 py-3 border-b border-border-subtle/10">
+        <div className="flex items-center gap-2 mb-1">{d.show_logo && <Logo src={d.show_logo} />}<span className="text-sm text-text-white group-hover:text-neon-blue transition-colors truncate flex-1">{d.show_name}</span><span className="text-[10px] text-text-secondary font-mono shrink-0">{d.show_date ? formatDateShort(d.show_date) : ''}</span></div>
+        {d.co_commentators?.length > 0 && (
+          <div className="flex items-center gap-1.5 mt-1.5"><span className="text-[11px] text-text-secondary">with</span>
+            {d.co_commentators.slice(0, 3).map((p: any) => (<div key={p.id} className="flex items-center gap-0.5"><Av p={p} /><span className="text-[11px] text-text-secondary">{p.name}</span></div>))}
+          </div>
+        )}
+      </div>
+    </Link>
+  )
 }
 
-/* ======== GUEST COMMENTARY ROW — with match details ======== */
+/* ======== GUEST COMMENTARY ROW ======== */
 function GuestCommR({ d }: { d: any }) {
   const m = d.match
-  return <Link href={m ? `/shows/${d.show_slug}/matches/${m.slug}` : `/shows/${d.show_slug}`} className="flex items-center gap-2 px-3 h-[52px] rounded-lg hover:bg-bg-secondary/30 transition-all group overflow-hidden">
-    <D v={d.show_date} /> {d.show_logo && <Logo src={d.show_logo} />}
-    {m ? (
-      <>
-        <span className="text-[10px] text-neon-blue font-semibold uppercase shrink-0 max-w-[70px] truncate">{m.match_type || 'Match'}</span>
-        <div className="flex items-center gap-0.5 flex-1 min-w-0 overflow-hidden">
-          {(m.teams || []).map((t: any, i: number) => (
-            <span key={i} className="flex items-center gap-0.5 shrink-0">
-              {i > 0 && <span className="text-[10px] text-neon-blue font-bold mx-0.5">vs</span>}
-              <div className="flex -space-x-1 shrink-0">{t.members.slice(0, 2).map((p: any) => <Av key={p.id} p={p} w={t.is_winner} />)}</div>
-              <span className={`text-[11px] truncate max-w-[70px] hidden sm:inline ${t.is_winner ? 'text-emerald-400 font-semibold' : 'text-text-secondary'}`}>{t.members.map((p: any) => p.name).join(', ')}</span>
-            </span>
-          ))}
+  return (
+    <Link href={m ? `/shows/${d.show_slug}/matches/${m.slug}` : `/shows/${d.show_slug}`} className="group block transition-all hover:bg-bg-secondary/30 rounded-xl">
+      <div className="hidden lg:grid lg:grid-cols-[100px_minmax(120px,1fr)_140px_minmax(200px,2.5fr)_minmax(100px,1fr)] gap-3 items-center px-4 py-3 border-b border-border-subtle/10">
+        <D v={d.show_date} />
+        <div className="flex items-center gap-2 min-w-0">{d.show_logo && <Logo src={d.show_logo} />}<span className="text-sm text-text-white truncate">{d.show_name}</span></div>
+        {m ? (
+          <>
+            <span className="text-xs text-neon-blue font-semibold uppercase truncate">{m.match_type || 'Match'}</span>
+            <div className="flex items-center gap-1.5 min-w-0">
+              {(m.teams || []).map((t: any, i: number) => (
+                <span key={i} className="flex items-center gap-1 shrink-0">
+                  {i > 0 && <span className="text-xs text-neon-blue font-bold mx-0.5">vs</span>}
+                  <div className="flex -space-x-1.5 shrink-0">{t.members.slice(0, 2).map((p: any) => <Av key={p.id} p={p} w={t.is_winner} />)}</div>
+                  <span className={`text-xs truncate max-w-[100px] ${t.is_winner ? 'text-emerald-400 font-semibold' : 'text-text-secondary'}`}>{t.members.map((p: any) => p.name).join(', ')}</span>
+                </span>
+              ))}
+            </div>
+          </>
+        ) : (<><span className="text-xs text-text-secondary/30">—</span><span className="text-sm text-text-white truncate">{d.show_name}</span></>)}
+        <div className="flex items-center gap-1.5 min-w-0">
+          {d.official_commentators?.length > 0 ? (<><span className="text-[10px] text-text-secondary">🎧</span>{d.official_commentators.slice(0, 3).map((p: any) => <Av key={p.id} p={p} />)}</>) : <span className="text-xs text-text-secondary/30">—</span>}
         </div>
-      </>
-    ) : (
-      <span className="text-sm text-text-white truncate flex-1">{d.show_name}</span>
-    )}
-    {d.official_commentators?.length > 0 && <div className="hidden lg:flex items-center gap-1 shrink-0"><span className="text-[9px] text-text-secondary">🎧</span>{d.official_commentators.slice(0, 2).map((p: any) => <Av key={p.id} p={p} />)}</div>}
-  </Link>
+      </div>
+      <div className="lg:hidden px-3 py-3 border-b border-border-subtle/10">
+        <div className="flex items-center gap-2 mb-1">
+          {m ? (
+            <><span className="text-xs text-neon-blue font-semibold uppercase shrink-0">{m.match_type || 'Match'}</span>
+              <span className="text-sm text-text-white truncate flex-1">{(m.teams || []).map((t: any) => t.members.map((p: any) => p.name).join(', ')).join(' vs ')}</span></>
+          ) : (<span className="text-sm text-text-white truncate flex-1">{d.show_name}</span>)}
+        </div>
+        <div className="flex items-center gap-1.5 text-[11px] text-text-secondary">{d.show_logo && <Logo src={d.show_logo} />}<span className="truncate">{d.show_name}</span><span className="text-text-secondary/30">•</span><span className="font-mono shrink-0">{d.show_date ? formatDateShort(d.show_date) : ''}</span></div>
+      </div>
+    </Link>
+  )
 }
 
 /* ======== SHOW ROW (ring announced) ======== */
 function ShowR({ d }: { d: any }) {
-  return <Link href={`/shows/${d.show_slug}`} className="flex items-center gap-3 px-3 h-[52px] rounded-lg hover:bg-bg-secondary/30 transition-all group overflow-hidden">
-    <D v={d.show_date} /> {d.show_logo && <Logo src={d.show_logo} />}
-    <span className="text-sm text-text-white truncate flex-1 group-hover:text-neon-blue min-w-0">{d.show_name}</span>
-  </Link>
+  return (
+    <Link href={`/shows/${d.show_slug}`} className="group block transition-all hover:bg-bg-secondary/30 rounded-xl">
+      <div className="hidden lg:grid lg:grid-cols-[100px_1fr] gap-3 items-center px-4 py-3 border-b border-border-subtle/10">
+        <D v={d.show_date} />
+        <div className="flex items-center gap-2 min-w-0">{d.show_logo && <Logo src={d.show_logo} />}<span className="text-sm text-text-white group-hover:text-neon-blue transition-colors truncate">{d.show_name}</span></div>
+      </div>
+      <div className="lg:hidden flex items-center gap-2 px-3 py-3 border-b border-border-subtle/10">
+        {d.show_logo && <Logo src={d.show_logo} />}
+        <span className="text-sm text-text-white group-hover:text-neon-blue transition-colors truncate flex-1">{d.show_name}</span>
+        <span className="text-[10px] text-text-secondary font-mono shrink-0">{d.show_date ? formatDateShort(d.show_date) : ''}</span>
+      </div>
+    </Link>
+  )
 }
 
 /* ======== REFEREE ROW ======== */
 function RefR({ d }: { d: any }) {
-  return <Link href={`/shows/${d.show_slug}/matches/${d.slug}`} className="flex items-center gap-2 px-3 h-[52px] rounded-lg hover:bg-bg-secondary/30 transition-all group overflow-hidden">
-    <D v={d.date} /> {d.show_logo && <Logo src={d.show_logo} />}
-    <span className="text-[10px] text-neon-blue font-semibold uppercase shrink-0 max-w-[70px] truncate">{d.match_type?.name || 'Match'}</span>
-    <div className="flex items-center gap-0.5 flex-1 min-w-0 overflow-hidden">
-      {(d.teams || []).map((t: any, i: number) => <span key={i} className="flex items-center gap-0.5 shrink-0">
-        {i > 0 && <span className="text-[10px] text-neon-blue font-bold mx-0.5">vs</span>}
-        <div className="flex -space-x-1 shrink-0">{t.members.slice(0, 2).map((p: any) => <Av key={p.id} p={p} w={t.is_winner} />)}</div>
-        <span className={`text-[11px] truncate max-w-[80px] hidden sm:inline ${t.is_winner ? 'text-emerald-400 font-semibold' : 'text-text-secondary'}`}>{t.members.map((p: any) => p.name).join(', ')}</span>
-      </span>)}
-    </div>
-    {d.rating && <div className="shrink-0 hidden lg:block"><StarRating rating={d.rating} size="xs" /></div>}
-  </Link>
+  return (
+    <Link href={`/shows/${d.show_slug}/matches/${d.slug}`} className="group block transition-all hover:bg-bg-secondary/30 rounded-xl">
+      <div className="hidden lg:grid lg:grid-cols-[100px_minmax(120px,1fr)_140px_minmax(200px,2.5fr)_60px] gap-3 items-center px-4 py-3 border-b border-border-subtle/10">
+        <D v={d.date} />
+        <div className="flex items-center gap-2 min-w-0">{d.show_logo && <Logo src={d.show_logo} />}<span className="text-sm text-text-white truncate">{d.show_name || '—'}</span></div>
+        <span className="text-xs text-neon-blue font-semibold uppercase truncate">{d.match_type?.name || 'Match'}</span>
+        <div className="flex items-center gap-1.5 min-w-0 overflow-hidden">
+          {(d.teams || []).map((t: any, i: number) => (
+            <span key={i} className="flex items-center gap-1 shrink-0">
+              {i > 0 && <span className="text-xs text-neon-blue font-bold mx-0.5">vs</span>}
+              <div className="flex -space-x-1.5 shrink-0">{t.members.slice(0, 2).map((p: any) => <Av key={p.id} p={p} w={t.is_winner} />)}</div>
+              <span className={`text-xs truncate max-w-[100px] ${t.is_winner ? 'text-emerald-400 font-semibold' : 'text-text-secondary'}`}>{t.members.map((p: any) => p.name).join(', ')}</span>
+            </span>
+          ))}
+        </div>
+        <div className="flex justify-center">{d.rating ? <StarRating rating={d.rating} size="xs" /> : <span className="text-[10px] text-text-secondary/30">—</span>}</div>
+      </div>
+      <div className="lg:hidden px-3 py-3 border-b border-border-subtle/10">
+        <div className="flex items-center gap-1.5 mb-1 flex-wrap">
+          <span className="text-xs text-neon-blue font-semibold uppercase shrink-0">{d.match_type?.name || 'Match'}</span>
+          <span className="text-sm text-text-white truncate">{(d.teams || []).map((t: any) => t.members.map((p: any) => p.name).join(', ')).join(' vs ')}</span>
+        </div>
+        <div className="flex items-center gap-1.5 text-[11px] text-text-secondary">
+          {d.show_logo && <Logo src={d.show_logo} />}<span className="truncate">{d.show_name}</span><span className="text-text-secondary/30">•</span><span className="font-mono shrink-0">{d.date ? formatDateShort(d.date) : ''}</span>
+          {d.rating && <><span className="text-text-secondary/30">•</span><StarRating rating={d.rating} size="xs" /></>}
+        </div>
+      </div>
+    </Link>
+  )
 }
 
-/* ======== INTERVIEWER ROW — with all participants ======== */
+/* ======== INTERVIEWER ROW ======== */
 function IntR({ d }: { d: any }) {
-  return <Link href={`/shows/${d.show_slug}/segments/${d.slug}`} className="flex items-center gap-2 px-3 h-[52px] rounded-lg hover:bg-bg-secondary/30 transition-all group overflow-hidden">
-    <D v={d.show_date} /> {d.show_logo && <Logo src={d.show_logo} />}
-    <span className="text-[11px] text-neon-blue truncate flex-1 group-hover:underline min-w-0">{d.title}</span>
-    {(d.participants || []).length > 0 && <div className="hidden sm:flex items-center gap-1 shrink-0"><span className="text-[10px] text-text-secondary">with</span>
-      {d.participants.slice(0, 3).map((p: any) => <span key={p.id} className="flex items-center gap-0.5"><Av p={p} /><span className="text-[11px] text-text-secondary hidden md:inline">{p.name}</span></span>)}
-      {d.participants.length > 3 && <Ov n={d.participants.length - 3} />}
-    </div>}
-  </Link>
+  return (
+    <Link href={`/shows/${d.show_slug}/segments/${d.slug}`} className="group block transition-all hover:bg-bg-secondary/30 rounded-xl">
+      <div className="hidden lg:grid lg:grid-cols-[100px_minmax(120px,1fr)_minmax(200px,2.5fr)_minmax(160px,1.5fr)] gap-3 items-center px-4 py-3 border-b border-border-subtle/10">
+        <D v={d.show_date} />
+        <div className="flex items-center gap-2 min-w-0">{d.show_logo && <Logo src={d.show_logo} />}<span className="text-sm text-text-white truncate">{d.show_name || '—'}</span></div>
+        <span className="text-sm text-neon-blue truncate group-hover:underline">{d.title}</span>
+        <div className="flex items-center gap-2 min-w-0">
+          {(d.participants || []).length > 0 ? (
+            <><span className="text-xs text-text-secondary shrink-0">with</span>
+              {d.participants.slice(0, 4).map((p: any) => (
+                <div key={p.id} className="flex items-center gap-1 shrink-0"><Av p={p} /><span className="text-xs text-text-secondary hidden xl:inline truncate max-w-[80px]">{p.name}</span></div>
+              ))}{d.participants.length > 4 && <Ov n={d.participants.length - 4} />}</>
+          ) : <span className="text-xs text-text-secondary/30">—</span>}
+        </div>
+      </div>
+      <div className="lg:hidden px-3 py-3 border-b border-border-subtle/10">
+        <div className="flex items-center gap-2 mb-1"><span className="text-sm text-neon-blue truncate flex-1 group-hover:underline">{d.title}</span></div>
+        <div className="flex items-center gap-1.5 text-[11px] text-text-secondary">{d.show_logo && <Logo src={d.show_logo} />}<span className="truncate">{d.show_name}</span><span className="text-text-secondary/30">•</span><span className="font-mono shrink-0">{d.show_date ? formatDateShort(d.show_date) : ''}</span></div>
+        {(d.participants || []).length > 0 && (
+          <div className="flex items-center gap-1 mt-1.5"><span className="text-[11px] text-text-secondary">with</span>
+            {d.participants.slice(0, 3).map((p: any) => (<div key={p.id} className="flex items-center gap-0.5"><Av p={p} /><span className="text-[11px] text-text-secondary">{p.name}</span></div>))}
+            {d.participants.length > 3 && <Ov n={d.participants.length - 3} />}
+          </div>
+        )}
+      </div>
+    </Link>
+  )
 }
 
-/* ======== GM CARD — premium full-width ======== */
+/* ======== GM CARD ======== */
 function GMC({ d }: { d: any }) {
   return <div className="relative rounded-2xl border border-border-subtle/20 bg-gradient-to-br from-bg-secondary/50 via-bg-secondary/20 to-transparent overflow-hidden mb-8">
     <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-neon-blue/70 to-transparent" />
     <div className="p-6 sm:p-10 flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
       {d.photo_url ? (
-        <div className="relative w-40 h-52 sm:w-48 sm:h-60 rounded-2xl overflow-hidden border-2 border-neon-blue/30 shrink-0 bg-bg-tertiary shadow-neon-blue">
-          <Image src={d.photo_url} alt="" fill className="object-cover object-top" sizes="192px" unoptimized />
-        </div>
+        <div className="relative w-40 h-52 sm:w-48 sm:h-60 rounded-2xl overflow-hidden border-2 border-neon-blue/30 shrink-0 bg-bg-tertiary shadow-neon-blue"><Image src={d.photo_url} alt="" fill className="object-cover object-top" sizes="192px" unoptimized /></div>
       ) : d.show_series?.logo_url ? (
-        <div className="w-32 h-32 sm:w-40 sm:h-40 shrink-0 rounded-2xl bg-bg-tertiary/80 border border-border-subtle/30 p-4 flex items-center justify-center">
-          <Image src={d.show_series.logo_url} alt="" width={120} height={120} className="w-full h-full object-contain" />
-        </div>
+        <div className="w-32 h-32 sm:w-40 sm:h-40 shrink-0 rounded-2xl bg-bg-tertiary/80 border border-border-subtle/30 p-4 flex items-center justify-center"><Image src={d.show_series.logo_url} alt="" width={120} height={120} className="w-full h-full object-contain" /></div>
       ) : null}
       <div className="flex-1 min-w-0 text-center sm:text-left">
         <div className="flex items-center gap-3 flex-wrap justify-center sm:justify-start mb-3">
@@ -224,9 +395,7 @@ function GMC({ d }: { d: any }) {
           {d.brand_name && <span className="text-sm px-3 py-1 rounded-full bg-neon-blue/10 border border-neon-blue/20 text-neon-blue font-medium">{d.brand_name}</span>}
         </div>
         <div className="flex items-center gap-3 justify-center sm:justify-start">
-          <span className="text-base text-text-secondary font-mono">{d.start_date}</span>
-          <span className="text-neon-blue text-lg">→</span>
-          <span className="text-base text-text-secondary font-mono">{d.end_date || 'Present'}</span>
+          <span className="text-base text-text-secondary font-mono">{d.start_date}</span><span className="text-neon-blue text-lg">→</span><span className="text-base text-text-secondary font-mono">{d.end_date || 'Present'}</span>
           <span className="text-neon-blue text-base font-bold">({fD(d.start_date, d.end_date)})</span>
         </div>
         {d.description && <p className="text-base text-text-secondary/80 mt-5 leading-relaxed max-w-2xl">{d.description}</p>}
@@ -236,22 +405,16 @@ function GMC({ d }: { d: any }) {
   </div>
 }
 
-/* ======== EXEC CARD — premium ======== */
+/* ======== EXEC CARD ======== */
 function ExC({ d }: { d: any }) {
   return <div className="relative rounded-2xl border border-border-subtle/20 bg-gradient-to-br from-bg-secondary/50 via-bg-secondary/20 to-transparent overflow-hidden mb-8">
     <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-yellow-500/60 to-transparent" />
     <div className="p-6 sm:p-10 flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
-      {d.photo_url && (
-        <div className="relative w-40 h-52 sm:w-48 sm:h-60 rounded-2xl overflow-hidden border-2 border-yellow-500/20 shrink-0 bg-bg-tertiary">
-          <Image src={d.photo_url} alt="" fill className="object-cover object-top" sizes="192px" unoptimized />
-        </div>
-      )}
+      {d.photo_url && (<div className="relative w-40 h-52 sm:w-48 sm:h-60 rounded-2xl overflow-hidden border-2 border-yellow-500/20 shrink-0 bg-bg-tertiary"><Image src={d.photo_url} alt="" fill className="object-cover object-top" sizes="192px" unoptimized /></div>)}
       <div className="flex-1 min-w-0 text-center sm:text-left">
         <h3 className="font-display text-2xl sm:text-4xl font-bold text-text-white mb-3">{d.title || 'Executive'}</h3>
         <div className="flex items-center gap-3 justify-center sm:justify-start">
-          <span className="text-base text-text-secondary font-mono">{d.start_date}</span>
-          <span className="text-yellow-400 text-lg">→</span>
-          <span className="text-base text-text-secondary font-mono">{d.end_date || 'Present'}</span>
+          <span className="text-base text-text-secondary font-mono">{d.start_date}</span><span className="text-yellow-400 text-lg">→</span><span className="text-base text-text-secondary font-mono">{d.end_date || 'Present'}</span>
           <span className="text-yellow-400 text-base font-bold">({fD(d.start_date, d.end_date)})</span>
         </div>
         {d.description && <p className="text-base text-text-secondary/80 mt-5 leading-relaxed max-w-2xl">{d.description}</p>}

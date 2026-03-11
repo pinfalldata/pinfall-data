@@ -56,6 +56,15 @@ const resultLabels: Record<string, string> = {
   time_limit_draw: 'Time Limit Draw', other: 'Other',
 }
 
+const showTypeLabels: Record<string, string> = {
+  ppv: 'PPV / PLE',
+  weekly: 'TV Show',
+  special: 'Special',
+  tournament: 'Tournament',
+  other: 'Other',
+  house_show: 'House Show',
+}
+
 const tabLabels: Record<TabKey, string> = {
   episodes: 'Episodes', superstars: 'Superstars', referees: 'Referees',
   commentators: 'Commentators', announcers: 'Ring Announcers',
@@ -354,15 +363,16 @@ export default function ShowSeriesDetailPage() {
             </div>
           ) : episodes.length > 0 ? (
             <>
-              <div className="hidden lg:grid lg:grid-cols-[120px_1fr_1fr_160px_100px] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-2">
-                <span>Date</span><span>Show</span><span>Venue</span><span>Location</span><span className="text-right">Attendance</span>
+              <div className="hidden lg:grid lg:grid-cols-[120px_1fr_100px_1fr_160px_100px] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-2">
+                <span>Date</span><span>Show</span><span>Type</span><span>Venue</span><span>Location</span><span className="text-right">Attendance</span>
               </div>
               <div className="space-y-1">
                 {episodes.map(ep => (
                   <Link key={ep.id} href={`/shows/${ep.slug}`} className="group block transition-all hover:bg-bg-secondary/30 rounded-xl">
-                    <div className="hidden lg:grid lg:grid-cols-[120px_1fr_1fr_160px_100px] gap-3 items-center px-4 py-3 border-b border-border-subtle/10">
+                    <div className="hidden lg:grid lg:grid-cols-[120px_1fr_100px_1fr_160px_100px] gap-3 items-center px-4 py-3 border-b border-border-subtle/10">
                       <span className="text-xs text-text-secondary font-mono">{formatDate(ep.date)}</span>
                       <span className="text-sm text-text-white font-semibold group-hover:text-neon-blue transition-colors truncate">{ep.name}</span>
+                      <span className={`text-[10px] font-bold uppercase tracking-wider truncate ${ep.show_type === 'ppv' ? 'text-yellow-400' : ep.show_type === 'weekly' ? 'text-neon-blue' : 'text-text-secondary'}`}>{showTypeLabels[ep.show_type || ''] || ep.show_type || '—'}</span>
                       <span className="text-xs text-text-secondary truncate">{ep.venue || '—'}</span>
                       <span className="text-xs text-text-secondary truncate">{[ep.city, ep.state_province, ep.country].filter(Boolean).join(', ') || '—'}</span>
                       <span className="text-xs text-text-secondary text-right font-mono">{ep.attendance ? ep.attendance.toLocaleString() : '—'}</span>
@@ -373,6 +383,7 @@ export default function ShowSeriesDetailPage() {
                         <span className="text-[10px] text-text-secondary font-mono shrink-0">{formatDate(ep.date)}</span>
                       </div>
                       <div className="flex items-center gap-2 text-[11px] text-text-secondary">
+                        {ep.show_type && <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold uppercase ${ep.show_type === 'ppv' ? 'bg-yellow-500/10 text-yellow-400' : ep.show_type === 'weekly' ? 'bg-neon-blue/10 text-neon-blue' : 'bg-bg-tertiary text-text-secondary'}`}>{showTypeLabels[ep.show_type] || ep.show_type}</span>}
                         {ep.venue && <span className="truncate">{ep.venue}</span>}
                         {ep.venue && ep.city && <span className="text-text-secondary/30">•</span>}
                         <span className="truncate">{[ep.city, ep.state_province, ep.country].filter(Boolean).join(', ')}</span>

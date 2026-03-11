@@ -34,7 +34,11 @@ const NAV_ITEMS: NavItem[] = [
     { label: 'General Managers', href: '/superstars/general-managers', icon: '👔' },
     { label: 'Executives', href: '/superstars/executives', icon: '🏛️' },
   ]},
-  { key: 'champions', href: '/champions' },
+  { key: 'champions', href: '/champions', children: [
+    { label: 'The Title Vault', href: '/champions/the-title-vault', icon: '🏆' },
+    { label: 'Major Accolades', href: '/champions/major-accolades', icon: '🌟' },
+    { label: 'By The Numbers', href: '/champions/by-the-numbers', icon: '📊' },
+  ]},
   { key: 'history', href: '/history' },
   { key: 'omg', href: '/omg-moments' },
   { key: 'tagTeams', href: '/tag-teams' },
