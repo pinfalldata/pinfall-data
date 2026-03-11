@@ -153,22 +153,34 @@ export function MatchHero({ match }: { match: any }) {
             {match.championship && (
               <div className="flex flex-col items-center pb-2 z-10 relative">
                 {match.championship.image_url && (
-                  <div className="relative w-44 h-44 sm:w-56 sm:h-56 lg:w-72 lg:h-72">
-                    <Image
-                      src={match.championship.image_url}
-                      alt={match.championship.name}
-                      fill
-                      className="object-contain drop-shadow-2xl"
-                      sizes="(max-width: 640px) 176px, (max-width: 1024px) 224px, 288px"
-                    />
-                  </div>
+                  match.championship.slug ? (
+                    <Link href={`/champions/${match.championship.slug}`} className="relative w-44 h-44 sm:w-56 sm:h-56 lg:w-72 lg:h-72 block hover:scale-105 transition-transform">
+                      <Image
+                        src={match.championship.image_url}
+                        alt={match.championship.name}
+                        fill
+                        className="object-contain drop-shadow-2xl"
+                        sizes="(max-width: 640px) 176px, (max-width: 1024px) 224px, 288px"
+                      />
+                    </Link>
+                  ) : (
+                    <div className="relative w-44 h-44 sm:w-56 sm:h-56 lg:w-72 lg:h-72">
+                      <Image
+                        src={match.championship.image_url}
+                        alt={match.championship.name}
+                        fill
+                        className="object-contain drop-shadow-2xl"
+                        sizes="(max-width: 640px) 176px, (max-width: 1024px) 224px, 288px"
+                      />
+                    </div>
+                  )
                 )}
                 {match.championship.slug ? (
-                  <Link href={`/championships/${match.championship.slug}`} className="text-sm sm:text-base lg:text-lg text-yellow-400 font-bold uppercase tracking-wider mt-0 text-center drop-shadow-md z-10 relative hover:text-yellow-300 transition-colors">
+                  <Link href={`/champions/${match.championship.slug}`} className="text-sm sm:text-base lg:text-lg text-neon-blue font-bold uppercase tracking-wider mt-0 text-center drop-shadow-md z-10 relative hover:text-neon-blue/80 transition-colors">
                     {match.championship.name}
                   </Link>
                 ) : (
-                  <span className="text-sm sm:text-base lg:text-lg text-yellow-400 font-bold uppercase tracking-wider mt-0 text-center drop-shadow-md z-10 relative">
+                  <span className="text-sm sm:text-base lg:text-lg text-neon-blue font-bold uppercase tracking-wider mt-0 text-center drop-shadow-md z-10 relative">
                     {match.championship.name}
                   </span>
                 )}
@@ -287,7 +299,7 @@ export function MatchHero({ match }: { match: any }) {
                   <span className="text-sm text-text-white">{r.referee_name || 'Unknown'}</span>
                 )}
                 {r.is_special_referee && (
-                  <span className="text-[10px] px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 rounded-full font-bold">
+                  <span className="text-[10px] px-1.5 py-0.5 bg-neon-blue/20 text-neon-blue border border-neon-blue/30 rounded-full font-bold">
                     Special Guest
                   </span>
                 )}
