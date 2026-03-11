@@ -4,47 +4,66 @@ import { useState, useEffect, memo } from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 
-/* ============================================================
-   DYNAMIC IMPORT — avoid SSR for react-simple-maps
-   ============================================================ */
 const ComposableMap = dynamic(() => import('react-simple-maps').then(m => m.ComposableMap), { ssr: false })
 const Geographies = dynamic(() => import('react-simple-maps').then(m => m.Geographies), { ssr: false })
 const Geography = dynamic(() => import('react-simple-maps').then(m => m.Geography), { ssr: false })
 const ZoomableGroup = dynamic(() => import('react-simple-maps').then(m => m.ZoomableGroup), { ssr: false })
 
-import { getFlagUrl, getFlagEmoji } from '@/lib/flags'
-
 const GEO_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'
 
 interface CountryData { name: string; count: number }
 
-/* ============================================================
-   COUNTRY NAME → ISO numeric mapping (topojson uses ISO numeric)
-   We match by NAME from DB to the topojson properties.name
-   ============================================================ */
-/* Flag helper uses imported getFlagUrl */
+/* ============ FLAG CODES — inline to avoid import issues ============ */
+const FC: Record<string, string> = {
+  'Afghanistan':'af','South Africa':'za','England':'gb-eng','Albania':'al','Algeria':'dz','Germany':'de',
+  'Andorra':'ad','Angola':'ao','Saudi Arabia':'sa','Argentina':'ar','Armenia':'am','Australia':'au',
+  'Austria':'at','Azerbaijan':'az','Bahamas':'bs','Bahrain':'bh','Bangladesh':'bd','Barbados':'bb',
+  'Belgium':'be','Belize':'bz','Belarus':'by','Bolivia':'bo','Bosnia and Herzegovina':'ba','Botswana':'bw',
+  'Brazil':'br','Bulgaria':'bg','Cambodia':'kh','Cameroon':'cm','Canada':'ca','Chile':'cl','China':'cn',
+  'Colombia':'co','South Korea':'kr','Costa Rica':'cr','Croatia':'hr','Cuba':'cu','Denmark':'dk',
+  'Egypt':'eg','United Arab Emirates':'ae','Ecuador':'ec','Spain':'es','Estonia':'ee',
+  'United States':'us','USA':'us','Ethiopia':'et','Fiji':'fj','Finland':'fi','France':'fr',
+  'Georgia':'ge','Ghana':'gh','Greece':'gr','Guatemala':'gt','Guinea':'gn','Guyana':'gy',
+  'Haiti':'ht','Honduras':'hn','Hungary':'hu','India':'in','Indonesia':'id','Iraq':'iq','Iran':'ir',
+  'Ireland':'ie','Iceland':'is','Israel':'il','Italy':'it','Jamaica':'jm','Japan':'jp','Jordan':'jo',
+  'Kazakhstan':'kz','Kenya':'ke','Kuwait':'kw','Kosovo':'xk','Latvia':'lv','Lebanon':'lb',
+  'Lithuania':'lt','Luxembourg':'lu','Malaysia':'my','Mali':'ml','Malta':'mt','Morocco':'ma',
+  'Mexico':'mx','Moldova':'md','Mongolia':'mn','Montenegro':'me','Mozambique':'mz','Namibia':'na',
+  'Nepal':'np','Nicaragua':'ni','Nigeria':'ng','Norway':'no','New Zealand':'nz','Pakistan':'pk',
+  'Panama':'pa','Paraguay':'py','Netherlands':'nl','Peru':'pe','Philippines':'ph','Poland':'pl',
+  'Portugal':'pt','Puerto Rico':'pr','Qatar':'qa','Dominican Republic':'do','Czech Republic':'cz',
+  'Romania':'ro','United Kingdom':'gb','Russia':'ru','Rwanda':'rw','Samoa':'ws','Senegal':'sn',
+  'Serbia':'rs','Singapore':'sg','Slovakia':'sk','Slovenia':'si','Somalia':'so','Sudan':'sd',
+  'Sri Lanka':'lk','Sweden':'se','Switzerland':'ch','Syria':'sy','Thailand':'th','Tonga':'to',
+  'Trinidad and Tobago':'tt','Tunisia':'tn','Turkey':'tr','Ukraine':'ua','Uruguay':'uy',
+  'Venezuela':'ve','Vietnam':'vn','Zimbabwe':'zw','Scotland':'gb-sct','Wales':'gb-wls',
+  'Northern Ireland':'gb-nir','Taiwan':'tw','Palestine':'ps','Eswatini':'sz',
+}
 
-/* Flag helper - uses flagcdn.com images */
 function FlagImg({ country, size = 20 }: { country: string; size?: number }) {
-  const url = getFlagUrl(country, size * 2) // retina
-  if (!url) return <span className="text-lg">{getFlagEmoji(country)}</span>
-  return <img src={url} alt={country} width={size} height={Math.round(size * 0.75)} className="rounded-sm object-cover inline-block" style={{ width: size, height: Math.round(size * 0.75) }} loading="lazy" />
+  const code = FC[country]
+  if (!code) return <span className="text-base leading-none">🌍</span>
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={`https://flagcdn.com/w${size * 2}/${code}.png`}
+      alt={country}
+      width={size}
+      height={Math.round(size * 0.67)}
+      className="rounded-sm inline-block"
+      style={{ width: size, height: Math.round(size * 0.67) }}
+      loading="lazy"
+    />
+  )
 }
 
-/* Map DB country names → topojson country names for geo matching */
 const NAME_TO_GEO: Record<string, string> = {
-  'United States': 'United States of America',
-  'United Kingdom': 'United Kingdom',
-  'England': 'United Kingdom',
-  'Scotland': 'United Kingdom',
-  'Wales': 'United Kingdom',
-  'South Korea': 'South Korea',
-  'Puerto Rico': 'Puerto Rico',
-  'Dominican Republic': 'Dominican Rep.',
-  'Czech Republic': 'Czechia',
+  'United States': 'United States of America', 'United Kingdom': 'United Kingdom',
+  'England': 'United Kingdom', 'Scotland': 'United Kingdom', 'Wales': 'United Kingdom',
+  'South Korea': 'South Korea', 'Puerto Rico': 'Puerto Rico',
+  'Dominican Republic': 'Dominican Rep.', 'Czech Republic': 'Czechia',
 }
 
-/* ============================================================ MAIN */
 export default function SuperstarsWorldMap() {
   const [countries, setCountries] = useState<CountryData[]>([])
   const [loading, setLoading] = useState(true)
@@ -60,17 +79,12 @@ export default function SuperstarsWorldMap() {
       .finally(() => setLoading(false))
   }, [])
 
-  if (loading) {
-    return <div className="animate-pulse space-y-3">{Array.from({ length: 6 }).map((_, i) => <div key={i} className="h-10 rounded-xl bg-bg-secondary/30" />)}</div>
-  }
+  if (loading) return <div className="animate-pulse space-y-3">{Array.from({ length: 6 }).map((_, i) => <div key={i} className="h-10 rounded-xl bg-bg-secondary/30" />)}</div>
   if (countries.length === 0) return null
 
-  // Build lookup: geoName → count
   const geoLookup = new Map<string, number>()
   for (const c of countries) {
-    // Direct name
     geoLookup.set(c.name, (geoLookup.get(c.name) || 0) + c.count)
-    // Mapped name
     const mapped = NAME_TO_GEO[c.name]
     if (mapped) geoLookup.set(mapped, (geoLookup.get(mapped) || 0) + c.count)
   }
@@ -80,7 +94,6 @@ export default function SuperstarsWorldMap() {
   const displayCount = expanded ? countries.length : Math.min(20, countries.length)
   const displayed = countries.slice(0, displayCount)
 
-  // Color scale
   const getColor = (count: number) => {
     if (count === 0) return '#10141e'
     const ratio = Math.log(count + 1) / Math.log(maxCount + 1)
@@ -92,10 +105,9 @@ export default function SuperstarsWorldMap() {
 
   return (
     <div>
-      {/* Stats header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <FlagImg country={hovered.name} size={24} />
+          <span className="text-2xl">🌍</span>
           <div>
             <p className="text-xs text-text-secondary uppercase tracking-wider">Global reach</p>
             <p className="text-text-white font-bold">
@@ -106,13 +118,9 @@ export default function SuperstarsWorldMap() {
         </div>
       </div>
 
-      {/* ===== INTERACTIVE MAP ===== */}
       {mapReady && (
         <div className="relative rounded-xl overflow-hidden border border-border-subtle/20 bg-bg-secondary/30 mb-6" style={{ minHeight: 280 }}>
-          <ComposableMap
-            projectionConfig={{ rotate: [-10, 0, 0], scale: 147 }}
-            style={{ width: '100%', height: 'auto' }}
-          >
+          <ComposableMap projectionConfig={{ rotate: [-10, 0, 0], scale: 147 }} style={{ width: '100%', height: 'auto' }}>
             <ZoomableGroup>
               <Geographies geography={GEO_URL}>
                 {({ geographies }: any) =>
@@ -120,12 +128,8 @@ export default function SuperstarsWorldMap() {
                     const geoName = geo.properties.name
                     const count = geoLookup.get(geoName) || 0
                     return (
-                      <Geography
-                        key={geo.rsmKey}
-                        geography={geo}
-                        onMouseEnter={(e: any) => {
-                          if (count > 0) setTooltip({ name: geoName, count, x: e.clientX, y: e.clientY })
-                        }}
+                      <Geography key={geo.rsmKey} geography={geo}
+                        onMouseEnter={(e: any) => { if (count > 0) setTooltip({ name: geoName, count, x: e.clientX, y: e.clientY }) }}
                         onMouseLeave={() => setTooltip(null)}
                         style={{
                           default: { fill: getColor(count), stroke: '#1e293b', strokeWidth: 0.4, outline: 'none' },
@@ -139,33 +143,22 @@ export default function SuperstarsWorldMap() {
               </Geographies>
             </ZoomableGroup>
           </ComposableMap>
-
-          {/* Tooltip */}
           {tooltip && (
-            <div
-              className="fixed z-[100] px-3 py-2 rounded-lg bg-bg-primary/95 border border-neon-blue/30 shadow-xl text-sm pointer-events-none backdrop-blur-sm"
-              style={{ left: tooltip.x + 12, top: tooltip.y - 40 }}
-            >
+            <div className="fixed z-[100] px-3 py-2 rounded-lg bg-bg-primary/95 border border-neon-blue/30 shadow-xl text-sm pointer-events-none backdrop-blur-sm flex items-center gap-2"
+              style={{ left: tooltip.x + 12, top: tooltip.y - 40 }}>
+              <FlagImg country={tooltip.name} size={20} />
               <span className="text-text-white font-bold">{tooltip.name}</span>
-              <span className="text-neon-blue font-mono ml-2">{tooltip.count}</span>
-              <span className="text-text-secondary text-xs ml-1">superstars</span>
+              <span className="text-neon-blue font-mono ml-1">{tooltip.count}</span>
             </div>
           )}
-
-          {/* Legend */}
           <div className="absolute bottom-2 right-2 flex items-center gap-1 text-[9px] text-text-secondary bg-bg-primary/80 px-2 py-1 rounded-md backdrop-blur-sm">
             <span>Fewer</span>
-            <div className="flex gap-0.5">
-              {['#2d2213', '#5a4520', '#8b6d2e', '#c7a05a'].map(c => (
-                <div key={c} className="w-3 h-2 rounded-sm" style={{ background: c }} />
-              ))}
-            </div>
+            <div className="flex gap-0.5">{['#2d2213', '#5a4520', '#8b6d2e', '#c7a05a'].map(c => <div key={c} className="w-3 h-2 rounded-sm" style={{ background: c }} />)}</div>
             <span>More</span>
           </div>
         </div>
       )}
 
-      {/* ===== COUNTRY LIST ===== */}
       <div className="space-y-1.5">
         {displayed.map((c, idx) => {
           const pct = (c.count / maxCount) * 100
@@ -173,7 +166,7 @@ export default function SuperstarsWorldMap() {
             <Link key={c.name} href={`/superstars/wrestlers?country=${encodeURIComponent(c.name)}`}
               className="group flex items-center gap-3 px-3 py-2 rounded-xl border border-transparent hover:border-border-subtle/20 hover:bg-bg-secondary/30 transition-all">
               <span className="text-[10px] text-text-secondary font-mono w-5 text-right shrink-0">{idx + 1}.</span>
-              <span className="shrink-0 w-7 flex items-center justify-center"><FlagImg country={c.name} size={20} /></span>
+              <span className="shrink-0 w-7 flex items-center justify-center"><FlagImg country={c.name} size={22} /></span>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-0.5">
                   <span className="text-sm text-text-white font-medium truncate group-hover:text-neon-blue transition-colors">{c.name}</span>

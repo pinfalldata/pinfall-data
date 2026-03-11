@@ -8,11 +8,12 @@ import { TabMoves } from './TabMoves'
 import { TabMedia } from './TabMedia'
 import { TabMatches } from './TabMatches'
 import TabRoleData from './TabRoleData'
+import TabChampionships from './TabChampionships'
 
 interface RoleCounts {
   segments: number; managed: number; commentated: number; matchCommentated: number
   ringAnnounced: number; refereed: number; guestRefereed: number; interviewed: number
-  gmTenures: number; execTenures: number
+  gmTenures: number; execTenures: number; championships: number
 }
 
 export function ProfileTabs({ superstar }: { superstar: any }) {
@@ -38,6 +39,7 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
   const tabs = [
     { id: 'profile', label: 'Profile', show: true },
     { id: 'matches', label: 'Matches', show: hasMatches, count: superstar.total_matches },
+    { id: 'championships', label: 'Championships', show: (rc?.championships || superstar.total_reigns || 0) > 0, count: rc?.championships || superstar.total_reigns },
     { id: 'segments', label: 'Segments', show: (rc?.segments || 0) > 0, count: rc?.segments },
     { id: 'managed', label: 'Manager', show: (rc?.managed || 0) > 0, count: rc?.managed },
     { id: 'commentated', label: 'Commentator', show: (rc?.commentated || 0) > 0, count: rc?.commentated },
@@ -85,6 +87,7 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
       <div className="px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         {activeTab === 'profile' && <TabProfile superstar={superstar} />}
         {activeTab === 'matches' && <TabMatches superstar={superstar} />}
+        {activeTab === 'championships' && <TabChampionships superstar={superstar} />}
         {activeTab === 'timeline' && <TabTimeline superstar={superstar} />}
         {activeTab === 'moves' && <TabMoves superstar={superstar} />}
         {activeTab === 'media' && <TabMedia superstar={superstar} />}

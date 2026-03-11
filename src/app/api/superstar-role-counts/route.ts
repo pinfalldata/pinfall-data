@@ -27,6 +27,7 @@ export async function GET(request: NextRequest) {
       { count: interviewed },
       { count: gmTenures },
       { count: execTenures },
+      { count: championships },
     ] = await Promise.all([
       supabase.from('show_segment_participants').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
       supabase.from('match_managers').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
@@ -38,6 +39,7 @@ export async function GET(request: NextRequest) {
       supabase.from('show_segment_participants').select('*', { count: 'exact', head: true }).eq('superstar_id', sid).eq('role', 'interviewer'),
       supabase.from('general_manager_tenures').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
       supabase.from('executive_tenures').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
+      supabase.from('championship_reigns').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
     ])
 
     return NextResponse.json({
@@ -51,9 +53,10 @@ export async function GET(request: NextRequest) {
       interviewed: interviewed || 0,
       gmTenures: gmTenures || 0,
       execTenures: execTenures || 0,
+      championships: championships || 0,
     })
   } catch (err) {
     console.error('[superstar-role-counts]', err)
-    return NextResponse.json({ segments:0,managed:0,commentated:0,matchCommentated:0,ringAnnounced:0,refereed:0,guestRefereed:0,interviewed:0,gmTenures:0,execTenures:0 })
+    return NextResponse.json({ segments:0,managed:0,commentated:0,matchCommentated:0,ringAnnounced:0,refereed:0,guestRefereed:0,interviewed:0,gmTenures:0,execTenures:0,championships:0 })
   }
 }

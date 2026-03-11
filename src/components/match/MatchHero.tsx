@@ -154,24 +154,12 @@ export function MatchHero({ match }: { match: any }) {
               <div className="flex flex-col items-center pb-2 z-10 relative">
                 {match.championship.image_url && (
                   match.championship.slug ? (
-                    <Link href={`/champions/${match.championship.slug}`} className="relative w-44 h-44 sm:w-56 sm:h-56 lg:w-72 lg:h-72 block hover:scale-105 transition-transform">
-                      <Image
-                        src={match.championship.image_url}
-                        alt={match.championship.name}
-                        fill
-                        className="object-contain drop-shadow-2xl"
-                        sizes="(max-width: 640px) 176px, (max-width: 1024px) 224px, 288px"
-                      />
+                    <Link href={`/champions/${match.championship.slug}`} className="relative w-44 h-44 sm:w-56 sm:h-56 lg:w-72 lg:h-72 block hover:scale-105 transition-transform duration-300">
+                      <Image src={match.championship.image_url} alt={match.championship.name} fill className="object-contain drop-shadow-2xl" sizes="(max-width: 640px) 176px, (max-width: 1024px) 224px, 288px" />
                     </Link>
                   ) : (
                     <div className="relative w-44 h-44 sm:w-56 sm:h-56 lg:w-72 lg:h-72">
-                      <Image
-                        src={match.championship.image_url}
-                        alt={match.championship.name}
-                        fill
-                        className="object-contain drop-shadow-2xl"
-                        sizes="(max-width: 640px) 176px, (max-width: 1024px) 224px, 288px"
-                      />
+                      <Image src={match.championship.image_url} alt={match.championship.name} fill className="object-contain drop-shadow-2xl" sizes="(max-width: 640px) 176px, (max-width: 1024px) 224px, 288px" />
                     </div>
                   )
                 )}
