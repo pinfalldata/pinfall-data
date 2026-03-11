@@ -5,54 +5,51 @@ import { supabase } from '@/lib/supabase'
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const superstarId = searchParams.get('superstarId')
-  const gender = searchParams.get('gender') // 'male' or 'female'
+  const gender = searchParams.get('gender')
 
   try {
     const { data: championships, error } = await supabase
       .from('championships')
-      .select('*')
+      .select('*, is_tag_team')
       .order('sort_order', { ascending: true })
       .order('name', { ascending: true })
 
     if (error) return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 })
 
-    // If superstar filter by ID
     let filteredIds: number[] | null = null
     if (superstarId) {
-      const { data: reigns } = await supabase
-        .from('championship_reigns')
-        .select('championship_id')
-        .eq('superstar_id', parseInt(superstarId))
+      const { data: reigns } = await supabase.from('championship_reigns').select('championship_id').eq('superstar_id', parseInt(superstarId))
       filteredIds = reigns ? [...new Set(reigns.map(r => r.championship_id))] : []
     }
 
-    // If gender filter — find championships held by at least one person of that gender
     let genderFilteredIds: number[] | null = null
     if (gender) {
-      const { data: reigns } = await supabase
-        .from('championship_reigns')
-        .select('championship_id, superstar:superstar_id ( gender )')
+      const { data: reigns } = await supabase.from('championship_reigns').select('championship_id, superstar:superstar_id ( gender )').limit(5000)
       if (reigns) {
         const ids = new Set<number>()
-        for (const r of reigns) {
-          if (r.superstar?.gender === gender) ids.add(r.championship_id)
-        }
+        for (const r of reigns) { if (r.superstar?.gender === gender) ids.add(r.championship_id) }
         genderFilteredIds = [...ids]
       }
     }
 
-    // Enrich with current holder for active ones
     const enriched = await Promise.all(
       (championships || []).map(async (c) => {
-        if (c.status !== 'active') return { ...c, current_holder: null, current_reign_start: null }
-        const { data: reign } = await supabase
+        if (c.status !== 'active') return { ...c, current_holder: null, current_holders: [], current_reign_start: null }
+        // For tag team: get ALL current holders (multiple rows with same reign_group_id and no lost_date)
+        const { data: currentReigns } = await supabase
           .from('championship_reigns')
-          .select('id, won_date, days_held, superstar:superstar_id ( id, name, slug, photo_url )')
+          .select('id, won_date, days_held, reign_group_id, superstar:superstar_id ( id, name, slug, photo_url )')
           .eq('championship_id', c.id)
           .is('lost_date', null)
-          .limit(1)
-          .maybeSingle()
-        return { ...c, current_holder: reign?.superstar || null, current_reign_start: reign?.won_date || null }
+          .order('won_date', { ascending: false })
+        
+        const holders = (currentReigns || []).map(r => r.superstar).filter(Boolean)
+        return {
+          ...c,
+          current_holder: holders[0] || null,
+          current_holders: holders,
+          current_reign_start: currentReigns?.[0]?.won_date || null,
+        }
       })
     )
 

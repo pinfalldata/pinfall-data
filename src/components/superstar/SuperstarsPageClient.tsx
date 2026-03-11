@@ -157,14 +157,14 @@ export default function SuperstarsPageClient() {
             <Link
               key={cat.key}
               href={cat.href}
-              className="group relative overflow-hidden rounded-2xl border border-border-subtle/30 bg-bg-secondary/30 backdrop-blur-sm transition-all duration-300 hover:border-neon-blue/40 hover:shadow-neon-blue hover:scale-[1.02] active:scale-[0.98]"
+              className="group relative overflow-hidden rounded-2xl border border-border-subtle/30 bg-bg-secondary/20 backdrop-blur-sm transition-all duration-300 hover:border-neon-blue/25 hover:bg-bg-secondary/40"
             >
-              {/* Gold accent line top */}
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue/0 to-transparent group-hover:via-neon-blue/60 transition-all duration-500 z-10" />
+              {/* Top accent line - always visible subtly, brighter on hover */}
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue/0 to-transparent group-hover:via-neon-blue/40 transition-all duration-500 z-10" />
 
               <div className="flex items-center gap-4 p-4 sm:p-5">
                 {/* Avatar image — square */}
-                <div className="relative w-16 h-16 sm:w-[72px] sm:h-[72px] lg:w-20 lg:h-20 rounded-xl overflow-hidden border-2 border-border-subtle/30 group-hover:border-neon-blue/40 transition-all shrink-0 bg-bg-tertiary">
+                <div className="relative w-16 h-16 sm:w-[72px] sm:h-[72px] lg:w-20 lg:h-20 rounded-xl overflow-hidden border-2 border-border-subtle/30 group-hover:border-neon-blue/30 group-hover:shadow-neon-blue transition-all shrink-0 bg-bg-tertiary">
                   <Image
                     src={cat.image}
                     alt={cat.label}
@@ -203,8 +203,8 @@ export default function SuperstarsPageClient() {
                 </div>
               </div>
 
-              {/* Bottom glow on hover */}
-              <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-neon-blue/0 to-transparent group-hover:from-neon-blue/5 transition-all duration-500" />
+              {/* Bottom accent line on hover */}
+              <div className="h-[2px] transition-opacity duration-300 opacity-0 group-hover:opacity-100 bg-gradient-to-r from-transparent via-neon-blue to-transparent" />
             </Link>
           ))}
         </div>

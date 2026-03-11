@@ -12,6 +12,8 @@ const Geographies = dynamic(() => import('react-simple-maps').then(m => m.Geogra
 const Geography = dynamic(() => import('react-simple-maps').then(m => m.Geography), { ssr: false })
 const ZoomableGroup = dynamic(() => import('react-simple-maps').then(m => m.ZoomableGroup), { ssr: false })
 
+import { getFlagUrl, getFlagEmoji } from '@/lib/flags'
+
 const GEO_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'
 
 interface CountryData { name: string; count: number }
@@ -20,24 +22,13 @@ interface CountryData { name: string; count: number }
    COUNTRY NAME → ISO numeric mapping (topojson uses ISO numeric)
    We match by NAME from DB to the topojson properties.name
    ============================================================ */
-const COUNTRY_CODES: Record<string, string> = {
-  'United States':'US','Canada':'CA','Mexico':'MX','United Kingdom':'GB','Japan':'JP','Australia':'AU',
-  'Germany':'DE','Ireland':'IE','India':'IN','Brazil':'BR','Italy':'IT','France':'FR','Scotland':'GB',
-  'England':'GB','Wales':'GB','Puerto Rico':'PR','South Africa':'ZA','New Zealand':'NZ','Switzerland':'CH',
-  'Spain':'ES','Netherlands':'NL','Finland':'FI','Sweden':'SE','Norway':'NO','Denmark':'DK','Poland':'PL',
-  'Romania':'RO','Bulgaria':'BG','Croatia':'HR','Serbia':'RS','Greece':'GR','Turkey':'TR','Israel':'IL',
-  'Iran':'IR','China':'CN','South Korea':'KR','Philippines':'PH','Singapore':'SG','Thailand':'TH',
-  'Pakistan':'PK','Afghanistan':'AF','Nigeria':'NG','Ghana':'GH','Kenya':'KE','Egypt':'EG','Morocco':'MA',
-  'Argentina':'AR','Chile':'CL','Colombia':'CO','Peru':'PE','Venezuela':'VE','Cuba':'CU',
-  'Dominican Republic':'DO','Jamaica':'JM','Samoa':'WS','Tonga':'TO','Fiji':'FJ','Austria':'AT',
-  'Belgium':'BE','Czech Republic':'CZ','Hungary':'HU','Portugal':'PT','Russia':'RU','Ukraine':'UA',
-  'Saudi Arabia':'SA','Iraq':'IQ','Lebanon':'LB',
-}
+/* Flag helper uses imported getFlagUrl */
 
-function getFlag(country: string): string {
-  const code = COUNTRY_CODES[country]
-  if (!code) return '🌍'
-  return String.fromCodePoint(...code.split('').map(c => c.charCodeAt(0) + 127397))
+/* Flag helper - uses flagcdn.com images */
+function FlagImg({ country, size = 20 }: { country: string; size?: number }) {
+  const url = getFlagUrl(country, size * 2) // retina
+  if (!url) return <span className="text-lg">{getFlagEmoji(country)}</span>
+  return <img src={url} alt={country} width={size} height={Math.round(size * 0.75)} className="rounded-sm object-cover inline-block" style={{ width: size, height: Math.round(size * 0.75) }} loading="lazy" />
 }
 
 /* Map DB country names → topojson country names for geo matching */
@@ -104,7 +95,7 @@ export default function SuperstarsWorldMap() {
       {/* Stats header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <span className="text-2xl">🌍</span>
+          <FlagImg country={hovered.name} size={24} />
           <div>
             <p className="text-xs text-text-secondary uppercase tracking-wider">Global reach</p>
             <p className="text-text-white font-bold">
@@ -182,7 +173,7 @@ export default function SuperstarsWorldMap() {
             <Link key={c.name} href={`/superstars/wrestlers?country=${encodeURIComponent(c.name)}`}
               className="group flex items-center gap-3 px-3 py-2 rounded-xl border border-transparent hover:border-border-subtle/20 hover:bg-bg-secondary/30 transition-all">
               <span className="text-[10px] text-text-secondary font-mono w-5 text-right shrink-0">{idx + 1}.</span>
-              <span className="text-lg shrink-0 w-7 text-center">{getFlag(c.name)}</span>
+              <span className="shrink-0 w-7 flex items-center justify-center"><FlagImg country={c.name} size={20} /></span>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-0.5">
                   <span className="text-sm text-text-white font-medium truncate group-hover:text-neon-blue transition-colors">{c.name}</span>
