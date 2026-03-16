@@ -178,14 +178,14 @@ export default function ChampionshipDetailPage() {
             <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-4 text-center"><span className="block text-[10px] text-text-secondary uppercase mb-1">&lt; 1 Day</span><span className="block text-xl font-bold text-red-400">{stats.reignsUnder1||0}</span></div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {stats.longestReign && <RecCard t="Longest Reign" s={stats.longestReign.superstar} v={`${stats.longestReign.days?.toLocaleString()} days`} sub={`${fmt(stats.longestReign.won_date)} — ${fmt(stats.longestReign.lost_date)}`} c="neon-blue" />}
-            {stats.shortestReign && <RecCard t="Shortest Reign" s={stats.shortestReign.superstar} v={`${stats.shortestReign.days?.toLocaleString()} days`} sub={`${fmt(stats.shortestReign.won_date)} — ${fmt(stats.shortestReign.lost_date)}`} c="neon-pink" />}
-            {stats.firstChamp && <RecCard t="First Champion" s={stats.firstChamp.superstar} v={fmt(stats.firstChamp.won_date)} c="neon-blue" />}
-            {stats.currentChamp && <RecCard t="Current Champion" s={stats.currentChamp.superstar} v={`${stats.currentChamp.days?.toLocaleString()} days`} sub={`Since ${fmt(stats.currentChamp.won_date)}`} c="emerald" />}
+            {stats.longestReign && <RecCard t="Longest Reign" s={stats.longestReign.superstar} superstars={stats.longestReign.superstars} v={`${stats.longestReign.days?.toLocaleString()} days`} sub={`${fmt(stats.longestReign.won_date)} — ${fmt(stats.longestReign.lost_date)}`} c="neon-blue" />}
+            {stats.shortestReign && <RecCard t="Shortest Reign" s={stats.shortestReign.superstar} superstars={stats.shortestReign.superstars} v={`${stats.shortestReign.days?.toLocaleString()} days`} sub={`${fmt(stats.shortestReign.won_date)} — ${fmt(stats.shortestReign.lost_date)}`} c="neon-pink" />}
+            {stats.firstChamp && <RecCard t="First Champion" s={stats.firstChamp.superstar} superstars={stats.firstChamp.superstars} v={fmt(stats.firstChamp.won_date)} c="neon-blue" />}
+            {stats.currentChamp && <RecCard t="Current Champion" s={stats.currentChamp.superstar} superstars={stats.currentChamp.superstars} v={`${stats.currentChamp.days?.toLocaleString()} days`} sub={`Since ${fmt(stats.currentChamp.won_date)}`} c="emerald" />}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {stats.mostReigns?.length > 0 && <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-6"><h3 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">Most Reigns</h3><div className="space-y-3">{stats.mostReigns.map((m: any, i: number) => <RR key={i} i={i} s={m.superstar} v={`${m.count}x`} />)}</div></div>}
-            {stats.mostCombinedDays?.length > 0 && <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-6"><h3 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">Most Combined Days</h3><div className="space-y-3">{stats.mostCombinedDays.map((m: any, i: number) => <RR key={i} i={i} s={m.superstar} v={`${m.days.toLocaleString()}d`} />)}</div></div>}
+            {stats.mostReigns?.length > 0 && <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-6"><h3 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">Most Reigns</h3><div className="space-y-3">{stats.mostReigns.map((m: any, i: number) => <RR key={i} i={i} s={m.superstar} superstars={m.superstars} v={`${m.count}x`} />)}</div></div>}
+            {stats.mostCombinedDays?.length > 0 && <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-6"><h3 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">Most Combined Days</h3><div className="space-y-3">{stats.mostCombinedDays.map((m: any, i: number) => <RR key={i} i={i} s={m.superstar} superstars={m.superstars} v={`${m.days.toLocaleString()}d`} />)}</div></div>}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {stats.byDecade?.length > 0 && <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-6"><h3 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">By Decade</h3><div className="space-y-2">{stats.byDecade.map((d: any) => { const mx = Math.max(...stats.byDecade.map((x: any) => x.count)); return <div key={d.decade} className="flex items-center gap-2"><span className="text-xs text-text-secondary w-10 font-mono">{d.decade}</span><div className="flex-1 h-2.5 rounded-full bg-bg-tertiary/50 overflow-hidden"><div className="h-full rounded-full bg-gradient-to-r from-neon-blue/60 to-neon-blue" style={{ width: `${(d.count / mx) * 100}%` }} /></div><span className="text-xs text-neon-blue font-bold w-8 text-right">{d.count}</span></div> })}</div></div>}
@@ -201,12 +201,26 @@ export default function ChampionshipDetailPage() {
   )
 }
 
-function RecCard({ t, s, v, sub, c }: { t: string; s: any; v: string; sub?: string; c: string }) {
+function RecCard({ t, s, v, sub, c, superstars }: { t: string; s: any; v: string; sub?: string; c: string; superstars?: any[] }) {
   const bc = c === 'neon-blue' ? 'border-neon-blue/20 from-neon-blue/5' : c === 'neon-pink' ? 'border-neon-pink/20 from-neon-pink/5' : 'border-emerald-500/20 from-emerald-500/5'
   const tc = c === 'neon-blue' ? 'text-neon-blue' : c === 'neon-pink' ? 'text-neon-pink' : 'text-emerald-400'
-  return <div className={`rounded-2xl border ${bc} bg-gradient-to-br to-transparent p-5`}><p className={`text-[10px] ${tc} uppercase tracking-wider font-bold mb-3`}>{t}</p><div className="flex items-center gap-3"><div className={`relative w-12 h-12 rounded-xl overflow-hidden border-2 ${bc} shrink-0 bg-bg-tertiary`}>{s?.photo_url ? <Image src={s.photo_url} alt="" fill className="object-cover object-top" sizes="48px" /> : <div className="w-full h-full flex items-center justify-center text-lg opacity-20">👤</div>}</div><div><Link href={`/superstars/${s?.slug}`} className={`text-sm text-text-white font-bold hover:${tc}`}>{s?.name}</Link><p className={`${tc} font-bold text-lg`}>{v}</p>{sub && <p className="text-[10px] text-text-secondary">{sub}</p>}</div></div></div>
+  const members = superstars && superstars.length > 1 ? superstars : null
+  return <div className={`rounded-2xl border ${bc} bg-gradient-to-br to-transparent p-5`}><p className={`text-[10px] ${tc} uppercase tracking-wider font-bold mb-3`}>{t}</p><div className="flex items-center gap-3">
+    {members ? (
+      <div className="flex -space-x-3 shrink-0">{members.map((m: any) => <div key={m?.id} className={`relative w-12 h-12 rounded-xl overflow-hidden border-2 ${bc} bg-bg-tertiary`}>{m?.photo_url ? <Image src={m.photo_url} alt="" fill className="object-cover object-top" sizes="48px" /> : <div className="w-full h-full flex items-center justify-center text-lg opacity-20">👤</div>}</div>)}</div>
+    ) : (
+      <div className={`relative w-12 h-12 rounded-xl overflow-hidden border-2 ${bc} shrink-0 bg-bg-tertiary`}>{s?.photo_url ? <Image src={s.photo_url} alt="" fill className="object-cover object-top" sizes="48px" /> : <div className="w-full h-full flex items-center justify-center text-lg opacity-20">👤</div>}</div>
+    )}
+    <div><Link href={`/superstars/${s?.slug}`} className={`text-sm text-text-white font-bold hover:${tc}`}>{s?.name}</Link><p className={`${tc} font-bold text-lg`}>{v}</p>{sub && <p className="text-[10px] text-text-secondary">{sub}</p>}</div></div></div>
 }
 
-function RR({ i, s, v }: { i: number; s: any; v: string }) {
-  return <div className="flex items-center gap-3"><span className="w-6 h-6 rounded-lg bg-neon-blue/10 flex items-center justify-center text-[10px] text-neon-blue font-bold shrink-0">{i+1}</span><div className="relative w-8 h-8 rounded-lg overflow-hidden border border-border-subtle/20 shrink-0 bg-bg-tertiary">{s?.photo_url ? <Image src={s.photo_url} alt="" fill className="object-cover object-top" sizes="32px" /> : <div className="w-full h-full" />}</div><Link href={`/superstars/${s?.slug}`} className="text-sm text-text-white font-medium hover:text-neon-blue flex-1 truncate">{s?.name}</Link><span className="text-sm text-neon-blue font-bold">{v}</span></div>
+function RR({ i, s, v, superstars }: { i: number; s: any; v: string; superstars?: any[] }) {
+  const members = superstars && superstars.length > 1 ? superstars : null
+  return <div className="flex items-center gap-3"><span className="w-6 h-6 rounded-lg bg-neon-blue/10 flex items-center justify-center text-[10px] text-neon-blue font-bold shrink-0">{i+1}</span>
+    {members ? (
+      <div className="flex -space-x-2 shrink-0">{members.map((m: any) => <div key={m?.id} className="relative w-8 h-8 rounded-lg overflow-hidden border border-border-subtle/20 bg-bg-tertiary">{m?.photo_url ? <Image src={m.photo_url} alt="" fill className="object-cover object-top" sizes="32px" /> : <div className="w-full h-full" />}</div>)}</div>
+    ) : (
+      <div className="relative w-8 h-8 rounded-lg overflow-hidden border border-border-subtle/20 shrink-0 bg-bg-tertiary">{s?.photo_url ? <Image src={s.photo_url} alt="" fill className="object-cover object-top" sizes="32px" /> : <div className="w-full h-full" />}</div>
+    )}
+    <Link href={`/superstars/${s?.slug}`} className="text-sm text-text-white font-medium hover:text-neon-blue flex-1 truncate">{s?.name}</Link><span className="text-sm text-neon-blue font-bold">{v}</span></div>
 }

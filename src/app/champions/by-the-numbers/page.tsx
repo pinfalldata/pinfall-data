@@ -158,9 +158,19 @@ export default function ByTheNumbersPage() {
                         {tag.topByReigns.map((t: any, i: number) => (
                           <div key={t.superstar.id} className="flex items-center gap-2">
                             <span className="w-5 h-5 rounded bg-neon-blue/10 flex items-center justify-center text-[9px] text-neon-blue font-bold shrink-0">{i + 1}</span>
-                            <div className="relative w-7 h-7 rounded-lg overflow-hidden border border-border-subtle/20 shrink-0 bg-bg-tertiary">
-                              {t.superstar?.photo_url ? <Image src={t.superstar.photo_url} alt="" fill className="object-cover object-top" sizes="28px" /> : <div className="w-full h-full" />}
-                            </div>
+                            {t.superstars && t.superstars.length > 1 ? (
+                              <div className="flex -space-x-2 shrink-0">
+                                {t.superstars.map((s: any) => (
+                                  <div key={s?.id} className="relative w-7 h-7 rounded-lg overflow-hidden border border-neon-blue/20 bg-bg-tertiary">
+                                    {s?.photo_url ? <Image src={s.photo_url} alt="" fill className="object-cover object-top" sizes="28px" /> : <div className="w-full h-full" />}
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <div className="relative w-7 h-7 rounded-lg overflow-hidden border border-border-subtle/20 shrink-0 bg-bg-tertiary">
+                                {t.superstar?.photo_url ? <Image src={t.superstar.photo_url} alt="" fill className="object-cover object-top" sizes="28px" /> : <div className="w-full h-full" />}
+                              </div>
+                            )}
                             <span className="text-xs text-text-white flex-1 truncate">{t.superstar?.name}</span>
                             <span className="text-xs text-neon-blue font-bold shrink-0">{t.totalReigns}x</span>
                           </div>
@@ -175,9 +185,19 @@ export default function ByTheNumbersPage() {
                         {tag.topByDays.map((t: any, i: number) => (
                           <div key={t.superstar.id} className="flex items-center gap-2">
                             <span className="w-5 h-5 rounded bg-neon-blue/10 flex items-center justify-center text-[9px] text-neon-blue font-bold shrink-0">{i + 1}</span>
-                            <div className="relative w-7 h-7 rounded-lg overflow-hidden border border-border-subtle/20 shrink-0 bg-bg-tertiary">
-                              {t.superstar?.photo_url ? <Image src={t.superstar.photo_url} alt="" fill className="object-cover object-top" sizes="28px" /> : <div className="w-full h-full" />}
-                            </div>
+                            {t.superstars && t.superstars.length > 1 ? (
+                              <div className="flex -space-x-2 shrink-0">
+                                {t.superstars.map((s: any) => (
+                                  <div key={s?.id} className="relative w-7 h-7 rounded-lg overflow-hidden border border-neon-blue/20 bg-bg-tertiary">
+                                    {s?.photo_url ? <Image src={s.photo_url} alt="" fill className="object-cover object-top" sizes="28px" /> : <div className="w-full h-full" />}
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <div className="relative w-7 h-7 rounded-lg overflow-hidden border border-border-subtle/20 shrink-0 bg-bg-tertiary">
+                                {t.superstar?.photo_url ? <Image src={t.superstar.photo_url} alt="" fill className="object-cover object-top" sizes="28px" /> : <div className="w-full h-full" />}
+                              </div>
+                            )}
                             <span className="text-xs text-text-white flex-1 truncate">{t.superstar?.name}</span>
                             <span className="text-xs text-neon-blue font-bold shrink-0">{t.days.toLocaleString()}d</span>
                           </div>

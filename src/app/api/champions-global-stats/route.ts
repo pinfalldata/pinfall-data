@@ -155,6 +155,7 @@ export async function GET() {
       .slice(0, 5)
       .map(t => ({
         superstar: { id: t.superstars.map((s: any) => s?.id).join('-'), name: t.teamName, slug: t.superstar?.slug, photo_url: t.superstar?.photo_url },
+        superstars: t.superstars,
         totalReigns: t.count,
         totalDays: t.days,
       }))
@@ -164,6 +165,7 @@ export async function GET() {
       .slice(0, 5)
       .map(t => ({
         superstar: { id: t.superstars.map((s: any) => s?.id).join('-'), name: t.teamName, slug: t.superstar?.slug, photo_url: t.superstar?.photo_url },
+        superstars: t.superstars,
         days: t.days,
         reigns: t.count,
       }))
