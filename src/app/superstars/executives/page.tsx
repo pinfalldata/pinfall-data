@@ -26,7 +26,7 @@ const config = {
 export default function ExecutivesPage() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'Executives', url: 'https://pinfall-data.vercel.app/superstars/executives' }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'Executives', url: 'https://pinfalldata.com/superstars/executives' }) }} />
       <RolePageClient config={config} />
     </>
   )

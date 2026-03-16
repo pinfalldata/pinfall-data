@@ -26,7 +26,7 @@ const config = {
 export default function RefereesPage() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'WWE Referees', url: 'https://pinfall-data.vercel.app/superstars/referees' }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'WWE Referees', url: 'https://pinfalldata.com/superstars/referees' }) }} />
       <RolePageClient config={config} />
     </>
   )

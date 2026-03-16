@@ -32,6 +32,7 @@ export async function GET(request: NextRequest) {
   const country = searchParams.get('country')
   const city = searchParams.get('city')
   const championshipOnly = searchParams.get('championshipOnly') === 'true'
+  const titleChangeOnly = searchParams.get('titleChangeOnly') === 'true'
   const result = searchParams.get('result') // 'win' | 'loss' | 'draw'
   const resultType = searchParams.get('resultType') // pinfall, submission, dq, etc.
 
@@ -151,6 +152,11 @@ export async function GET(request: NextRequest) {
     // Championship only
     if (championshipOnly) {
       query = query.not('championship_id', 'is', null)
+    }
+
+    // Title change only
+    if (titleChangeOnly) {
+      query = query.eq('is_title_change', true)
     }
 
     // Rating range

@@ -27,11 +27,11 @@ const jsonLd = {
   '@type': 'CollectionPage',
   name: 'WWE Wrestlers — Complete Roster',
   description: 'Browse every WWE wrestler in history with advanced search and filters.',
-  url: 'https://pinfall-data.vercel.app/superstars/wrestlers',
+  url: 'https://pinfalldata.com/superstars/wrestlers',
   isPartOf: {
     '@type': 'WebSite',
     name: 'Pinfall Data',
-    url: 'https://pinfall-data.vercel.app',
+    url: 'https://pinfalldata.com',
   },
 }
 

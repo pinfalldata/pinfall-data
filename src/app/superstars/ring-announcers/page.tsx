@@ -26,7 +26,7 @@ const config = {
 export default function RingAnnouncersPage() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'WWE Ring Announcers', url: 'https://pinfall-data.vercel.app/superstars/ring-announcers' }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'WWE Ring Announcers', url: 'https://pinfalldata.com/superstars/ring-announcers' }) }} />
       <RolePageClient config={config} />
     </>
   )

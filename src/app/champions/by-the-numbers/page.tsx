@@ -40,6 +40,7 @@ export default function ByTheNumbersPage() {
   const o = stats?.overview
   const m = stats?.male
   const f = stats?.female
+  const tag = stats?.tagTeam
   const rec = stats?.records
   const rank = stats?.rankings
 
@@ -108,6 +109,86 @@ export default function ByTheNumbersPage() {
               </div>
             </div>
           </section>
+
+          {/* ===== TAG TEAM DIVISION ===== */}
+          {tag && tag.reigns > 0 && (
+            <section className="max-w-[1440px] mx-auto px-4 sm:px-6 pb-8">
+              <div className="rounded-2xl border border-neon-blue/15 bg-gradient-to-br from-neon-blue/5 via-transparent to-neon-pink/5 p-6">
+                <h3 className="font-display text-lg font-bold text-neon-blue mb-4 flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                  Tag Team Division
+                </h3>
+
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
+                  <div className="text-center"><span className="block text-2xl font-bold text-text-white font-display">{tag.championships}</span><span className="text-[10px] text-text-secondary uppercase">Tag Titles</span></div>
+                  <div className="text-center"><span className="block text-2xl font-bold text-text-white font-display">{tag.reigns}</span><span className="text-[10px] text-text-secondary uppercase">Team Reigns</span></div>
+                  <div className="text-center"><span className="block text-2xl font-bold text-text-white font-display">{tag.uniqueTeams}</span><span className="text-[10px] text-text-secondary uppercase">Unique Teams</span></div>
+                  <div className="text-center"><span className="block text-2xl font-bold text-text-white font-display">{tag.totalDays.toLocaleString()}</span><span className="text-[10px] text-text-secondary uppercase">Total Days</span></div>
+                  <div className="text-center"><span className="block text-2xl font-bold text-text-white font-display">{tag.avgDays}d</span><span className="text-[10px] text-text-secondary uppercase">Avg Reign</span></div>
+                </div>
+
+                {/* Longest tag team reign */}
+                {tag.longestReign && (
+                  <div className="rounded-xl border border-neon-blue/15 bg-bg-primary/30 p-4 mb-4">
+                    <p className="text-[10px] text-neon-blue uppercase tracking-wider font-bold mb-2">Longest Tag Team Reign</p>
+                    <div className="flex items-center gap-3">
+                      <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-neon-blue/30 shrink-0 bg-bg-tertiary">
+                        {tag.longestReign.superstars?.[0]?.photo_url ? <Image src={tag.longestReign.superstars[0].photo_url} alt="" fill className="object-cover object-top" sizes="40px" /> : <div className="w-full h-full flex items-center justify-center text-sm opacity-20">👤</div>}
+                      </div>
+                      {tag.longestReign.superstars?.length > 1 && (
+                        <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-neon-blue/30 shrink-0 bg-bg-tertiary -ml-5">
+                          {tag.longestReign.superstars[1]?.photo_url ? <Image src={tag.longestReign.superstars[1].photo_url} alt="" fill className="object-cover object-top" sizes="40px" /> : <div className="w-full h-full flex items-center justify-center text-sm opacity-20">👤</div>}
+                        </div>
+                      )}
+                      <div>
+                        <p className="text-sm text-text-white font-bold">{tag.longestReign.teamName}</p>
+                        <p className="text-neon-blue font-bold">{tag.longestReign.days?.toLocaleString()} days</p>
+                        {tag.longestReign.championship && <p className="text-[10px] text-text-secondary">{tag.longestReign.championship}</p>}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Top tag teams rankings */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {tag.topByReigns?.length > 0 && (
+                    <div className="rounded-xl border border-border-subtle/15 bg-bg-primary/20 p-4">
+                      <p className="text-[10px] text-neon-blue uppercase tracking-wider font-bold mb-3">Most Tag Team Reigns</p>
+                      <div className="space-y-2.5">
+                        {tag.topByReigns.map((t: any, i: number) => (
+                          <div key={t.superstar.id} className="flex items-center gap-2">
+                            <span className="w-5 h-5 rounded bg-neon-blue/10 flex items-center justify-center text-[9px] text-neon-blue font-bold shrink-0">{i + 1}</span>
+                            <div className="relative w-7 h-7 rounded-lg overflow-hidden border border-border-subtle/20 shrink-0 bg-bg-tertiary">
+                              {t.superstar?.photo_url ? <Image src={t.superstar.photo_url} alt="" fill className="object-cover object-top" sizes="28px" /> : <div className="w-full h-full" />}
+                            </div>
+                            <span className="text-xs text-text-white flex-1 truncate">{t.superstar?.name}</span>
+                            <span className="text-xs text-neon-blue font-bold shrink-0">{t.totalReigns}x</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {tag.topByDays?.length > 0 && (
+                    <div className="rounded-xl border border-border-subtle/15 bg-bg-primary/20 p-4">
+                      <p className="text-[10px] text-neon-blue uppercase tracking-wider font-bold mb-3">Most Combined Days</p>
+                      <div className="space-y-2.5">
+                        {tag.topByDays.map((t: any, i: number) => (
+                          <div key={t.superstar.id} className="flex items-center gap-2">
+                            <span className="w-5 h-5 rounded bg-neon-blue/10 flex items-center justify-center text-[9px] text-neon-blue font-bold shrink-0">{i + 1}</span>
+                            <div className="relative w-7 h-7 rounded-lg overflow-hidden border border-border-subtle/20 shrink-0 bg-bg-tertiary">
+                              {t.superstar?.photo_url ? <Image src={t.superstar.photo_url} alt="" fill className="object-cover object-top" sizes="28px" /> : <div className="w-full h-full" />}
+                            </div>
+                            <span className="text-xs text-text-white flex-1 truncate">{t.superstar?.name}</span>
+                            <span className="text-xs text-neon-blue font-bold shrink-0">{t.days.toLocaleString()}d</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </section>
+          )}
 
           {/* ===== RECORDS ===== */}
           <section className="max-w-[1440px] mx-auto px-4 sm:px-6 pb-8">

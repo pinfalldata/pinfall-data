@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     description: 'Search 100,000+ WWE matches across 70+ years of history.',
   },
   alternates: {
-    canonical: 'https://pinfall-data.vercel.app/matches',
+    canonical: 'https://pinfalldata.com/matches',
   },
 }
 
@@ -121,8 +121,8 @@ export default function MatchesPage() {
                 {/* Icon */}
                 <div className={`shrink-0 w-12 h-12 rounded-xl flex items-center justify-center border transition-all duration-300
                   ${section.accent === 'neon-blue'
-                    ? 'bg-neon-blue/8 border-neon-blue/15 text-neon-blue group-hover:bg-neon-blue/15 group-hover:border-neon-blue/30 group-hover:shadow-neon-blue'
-                    : 'bg-neon-pink/8 border-neon-pink/15 text-neon-pink group-hover:bg-neon-pink/15 group-hover:border-neon-pink/30 group-hover:shadow-neon-pink'
+                    ? 'bg-neon-blue/8 border-neon-blue/15 text-neon-blue group-hover:bg-neon-blue/15 group-hover:border-neon-blue/30 '
+                    : 'bg-neon-pink/8 border-neon-pink/15 text-neon-pink group-hover:bg-neon-pink/15 group-hover:border-neon-pink/30 '
                   }`}
                 >
                   {section.icon}

@@ -29,7 +29,7 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://pinfall-data.vercel.app'),
+  metadataBase: new URL('https://pinfalldata.com'),
   title: {
     default: 'Pinfall Data — The Ultimate WWE Statistics Database',
     template: '%s | Pinfall Data',
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
       'Explore 70+ years of WWE history. Every superstar. Every match. Every moment.',
     siteName: 'Pinfall Data',
     type: 'website',
-    url: 'https://pinfall-data.vercel.app',
+    url: 'https://pinfalldata.com',
   },
   twitter: {
     card: 'summary_large_image',
@@ -79,7 +79,7 @@ export const metadata: Metadata = {
   },
   verification: {},
   alternates: {
-    canonical: 'https://pinfall-data.vercel.app',
+    canonical: 'https://pinfalldata.com',
   },
 }
 

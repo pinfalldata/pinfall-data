@@ -5,14 +5,14 @@ import { supabase } from '@/lib/supabase'
 export async function GET() {
   try {
     // All championships
-    const { data: allChamps } = await supabase.from('championships').select('id, name, slug, status, image_url')
+    const { data: allChamps } = await supabase.from('championships').select('id, name, slug, status, image_url, is_tag_team')
     const activeCount = (allChamps || []).filter(c => c.status === 'active').length
     const retiredCount = (allChamps || []).filter(c => c.status === 'retired').length
 
     // All reigns with superstar info
     const { data: allReigns } = await supabase
       .from('championship_reigns')
-      .select('id, championship_id, superstar_id, won_date, lost_date, days_held, superstar:superstar_id ( id, name, slug, photo_url, gender )')
+      .select('id, championship_id, superstar_id, won_date, lost_date, days_held, reign_group_id, superstar:superstar_id ( id, name, slug, photo_url, gender )')
       .order('won_date', { ascending: true })
 
     const reigns = allReigns || []
@@ -102,6 +102,76 @@ export async function GET() {
     const { count: totalTitleMatches } = await supabase.from('matches').select('*', { count: 'exact', head: true }).not('championship_id', 'is', null)
     const { count: totalTCMatches } = await supabase.from('matches').select('*', { count: 'exact', head: true }).eq('is_title_change', true)
 
+    // ===== TAG TEAM STATISTICS =====
+    const tagChampIds = (allChamps || []).filter(c => c.is_tag_team).map(c => c.id)
+    const tagReigns = reigns.filter(r => tagChampIds.includes(r.championship_id))
+
+    // Group tag reigns by reign_group_id to get team reigns
+    const tagGroupMap = new Map()
+    for (const r of tagReigns) {
+      const gid = r.reign_group_id || `solo_${r.id}`
+      if (!tagGroupMap.has(gid)) {
+        tagGroupMap.set(gid, {
+          won_date: r.won_date,
+          lost_date: r.lost_date,
+          days_held: r.days_held,
+          championship_id: r.championship_id,
+          superstars: [r.superstar],
+        })
+      } else {
+        const existing = tagGroupMap.get(gid)
+        if (r.superstar && !existing.superstars.find((s: any) => s?.id === r.superstar?.id)) {
+          existing.superstars.push(r.superstar)
+        }
+      }
+    }
+    const tagTeamReigns = Array.from(tagGroupMap.values())
+    const tagTeamReignCount = tagTeamReigns.length
+    const tagTeamChampionships = (allChamps || []).filter(c => c.is_tag_team).length
+    const tagTeamDays = tagTeamReigns.filter(r => r.days_held).map(r => r.days_held!).reduce((a, b) => a + b, 0)
+    const tagTeamAvgDays = tagTeamReigns.length > 0
+      ? Math.round(tagTeamDays / tagTeamReigns.filter(r => r.days_held).length)
+      : 0
+
+    // Unique tag teams
+    const tagTeamKeys = new Set(tagTeamReigns.map(r =>
+      r.superstars.map((s: any) => s?.id).sort().join('-')
+    ))
+    const uniqueTagTeams = tagTeamKeys.size
+
+    // Most tag team reigns (by team combo)
+    const tagReignCount = new Map()
+    for (const r of tagTeamReigns) {
+      const key = r.superstars.map((s: any) => s?.id).sort().join('-')
+      const teamName = r.superstars.map((s: any) => s?.name).join(' & ')
+      const firstStar = r.superstars[0]
+      if (!tagReignCount.has(key)) tagReignCount.set(key, { count: 0, days: 0, teamName, superstar: firstStar, superstars: r.superstars })
+      const entry = tagReignCount.get(key)
+      entry.count++
+      entry.days += r.days_held || 0
+    }
+    const topTagTeamsByReigns = Array.from(tagReignCount.values())
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5)
+      .map(t => ({
+        superstar: { id: t.superstars.map((s: any) => s?.id).join('-'), name: t.teamName, slug: t.superstar?.slug, photo_url: t.superstar?.photo_url },
+        totalReigns: t.count,
+        totalDays: t.days,
+      }))
+
+    const topTagTeamsByDays = Array.from(tagReignCount.values())
+      .sort((a, b) => b.days - a.days)
+      .slice(0, 5)
+      .map(t => ({
+        superstar: { id: t.superstars.map((s: any) => s?.id).join('-'), name: t.teamName, slug: t.superstar?.slug, photo_url: t.superstar?.photo_url },
+        days: t.days,
+        reigns: t.count,
+      }))
+
+    // Longest tag team reign
+    const longestTagReign = tagTeamReigns.reduce((max, r) => (r.days_held || 0) > (max?.days_held || 0) ? r : max, tagTeamReigns[0] || null)
+    const longestTagChamp = longestTagReign ? (allChamps || []).find(c => c.id === longestTagReign.championship_id) : null
+
     return NextResponse.json({
       stats: {
         overview: {
@@ -115,6 +185,22 @@ export async function GET() {
         },
         male: { reigns: maleReigns.length, uniqueChampions: maleUnique, totalDays: maleDays, avgDays: maleAvgDays },
         female: { reigns: femaleReigns.length, uniqueChampions: femaleUnique, totalDays: femaleDays, avgDays: femaleAvgDays },
+        tagTeam: {
+          championships: tagTeamChampionships,
+          reigns: tagTeamReignCount,
+          uniqueTeams: uniqueTagTeams,
+          totalDays: tagTeamDays,
+          avgDays: tagTeamAvgDays,
+          topByReigns: topTagTeamsByReigns,
+          topByDays: topTagTeamsByDays,
+          longestReign: longestTagReign ? {
+            superstars: longestTagReign.superstars,
+            teamName: longestTagReign.superstars.map((s: any) => s?.name).join(' & '),
+            days: longestTagReign.days_held,
+            championship: longestTagChamp?.name,
+            championshipSlug: longestTagChamp?.slug,
+          } : null,
+        },
         records: {
           longestReign: longestReign ? { superstar: longestReign.superstar, days: longestReign.days_held, championship: longestChampName?.name, championshipSlug: longestChampName?.slug, won_date: longestReign.won_date, lost_date: longestReign.lost_date } : null,
           shortestReign: shortestReign ? { superstar: shortestReign.superstar, days: shortestReign.days_held, championship: shortestChampName?.name, championshipSlug: shortestChampName?.slug, won_date: shortestReign.won_date, lost_date: shortestReign.lost_date } : null,

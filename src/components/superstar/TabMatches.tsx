@@ -45,6 +45,7 @@ interface Filters {
   country: string
   city: string
   championshipOnly: boolean
+  titleChangeOnly: boolean
   result: string
   resultType: string
 }
@@ -60,7 +61,7 @@ const defaultFilters: Filters = {
   year: '', month: '', opponentId: '', opponentName: '',
   teammateId: '', teammateName: '',
   showSeriesId: '', matchTypeId: '', minRating: '',
-  country: '', city: '', championshipOnly: false, result: '', resultType: '',
+  country: '', city: '', championshipOnly: false, titleChangeOnly: false, result: '', resultType: '',
 }
 
 // Fixed year range for the site
@@ -134,6 +135,7 @@ export function TabMatches({ superstar }: { superstar: any }) {
     if (filters.country) params.set('country', filters.country)
     if (filters.city) params.set('city', filters.city)
     if (filters.championshipOnly) params.set('championshipOnly', 'true')
+    if (filters.titleChangeOnly) params.set('titleChangeOnly', 'true')
     if (filters.result) params.set('result', filters.result)
     if (filters.resultType) params.set('resultType', filters.resultType)
 
@@ -347,25 +349,45 @@ export function TabMatches({ superstar }: { superstar: any }) {
             />
           </div>
 
-          {/* Championship toggle + Reset */}
-          <div className="flex items-center justify-between mt-4 pt-3 border-t border-border-subtle/20">
-            <label className="flex items-center gap-2 cursor-pointer group">
-              <div
-                className={`w-9 h-5 rounded-full relative transition-colors cursor-pointer ${
-                  filters.championshipOnly ? 'bg-yellow-500/40' : 'bg-bg-tertiary'
-                }`}
-                onClick={() => updateFilter('championshipOnly', !filters.championshipOnly)}
-              >
+          {/* Championship toggle + Title Change toggle + Reset */}
+          <div className="flex items-center justify-between mt-4 pt-3 border-t border-border-subtle/20 flex-wrap gap-3">
+            <div className="flex items-center gap-4 flex-wrap">
+              <label className="flex items-center gap-2 cursor-pointer group">
                 <div
-                  className={`absolute top-0.5 w-4 h-4 rounded-full transition-transform ${
-                    filters.championshipOnly ? 'translate-x-[18px] bg-yellow-400' : 'translate-x-[2px] bg-text-secondary'
+                  className={`w-9 h-5 rounded-full relative transition-colors cursor-pointer ${
+                    filters.championshipOnly ? 'bg-yellow-500/40' : 'bg-bg-tertiary'
                   }`}
-                />
-              </div>
-              <span className="text-xs text-text-secondary group-hover:text-text-white transition-colors">
-                🏆 Championship matches only
-              </span>
-            </label>
+                  onClick={() => updateFilter('championshipOnly', !filters.championshipOnly)}
+                >
+                  <div
+                    className={`absolute top-0.5 w-4 h-4 rounded-full transition-transform ${
+                      filters.championshipOnly ? 'translate-x-[18px] bg-yellow-400' : 'translate-x-[2px] bg-text-secondary'
+                    }`}
+                  />
+                </div>
+                <span className="text-xs text-text-secondary group-hover:text-text-white transition-colors">
+                  🏆 Championship matches only
+                </span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer group">
+                <div
+                  className={`w-9 h-5 rounded-full relative transition-colors cursor-pointer ${
+                    filters.titleChangeOnly ? 'bg-neon-blue/40' : 'bg-bg-tertiary'
+                  }`}
+                  onClick={() => updateFilter('titleChangeOnly', !filters.titleChangeOnly)}
+                >
+                  <div
+                    className={`absolute top-0.5 w-4 h-4 rounded-full transition-transform ${
+                      filters.titleChangeOnly ? 'translate-x-[18px] bg-neon-blue' : 'translate-x-[2px] bg-text-secondary'
+                    }`}
+                  />
+                </div>
+                <span className="text-xs text-text-secondary group-hover:text-text-white transition-colors">
+                  🔄 Title changes only
+                </span>
+              </label>
+            </div>
 
             {hasActiveFilters && (
               <button

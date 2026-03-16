@@ -26,7 +26,7 @@ const config = {
 export default function CommentatorsPage() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'WWE Commentators', url: 'https://pinfall-data.vercel.app/superstars/commentators' }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'WWE Commentators', url: 'https://pinfalldata.com/superstars/commentators' }) }} />
       <RolePageClient config={config} />
     </>
   )

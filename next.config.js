@@ -47,9 +47,21 @@ const nextConfig = {
     ]
   },
 
-  // Redirects for SEO (old URLs if needed)
+  // Redirects for SEO — redirect old Vercel domain to custom domain
   async redirects() {
-    return []
+    return [
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'pinfall-data.vercel.app',
+          },
+        ],
+        destination: 'https://pinfalldata.com/:path*',
+        permanent: true,
+      },
+    ]
   },
 
   images: {

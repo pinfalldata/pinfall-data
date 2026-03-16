@@ -74,7 +74,7 @@ function generateJsonLd(superstar: any) {
     ...(superstar.height_cm ? { height: { '@type': 'QuantitativeValue', value: superstar.height_cm, unitCode: 'CMT' } } : {}),
     ...(superstar.weight_kg ? { weight: { '@type': 'QuantitativeValue', value: superstar.weight_kg, unitCode: 'KGM' } } : {}),
     sport: 'Professional Wrestling',
-    url: `https://pinfall-data.vercel.app/superstars/${superstar.slug}`,
+    url: `https://pinfalldata.com/superstars/${superstar.slug}`,
   }
 }
 

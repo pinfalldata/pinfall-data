@@ -25,8 +25,8 @@ const jsonLd = {
   '@type': 'CollectionPage',
   name: 'WWE Managers',
   description: 'Browse every WWE manager in history with ringside statistics.',
-  url: 'https://pinfall-data.vercel.app/superstars/managers',
-  isPartOf: { '@type': 'WebSite', name: 'Pinfall Data', url: 'https://pinfall-data.vercel.app' },
+  url: 'https://pinfalldata.com/superstars/managers',
+  isPartOf: { '@type': 'WebSite', name: 'Pinfall Data', url: 'https://pinfalldata.com' },
 }
 
 export default function ManagersPage() {

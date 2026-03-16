@@ -26,7 +26,7 @@ const config = {
 export default function InterviewersPage() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'WWE Interviewers', url: 'https://pinfall-data.vercel.app/superstars/interviewers' }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'WWE Interviewers', url: 'https://pinfalldata.com/superstars/interviewers' }) }} />
       <RolePageClient config={config} />
     </>
   )

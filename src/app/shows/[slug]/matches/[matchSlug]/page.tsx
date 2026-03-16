@@ -78,7 +78,7 @@ function generateJsonLd(match: any) {
     competitor: names.map((n: string) => ({ '@type': 'Person', name: n })),
     sport: 'Professional Wrestling',
     ...(match.duration_seconds ? { duration: `PT${Math.floor(match.duration_seconds / 60)}M${match.duration_seconds % 60}S` } : {}),
-    url: `https://pinfall-data.vercel.app/shows/${show.slug}/matches/${match.slug}`,
+    url: `https://pinfalldata.com/shows/${show.slug}/matches/${match.slug}`,
   }
 }
 

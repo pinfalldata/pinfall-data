@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     description: 'Search 100,000+ WWE matches with powerful filters.',
   },
   alternates: {
-    canonical: 'https://pinfall-data.vercel.app/matches/search',
+    canonical: 'https://pinfalldata.com/matches/search',
   },
 }
 

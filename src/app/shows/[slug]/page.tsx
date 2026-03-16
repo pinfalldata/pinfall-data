@@ -76,7 +76,7 @@ function generateJsonLd(show: any) {
     ...(show.attendance ? { maximumAttendeeCapacity: show.attendance } : {}),
     competitor: wrestlers.slice(0, 20),
     sport: 'Professional Wrestling',
-    url: `https://pinfall-data.vercel.app/shows/${show.slug}`,
+    url: `https://pinfalldata.com/shows/${show.slug}`,
   }
 }
 

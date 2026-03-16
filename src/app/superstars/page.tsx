@@ -34,11 +34,11 @@ const jsonLd = {
   '@type': 'CollectionPage',
   name: 'WWE Superstars',
   description: 'Complete roster of WWE Superstars across all eras and roles.',
-  url: 'https://pinfall-data.vercel.app/superstars',
+  url: 'https://pinfalldata.com/superstars',
   isPartOf: {
     '@type': 'WebSite',
     name: 'Pinfall Data',
-    url: 'https://pinfall-data.vercel.app',
+    url: 'https://pinfalldata.com',
   },
 }
 

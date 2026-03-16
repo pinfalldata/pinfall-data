@@ -26,7 +26,7 @@ const config = {
 export default function GeneralManagersPage() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'WWE General Managers', url: 'https://pinfall-data.vercel.app/superstars/general-managers' }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'WWE General Managers', url: 'https://pinfalldata.com/superstars/general-managers' }) }} />
       <RolePageClient config={config} />
     </>
   )

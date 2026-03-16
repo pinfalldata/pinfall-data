@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     description: 'Every Premium Live Event in WWE history with full results.',
   },
   alternates: {
-    canonical: 'https://pinfall-data.vercel.app/matches/ple',
+    canonical: 'https://pinfalldata.com/matches/ple',
   },
 }
 

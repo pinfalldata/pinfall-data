@@ -29,18 +29,21 @@ const SUB_PAGES = [
     href: '/champions/the-title-vault',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20champions/cena.webp',
     desc: 'Every championship in WWE history — active and retired.',
+    icon: '🏆',
   },
   {
     title: 'Major Accolades',
     href: '/champions/major-accolades',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20champions/flair.webp',
     desc: 'Grand Slams, Triple Crowns, and milestone achievements.',
+    icon: '🏅',
   },
   {
     title: 'By The Numbers',
     href: '/champions/by-the-numbers',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20champions/bruno.webp',
     desc: 'Championship statistics, records, and data breakdowns.',
+    icon: '📊',
   },
 ]
 
@@ -80,26 +83,44 @@ export default function ChampionsPage() {
         </div>
       </section>
 
-      {/* ===== SUB-PAGES — same style as /superstars category cards ===== */}
+      {/* ===== SUB-PAGES — GOLD/SILVER hover like /superstars ===== */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
           {SUB_PAGES.map((sp) => (
             <Link
               key={sp.href}
               href={sp.href}
-              className="group relative overflow-hidden rounded-2xl border border-border-subtle/30 bg-bg-secondary/30 backdrop-blur-sm transition-all duration-300 hover:border-neon-blue/40 hover:shadow-neon-blue hover:scale-[1.02] active:scale-[0.98]"
+              className="group relative overflow-hidden rounded-2xl border border-border-subtle/30 bg-bg-secondary/30 backdrop-blur-sm transition-all duration-300 hover:border-neon-blue/25 hover:bg-bg-secondary/40"
             >
+              {/* Gold accent line top — matches superstars page */}
               <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue/0 to-transparent group-hover:via-neon-blue/60 transition-all duration-500 z-10" />
+
               <div className="flex items-center gap-4 p-4 sm:p-5">
                 {/* Square image */}
                 <div className="relative w-16 h-16 sm:w-[72px] sm:h-[72px] lg:w-20 lg:h-20 rounded-xl overflow-hidden border-2 border-border-subtle/30 group-hover:border-neon-blue/40 transition-all shrink-0 bg-bg-tertiary">
-                  <Image src={sp.image} alt={sp.title} fill className="object-cover object-top transition-transform duration-500 group-hover:scale-110" sizes="80px" unoptimized />
+                  <Image
+                    src={sp.image}
+                    alt={sp.title}
+                    fill
+                    className="object-cover object-top transition-transform duration-500 group-hover:scale-110"
+                    sizes="80px"
+                    unoptimized
+                  />
+                  {/* Subtle shine overlay */}
                   <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/0 to-white/0 group-hover:via-white/10 group-hover:to-white/5 transition-all duration-500" />
                 </div>
+
+                {/* Text */}
                 <div className="min-w-0 flex-1">
-                  <h3 className="font-display text-base sm:text-lg font-bold text-text-white group-hover:text-neon-blue transition-colors truncate">{sp.title}</h3>
-                  <p className="text-[11px] sm:text-xs text-text-secondary leading-snug line-clamp-2">{sp.desc}</p>
+                  <h3 className="font-display text-base sm:text-lg font-bold text-text-white group-hover:text-neon-blue transition-colors truncate">
+                    {sp.title}
+                  </h3>
+                  <p className="text-[11px] sm:text-xs text-text-secondary leading-snug line-clamp-2">
+                    {sp.desc}
+                  </p>
                 </div>
+
+                {/* Arrow — matches superstars page */}
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-bg-tertiary/50 group-hover:bg-neon-blue/10 border border-border-subtle/20 group-hover:border-neon-blue/30 transition-all shrink-0">
                   <svg className="w-4 h-4 text-text-secondary group-hover:text-neon-blue transition-all group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
