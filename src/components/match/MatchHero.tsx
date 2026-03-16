@@ -4,6 +4,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { StarRating } from '@/components/ui/StarRating'
 import { MediaCarousel } from '@/components/ui/MediaCarousel'
+import { ShareButtons } from '@/components/ui/ShareButtons'
+import { TitleChangeFireworks } from '@/components/match/TitleChangeFireworks'
 import {
   formatDate, formatDuration, formatHeight, formatWeight, formatNumber,
   formatCompactNumber, formatTime,
@@ -152,13 +154,22 @@ export function MatchHero({ match }: { match: any }) {
 {/* Championship — belt prominent, name smaller and clickable */}
             {match.championship && (
               <div className="flex flex-col items-center pb-2 z-10 relative">
+                {/* Fireworks for title changes */}
+                {match.is_title_change && <TitleChangeFireworks />}
+
+                {match.is_title_change && (
+                  <div className="mb-2 px-3 py-1 rounded-full bg-neon-blue/15 border border-neon-blue/30 animate-pulse z-30 relative">
+                    <span className="text-[10px] sm:text-xs text-neon-blue font-bold uppercase tracking-widest">🏆 Title Change 🏆</span>
+                  </div>
+                )}
+
                 {match.championship.image_url && (
                   match.championship.slug ? (
-                    <Link href={`/champions/${match.championship.slug}`} className="relative w-44 h-44 sm:w-56 sm:h-56 lg:w-72 lg:h-72 block hover:scale-105 transition-transform duration-300">
+                    <Link href={`/champions/${match.championship.slug}`} className="relative w-44 h-44 sm:w-56 sm:h-56 lg:w-72 lg:h-72 block hover:scale-105 transition-transform duration-300 z-10">
                       <Image src={match.championship.image_url} alt={match.championship.name} fill className="object-contain drop-shadow-2xl" sizes="(max-width: 640px) 176px, (max-width: 1024px) 224px, 288px" />
                     </Link>
                   ) : (
-                    <div className="relative w-44 h-44 sm:w-56 sm:h-56 lg:w-72 lg:h-72">
+                    <div className="relative w-44 h-44 sm:w-56 sm:h-56 lg:w-72 lg:h-72 z-10">
                       <Image src={match.championship.image_url} alt={match.championship.name} fill className="object-contain drop-shadow-2xl" sizes="(max-width: 640px) 176px, (max-width: 1024px) 224px, 288px" />
                     </div>
                   )
@@ -303,6 +314,13 @@ export function MatchHero({ match }: { match: any }) {
           <MediaCarousel items={match.media} columns={2} color={color} />
         </div>
       )}
+
+      {/* ===== Share Buttons ===== */}
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pb-6">
+        <ShareButtons
+          title={`${participants.map((p: any) => p.superstar?.name).filter(Boolean).join(' vs ')} — ${match.match_type?.name || 'Match'} at ${show?.name || ''} | Pinfall Data`}
+        />
+      </div>
     </div>
   )
 }

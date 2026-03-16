@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ShowCalendar } from '@/components/home/ShowCalendar'
+import ShowsWorldMap from '@/components/show/ShowsWorldMap'
 
 export const metadata: Metadata = {
   title: 'Matches & Shows — Complete WWE Match Database | Pinfall Data',
@@ -160,6 +161,24 @@ export default function MatchesPage() {
 
       {/* ===== SHOW CALENDAR ===== */}
       <ShowCalendar />
+
+      {/* ===== NEON SEPARATOR ===== */}
+      <div className="neon-line max-w-5xl mx-auto" />
+
+      {/* ===== SHOWS AROUND THE WORLD ===== */}
+      <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-10 sm:py-14">
+        <div className="text-center mb-6 sm:mb-8">
+          <h2 className="font-display text-2xl sm:text-3xl font-bold text-text-white mb-2">
+            Shows <span className="text-neon-blue">Around the World</span>
+          </h2>
+          <p className="text-text-secondary text-sm sm:text-base max-w-lg mx-auto">
+            Discover where WWE events have taken place across the globe.
+          </p>
+        </div>
+        <div className="max-w-3xl mx-auto rounded-2xl border border-border-subtle/30 bg-bg-secondary/20 backdrop-blur-sm p-5 sm:p-6">
+          <ShowsWorldMap />
+        </div>
+      </section>
 
       {/* ===== SEO CONTENT (hidden visually but indexable) ===== */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-10">

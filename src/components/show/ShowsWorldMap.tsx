@@ -1,0 +1,193 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
+
+const ComposableMap = dynamic(() => import('react-simple-maps').then(m => m.ComposableMap), { ssr: false })
+const Geographies = dynamic(() => import('react-simple-maps').then(m => m.Geographies), { ssr: false })
+const Geography = dynamic(() => import('react-simple-maps').then(m => m.Geography), { ssr: false })
+const ZoomableGroup = dynamic(() => import('react-simple-maps').then(m => m.ZoomableGroup), { ssr: false })
+
+const GEO_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'
+
+interface CountryData { name: string; count: number }
+
+const FC: Record<string, string> = {
+  'Afghanistan':'af','South Africa':'za','England':'gb-eng','Albania':'al','Algeria':'dz','Germany':'de',
+  'Andorra':'ad','Angola':'ao','Saudi Arabia':'sa','Argentina':'ar','Armenia':'am','Australia':'au',
+  'Austria':'at','Azerbaijan':'az','Bahamas':'bs','Bahrain':'bh','Bangladesh':'bd','Barbados':'bb',
+  'Belgium':'be','Belize':'bz','Belarus':'by','Bolivia':'bo','Bosnia and Herzegovina':'ba','Botswana':'bw',
+  'Brazil':'br','Bulgaria':'bg','Cambodia':'kh','Cameroon':'cm','Canada':'ca','Chile':'cl','China':'cn',
+  'Colombia':'co','South Korea':'kr','Costa Rica':'cr','Croatia':'hr','Cuba':'cu','Denmark':'dk',
+  'Egypt':'eg','United Arab Emirates':'ae','Ecuador':'ec','Spain':'es','Estonia':'ee',
+  'United States':'us','USA':'us','Ethiopia':'et','Fiji':'fj','Finland':'fi','France':'fr',
+  'Georgia':'ge','Ghana':'gh','Greece':'gr','Guatemala':'gt','Guinea':'gn','Guyana':'gy',
+  'Haiti':'ht','Honduras':'hn','Hungary':'hu','India':'in','Indonesia':'id','Iraq':'iq','Iran':'ir',
+  'Ireland':'ie','Iceland':'is','Israel':'il','Italy':'it','Jamaica':'jm','Japan':'jp','Jordan':'jo',
+  'Kazakhstan':'kz','Kenya':'ke','Kuwait':'kw','Kosovo':'xk','Latvia':'lv','Lebanon':'lb',
+  'Lithuania':'lt','Luxembourg':'lu','Malaysia':'my','Mali':'ml','Malta':'mt','Morocco':'ma',
+  'Mexico':'mx','Moldova':'md','Mongolia':'mn','Montenegro':'me','Mozambique':'mz','Namibia':'na',
+  'Nepal':'np','Nicaragua':'ni','Nigeria':'ng','Norway':'no','New Zealand':'nz','Pakistan':'pk',
+  'Panama':'pa','Paraguay':'py','Netherlands':'nl','Peru':'pe','Philippines':'ph','Poland':'pl',
+  'Portugal':'pt','Puerto Rico':'pr','Qatar':'qa','Dominican Republic':'do','Czech Republic':'cz',
+  'Romania':'ro','United Kingdom':'gb','Russia':'ru','Rwanda':'rw','Samoa':'ws','Senegal':'sn',
+  'Serbia':'rs','Singapore':'sg','Slovakia':'sk','Slovenia':'si','Somalia':'so','Sudan':'sd',
+  'Sri Lanka':'lk','Sweden':'se','Switzerland':'ch','Syria':'sy','Thailand':'th','Tonga':'to',
+  'Trinidad and Tobago':'tt','Tunisia':'tn','Turkey':'tr','Ukraine':'ua','Uruguay':'uy',
+  'Venezuela':'ve','Vietnam':'vn','Zimbabwe':'zw','Scotland':'gb-sct','Wales':'gb-wls',
+  'Northern Ireland':'gb-nir','Taiwan':'tw','Palestine':'ps','Eswatini':'sz',
+  'Bermuda':'bm','Bahrain':'bh','Brunei':'bn','Cyprus':'cy','Liechtenstein':'li','Monaco':'mc',
+  'North Korea':'kp','Oman':'om','San Marino':'sm','Vatican City':'va','Laos':'la','Myanmar':'mm',
+}
+
+function FlagImg({ country, size = 20 }: { country: string; size?: number }) {
+  const code = FC[country]
+  if (!code) return <span className="text-base leading-none">🌍</span>
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={`https://flagcdn.com/w${size * 2}/${code}.png`}
+      alt={country}
+      width={size}
+      height={Math.round(size * 0.67)}
+      className="rounded-sm inline-block"
+      style={{ width: size, height: Math.round(size * 0.67) }}
+      loading="lazy"
+    />
+  )
+}
+
+const NAME_TO_GEO: Record<string, string> = {
+  'United States': 'United States of America', 'United Kingdom': 'United Kingdom',
+  'England': 'United Kingdom', 'Scotland': 'United Kingdom', 'Wales': 'United Kingdom',
+  'South Korea': 'South Korea', 'Puerto Rico': 'Puerto Rico',
+  'Dominican Republic': 'Dominican Rep.', 'Czech Republic': 'Czechia',
+}
+
+export default function ShowsWorldMap() {
+  const [countries, setCountries] = useState<CountryData[]>([])
+  const [loading, setLoading] = useState(true)
+  const [tooltip, setTooltip] = useState<{ name: string; count: number; x: number; y: number } | null>(null)
+  const [expanded, setExpanded] = useState(false)
+  const [mapReady, setMapReady] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/shows-map')
+      .then(r => r.json())
+      .then(d => { setCountries(d.countries || []); setMapReady(true) })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
+
+  if (loading) return <div className="animate-pulse space-y-3">{Array.from({ length: 6 }).map((_, i) => <div key={i} className="h-10 rounded-xl bg-bg-secondary/30" />)}</div>
+  if (countries.length === 0) return null
+
+  const geoLookup = new Map<string, number>()
+  for (const c of countries) {
+    geoLookup.set(c.name, (geoLookup.get(c.name) || 0) + c.count)
+    const mapped = NAME_TO_GEO[c.name]
+    if (mapped) geoLookup.set(mapped, (geoLookup.get(mapped) || 0) + c.count)
+  }
+
+  const maxCount = countries[0]?.count || 1
+  const totalShows = countries.reduce((s, c) => s + c.count, 0)
+  const displayCount = expanded ? countries.length : Math.min(20, countries.length)
+  const displayed = countries.slice(0, displayCount)
+
+  const getColor = (count: number) => {
+    if (count === 0) return '#10141e'
+    const ratio = Math.log(count + 1) / Math.log(maxCount + 1)
+    if (ratio > 0.7) return '#c7a05a'
+    if (ratio > 0.4) return '#8b6d2e'
+    if (ratio > 0.2) return '#5a4520'
+    return '#2d2213'
+  }
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <span className="text-2xl">🌍</span>
+          <div>
+            <p className="text-xs text-text-secondary uppercase tracking-wider">Global coverage</p>
+            <p className="text-text-white font-bold">
+              <span className="text-neon-blue font-mono">{totalShows.toLocaleString()}</span> shows
+              across <span className="text-neon-blue font-mono">{countries.length}</span> countries
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {mapReady && (
+        <div className="relative rounded-xl overflow-hidden border border-border-subtle/20 bg-bg-secondary/30 mb-6" style={{ minHeight: 280 }}>
+          <ComposableMap projectionConfig={{ rotate: [-10, 0, 0], scale: 147 }} style={{ width: '100%', height: 'auto' }}>
+            <ZoomableGroup>
+              <Geographies geography={GEO_URL}>
+                {({ geographies }: any) =>
+                  geographies.map((geo: any) => {
+                    const geoName = geo.properties.name
+                    const count = geoLookup.get(geoName) || 0
+                    return (
+                      <Geography key={geo.rsmKey} geography={geo}
+                        onMouseEnter={(e: any) => { if (count > 0) setTooltip({ name: geoName, count, x: e.clientX, y: e.clientY }) }}
+                        onMouseLeave={() => setTooltip(null)}
+                        style={{
+                          default: { fill: getColor(count), stroke: '#1e293b', strokeWidth: 0.4, outline: 'none' },
+                          hover: { fill: count > 0 ? '#e8d5a0' : '#1a1f2e', stroke: '#c7a05a', strokeWidth: 0.6, outline: 'none', cursor: count > 0 ? 'pointer' : 'default' },
+                          pressed: { fill: '#c7a05a', outline: 'none' },
+                        }}
+                      />
+                    )
+                  })
+                }
+              </Geographies>
+            </ZoomableGroup>
+          </ComposableMap>
+          {tooltip && (
+            <div className="fixed z-[100] px-3 py-2 rounded-lg bg-bg-primary/95 border border-neon-blue/30 shadow-xl text-sm pointer-events-none backdrop-blur-sm flex items-center gap-2"
+              style={{ left: tooltip.x + 12, top: tooltip.y - 40 }}>
+              <FlagImg country={tooltip.name} size={20} />
+              <span className="text-text-white font-bold">{tooltip.name}</span>
+              <span className="text-neon-blue font-mono ml-1">{tooltip.count}</span>
+            </div>
+          )}
+          <div className="absolute bottom-2 right-2 flex items-center gap-1 text-[9px] text-text-secondary bg-bg-primary/80 px-2 py-1 rounded-md backdrop-blur-sm">
+            <span>Fewer</span>
+            <div className="flex gap-0.5">{['#2d2213', '#5a4520', '#8b6d2e', '#c7a05a'].map(c => <div key={c} className="w-3 h-2 rounded-sm" style={{ background: c }} />)}</div>
+            <span>More</span>
+          </div>
+        </div>
+      )}
+
+      <div className="space-y-1.5">
+        {displayed.map((c, idx) => {
+          const pct = (c.count / maxCount) * 100
+          return (
+            <div key={c.name} className="flex items-center gap-3 px-3 py-2 rounded-xl border border-transparent hover:border-border-subtle/20 hover:bg-bg-secondary/30 transition-all">
+              <span className="text-[10px] text-text-secondary font-mono w-5 text-right shrink-0">{idx + 1}.</span>
+              <span className="shrink-0 w-7 flex items-center justify-center"><FlagImg country={c.name} size={22} /></span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-0.5">
+                  <span className="text-sm text-text-white font-medium truncate">{c.name}</span>
+                  <span className="text-xs text-neon-blue font-mono font-bold shrink-0 ml-2">{c.count.toLocaleString()}</span>
+                </div>
+                <div className="h-1.5 rounded-full bg-bg-tertiary/80 overflow-hidden">
+                  <div className="h-full rounded-full transition-all duration-700 ease-out"
+                    style={{ width: `${pct}%`, background: idx === 0 ? 'linear-gradient(90deg,#c7a05a,#e8d5a0)' : idx < 3 ? 'linear-gradient(90deg,#c7a05a90,#c7a05a)' : 'linear-gradient(90deg,#c7a05a40,#c7a05a70)' }} />
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {countries.length > 20 && (
+        <div className="text-center mt-4">
+          <button onClick={() => setExpanded(!expanded)} className="text-xs text-neon-blue hover:text-neon-blue/80 transition-colors">
+            {expanded ? `Show top 20 ▲` : `Show all ${countries.length} countries ▼`}
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}

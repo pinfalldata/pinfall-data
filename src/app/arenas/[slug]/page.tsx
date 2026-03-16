@@ -8,6 +8,18 @@ import Link from 'next/link'
 function fmt(d: string | null) { if (!d) return '—'; return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) }
 function fmtDur(s: number) { const m = Math.floor(s / 60); const sec = s % 60; return `${m}:${sec.toString().padStart(2, '0')}` }
 
+// Get the arena name valid at a specific date
+function getArenaNameAtDate(arenaNames: any[], date: string | null, fallbackName: string): string {
+  if (!arenaNames || arenaNames.length === 0 || !date) return fallbackName
+  for (let i = arenaNames.length - 1; i >= 0; i--) {
+    const an = arenaNames[i]
+    const start = an.start_date || '0000-01-01'
+    const end = an.end_date || '9999-12-31'
+    if (date >= start && date <= end) return an.name
+  }
+  return fallbackName
+}
+
 const showTypeLabels: Record<string, string> = {
   ppv: 'PPV / PLE', weekly: 'TV Show', special: 'Special', tournament: 'Tournament', other: 'Other', house_show: 'House Show',
 }
@@ -29,6 +41,7 @@ export default function ArenaDetailPage() {
   const [total, setTotal] = useState(0)
   const [prevArena, setPrevArena] = useState<any>(null)
   const [nextArena, setNextArena] = useState<any>(null)
+  const [arenaNames, setArenaNames] = useState<any[]>([])
   const [tab, setTab] = useState<TabKey>('shows')
 
   // Superstars
@@ -48,6 +61,7 @@ export default function ArenaDetailPage() {
       const r = await fetch(`/api/arena-detail?slug=${slug}&page=${p}&limit=50`)
       const d = await r.json()
       if (d.arena) setArena(d.arena)
+      if (d.arenaNames) setArenaNames(d.arenaNames)
       setShows(d.shows || [])
       setTotal(d.total || 0)
       setTotalPages(d.totalPages || 1)
@@ -121,6 +135,17 @@ export default function ArenaDetailPage() {
           <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-text-white text-center tracking-tight mb-2">
             {arena?.name || <span className="bg-bg-secondary/50 rounded w-60 h-10 inline-block animate-pulse" />}
           </h1>
+          {/* Arena name history */}
+          {arenaNames.length > 1 && (
+            <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 mb-1">
+              <span className="text-[10px] text-text-secondary/60">Also known as:</span>
+              {arenaNames.filter(an => an.name !== arena?.name).map((an, i) => (
+                <span key={an.id || i} className="text-[10px] text-neon-blue/60 italic">
+                  {an.name}{an.start_date ? ` (${an.start_date.substring(0, 4)}–${an.end_date ? an.end_date.substring(0, 4) : 'now'})` : ''}
+                </span>
+              ))}
+            </div>
+          )}
           {arena && (
             <p className="text-text-secondary text-sm sm:text-base text-center">
               {[arena.city, arena.state_province, arena.country].filter(Boolean).join(', ')}
@@ -143,6 +168,23 @@ export default function ArenaDetailPage() {
               <div className="text-center"><span className="block text-[10px] text-text-secondary uppercase tracking-wider">Total Events</span><span className="text-neon-blue font-bold text-lg">{total}</span></div>
               {arena.city && <div className="text-center"><span className="block text-[10px] text-text-secondary uppercase tracking-wider">Location</span><span className="text-text-white font-semibold">{arena.city}{arena.country ? `, ${arena.country}` : ''}</span></div>}
             </div>
+
+            {/* Arena name history timeline */}
+            {arenaNames.length > 1 && (
+              <div className="mt-4 pt-3 border-t border-border-subtle/15">
+                <p className="text-[10px] text-text-secondary uppercase tracking-wider text-center mb-2">Name History</p>
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  {arenaNames.map((an, i) => (
+                    <div key={an.id || i} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs ${an.is_current ? 'border-neon-blue/30 bg-neon-blue/10 text-neon-blue font-bold' : 'border-border-subtle/20 bg-bg-tertiary/30 text-text-secondary'}`}>
+                      <span>{an.name}</span>
+                      <span className="text-[9px] opacity-60">
+                        {an.start_date ? an.start_date.substring(0, 4) : '?'}–{an.end_date ? an.end_date.substring(0, 4) : 'now'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </section>
       )}
