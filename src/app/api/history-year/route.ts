@@ -15,8 +15,7 @@ export async function GET(request: NextRequest) {
     const { data: historyYear } = await supabase
       .from('history_years')
       .select(`
-        id, year, title, summary, cover_image_url, color_accent,
-        era:era_id ( id, name, slug )
+        id, year, title, summary, cover_image_url, color_accent
       `)
       .eq('year', parseInt(year))
       .single()
