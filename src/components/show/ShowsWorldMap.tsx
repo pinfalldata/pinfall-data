@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
+import { CountryFlag } from '@/components/ui/CountryFlag'
 
 const ComposableMap = dynamic(() => import('react-simple-maps').then(m => m.ComposableMap), { ssr: false })
 const Geographies = dynamic(() => import('react-simple-maps').then(m => m.Geographies), { ssr: false })
@@ -11,51 +12,6 @@ const ZoomableGroup = dynamic(() => import('react-simple-maps').then(m => m.Zoom
 const GEO_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'
 
 interface CountryData { name: string; count: number }
-
-const FC: Record<string, string> = {
-  'Afghanistan':'af','South Africa':'za','England':'gb-eng','Albania':'al','Algeria':'dz','Germany':'de',
-  'Andorra':'ad','Angola':'ao','Saudi Arabia':'sa','Argentina':'ar','Armenia':'am','Australia':'au',
-  'Austria':'at','Azerbaijan':'az','Bahamas':'bs','Bahrain':'bh','Bangladesh':'bd','Barbados':'bb',
-  'Belgium':'be','Belize':'bz','Belarus':'by','Bolivia':'bo','Bosnia and Herzegovina':'ba','Botswana':'bw',
-  'Brazil':'br','Bulgaria':'bg','Cambodia':'kh','Cameroon':'cm','Canada':'ca','Chile':'cl','China':'cn',
-  'Colombia':'co','South Korea':'kr','Costa Rica':'cr','Croatia':'hr','Cuba':'cu','Denmark':'dk',
-  'Egypt':'eg','United Arab Emirates':'ae','Ecuador':'ec','Spain':'es','Estonia':'ee',
-  'United States':'us','USA':'us','Ethiopia':'et','Fiji':'fj','Finland':'fi','France':'fr',
-  'Georgia':'ge','Ghana':'gh','Greece':'gr','Guatemala':'gt','Guinea':'gn','Guyana':'gy',
-  'Haiti':'ht','Honduras':'hn','Hungary':'hu','India':'in','Indonesia':'id','Iraq':'iq','Iran':'ir',
-  'Ireland':'ie','Iceland':'is','Israel':'il','Italy':'it','Jamaica':'jm','Japan':'jp','Jordan':'jo',
-  'Kazakhstan':'kz','Kenya':'ke','Kuwait':'kw','Kosovo':'xk','Latvia':'lv','Lebanon':'lb',
-  'Lithuania':'lt','Luxembourg':'lu','Malaysia':'my','Mali':'ml','Malta':'mt','Morocco':'ma',
-  'Mexico':'mx','Moldova':'md','Mongolia':'mn','Montenegro':'me','Mozambique':'mz','Namibia':'na',
-  'Nepal':'np','Nicaragua':'ni','Nigeria':'ng','Norway':'no','New Zealand':'nz','Pakistan':'pk',
-  'Panama':'pa','Paraguay':'py','Netherlands':'nl','Peru':'pe','Philippines':'ph','Poland':'pl',
-  'Portugal':'pt','Puerto Rico':'pr','Qatar':'qa','Dominican Republic':'do','Czech Republic':'cz',
-  'Romania':'ro','United Kingdom':'gb','Russia':'ru','Rwanda':'rw','Samoa':'ws','Senegal':'sn',
-  'Serbia':'rs','Singapore':'sg','Slovakia':'sk','Slovenia':'si','Somalia':'so','Sudan':'sd',
-  'Sri Lanka':'lk','Sweden':'se','Switzerland':'ch','Syria':'sy','Thailand':'th','Tonga':'to',
-  'Trinidad and Tobago':'tt','Tunisia':'tn','Turkey':'tr','Ukraine':'ua','Uruguay':'uy',
-  'Venezuela':'ve','Vietnam':'vn','Zimbabwe':'zw','Scotland':'gb-sct','Wales':'gb-wls',
-  'Northern Ireland':'gb-nir','Taiwan':'tw','Palestine':'ps','Eswatini':'sz',
-  'Bermuda':'bm','Bahrain':'bh','Brunei':'bn','Cyprus':'cy','Liechtenstein':'li','Monaco':'mc',
-  'North Korea':'kp','Oman':'om','San Marino':'sm','Vatican City':'va','Laos':'la','Myanmar':'mm',
-}
-
-function FlagImg({ country, size = 20 }: { country: string; size?: number }) {
-  const code = FC[country]
-  if (!code) return <span className="text-base leading-none">🌍</span>
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={`https://flagcdn.com/w${size * 2}/${code}.png`}
-      alt={country}
-      width={size}
-      height={Math.round(size * 0.67)}
-      className="rounded-sm inline-block"
-      style={{ width: size, height: Math.round(size * 0.67) }}
-      loading="lazy"
-    />
-  )
-}
 
 const NAME_TO_GEO: Record<string, string> = {
   'United States': 'United States of America', 'United Kingdom': 'United Kingdom',
@@ -146,7 +102,7 @@ export default function ShowsWorldMap() {
           {tooltip && (
             <div className="fixed z-[100] px-3 py-2 rounded-lg bg-bg-primary/95 border border-neon-blue/30 shadow-xl text-sm pointer-events-none backdrop-blur-sm flex items-center gap-2"
               style={{ left: tooltip.x + 12, top: tooltip.y - 40 }}>
-              <FlagImg country={tooltip.name} size={20} />
+              <CountryFlag country={tooltip.name} size="md" />
               <span className="text-text-white font-bold">{tooltip.name}</span>
               <span className="text-neon-blue font-mono ml-1">{tooltip.count}</span>
             </div>
@@ -165,7 +121,7 @@ export default function ShowsWorldMap() {
           return (
             <div key={c.name} className="flex items-center gap-3 px-3 py-2 rounded-xl border border-transparent hover:border-border-subtle/20 hover:bg-bg-secondary/30 transition-all">
               <span className="text-[10px] text-text-secondary font-mono w-5 text-right shrink-0">{idx + 1}.</span>
-              <span className="shrink-0 w-7 flex items-center justify-center"><FlagImg country={c.name} size={22} /></span>
+              <span className="shrink-0 w-7 flex items-center justify-center"><CountryFlag country={c.name} size="md" /></span>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-0.5">
                   <span className="text-sm text-text-white font-medium truncate">{c.name}</span>

@@ -318,7 +318,15 @@ export function MatchHero({ match }: { match: any }) {
       {/* ===== Share Buttons ===== */}
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pb-6">
         <ShareButtons
-          title={`${participants.map((p: any) => p.superstar?.name).filter(Boolean).join(' vs ')} — ${match.match_type?.name || 'Match'} at ${show?.name || ''} | Pinfall Data`}
+          title={[
+            participants.map((p: any) => p.superstar?.name).filter(Boolean).join(' vs '),
+            ' — ',
+            match.match_type?.name || 'Match',
+            match.championship ? ` for the ${match.championship.name}` : '',
+            ` at ${show?.name || ''}`,
+            show?.date ? ` (${new Date(show.date + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })})` : '',
+            ' | Pinfall Data',
+          ].join('')}
         />
       </div>
     </div>

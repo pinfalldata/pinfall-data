@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
+import { ShareButtons } from '@/components/ui/ShareButtons'
 
 interface Series {
   id: number; name: string; slug: string; short_name: string | null
@@ -552,6 +553,13 @@ export default function ShowSeriesDetailPage() {
             </div>
           )}
         </section>
+      )}
+
+      {/* Share */}
+      {series && (
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 pb-4">
+          <ShareButtons title={`${series.name} — Complete Episode Guide | Pinfall Data`} />
+        </div>
       )}
 
       {/* ===== SEO ===== */}

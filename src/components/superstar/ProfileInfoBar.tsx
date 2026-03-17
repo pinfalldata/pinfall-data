@@ -2,6 +2,7 @@ import {
   formatDate, formatHeight, formatWeight, calculateAge,
   calculateCareerYears, getGenderLabel, getRoleLabels,
 } from '@/lib/utils'
+import { ShareButtons } from '@/components/ui/ShareButtons'
 
 export function ProfileInfoBar({ superstar }: { superstar: any }) {
   const age = calculateAge(superstar.birth_date, superstar.death_date)
@@ -103,6 +104,11 @@ export function ProfileInfoBar({ superstar }: { superstar: any }) {
             </div>
           </>
         )}
+      </div>
+
+      {/* ===== SHARE BUTTONS ===== */}
+      <div className="px-4 sm:px-6 pb-4">
+        <ShareButtons title={`${superstar.name} — WWE Superstar Profile | Pinfall Data`} />
       </div>
 
       {/* ===== ANIMATED NEON LINE — BOTTOM (blue) ===== */}

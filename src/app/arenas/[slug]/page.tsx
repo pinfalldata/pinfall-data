@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
+import { ShareButtons } from '@/components/ui/ShareButtons'
 
 function fmt(d: string | null) { if (!d) return '—'; return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) }
 function fmtDur(s: number) { const m = Math.floor(s / 60); const sec = s % 60; return `${m}:${sec.toString().padStart(2, '0')}` }
@@ -390,6 +391,13 @@ export default function ArenaDetailPage() {
             </div>
           )}
         </section>
+      )}
+
+      {/* Share */}
+      {arena && (
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 pb-4">
+          <ShareButtons title={`${arena.name} — WWE Arena History | Pinfall Data`} />
+        </div>
       )}
 
       {/* ===== SEO ===== */}

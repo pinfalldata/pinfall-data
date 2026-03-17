@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { StarRating } from '@/components/ui/StarRating'
+import { ShareButtons } from '@/components/ui/ShareButtons'
 
 function fmt(d: string | null) { if (!d) return '—'; return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) }
 function daySince(d: string | null) { if (!d) return 0; return Math.floor((Date.now() - new Date(d + 'T00:00:00').getTime()) / 86400000) }
@@ -195,6 +196,13 @@ export default function ChampionshipDetailPage() {
           </div>
         </div>}
       </section>}
+
+      {/* Share */}
+      {champ && (
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 pb-4">
+          <ShareButtons title={`${champ.name} — Complete Championship History | Pinfall Data`} />
+        </div>
+      )}
 
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8"><div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/10 p-6 sm:p-8"><h2 className="font-display text-xl font-bold text-text-white mb-3"><span className="text-neon-blue">{champ?.name || 'Championship'}</span> — Complete Title History</h2><p className="text-text-secondary text-sm leading-relaxed">Complete history including every reign, title change, defense, and statistics on Pinfall Data.</p></div></section>
     </div>

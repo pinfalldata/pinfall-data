@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 import { getShowColorStyle, formatDate } from '@/lib/utils'
+import { ShareButtons } from '@/components/ui/ShareButtons'
 
 export function ShowHero({ show }: { show: any }) {
   const [logoError, setLogoError] = useState(false)
@@ -157,6 +158,11 @@ export function ShowHero({ show }: { show: any }) {
             </svg>
           </Link>
         )}
+      </div>
+
+      {/* Share */}
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 pb-4">
+        <ShareButtons title={`${show.name} — ${formatDate(show.date)} | Pinfall Data`} />
       </div>
 
       {/* Animated neon separator */}

@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 interface Spark {
-  id: number; x: number; y: number; angle: number; speed: number
+  x: number; y: number; angle: number; speed: number
   size: number; color: string; life: number; maxLife: number; delay: number
 }
 
@@ -11,7 +11,7 @@ const GOLD_COLORS = ['#c7a05a', '#e8d5a0', '#a07830', '#f5e6b8', '#ffffff', '#c0
 
 export function TitleChangeFireworks() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [show, setShow] = useState(true)
+  const animRef = useRef<number>(0)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -28,55 +28,62 @@ export function TitleChangeFireworks() {
     resize()
     window.addEventListener('resize', resize)
 
-    const sparks: Spark[] = []
-    let idCounter = 0
+    let sparks: Spark[] = []
     let frame = 0
+    let lastBurst = 0
+    const BURST_INTERVAL = 200 // frames between bursts (~3.3s at 60fps)
 
-    // Create burst of sparks
     const burst = (cx: number, cy: number, count: number, delay: number) => {
       for (let i = 0; i < count; i++) {
         const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5
-        const speed = 1 + Math.random() * 3
-        const maxLife = 40 + Math.random() * 40
         sparks.push({
-          id: idCounter++,
           x: cx, y: cy,
-          angle, speed,
+          angle,
+          speed: 1 + Math.random() * 3,
           size: 1.5 + Math.random() * 2.5,
           color: GOLD_COLORS[Math.floor(Math.random() * GOLD_COLORS.length)],
-          life: 0, maxLife,
+          life: 0,
+          maxLife: 40 + Math.random() * 40,
           delay,
         })
       }
     }
 
-    // Initial bursts at different positions
-    const w = canvas.width
-    const h = canvas.height
-    burst(w * 0.3, h * 0.3, 20, 0)
-    burst(w * 0.7, h * 0.25, 20, 8)
-    burst(w * 0.5, h * 0.15, 25, 16)
-    burst(w * 0.2, h * 0.5, 15, 24)
-    burst(w * 0.8, h * 0.45, 15, 32)
-    burst(w * 0.5, h * 0.6, 18, 40)
+    const createBursts = () => {
+      const w = canvas.width
+      const h = canvas.height
+      burst(w * (0.2 + Math.random() * 0.2), h * (0.2 + Math.random() * 0.3), 18, 0)
+      burst(w * (0.6 + Math.random() * 0.2), h * (0.15 + Math.random() * 0.3), 18, 6)
+      burst(w * (0.35 + Math.random() * 0.3), h * (0.1 + Math.random() * 0.2), 22, 12)
+      burst(w * (0.15 + Math.random() * 0.15), h * (0.4 + Math.random() * 0.2), 12, 18)
+      burst(w * (0.7 + Math.random() * 0.15), h * (0.35 + Math.random() * 0.2), 12, 24)
+    }
+
+    createBursts()
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       frame++
 
-      let alive = false
+      // New burst cycle
+      if (frame - lastBurst > BURST_INTERVAL) {
+        sparks = sparks.filter(s => s.life <= s.maxLife)
+        createBursts()
+        lastBurst = frame
+      }
+
       for (const s of sparks) {
-        if (frame < s.delay) { alive = true; continue }
+        const localFrame = frame - lastBurst
+        if (localFrame < s.delay) continue
         s.life++
         if (s.life > s.maxLife) continue
-        alive = true
 
         const progress = s.life / s.maxLife
         const alpha = 1 - progress * progress
         const drift = s.speed * (1 - progress * 0.5)
 
         s.x += Math.cos(s.angle) * drift
-        s.y += Math.sin(s.angle) * drift + 0.3 // gravity
+        s.y += Math.sin(s.angle) * drift + 0.3
 
         ctx.beginPath()
         ctx.arc(s.x, s.y, s.size * (1 - progress * 0.5), 0, Math.PI * 2)
@@ -84,32 +91,24 @@ export function TitleChangeFireworks() {
         ctx.globalAlpha = alpha * 0.8
         ctx.fill()
 
-        // Glow
         ctx.beginPath()
         ctx.arc(s.x, s.y, s.size * 2, 0, Math.PI * 2)
         ctx.fillStyle = s.color
-        ctx.globalAlpha = alpha * 0.15
+        ctx.globalAlpha = alpha * 0.12
         ctx.fill()
       }
 
       ctx.globalAlpha = 1
-
-      if (alive) {
-        requestAnimationFrame(animate)
-      } else {
-        setShow(false)
-      }
+      animRef.current = requestAnimationFrame(animate)
     }
 
-    const timer = setTimeout(() => animate(), 300)
+    animRef.current = requestAnimationFrame(animate)
 
     return () => {
       window.removeEventListener('resize', resize)
-      clearTimeout(timer)
+      cancelAnimationFrame(animRef.current)
     }
   }, [])
-
-  if (!show) return null
 
   return (
     <canvas
