@@ -161,7 +161,7 @@ export function ShowHero({ show }: { show: any }) {
       </div>
 
       {/* Share */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 pb-4">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-3">
         <ShareButtons title={`${show.name} — ${formatDate(show.date)} | Pinfall Data`} />
       </div>
 

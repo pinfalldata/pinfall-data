@@ -106,8 +106,8 @@ export function ProfileInfoBar({ superstar }: { superstar: any }) {
         )}
       </div>
 
-      {/* ===== SHARE BUTTONS ===== */}
-      <div className="px-4 sm:px-6 pb-4">
+      {/* ===== SHARE ===== */}
+      <div className="py-3">
         <ShareButtons title={`${superstar.name} — WWE Superstar Profile | Pinfall Data`} />
       </div>
 
