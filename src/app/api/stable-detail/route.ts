@@ -11,8 +11,13 @@ export async function GET(request: NextRequest) {
 
   if (!slug) return NextResponse.json({ error: 'slug required' }, { status: 400 })
 
-  const { data: stable } = await supabase.from('stables').select('*').eq('slug', slug).single()
-  if (!stable) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  const { data: stable, error: stableErr } = await supabase
+    .from('stables')
+    .select('*')
+    .eq('slug', slug)
+    .single()
+
+  if (stableErr || !stable) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
   const { data: members } = await supabase
     .from('stable_members')
@@ -22,48 +27,56 @@ export async function GET(request: NextRequest) {
 
   const memberIds = (members || []).map(m => m.superstar?.id).filter(Boolean)
 
-  let sharedMatchIds: number[] = []
+  // ==================================================================
+  // MATCHES — Find matches where 2+ stable members are on the same team
+  // ==================================================================
+  let qualifiedMatchIds: number[] = []
   let matchWinMap = new Map<number, boolean>()
 
   if (memberIds.length >= 2) {
-    // Get all participations for stable members
-    const { data: allParts } = await supabase
-      .from('match_participants')
-      .select('match_id, team_number, superstar_id, is_winner')
-      .in('superstar_id', memberIds)
+    // Query participations for EACH member separately to avoid huge IN clauses
+    const allParts: { match_id: number; team_number: number; superstar_id: number; is_winner: boolean }[] = []
 
-    if (allParts) {
-      // Group by match_id + team_number
-      const matchTeam = new Map<string, any[]>()
-      for (const p of allParts) {
-        const key = `${p.match_id}-${p.team_number}`
-        if (!matchTeam.has(key)) matchTeam.set(key, [])
-        matchTeam.get(key)!.push(p)
+    // Batch members in smaller groups
+    for (const mid of memberIds) {
+      const { data } = await supabase
+        .from('match_participants')
+        .select('match_id, team_number, superstar_id, is_winner')
+        .eq('superstar_id', mid)
+
+      if (data) allParts.push(...data.map(d => ({ ...d, is_winner: !!d.is_winner })))
+    }
+
+    // Group by match_id + team_number
+    const matchTeamGroups = new Map<string, { matchId: number; parts: typeof allParts }>()
+    for (const p of allParts) {
+      const key = `${p.match_id}_${p.team_number}`
+      if (!matchTeamGroups.has(key)) {
+        matchTeamGroups.set(key, { matchId: p.match_id, parts: [] })
       }
+      matchTeamGroups.get(key)!.parts.push(p)
+    }
 
-      // Need 2+ stable members on same team
-      for (const [, parts] of matchTeam) {
-        if (parts.length >= 2) {
-          const mid = parts[0].match_id
-          if (!sharedMatchIds.includes(mid)) {
-            sharedMatchIds.push(mid)
-            matchWinMap.set(mid, !!parts[0].is_winner)
-          }
-        }
+    // Find matches where 2+ stable members on same team
+    const seen = new Set<number>()
+    for (const [, group] of matchTeamGroups) {
+      if (group.parts.length >= 2 && !seen.has(group.matchId)) {
+        seen.add(group.matchId)
+        qualifiedMatchIds.push(group.matchId)
+        matchWinMap.set(group.matchId, group.parts[0].is_winner)
       }
     }
   }
 
   // Filter by stable active dates
-  let filteredMatchIds = sharedMatchIds
-  if ((stable.formed_date || stable.split_date) && sharedMatchIds.length > 0) {
+  if ((stable.formed_date || stable.split_date) && qualifiedMatchIds.length > 0) {
     const { data: matchDates } = await supabase
       .from('matches')
       .select('id, date')
-      .in('id', sharedMatchIds)
+      .in('id', qualifiedMatchIds)
 
     if (matchDates) {
-      filteredMatchIds = matchDates
+      qualifiedMatchIds = matchDates
         .filter(m => {
           if (!m.date) return true
           if (stable.formed_date && m.date < stable.formed_date) return false
@@ -74,15 +87,15 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  const matchCount = filteredMatchIds.length
+  const matchCount = qualifiedMatchIds.length
 
   // Sort and paginate
   let matches: any[] = []
-  if (filteredMatchIds.length > 0) {
+  if (qualifiedMatchIds.length > 0) {
     const { data: matchDates } = await supabase
       .from('matches')
       .select('id, date')
-      .in('id', filteredMatchIds)
+      .in('id', qualifiedMatchIds)
 
     if (matchDates) {
       matchDates.sort((a, b) => (b.date || '').localeCompare(a.date || ''))
@@ -103,25 +116,38 @@ export async function GET(request: NextRequest) {
           `)
           .in('id', pageIds)
 
-        const matchMap = new Map((matchData || []).map(m => [m.id, m]))
-        matches = pageIds.map(id => matchMap.get(id)).filter(Boolean)
+        const mm = new Map((matchData || []).map(m => [m.id, m]))
+        matches = pageIds.map(id => mm.get(id)).filter(Boolean)
       }
     }
   }
 
   // Stats
   let wins = 0, losses = 0
-  for (const id of filteredMatchIds) {
+  for (const id of qualifiedMatchIds) {
     if (matchWinMap.get(id)) wins++; else losses++
   }
-  const stats = { totalMatches: matchCount, wins, losses, draws: matchCount - wins - losses, winRate: matchCount > 0 ? Math.round((wins / matchCount) * 100) : 0 }
+  const stats = {
+    totalMatches: matchCount,
+    wins,
+    losses,
+    draws: matchCount - wins - losses,
+    winRate: matchCount > 0 ? Math.round((wins / matchCount) * 100) : 0,
+  }
 
+  // Prev/Next
   const { data: prev } = await supabase.from('stables').select('slug, name').lt('name', stable.name).order('name', { ascending: false }).limit(1).single()
   const { data: next } = await supabase.from('stables').select('slug, name').gt('name', stable.name).order('name', { ascending: true }).limit(1).single()
 
   return NextResponse.json({
-    stable, members: members || [], matches, matchCount,
-    matchPage: page, matchTotalPages: Math.ceil(matchCount / limit),
-    stats, prev: prev || null, next: next || null,
+    stable,
+    members: members || [],
+    matches,
+    matchCount,
+    matchPage: page,
+    matchTotalPages: Math.ceil(matchCount / limit),
+    stats,
+    prev: prev || null,
+    next: next || null,
   })
 }

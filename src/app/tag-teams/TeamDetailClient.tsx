@@ -156,9 +156,9 @@ export default function TeamDetailClient({ type }: Props) {
                             <span className="text-xs text-neon-blue font-bold">{r.championship?.name}</span>
                           )}
                           <p className="text-[10px] text-text-secondary">
-                            {r.reign_start ? fmt(r.reign_start) : '?'} — {r.reign_end ? fmt(r.reign_end) : 'Present'}
+                            {r.won_date ? fmt(r.won_date) : '?'} — {r.lost_date ? fmt(r.lost_date) : 'Present'}
                             {r.days_held ? ` · ${r.days_held} days` : ''}
-                            {r.defense_count ? ` · ${r.defense_count} defense${r.defense_count > 1 ? 's' : ''}` : ''}
+                            {r.reign_number ? ` · Reign #${r.reign_number}` : ''}
                           </p>
                         </div>
                       </div>
