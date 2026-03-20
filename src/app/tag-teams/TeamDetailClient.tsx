@@ -5,12 +5,33 @@ import { useParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ShareButtons } from '@/components/ui/ShareButtons'
+import { StarRating } from '@/components/ui/StarRating'
 
 type TabKey = 'matches' | 'stats'
 interface Props { type: 'tag_team' | 'stable' }
 
 function fmt(d: string | null) { if (!d) return '—'; return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) }
-function fmtShort(d: string | null) { if (!d) return '—'; return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) }
+function fmtShort(d: string | null) { if (!d) return '—'; const dt = new Date(d + 'T00:00:00'); return `${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][dt.getMonth()]} ${dt.getDate()}, ${dt.getFullYear()}` }
+
+// Group participants by team_number
+function buildTeams(participants: any[]): { team_number: number; is_winner: boolean; members: any[] }[] {
+  const map = new Map<number, { is_winner: boolean; members: any[] }>()
+  for (const p of participants) {
+    const tn = p.team_number || 0
+    if (!map.has(tn)) map.set(tn, { is_winner: false, members: [] })
+    const t = map.get(tn)!
+    if (p.is_winner) t.is_winner = true
+    t.members.push({
+      id: p.superstar?.id,
+      name: p.superstar?.name || '?',
+      slug: p.superstar?.slug,
+      photo_url: p.superstar?.photo_url,
+    })
+  }
+  return Array.from(map.entries())
+    .sort((a, b) => a[0] - b[0])
+    .map(([tn, data]) => ({ team_number: tn, ...data }))
+}
 
 export default function TeamDetailClient({ type }: Props) {
   const params = useParams()
@@ -67,13 +88,13 @@ export default function TeamDetailClient({ type }: Props) {
   if (!entity) return <div className="min-h-screen bg-bg-primary flex items-center justify-center"><p className="text-text-secondary text-lg">Not found</p></div>
 
   const memberSuperstars = members.map(m => m.superstar).filter(Boolean)
+  const memberIds = memberSuperstars.map((s: any) => s.id)
 
   return (
     <div className="min-h-screen bg-bg-primary">
 
       {/* ===== HERO ===== */}
       <section className="relative overflow-hidden">
-        {/* Background glow */}
         <div className="absolute inset-0 bg-bg-primary" />
         {entity.photo_url && (
           <div className="absolute inset-0 opacity-20">
@@ -82,7 +103,6 @@ export default function TeamDetailClient({ type }: Props) {
         )}
 
         <div className="relative max-w-[1440px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
-          {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-xs text-text-secondary mb-6">
             <Link href="/tag-teams" className="hover:text-neon-blue transition-colors">Tag Teams & Stables</Link>
             <span>/</span>
@@ -92,11 +112,9 @@ export default function TeamDetailClient({ type }: Props) {
           </nav>
 
           <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
-            {/* Photo */}
             {entity.photo_url && (
               <div className="relative w-full lg:w-80 xl:w-96 h-56 sm:h-64 lg:h-auto rounded-2xl overflow-hidden border border-border-subtle/30 shrink-0">
                 <Image src={entity.photo_url} alt={entity.name} fill className="object-cover" sizes="(max-width:1024px) 100vw, 400px" unoptimized />
-                <div className="absolute inset-0 shadow-[inset_0_0_60px_rgba(0,0,0,0.2)]" />
               </div>
             )}
 
@@ -112,7 +130,6 @@ export default function TeamDetailClient({ type }: Props) {
 
               <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-text-white mb-3">{entity.name}</h1>
 
-              {/* Dates */}
               <div className="flex flex-wrap gap-4 text-sm mb-4">
                 {entity.formed_date && <div><span className="text-[10px] text-text-secondary uppercase tracking-wider block">Formed</span><span className="text-text-white font-medium">{fmt(entity.formed_date)}</span></div>}
                 {entity.split_date && <div><span className="text-[10px] text-text-secondary uppercase tracking-wider block">Split</span><span className="text-text-white font-medium">{fmt(entity.split_date)}</span></div>}
@@ -137,7 +154,7 @@ export default function TeamDetailClient({ type }: Props) {
                 </div>
               </div>
 
-              {/* Championships (tag teams only) */}
+              {/* Championships */}
               {championships.length > 0 && (
                 <div className="mb-4">
                   <p className="text-[10px] text-text-secondary uppercase tracking-wider mb-2">Championship Reigns</p>
@@ -185,22 +202,37 @@ export default function TeamDetailClient({ type }: Props) {
         </div>
       </section>
 
-      {/* ===== TAB: MATCHES ===== */}
+      {/* ===== TAB: MATCHES — Match Search style ===== */}
       {tab === 'matches' && (
         <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6">
           {matches.length === 0 ? (
             <div className="text-center py-12"><p className="text-text-secondary">No matches found for this {label.toLowerCase()}.</p></div>
           ) : (
             <>
-              <div className="space-y-2">
-                {matches.map(m => <MatchRow key={m.id} match={m} memberIds={memberSuperstars.map((s: any) => s.id)} />)}
+              {/* Desktop header */}
+              <div className="hidden lg:grid lg:grid-cols-[90px_minmax(120px,1.2fr)_130px_minmax(250px,3fr)_100px_55px] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider border-b border-border-subtle/20 mb-1">
+                <span>Date</span><span>Show</span><span>Type</span><span>Participants</span><span>Title</span><span className="text-center">Rating</span>
               </div>
+
+              {matches.map(m => (
+                <MRow key={m.id} match={m} memberIds={memberIds} />
+              ))}
+
               {matchTotalPages > 1 && (
-                <div className="flex items-center justify-between mt-6 pt-4 border-t border-border-subtle/20">
-                  <p className="text-xs text-text-secondary">Page {matchPage} of {matchTotalPages}</p>
-                  <div className="flex gap-1">
-                    <button onClick={() => fetchData(matchPage - 1)} disabled={matchPage <= 1} className="px-3 py-1.5 rounded-lg text-xs border border-border-subtle/30 text-text-secondary disabled:opacity-30">Prev</button>
-                    <button onClick={() => fetchData(matchPage + 1)} disabled={matchPage >= matchTotalPages} className="px-3 py-1.5 rounded-lg text-xs border border-border-subtle/30 text-text-secondary disabled:opacity-30">Next</button>
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-8 pt-6 border-t border-border-subtle/20">
+                  <p className="text-xs text-text-secondary">Page {matchPage} of {matchTotalPages} — {matchCount} matches</p>
+                  <div className="flex items-center gap-1">
+                    <button onClick={() => fetchData(matchPage - 1)} disabled={matchPage <= 1} className="w-8 h-8 rounded-lg border border-border-subtle/30 flex items-center justify-center text-text-secondary hover:text-text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                    </button>
+                    {getVisiblePages(matchPage, matchTotalPages).map((p, i) =>
+                      p === 'e' ? <span key={`e${i}`} className="w-8 text-center text-text-secondary text-xs">…</span> :
+                      <button key={p} onClick={() => fetchData(p as number)}
+                        className={`w-8 h-8 rounded-lg text-xs font-medium transition-all ${p === matchPage ? 'bg-neon-blue/20 border border-neon-blue/40 text-neon-blue' : 'border border-transparent text-text-secondary hover:text-text-white hover:bg-bg-secondary/50'}`}>{p}</button>
+                    )}
+                    <button onClick={() => fetchData(matchPage + 1)} disabled={matchPage >= matchTotalPages} className="w-8 h-8 rounded-lg border border-border-subtle/30 flex items-center justify-center text-text-secondary hover:text-text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                    </button>
                   </div>
                 </div>
               )}
@@ -231,9 +263,9 @@ export default function TeamDetailClient({ type }: Props) {
             <div className="mt-6 rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-5">
               <p className="text-[10px] text-text-secondary uppercase tracking-wider mb-3">Win/Loss Distribution</p>
               <div className="h-4 rounded-full overflow-hidden bg-bg-tertiary flex">
-                {stats.wins > 0 && <div className="h-full bg-emerald-500 transition-all" style={{ width: `${(stats.wins / stats.totalMatches) * 100}%` }} />}
-                {stats.draws > 0 && <div className="h-full bg-neon-blue transition-all" style={{ width: `${(stats.draws / stats.totalMatches) * 100}%` }} />}
-                {stats.losses > 0 && <div className="h-full bg-red-500 transition-all" style={{ width: `${(stats.losses / stats.totalMatches) * 100}%` }} />}
+                {stats.wins > 0 && <div className="h-full bg-emerald-500" style={{ width: `${(stats.wins / stats.totalMatches) * 100}%` }} />}
+                {stats.draws > 0 && <div className="h-full bg-neon-blue" style={{ width: `${(stats.draws / stats.totalMatches) * 100}%` }} />}
+                {stats.losses > 0 && <div className="h-full bg-red-500" style={{ width: `${(stats.losses / stats.totalMatches) * 100}%` }} />}
               </div>
               <div className="flex items-center gap-4 mt-2 text-[10px] text-text-secondary">
                 <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500" /> Wins ({stats.wins})</span>
@@ -267,61 +299,88 @@ export default function TeamDetailClient({ type }: Props) {
   )
 }
 
-/* ===== Match Row — like championship history expanded ===== */
-function MatchRow({ match, memberIds }: { match: any; memberIds: number[] }) {
+/* ============================================================
+   MRow — EXACT match search style
+   ============================================================ */
+function MRow({ match, memberIds }: { match: any; memberIds: number[] }) {
   const show = match.show
-  const participants = match.participants || []
-  const teams = new Map<number, any[]>()
-  for (const p of participants) {
-    const tn = p.team_number || 0
-    if (!teams.has(tn)) teams.set(tn, [])
-    teams.get(tn)!.push(p)
-  }
-  const teamEntries = Array.from(teams.entries()).sort((a, b) => a[0] - b[0])
-  const isWin = participants.find((p: any) => memberIds.includes(p.superstar?.id) && p.is_winner)
+  const teams = buildTeams(match.participants || [])
+  const showSlug = show?.slug
+  const matchSlug = match.slug
+  const href = showSlug && matchSlug ? `/shows/${showSlug}/matches/${matchSlug}` : '#'
 
   return (
-    <div className={`flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 px-4 py-3 rounded-xl border transition-all ${isWin ? 'border-emerald-500/20 bg-emerald-500/5' : 'border-border-subtle/15 bg-bg-secondary/10 hover:bg-bg-secondary/20'}`}>
-      {/* Date */}
-      <div className="shrink-0 w-20">
-        <span className="text-[10px] text-text-secondary font-mono">{match.date ? fmt(match.date) : show?.date ? fmt(show.date) : '—'}</span>
-      </div>
-
-      {/* Result badge */}
-      <div className="shrink-0">
-        <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold uppercase ${isWin ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/15 text-red-400'}`}>
-          {isWin ? 'W' : 'L'}
-        </span>
-      </div>
-
-      {/* Teams */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1 flex-wrap">
-          {teamEntries.map(([tn, parts], ti) => (
-            <span key={tn} className="flex items-center gap-1 flex-wrap">
-              {ti > 0 && <span className="text-text-secondary text-xs mx-1">vs</span>}
-              {parts.map((p: any, pi: number) => (
-                <span key={p.id} className="flex items-center gap-0.5">
-                  {pi > 0 && <span className="text-text-secondary text-[10px]">&amp;</span>}
-                  {p.superstar?.photo_url && <div className="w-5 h-5 rounded-full overflow-hidden shrink-0"><Image src={p.superstar.photo_url} alt="" width={20} height={20} className="w-full h-full object-cover" /></div>}
-                  <Link href={`/superstars/${p.superstar?.slug}`} className={`text-xs hover:underline ${memberIds.includes(p.superstar?.id) ? 'text-neon-blue font-bold' : 'text-text-white'}`}>{p.superstar?.name}</Link>
-                </span>
-              ))}
+    <Link href={href} className="block group">
+      {/* Desktop */}
+      <div className="hidden lg:grid lg:grid-cols-[90px_minmax(120px,1.2fr)_130px_minmax(250px,3fr)_100px_55px] gap-3 items-center px-4 py-3.5 rounded-lg border border-transparent transition-all duration-150 hover:bg-bg-secondary/40 hover:border-border-subtle/20">
+        <span className="text-xs text-text-secondary font-mono whitespace-nowrap">{match.date ? fmtShort(match.date) : show?.date ? fmtShort(show.date) : '—'}</span>
+        <span className="text-sm text-text-white truncate">{show?.name || '—'}</span>
+        <span className="text-xs text-neon-blue font-semibold truncate uppercase">{match.match_type?.name || 'Match'}</span>
+        <div className="flex items-center gap-1.5 min-w-0 overflow-hidden">
+          {teams.map((t, i) => (
+            <span key={t.team_number} className="flex items-center gap-1 min-w-0 shrink-0">
+              {i > 0 && <span className="text-[11px] text-neon-blue font-bold mx-0.5 shrink-0">vs</span>}
+              <div className="flex -space-x-1.5 shrink-0">
+                {t.members.slice(0, 3).map(p => (
+                  <div key={p.id} className={`w-7 h-7 rounded-full overflow-hidden border-2 ${t.is_winner ? 'border-emerald-500/40' : 'border-bg-primary'}`}>
+                    {p.photo_url ? <Image src={p.photo_url} alt="" width={28} height={28} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-bg-tertiary" />}
+                  </div>
+                ))}
+                {t.members.length > 3 && <div className="w-7 h-7 rounded-full bg-bg-tertiary border-2 border-bg-primary flex items-center justify-center text-[8px] text-text-secondary">+{t.members.length - 3}</div>}
+              </div>
+              <span className={`text-xs truncate max-w-[140px] ${t.is_winner ? 'text-emerald-400 font-semibold' : 'text-text-white'}`}>
+                {t.members.map(p => p.name).join(', ')}
+              </span>
+              {t.is_winner && <span className="text-[9px] text-emerald-400 font-bold shrink-0">✓</span>}
             </span>
           ))}
         </div>
-        <div className="flex items-center gap-2 mt-0.5">
-          <span className="text-[10px] text-text-secondary">{match.match_type?.name}</span>
-          {match.championship && <span className="text-[10px] text-neon-blue">🏆 {match.championship.name}</span>}
-          {match.is_title_change && <span className="text-[9px] px-1 py-0.5 rounded bg-neon-blue/15 text-neon-blue font-bold">TITLE CHANGE</span>}
+        <div className="flex items-center gap-1.5 min-w-0">
+          {match.championship ? <>
+            {match.championship.image_url && <div className="w-7 h-5 shrink-0"><Image src={match.championship.image_url} alt="" width={28} height={20} className="w-full h-full object-contain" /></div>}
+            <span className="text-[10px] text-yellow-400 font-medium truncate">{match.championship.name}</span>
+            {match.is_title_change && <span className="text-[8px] px-1 py-0.5 rounded bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 font-bold shrink-0">NEW!</span>}
+          </> : <span className="text-[10px] text-text-secondary/30">—</span>}
         </div>
+        <div className="flex justify-center">{match.rating ? <StarRating rating={match.rating} size="xs" /> : <span className="text-[10px] text-text-secondary/30">—</span>}</div>
       </div>
 
-      {/* Show + Rating */}
-      <div className="shrink-0 text-right hidden sm:block">
-        {show && <Link href={`/shows/${show.slug}`} className="text-[10px] text-text-secondary hover:text-neon-blue transition-colors block">{show.name}</Link>}
-        {match.rating && <span className="text-[10px] text-neon-blue font-mono">★ {match.rating}</span>}
+      {/* Mobile */}
+      <div className="lg:hidden px-3 py-3.5 rounded-xl border border-transparent transition-all hover:bg-bg-secondary/40 hover:border-border-subtle/20">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-[11px] text-text-secondary truncate flex-1">{show?.name}</span>
+          <span className="text-[10px] text-text-secondary font-mono shrink-0">{match.date ? fmtShort(match.date) : ''}</span>
+        </div>
+        <div className="space-y-1.5">
+          {teams.map((t, i) => (
+            <div key={t.team_number} className="flex items-center gap-2">
+              <div className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 text-[9px] font-bold border ${t.is_winner ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-bg-tertiary/50 border-border-subtle/20 text-text-secondary/50'}`}>
+                {t.is_winner ? 'W' : 'L'}
+              </div>
+              <div className="flex -space-x-1 shrink-0">
+                {t.members.slice(0, 3).map(p => (
+                  <div key={p.id} className="w-6 h-6 rounded-full overflow-hidden border border-bg-primary">
+                    {p.photo_url ? <Image src={p.photo_url} alt="" width={24} height={24} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-bg-tertiary" />}
+                  </div>
+                ))}
+              </div>
+              <span className={`text-xs truncate ${t.is_winner ? 'text-text-white font-medium' : 'text-text-secondary'}`}>{t.members.map(p => p.name).join(', ')}</span>
+            </div>
+          ))}
+        </div>
+        <div className="flex items-center gap-2 mt-2 flex-wrap">
+          <span className="text-[10px] text-neon-blue font-semibold uppercase">{match.match_type?.name || 'Match'}</span>
+          {match.championship && <span className="text-[9px] px-1.5 py-0.5 rounded bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 font-bold">🏆 {match.championship.name}</span>}
+          {match.rating && <div className="ml-auto shrink-0"><StarRating rating={match.rating} size="xs" /></div>}
+        </div>
       </div>
-    </div>
+    </Link>
   )
+}
+
+function getVisiblePages(page: number, tp: number): (number | 'e')[] {
+  const p: (number | 'e')[] = []
+  if (tp <= 7) { for (let i = 1; i <= tp; i++) p.push(i) }
+  else { p.push(1); if (page > 3) p.push('e'); for (let i = Math.max(2, page - 1); i <= Math.min(tp - 1, page + 1); i++) p.push(i); if (page < tp - 2) p.push('e'); p.push(tp) }
+  return p
 }
