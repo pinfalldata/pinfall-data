@@ -11,16 +11,11 @@ export async function GET(request: NextRequest) {
 
   if (!slug) return NextResponse.json({ error: 'slug required' }, { status: 400 })
 
-  // 1. Get tag team
   const { data: team, error: teamErr } = await supabase
-    .from('tag_teams')
-    .select('*')
-    .eq('slug', slug)
-    .single()
-
+    .from('tag_teams').select('*').eq('slug', slug).single()
   if (teamErr || !team) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
-  // 2. Get members
+  // Members
   const { data: members } = await supabase
     .from('tag_team_members')
     .select('*, superstar:superstar_id ( id, name, slug, photo_url, birth_date, death_date, nationalities, height_cm, weight_kg )')
@@ -29,153 +24,162 @@ export async function GET(request: NextRequest) {
 
   const memberIds = (members || []).map(m => m.superstar?.id).filter(Boolean)
 
-  // ==================================================================
-  // 3. MATCHES — Use match_participants.tag_team_id directly
-  // ==================================================================
-  // Get all match_ids where this tag team was entered
-  const { data: tagTeamParts } = await supabase
+  // ================================================================
+  // FIND MATCH IDS — Method 1: tag_team_id on match_participants
+  // ================================================================
+  const { data: directParts, error: dpErr } = await supabase
     .from('match_participants')
     .select('match_id, is_winner')
     .eq('tag_team_id', team.id)
 
-  // Deduplicate match IDs (multiple members per match)
-  const matchIdMap = new Map<number, boolean>()
-  for (const p of (tagTeamParts || [])) {
-    if (!matchIdMap.has(p.match_id)) {
-      matchIdMap.set(p.match_id, !!p.is_winner)
+  let matchIdWinMap = new Map<number, boolean>()
+  for (const p of (directParts || [])) {
+    if (!matchIdWinMap.has(p.match_id)) {
+      matchIdWinMap.set(p.match_id, !!p.is_winner)
     }
   }
-  const allMatchIds = Array.from(matchIdMap.keys())
-  const matchCount = allMatchIds.length
 
-  // If no results from tag_team_id, fallback to same-team-number approach
-  let fallbackMatchIds: number[] = []
-  if (allMatchIds.length === 0 && memberIds.length >= 2) {
-    const { data: p0 } = await supabase.from('match_participants').select('match_id, team_number, is_winner').eq('superstar_id', memberIds[0])
-    const { data: p1 } = await supabase.from('match_participants').select('match_id, team_number, is_winner').eq('superstar_id', memberIds[1])
+  // Method 2 fallback: both members on same team_number
+  if (matchIdWinMap.size === 0 && memberIds.length >= 2) {
+    const { data: p0 } = await supabase
+      .from('match_participants')
+      .select('match_id, team_number, is_winner')
+      .eq('superstar_id', memberIds[0])
+
+    const { data: p1 } = await supabase
+      .from('match_participants')
+      .select('match_id, team_number, is_winner')
+      .eq('superstar_id', memberIds[1])
+
     if (p0 && p1) {
       const map0 = new Map<number, { tn: number; win: boolean }>()
       for (const r of p0) map0.set(r.match_id, { tn: r.team_number, win: !!r.is_winner })
       for (const r of p1) {
         const p0r = map0.get(r.match_id)
         if (p0r && p0r.tn === r.team_number) {
-          fallbackMatchIds.push(r.match_id)
-          matchIdMap.set(r.match_id, !!r.is_winner)
+          matchIdWinMap.set(r.match_id, p0r.win)
         }
       }
     }
   }
 
-  const finalMatchIds = allMatchIds.length > 0 ? allMatchIds : fallbackMatchIds
-  const finalMatchCount = finalMatchIds.length
+  const allMatchIds = Array.from(matchIdWinMap.keys())
+  const matchCount = allMatchIds.length
 
-  // Sort by date and paginate
+  // ================================================================
+  // FETCH MATCHES — Single paginated query
+  // ================================================================
   let matches: any[] = []
-  if (finalMatchIds.length > 0) {
-    const { data: matchDates } = await supabase
-      .from('matches')
-      .select('id, date')
-      .in('id', finalMatchIds)
 
-    if (matchDates) {
-      matchDates.sort((a, b) => (b.date || '').localeCompare(a.date || ''))
-      const pageIds = matchDates.map(m => m.id).slice(offset, offset + limit)
+  if (allMatchIds.length > 0) {
+    // Paginate the IDs first (get dates for sorting)
+    const batchSize = 500
+    let allWithDates: { id: number; date: string | null }[] = []
 
-      if (pageIds.length > 0) {
-        const { data: matchData } = await supabase
-          .from('matches')
-          .select(`
-            id, slug, date, rating, duration_seconds, is_title_change,
-            match_type:match_type_id ( name ),
-            championship:championship_id ( name, slug, image_url ),
-            show:show_id ( id, name, slug, date ),
-            participants:match_participants (
-              id, team_number, result, is_winner,
-              superstar:superstar_id ( id, name, slug, photo_url )
-            )
-          `)
-          .in('id', pageIds)
+    for (let i = 0; i < allMatchIds.length; i += batchSize) {
+      const batch = allMatchIds.slice(i, i + batchSize)
+      const { data: batchDates } = await supabase
+        .from('matches')
+        .select('id, date')
+        .in('id', batch)
 
-        const mm = new Map((matchData || []).map(m => [m.id, m]))
-        matches = pageIds.map(id => mm.get(id)).filter(Boolean)
+      if (batchDates) allWithDates.push(...batchDates)
+    }
+
+    // Sort by date descending
+    allWithDates.sort((a, b) => (b.date || '0000').localeCompare(a.date || '0000'))
+
+    // Get page slice
+    const pageIds = allWithDates.slice(offset, offset + limit).map(m => m.id)
+
+    if (pageIds.length > 0) {
+      // Fetch full details for this page only
+      const { data: matchData, error: matchErr } = await supabase
+        .from('matches')
+        .select(`
+          id, slug, date, rating, duration_seconds, is_title_change,
+          match_type:match_type_id ( name ),
+          championship:championship_id ( name, slug, image_url ),
+          show:show_id ( id, name, slug, date )
+        `)
+        .in('id', pageIds)
+
+      if (matchErr) {
+        console.error('[tag-team-detail] match fetch error:', matchErr)
       }
+
+      // Fetch participants separately (avoids nested join issues)
+      const { data: partsData, error: partsErr } = await supabase
+        .from('match_participants')
+        .select('id, match_id, team_number, result, is_winner, superstar:superstar_id ( id, name, slug, photo_url )')
+        .in('match_id', pageIds)
+
+      if (partsErr) {
+        console.error('[tag-team-detail] participants fetch error:', partsErr)
+      }
+
+      // Merge participants into matches
+      const partsMap = new Map<number, any[]>()
+      for (const p of (partsData || [])) {
+        if (!partsMap.has(p.match_id)) partsMap.set(p.match_id, [])
+        partsMap.get(p.match_id)!.push(p)
+      }
+
+      const matchMap = new Map<number, any>()
+      for (const m of (matchData || [])) {
+        matchMap.set(m.id, { ...m, participants: partsMap.get(m.id) || [] })
+      }
+
+      // Preserve sort order
+      matches = pageIds.map(id => matchMap.get(id)).filter(Boolean)
     }
   }
 
-  // ==================================================================
-  // 4. STATS
-  // ==================================================================
+  // ================================================================
+  // STATS
+  // ================================================================
   let wins = 0, losses = 0
-  for (const [, isWin] of matchIdMap) {
+  for (const [, isWin] of matchIdWinMap) {
     if (isWin) wins++; else losses++
   }
   const stats = {
-    totalMatches: finalMatchCount,
-    wins,
-    losses,
-    draws: finalMatchCount - wins - losses,
-    winRate: finalMatchCount > 0 ? Math.round((wins / finalMatchCount) * 100) : 0,
+    totalMatches: matchCount, wins, losses,
+    draws: Math.max(0, matchCount - wins - losses),
+    winRate: matchCount > 0 ? Math.round((wins / matchCount) * 100) : 0,
   }
 
-  // ==================================================================
-  // 5. CHAMPIONSHIPS — Use reign_group_id shared between members
-  // ==================================================================
+  // ================================================================
+  // CHAMPIONSHIPS — reign_group_id shared between members
+  // ================================================================
   let championships: any[] = []
   if (memberIds.length >= 2) {
-    // Get reigns for first member
-    const { data: reigns0 } = await supabase
-      .from('championship_reigns')
-      .select('reign_group_id')
-      .eq('superstar_id', memberIds[0])
-      .not('reign_group_id', 'is', null)
+    const { data: r0 } = await supabase.from('championship_reigns').select('reign_group_id').eq('superstar_id', memberIds[0]).not('reign_group_id', 'is', null)
+    const { data: r1 } = await supabase.from('championship_reigns').select('reign_group_id').eq('superstar_id', memberIds[1]).not('reign_group_id', 'is', null)
 
-    // Get reigns for second member
-    const { data: reigns1 } = await supabase
-      .from('championship_reigns')
-      .select('reign_group_id')
-      .eq('superstar_id', memberIds[1])
-      .not('reign_group_id', 'is', null)
+    if (r0 && r1) {
+      const set0 = new Set(r0.map(r => r.reign_group_id))
+      const shared = [...new Set(r1.map(r => r.reign_group_id).filter(id => set0.has(id)))]
 
-    if (reigns0 && reigns1) {
-      // Find shared reign_group_ids
-      const set0 = new Set(reigns0.map(r => r.reign_group_id))
-      const sharedGroupIds = reigns1
-        .map(r => r.reign_group_id)
-        .filter(id => set0.has(id))
-
-      const uniqueGroupIds = Array.from(new Set(sharedGroupIds))
-
-      if (uniqueGroupIds.length > 0) {
-        // Get one reign per group (they share the same championship/dates)
-        const { data: sharedReigns } = await supabase
+      if (shared.length > 0) {
+        const { data: reigns } = await supabase
           .from('championship_reigns')
-          .select(`
-            id, won_date, lost_date, days_held, reign_number, reign_group_id,
-            championship:championship_id ( id, name, slug, image_url )
-          `)
+          .select('id, won_date, lost_date, days_held, reign_number, reign_group_id, championship:championship_id ( id, name, slug, image_url )')
           .eq('superstar_id', memberIds[0])
-          .in('reign_group_id', uniqueGroupIds)
+          .in('reign_group_id', shared)
           .order('won_date', { ascending: false })
 
-        championships = sharedReigns || []
+        championships = reigns || []
       }
     }
   }
 
-  // 6. Prev/Next
+  // Prev/Next
   const { data: prev } = await supabase.from('tag_teams').select('slug, name').lt('name', team.name).order('name', { ascending: false }).limit(1).single()
   const { data: next } = await supabase.from('tag_teams').select('slug, name').gt('name', team.name).order('name', { ascending: true }).limit(1).single()
 
   return NextResponse.json({
-    team,
-    members: members || [],
-    matches,
-    matchCount: finalMatchCount,
-    matchPage: page,
-    matchTotalPages: Math.ceil(finalMatchCount / limit),
-    stats,
-    championships,
-    prev: prev || null,
-    next: next || null,
+    team, members: members || [], matches, matchCount,
+    matchPage: page, matchTotalPages: Math.ceil(matchCount / limit),
+    stats, championships, prev: prev || null, next: next || null,
   })
 }
