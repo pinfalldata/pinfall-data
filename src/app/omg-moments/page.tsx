@@ -84,10 +84,10 @@ export default function OMGMomentsPage() {
         {/* ===== HERO ===== */}
         <section className="relative w-full h-[240px] sm:h-[320px] lg:h-[400px] xl:h-[440px] overflow-hidden">
           <Image
-            src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20OMG%20Moments/makind.webp"
+            src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20OMG%20Moments/hardy-boyz_2026-03-18_19_07_17.478080.jpg.png"
             alt="WWE OMG Moments"
             fill priority sizes="100vw" unoptimized quality={100}
-            className="object-cover object-center"
+            className="object-cover object-[center_30%]"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/40 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-r from-bg-primary/30 via-transparent to-bg-primary/30" />

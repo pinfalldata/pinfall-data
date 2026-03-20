@@ -96,11 +96,11 @@ export default function OMGCategoryClient({ category, title, subtitle, heroImage
 
   return (
     <div className="min-h-screen bg-bg-primary" ref={scrollRef}>
-      {/* ===== HERO ===== */}
-      <section className="relative w-full h-[220px] sm:h-[300px] lg:h-[380px] xl:h-[420px] overflow-hidden">
-        <Image src={heroImage} alt={title} fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-center" />
-        <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/50 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-bg-primary/30 via-transparent to-bg-primary/30" />
+      {/* ===== HERO — taller to show more of the image ===== */}
+      <section className="relative w-full h-[260px] sm:h-[360px] lg:h-[440px] xl:h-[500px] overflow-hidden">
+        <Image src={heroImage} alt={title} fill priority sizes="100vw" quality={100} unoptimized className="object-cover" style={{ objectPosition: 'center 25%' }} />
+        <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-bg-primary/20 via-transparent to-bg-primary/20" />
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">
           <nav className="hidden sm:flex items-center gap-2 text-xs text-text-secondary mb-3">
@@ -109,7 +109,7 @@ export default function OMGCategoryClient({ category, title, subtitle, heroImage
             <span className="text-neon-blue">{title}</span>
           </nav>
           <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-white text-center tracking-tight mb-2">
-            {icon} {title.split(' ').map((w, i, a) => i === a.length - 1 ? <span key={i} className="text-neon-blue">{w}</span> : w + ' ')}
+            {title.split(' ').map((w, i, a) => i === a.length - 1 ? <span key={i} className="text-neon-blue">{w}</span> : <span key={i}>{w} </span>)}
           </h1>
           <p className="text-text-secondary text-sm sm:text-base lg:text-lg text-center max-w-2xl">{subtitle}</p>
         </div>
@@ -210,7 +210,7 @@ export default function OMGCategoryClient({ category, title, subtitle, heroImage
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8">
         <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/10 p-6 sm:p-8">
           <h2 className="font-display text-xl font-bold text-text-white mb-3">
-            {icon} <span className="text-neon-blue">{title}</span> — Complete WWE Database
+            <span className="text-neon-blue">{title}</span> — Complete WWE Database
           </h2>
           <p className="text-text-secondary text-sm leading-relaxed">
             Browse every {title.toLowerCase()} in WWE history. Filter by superstar, year, or search by name.
