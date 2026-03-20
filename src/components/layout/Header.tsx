@@ -48,7 +48,10 @@ const NAV_ITEMS: NavItem[] = [
     { label: 'Greatest Betrayals', href: '/omg-moments/greatest-betrayals', icon: '🗡️' },
     { label: 'Most Emotional', href: '/omg-moments/most-emotional-moments', icon: '😢' },
   ]},
-  { key: 'tagTeams', href: '/tag-teams' },
+  { key: 'tagTeams', href: '/tag-teams', children: [
+    { label: 'Tag Teams', href: '/tag-teams/teams', icon: '👥' },
+    { label: 'Stables', href: '/tag-teams/stables', icon: '⚔️' },
+  ]},
   { key: 'rivalries', href: '/rivalries' },
   { key: 'records', href: '/records' },
   { key: 'hallOfFame', href: '/hall-of-fame' },
