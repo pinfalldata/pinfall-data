@@ -4,14 +4,17 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
+interface Superstar {
+  id: number; name: string; slug: string; photo_url: string | null
+}
+
 interface OMGMoment {
   id: number; category: string; title: string; slug: string; date: string | null
-  description_md: string | null; image_url: string | null; video_url: string | null
-  sort_order: number
+  image_url: string | null; video_url: string | null; sort_order: number
   show: { id: number; name: string; slug: string } | null
   match: { id: number; slug: string; show: { slug: string } | null } | null
   segment: { id: number; slug: string; show: { slug: string } | null } | null
-  superstar: { id: number; name: string; slug: string; photo_url: string | null } | null
+  superstars: Superstar[]
 }
 
 interface Props {
@@ -43,7 +46,7 @@ export default function OMGCategoryClient({ category, title, subtitle, heroImage
 
   const fetchMoments = useCallback(async (p: number) => {
     setLoading(true)
-    const params = new URLSearchParams({ category, page: String(p), limit: '30' })
+    const params = new URLSearchParams({ category, page: String(p), limit: '50' })
     if (filterYear) params.set('year', filterYear)
     if (search) params.set('search', search)
     if (selectedSuperstar) params.set('superstarId', selectedSuperstar.id)
@@ -61,7 +64,6 @@ export default function OMGCategoryClient({ category, title, subtitle, heroImage
 
   useEffect(() => { fetchMoments(1) }, [fetchMoments])
 
-  // Superstar autocomplete
   const handleSuperstarSearch = (q: string) => {
     setSuperstarSearch(q)
     if (q.length < 2) { setSuperstarResults([]); setSsOpen(false); return }
@@ -96,7 +98,7 @@ export default function OMGCategoryClient({ category, title, subtitle, heroImage
 
   return (
     <div className="min-h-screen bg-bg-primary" ref={scrollRef}>
-      {/* ===== HERO — taller to show more of the image ===== */}
+      {/* ===== HERO — tall to show more image ===== */}
       <section className="relative w-full h-[260px] sm:h-[360px] lg:h-[440px] xl:h-[500px] overflow-hidden">
         <Image src={heroImage} alt={title} fill priority sizes="100vw" quality={100} unoptimized className="object-cover" style={{ objectPosition: 'center 25%' }} />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/30 to-transparent" />
@@ -120,18 +122,14 @@ export default function OMGCategoryClient({ category, title, subtitle, heroImage
         <div className="flex flex-col sm:flex-row gap-3">
           {/* Search */}
           <div className="relative flex-1 sm:max-w-xs">
-            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
             <input type="text" placeholder="Search moments..." value={search} onChange={e => { setSearch(e.target.value); setPage(1) }}
               className="w-full bg-bg-tertiary border border-border-subtle/30 rounded-xl pl-10 pr-4 py-2.5 text-xs text-text-white placeholder-text-secondary focus:border-neon-blue/50 focus:outline-none transition-colors" />
           </div>
 
           {/* Superstar search */}
           <div ref={ssRef} className="relative flex-1 sm:max-w-xs">
-            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
             <input type="text" placeholder="Filter by Superstar..." value={selectedSuperstar ? selectedSuperstar.name : superstarSearch}
               onChange={e => { if (selectedSuperstar) { setSelectedSuperstar(null) }; handleSuperstarSearch(e.target.value) }}
               className="w-full bg-bg-tertiary border border-border-subtle/30 rounded-xl pl-10 pr-8 py-2.5 text-xs text-text-white placeholder-text-secondary focus:border-neon-blue/50 focus:outline-none transition-colors" />
@@ -156,8 +154,8 @@ export default function OMGCategoryClient({ category, title, subtitle, heroImage
 
           {/* Year filter */}
           <select value={filterYear} onChange={e => { setFilterYear(e.target.value); setPage(1) }}
-            className="bg-bg-tertiary border border-border-subtle/30 rounded-xl px-3 py-2.5 text-xs text-text-white focus:border-neon-blue/50 focus:outline-none transition-colors sm:w-32"
-            style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 8px center', backgroundRepeat: 'no-repeat', backgroundSize: '16px', paddingRight: '32px', appearance: 'none' }}>
+            className="bg-bg-tertiary border border-border-subtle/30 rounded-xl px-3 py-2.5 text-xs text-text-white focus:border-neon-blue/50 focus:outline-none transition-colors sm:w-32 appearance-none"
+            style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 8px center', backgroundRepeat: 'no-repeat', backgroundSize: '16px', paddingRight: '32px' }}>
             <option value="">All years</option>
             {years.map(y => <option key={y} value={y}>{y}</option>)}
           </select>
@@ -179,7 +177,7 @@ export default function OMGCategoryClient({ category, title, subtitle, heroImage
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 pb-12">
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {Array.from({ length: 12 }).map((_, i) => <div key={i} className="h-64 rounded-2xl bg-bg-secondary/30 animate-pulse" />)}
+            {Array.from({ length: 12 }).map((_, i) => <div key={i} className="h-56 rounded-2xl bg-bg-secondary/30 animate-pulse" />)}
           </div>
         ) : moments.length === 0 ? (
           <div className="text-center py-20">
@@ -193,12 +191,25 @@ export default function OMGCategoryClient({ category, title, subtitle, heroImage
                 <MomentCard key={m.id} moment={m} link={getMomentLink(m)} />
               ))}
             </div>
+
+            {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-between gap-4 mt-8 pt-6 border-t border-border-subtle/20">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-8 pt-6 border-t border-border-subtle/20">
                 <p className="text-xs text-text-secondary">Page {page} of {totalPages} — {total} moments</p>
                 <div className="flex items-center gap-1">
-                  <button onClick={() => goPage(page - 1)} disabled={page === 1} className="w-8 h-8 rounded-lg border border-border-subtle/30 flex items-center justify-center text-text-secondary disabled:opacity-30 transition-all"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg></button>
-                  <button onClick={() => goPage(page + 1)} disabled={page >= totalPages} className="w-8 h-8 rounded-lg border border-border-subtle/30 flex items-center justify-center text-text-secondary disabled:opacity-30 transition-all"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg></button>
+                  <button onClick={() => goPage(page - 1)} disabled={page === 1}
+                    className="w-8 h-8 rounded-lg border border-border-subtle/30 flex items-center justify-center text-text-secondary hover:text-text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                  </button>
+                  {getVisiblePages(page, totalPages).map((p, i) =>
+                    p === 'e' ? <span key={`e${i}`} className="w-8 text-center text-text-secondary text-xs">…</span> :
+                    <button key={p} onClick={() => goPage(p as number)}
+                      className={`w-8 h-8 rounded-lg text-xs font-medium transition-all ${p === page ? 'bg-neon-blue/20 border border-neon-blue/40 text-neon-blue' : 'border border-transparent text-text-secondary hover:text-text-white hover:bg-bg-secondary/50'}`}>{p}</button>
+                  )}
+                  <button onClick={() => goPage(page + 1)} disabled={page >= totalPages}
+                    className="w-8 h-8 rounded-lg border border-border-subtle/30 flex items-center justify-center text-text-secondary hover:text-text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                  </button>
                 </div>
               </div>
             )}
@@ -222,6 +233,25 @@ export default function OMGCategoryClient({ category, title, subtitle, heroImage
   )
 }
 
+/* ============================================================
+   VISIBLE PAGES for pagination
+   ============================================================ */
+function getVisiblePages(page: number, tp: number): (number | 'e')[] {
+  const p: (number | 'e')[] = []
+  if (tp <= 7) { for (let i = 1; i <= tp; i++) p.push(i) }
+  else {
+    p.push(1)
+    if (page > 3) p.push('e')
+    for (let i = Math.max(2, page - 1); i <= Math.min(tp - 1, page + 1); i++) p.push(i)
+    if (page < tp - 2) p.push('e')
+    p.push(tp)
+  }
+  return p
+}
+
+/* ============================================================
+   MOMENT CARD — Clean design, no description, multiple superstar photos, small date
+   ============================================================ */
 function MomentCard({ moment, link }: { moment: OMGMoment; link: string }) {
   return (
     <Link href={link} className="group relative flex flex-col rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 overflow-hidden transition-all hover:border-neon-blue/30 hover:bg-bg-secondary/25 card-glow">
@@ -232,46 +262,49 @@ function MomentCard({ moment, link }: { moment: OMGMoment; link: string }) {
         ) : (
           <div className="w-full h-full flex items-center justify-center"><span className="text-5xl opacity-15">🎬</span></div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/70 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/60 via-transparent to-transparent" />
 
-        {/* Superstar badge */}
-        {moment.superstar && (
-          <div className="absolute bottom-2 left-2 flex items-center gap-1.5 px-2 py-1 rounded-lg bg-bg-primary/80 backdrop-blur-sm border border-border-subtle/20">
-            {moment.superstar.photo_url && (
-              <div className="w-5 h-5 rounded-full overflow-hidden shrink-0">
-                <Image src={moment.superstar.photo_url} alt="" width={20} height={20} className="w-full h-full object-cover" />
+        {/* Superstar photos — bottom left, stacked */}
+        {moment.superstars.length > 0 && (
+          <div className="absolute bottom-2 left-2 flex -space-x-1.5">
+            {moment.superstars.slice(0, 4).map(s => (
+              <div key={s.id} className="w-7 h-7 rounded-full overflow-hidden border-2 border-bg-primary shrink-0 bg-bg-tertiary">
+                {s.photo_url ? (
+                  <Image src={s.photo_url} alt={s.name} width={28} height={28} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-[8px] text-text-secondary">👤</div>
+                )}
+              </div>
+            ))}
+            {moment.superstars.length > 4 && (
+              <div className="w-7 h-7 rounded-full bg-bg-tertiary border-2 border-bg-primary flex items-center justify-center text-[9px] text-text-secondary font-bold">
+                +{moment.superstars.length - 4}
               </div>
             )}
-            <span className="text-[10px] text-text-white font-medium">{moment.superstar.name}</span>
           </div>
         )}
 
-        {/* Date badge */}
+        {/* Date — small, clean */}
         {moment.date && (
-          <div className="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-bg-primary/80 backdrop-blur-sm border border-border-subtle/20">
-            <span className="text-[9px] text-text-secondary font-mono">{fmt(moment.date)}</span>
-          </div>
-        )}
-
-        {/* Video icon */}
-        {moment.video_url && (
-          <div className="absolute top-2 left-2 w-6 h-6 rounded-full bg-red-500/80 flex items-center justify-center">
-            <svg className="w-3 h-3 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          <div className="absolute top-2 right-2">
+            <span className="text-[9px] text-text-secondary/80 font-mono bg-bg-primary/70 backdrop-blur-sm px-1.5 py-0.5 rounded">
+              {fmt(moment.date)}
+            </span>
           </div>
         )}
       </div>
 
-      {/* Info */}
+      {/* Title only — no description */}
       <div className="flex flex-col flex-1 p-4">
         <h3 className="font-display text-sm font-bold text-text-white group-hover:text-neon-blue transition-colors line-clamp-2">
           {moment.title}
         </h3>
-        {moment.description_md && (
-          <p className="text-[11px] text-text-secondary mt-1.5 line-clamp-2 leading-relaxed">{moment.description_md}</p>
-        )}
+
         <div className="mt-auto pt-3 flex items-center justify-between">
-          {moment.show && <span className="text-[10px] text-text-secondary truncate max-w-[60%]">{moment.show.name}</span>}
-          <span className="text-[10px] text-neon-blue font-medium group-hover:translate-x-1 transition-transform shrink-0">View →</span>
+          {moment.show && <span className="text-[10px] text-text-secondary truncate max-w-[65%]">{moment.show.name}</span>}
+          <span className="text-[10px] text-neon-blue font-medium group-hover:translate-x-1 transition-transform shrink-0">
+            View →
+          </span>
         </div>
       </div>
     </Link>
