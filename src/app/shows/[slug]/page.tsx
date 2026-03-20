@@ -50,32 +50,70 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 }
 
 function generateJsonLd(show: any) {
-  const wrestlers = []
+  // Collect performers
+  const performers: any[] = []
+  const performerNames = new Set<string>()
   for (const m of (show.matches || [])) {
     for (const p of (m.participants || [])) {
-      if (p.superstar?.name) wrestlers.push({ '@type': 'Person', name: p.superstar.name })
+      if (p.superstar?.name && !performerNames.has(p.superstar.name)) {
+        performerNames.add(p.superstar.name)
+        performers.push({
+          '@type': 'Person',
+          name: p.superstar.name,
+          ...(p.superstar.slug ? { url: `https://pinfalldata.com/superstars/${p.superstar.slug}` } : {}),
+        })
+      }
     }
   }
+
+  // Build location — ALWAYS provide one (Google requires it)
+  const location = {
+    '@type': 'Place' as const,
+    name: show.venue || show.city || 'Venue TBD',
+    address: {
+      '@type': 'PostalAddress' as const,
+      addressLocality: show.city || '',
+      ...(show.state_province ? { addressRegion: show.state_province } : {}),
+      addressCountry: show.country || 'US',
+    },
+  }
+
+  // Build description
+  const matchCount = show.matches?.length || 0
+  const locationDesc = show.city ? `at ${[show.venue, show.city].filter(Boolean).join(', ')}` : ''
+  const description = show.description_md
+    || `${show.name} ${locationDesc}. ${matchCount} match${matchCount !== 1 ? 'es' : ''} on the card.${performers.length > 0 ? ` Featuring ${Array.from(performerNames).slice(0, 5).join(', ')}.` : ''}`
+
   return {
     '@context': 'https://schema.org',
     '@type': 'SportsEvent',
     name: show.name,
+    description: description.slice(0, 300),
     startDate: show.date,
-    ...(show.start_time ? { doorTime: show.start_time } : {}),
-    location: show.venue ? {
-      '@type': 'Place',
-      name: show.venue,
-      address: {
-        '@type': 'PostalAddress',
-        addressLocality: show.city,
-        addressRegion: show.state_province,
-        addressCountry: show.country,
-      },
-    } : undefined,
-    organizer: { '@type': 'Organization', name: 'WWE', url: 'https://www.wwe.com' },
-    ...(show.attendance ? { maximumAttendeeCapacity: show.attendance } : {}),
-    competitor: wrestlers.slice(0, 20),
+    endDate: show.date, // Same day for wrestling shows
+    eventStatus: 'https://schema.org/EventScheduled',
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    location,
+    organizer: {
+      '@type': 'Organization',
+      name: show.show_series?.name || 'WWE',
+      url: 'https://www.wwe.com',
+    },
+    performer: performers.slice(0, 20),
     sport: 'Professional Wrestling',
+    ...(show.banner_url || show.logo_url ? {
+      image: [show.banner_url || show.logo_url],
+    } : {}),
+    ...(show.attendance ? {
+      maximumAttendeeCapacity: show.attendance,
+    } : {}),
+    ...(show.start_time ? { doorTime: show.start_time } : {}),
+    offers: {
+      '@type': 'Offer',
+      url: `https://pinfalldata.com/shows/${show.slug}`,
+      availability: 'https://schema.org/Discontinued',
+      description: 'This event has already taken place. View full results on Pinfall Data.',
+    },
     url: `https://pinfalldata.com/shows/${show.slug}`,
   }
 }

@@ -25,27 +25,28 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const championship = (match as any).championship?.name || ''
   const duration = match.duration_seconds ? `${Math.floor(match.duration_seconds / 60)} minutes` : ''
 
-  // Build rich description
   const titleParts = [championship ? `${championship} — ` : '', matchType, ': ', vsStr].join('')
   const descParts = [
-    `${matchType}: ${vsStr} at ${showName}${dateStr ? ` (${dateStr})` : ''}.`,
+    `${vsStr} in a ${matchType} at ${showName}${dateStr ? ` on ${dateStr}` : ''}.`,
     championship ? ` ${championship} on the line.` : '',
     duration ? ` Match lasted ${duration}.` : '',
     match.rating ? ` Rated ${match.rating}/10.` : '',
-    ' Full results, stats, head-to-head history on Pinfall Data.',
   ].join('')
 
+  const show = (match as any).show || {}
+
   return {
-    title: `${vsStr} — ${matchType} | ${showName} | Pinfall Data`,
+    title: `${titleParts} — ${showName} | Pinfall Data`,
     description: descParts,
     keywords: [
       ...names, matchType, showName, championship, 'WWE', 'match', 'results', 'stats',
     ].filter(Boolean) as string[],
     openGraph: {
-      title: titleParts,
-      description: `${matchType} at ${showName} — Full results and statistics`,
+      title: `${vsStr} — ${matchType}${championship ? ` for ${championship}` : ''} | ${showName}`,
+      description: descParts,
       type: 'article',
-      images: (match as any).image_url ? [(match as any).image_url] : [],
+      ...(match.image_url ? { images: [match.image_url] } : show.banner_url ? { images: [show.banner_url] } : {}),
+      url: `https://pinfalldata.com/shows/${show.slug}/matches/${match.slug}`,
     },
     twitter: { card: 'summary_large_image' },
     alternates: {
@@ -58,26 +59,59 @@ function generateJsonLd(match: any) {
   const participants = match.participants || []
   const names = participants.map((p: any) => p.superstar?.name).filter(Boolean)
   const show = match.show || {}
+
+  // Build performers with URLs
+  const performers = participants
+    .filter((p: any) => p.superstar?.name)
+    .map((p: any) => ({
+      '@type': 'Person',
+      name: p.superstar.name,
+      ...(p.superstar.slug ? { url: `https://pinfalldata.com/superstars/${p.superstar.slug}` } : {}),
+    }))
+
+  // Location — ALWAYS provide one (Google requires it for SportsEvent)
+  const location = {
+    '@type': 'Place' as const,
+    name: show.venue || show.city || 'Venue TBD',
+    address: {
+      '@type': 'PostalAddress' as const,
+      addressLocality: show.city || '',
+      ...(show.state_province ? { addressRegion: show.state_province } : {}),
+      addressCountry: show.country || 'US',
+    },
+  }
+
+  // Description
+  const matchType = match.match_type?.name || 'Match'
+  const championship = match.championship?.name || ''
+  const description = match.summary_md
+    || `${names.join(' vs ')} in a ${matchType}${championship ? ` for the ${championship}` : ''} at ${show.name || 'WWE Event'}.`
+
   return {
     '@context': 'https://schema.org',
     '@type': 'SportsEvent',
-    name: `${names.join(' vs ')} — ${match.match_type?.name || 'Match'}`,
+    name: `${names.join(' vs ')} — ${matchType}`,
+    description: description.slice(0, 300),
     startDate: match.date || show.date,
-    description: match.summary_md || `${match.match_type?.name || 'Match'} at ${show.name}`,
-    location: show.venue ? {
-      '@type': 'Place',
-      name: show.venue,
-      address: {
-        '@type': 'PostalAddress',
-        addressLocality: show.city,
-        addressRegion: show.state_province,
-        addressCountry: show.country,
-      },
-    } : undefined,
-    organizer: { '@type': 'Organization', name: 'WWE', url: 'https://www.wwe.com' },
-    competitor: names.map((n: string) => ({ '@type': 'Person', name: n })),
+    endDate: match.date || show.date,
+    eventStatus: 'https://schema.org/EventScheduled',
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    location,
+    organizer: {
+      '@type': 'Organization',
+      name: show.show_series?.name || 'WWE',
+      url: 'https://www.wwe.com',
+    },
+    performer: performers.slice(0, 20),
     sport: 'Professional Wrestling',
+    ...(match.image_url ? { image: [match.image_url] } : show.banner_url ? { image: [show.banner_url] } : {}),
     ...(match.duration_seconds ? { duration: `PT${Math.floor(match.duration_seconds / 60)}M${match.duration_seconds % 60}S` } : {}),
+    offers: {
+      '@type': 'Offer',
+      url: `https://pinfalldata.com/shows/${show.slug}/matches/${match.slug}`,
+      availability: 'https://schema.org/Discontinued',
+      description: 'This match has already taken place. View full results on Pinfall Data.',
+    },
     url: `https://pinfalldata.com/shows/${show.slug}/matches/${match.slug}`,
   }
 }
