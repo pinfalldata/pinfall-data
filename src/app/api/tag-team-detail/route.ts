@@ -11,16 +11,9 @@ export async function GET(request: NextRequest) {
 
   if (!slug) return NextResponse.json({ error: 'slug required' }, { status: 400 })
 
-  // 1. Get tag team
-  const { data: team } = await supabase
-    .from('tag_teams')
-    .select('*')
-    .eq('slug', slug)
-    .single()
-
+  const { data: team } = await supabase.from('tag_teams').select('*').eq('slug', slug).single()
   if (!team) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
-  // 2. Get members
   const { data: members } = await supabase
     .from('tag_team_members')
     .select('*, superstar:superstar_id ( id, name, slug, photo_url, birth_date, death_date, nationalities, height_cm, weight_kg )')
@@ -29,37 +22,43 @@ export async function GET(request: NextRequest) {
 
   const memberIds = (members || []).map(m => m.superstar?.id).filter(Boolean)
 
-  // 3. Get matches where BOTH members participated on the same team
-  // We find matches where at least 2 members were on the same team_number
-  let matches: any[] = []
-  let matchCount = 0
+  // Find shared matches (both members on same team_number)
+  let sharedMatchIds: number[] = []
+  let matchResultsMap = new Map<number, boolean>() // match_id -> isWin
 
   if (memberIds.length >= 2) {
-    // Get all match_ids for member[0]
-    const { data: p0 } = await supabase
-      .from('match_participants')
-      .select('match_id, team_number')
-      .eq('superstar_id', memberIds[0])
-
-    const { data: p1 } = await supabase
-      .from('match_participants')
-      .select('match_id, team_number')
-      .eq('superstar_id', memberIds[1])
+    const { data: p0 } = await supabase.from('match_participants').select('match_id, team_number, is_winner').eq('superstar_id', memberIds[0])
+    const { data: p1 } = await supabase.from('match_participants').select('match_id, team_number, is_winner').eq('superstar_id', memberIds[1])
 
     if (p0 && p1) {
-      // Find matches where both are on the same team
-      const p0Map = new Map<number, number>()
-      for (const r of p0) p0Map.set(r.match_id, r.team_number)
+      const map0 = new Map<number, { tn: number; win: boolean }>()
+      for (const r of p0) map0.set(r.match_id, { tn: r.team_number, win: !!r.is_winner })
 
-      const sharedMatchIds: number[] = []
       for (const r of p1) {
-        if (p0Map.has(r.match_id) && p0Map.get(r.match_id) === r.team_number) {
+        const p0r = map0.get(r.match_id)
+        if (p0r && p0r.tn === r.team_number) {
           sharedMatchIds.push(r.match_id)
+          matchResultsMap.set(r.match_id, !!r.is_winner)
         }
       }
+    }
+  }
 
-      matchCount = sharedMatchIds.length
-      const pageIds = sharedMatchIds.slice(offset, offset + limit)
+  // Sort by date — fetch dates first then sort
+  let matches: any[] = []
+  const matchCount = sharedMatchIds.length
+
+  if (sharedMatchIds.length > 0) {
+    // Get dates for sorting
+    const { data: matchDates } = await supabase
+      .from('matches')
+      .select('id, date')
+      .in('id', sharedMatchIds)
+
+    if (matchDates) {
+      matchDates.sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+      const sortedIds = matchDates.map(m => m.id)
+      const pageIds = sortedIds.slice(offset, offset + limit)
 
       if (pageIds.length > 0) {
         const { data: matchData } = await supabase
@@ -67,57 +66,50 @@ export async function GET(request: NextRequest) {
           .select(`
             id, slug, date, rating, duration_seconds, is_title_change,
             match_type:match_type_id ( name ),
-            championship:championship_id ( name, slug ),
+            championship:championship_id ( name, slug, image_url ),
             show:show_id ( id, name, slug, date ),
             participants:match_participants (
-              id, team_number, result, is_winner, entrance_order,
+              id, team_number, result, is_winner,
               superstar:superstar_id ( id, name, slug, photo_url )
             )
           `)
           .in('id', pageIds)
-          .order('date', { ascending: false })
 
-        matches = matchData || []
+        // Sort matches to match our sorted order
+        const matchMap = new Map((matchData || []).map(m => [m.id, m]))
+        matches = pageIds.map(id => matchMap.get(id)).filter(Boolean)
       }
     }
   }
 
-  // 4. Calculate stats from ALL shared matches
-  let stats: any = null
-  if (memberIds.length >= 2) {
-    const { data: p0All } = await supabase.from('match_participants').select('match_id, team_number, is_winner, result').eq('superstar_id', memberIds[0])
-    const { data: p1All } = await supabase.from('match_participants').select('match_id, team_number, is_winner, result').eq('superstar_id', memberIds[1])
-
-    if (p0All && p1All) {
-      const p0Map = new Map<number, any>()
-      for (const r of p0All) p0Map.set(r.match_id, r)
-
-      let wins = 0, losses = 0, draws = 0, nc = 0
-      for (const r of p1All) {
-        const p0r = p0Map.get(r.match_id)
-        if (!p0r || p0r.team_number !== r.team_number) continue
-        if (r.is_winner) wins++
-        else if (r.result === 'loss') losses++
-        else if (r.result === 'draw') draws++
-        else nc++
-      }
-      stats = { totalMatches: matchCount, wins, losses, draws, nc, winRate: matchCount > 0 ? Math.round((wins / matchCount) * 100) : 0 }
-    }
+  // Stats
+  let wins = 0, losses = 0, draws = 0
+  for (const [, isWin] of matchResultsMap) {
+    if (isWin) wins++; else losses++
   }
+  const stats = { totalMatches: matchCount, wins, losses, draws: matchCount - wins - losses, winRate: matchCount > 0 ? Math.round((wins / matchCount) * 100) : 0 }
 
-  // 5. Prev/Next
+  // Championship reigns for this tag team (by reign_group_id or both members)
+  let championships: any[] = []
+  const { data: reigns } = await supabase
+    .from('championship_reigns')
+    .select(`
+      id, reign_start, reign_end, days_held, defense_count,
+      championship:championship_id ( id, name, slug, image_url )
+    `)
+    .eq('tag_team_id', team.id)
+    .order('reign_start', { ascending: false })
+
+  championships = reigns || []
+
+  // Prev/Next
   const { data: prev } = await supabase.from('tag_teams').select('slug, name').lt('name', team.name).order('name', { ascending: false }).limit(1).single()
   const { data: next } = await supabase.from('tag_teams').select('slug, name').gt('name', team.name).order('name', { ascending: true }).limit(1).single()
 
   return NextResponse.json({
-    team,
-    members: members || [],
-    matches,
-    matchCount,
-    matchPage: page,
-    matchTotalPages: Math.ceil(matchCount / limit),
-    stats,
-    prev: prev || null,
-    next: next || null,
+    team, members: members || [], matches, matchCount,
+    matchPage: page, matchTotalPages: Math.ceil(matchCount / limit),
+    stats, championships,
+    prev: prev || null, next: next || null,
   })
 }

@@ -6,40 +6,92 @@ import Link from 'next/link'
 
 interface Props { type: 'tag_team' | 'stable'; title: string; subtitle: string; heroImage: string }
 
-function fmt(d: string | null) { if (!d) return ''; return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) }
-
 export default function TeamListClient({ type, title, subtitle, heroImage }: Props) {
   const [items, setItems] = useState<any[]>([])
+  const [allItems, setAllItems] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [total, setTotal] = useState(0)
-  const [page, setPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(0)
   const [search, setSearch] = useState('')
   const [activeFilter, setActiveFilter] = useState<string>('')
+  const [superstarSearch, setSuperstarSearch] = useState('')
+  const [superstarResults, setSuperstarResults] = useState<any[]>([])
+  const [selectedSuperstar, setSelectedSuperstar] = useState<{ id: number; name: string } | null>(null)
+  const [ssOpen, setSsOpen] = useState(false)
+  const [filterYear, setFilterYear] = useState('')
+  const [years, setYears] = useState<number[]>([])
+  const ssRef = useRef<HTMLDivElement>(null)
+  const debounceRef = useRef<NodeJS.Timeout>()
   const scrollRef = useRef<HTMLDivElement>(null)
 
   const endpoint = type === 'tag_team' ? '/api/tag-teams-list' : '/api/stables-list'
   const basePath = type === 'tag_team' ? '/tag-teams/teams' : '/tag-teams/stables'
 
-  const fetchData = useCallback(async (p: number) => {
+  const fetchData = useCallback(async () => {
     setLoading(true)
-    const params = new URLSearchParams({ page: String(p) })
+    const params = new URLSearchParams({ page: '1' })
     if (search) params.set('search', search)
     if (activeFilter) params.set('active', activeFilter)
     try {
       const r = await fetch(`${endpoint}?${params}`)
       const d = await r.json()
-      setItems(d.teams || d.stables || [])
-      setTotal(d.total || 0)
-      setTotalPages(d.totalPages || 0)
-      setPage(d.page || 1)
+      const raw = d.teams || d.stables || []
+      setAllItems(raw)
+
+      // Extract years
+      const ys = new Set<number>()
+      for (const item of raw) {
+        if (item.formed_date) ys.add(parseInt(item.formed_date.substring(0, 4)))
+      }
+      setYears(Array.from(ys).sort((a, b) => b - a))
     } catch {}
     setLoading(false)
   }, [endpoint, search, activeFilter])
 
-  useEffect(() => { fetchData(1) }, [fetchData])
+  useEffect(() => { fetchData() }, [fetchData])
 
-  const goPage = (n: number) => { fetchData(n); scrollRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }
+  // Client-side filtering for superstar and year
+  useEffect(() => {
+    let filtered = allItems
+
+    if (selectedSuperstar) {
+      filtered = filtered.filter(item => {
+        const memberIds = (item.members || []).map((m: any) => m.superstar?.id).filter(Boolean)
+        return memberIds.includes(selectedSuperstar.id)
+      })
+    }
+
+    if (filterYear) {
+      filtered = filtered.filter(item => {
+        if (!item.formed_date) return false
+        return item.formed_date.startsWith(filterYear)
+      })
+    }
+
+    setItems(filtered)
+  }, [allItems, selectedSuperstar, filterYear])
+
+  // Superstar autocomplete
+  const handleSuperstarSearch = (q: string) => {
+    setSuperstarSearch(q)
+    if (q.length < 2) { setSuperstarResults([]); setSsOpen(false); return }
+    clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const r = await fetch(`/api/search-superstars?q=${encodeURIComponent(q)}`)
+        const d = await r.json()
+        setSuperstarResults(d.results || [])
+        setSsOpen(true)
+      } catch {}
+    }, 300)
+  }
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => { if (ssRef.current && !ssRef.current.contains(e.target as Node)) setSsOpen(false) }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  const hasFilters = !!search || !!activeFilter || !!selectedSuperstar || !!filterYear
+  const resetAll = () => { setSearch(''); setActiveFilter(''); setSelectedSuperstar(null); setSuperstarSearch(''); setFilterYear('') }
 
   return (
     <div className="min-h-screen bg-bg-primary" ref={scrollRef}>
@@ -65,21 +117,65 @@ export default function TeamListClient({ type, title, subtitle, heroImage }: Pro
       {/* FILTERS */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6">
         <div className="flex flex-col sm:flex-row gap-3">
+          {/* Search name */}
           <div className="relative flex-1 sm:max-w-xs">
             <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-            <input type="text" placeholder={`Search ${type === 'tag_team' ? 'tag teams' : 'stables'}...`} value={search} onChange={e => { setSearch(e.target.value); setPage(1) }}
+            <input type="text" placeholder={`Search ${type === 'tag_team' ? 'tag teams' : 'stables'}...`} value={search} onChange={e => setSearch(e.target.value)}
               className="w-full bg-bg-tertiary border border-border-subtle/30 rounded-xl pl-10 pr-4 py-2.5 text-xs text-text-white placeholder-text-secondary focus:border-neon-blue/50 focus:outline-none" />
           </div>
+
+          {/* Superstar filter */}
+          <div ref={ssRef} className="relative flex-1 sm:max-w-xs">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+            <input type="text" placeholder="Filter by Superstar..." value={selectedSuperstar ? selectedSuperstar.name : superstarSearch}
+              onChange={e => { if (selectedSuperstar) setSelectedSuperstar(null); handleSuperstarSearch(e.target.value) }}
+              className="w-full bg-bg-tertiary border border-border-subtle/30 rounded-xl pl-10 pr-8 py-2.5 text-xs text-text-white placeholder-text-secondary focus:border-neon-blue/50 focus:outline-none" />
+            {selectedSuperstar && (
+              <button onClick={() => { setSelectedSuperstar(null); setSuperstarSearch('') }}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-white">
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            )}
+            {ssOpen && superstarResults.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-bg-secondary border border-border-subtle/40 rounded-xl overflow-hidden shadow-xl z-50 max-h-48 overflow-y-auto">
+                {superstarResults.map((s: any) => (
+                  <button key={s.id} onClick={() => { setSelectedSuperstar({ id: s.id, name: s.name }); setSuperstarSearch(''); setSsOpen(false) }}
+                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-text-white hover:bg-bg-tertiary transition-colors text-left">
+                    {s.photo_url && <div className="w-6 h-6 rounded-full overflow-hidden shrink-0"><Image src={s.photo_url} alt="" width={24} height={24} className="w-full h-full object-cover" /></div>}
+                    <span className="truncate">{s.name}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Year filter */}
+          {years.length > 0 && (
+            <select value={filterYear} onChange={e => setFilterYear(e.target.value)}
+              className="bg-bg-tertiary border border-border-subtle/30 rounded-xl px-3 py-2.5 text-xs text-text-white focus:border-neon-blue/50 focus:outline-none sm:w-32 appearance-none"
+              style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 8px center', backgroundRepeat: 'no-repeat', backgroundSize: '16px', paddingRight: '32px' }}>
+              <option value="">All years</option>
+              {years.map(y => <option key={y} value={String(y)}>{y}</option>)}
+            </select>
+          )}
+
+          {/* Active/Inactive */}
           <div className="flex items-center gap-1.5">
             {['', 'true', 'false'].map(v => (
-              <button key={v} onClick={() => { setActiveFilter(v); setPage(1) }}
+              <button key={v} onClick={() => setActiveFilter(v)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${activeFilter === v ? 'bg-neon-blue/15 border-neon-blue/30 text-neon-blue' : 'bg-bg-secondary/30 border-border-subtle/20 text-text-secondary hover:text-text-white'}`}>
                 {v === '' ? 'All' : v === 'true' ? '🟢 Active' : '⚪ Inactive'}
               </button>
             ))}
           </div>
+
+          {hasFilters && (
+            <button onClick={resetAll} className="text-xs text-neon-pink hover:text-neon-pink/80 flex items-center gap-1 shrink-0">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg> Clear
+            </button>
+          )}
         </div>
-        <p className="text-text-secondary text-xs mt-3">{loading ? 'Loading...' : `${total} ${type === 'tag_team' ? 'tag team' : 'stable'}${total !== 1 ? 's' : ''}`}</p>
+        <p className="text-text-secondary text-xs mt-3">{loading ? 'Loading...' : `${items.length} ${type === 'tag_team' ? 'tag team' : 'stable'}${items.length !== 1 ? 's' : ''}`}</p>
       </section>
 
       {/* GRID */}
@@ -89,22 +185,14 @@ export default function TeamListClient({ type, title, subtitle, heroImage }: Pro
             {Array.from({ length: 12 }).map((_, i) => <div key={i} className="h-56 rounded-2xl bg-bg-secondary/30 animate-pulse" />)}
           </div>
         ) : items.length === 0 ? (
-          <div className="text-center py-20"><p className="text-text-secondary text-lg">None found</p></div>
+          <div className="text-center py-20">
+            <p className="text-text-secondary text-lg">None found</p>
+            {hasFilters && <button onClick={resetAll} className="mt-3 text-sm text-neon-blue hover:underline">Clear filters</button>}
+          </div>
         ) : (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {items.map(item => <TeamCard key={item.id} item={item} basePath={basePath} />)}
-            </div>
-            {totalPages > 1 && (
-              <div className="flex items-center justify-between gap-4 mt-8 pt-6 border-t border-border-subtle/20">
-                <p className="text-xs text-text-secondary">Page {page} of {totalPages}</p>
-                <div className="flex items-center gap-1">
-                  <button onClick={() => goPage(page - 1)} disabled={page === 1} className="w-8 h-8 rounded-lg border border-border-subtle/30 flex items-center justify-center text-text-secondary disabled:opacity-30"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg></button>
-                  <button onClick={() => goPage(page + 1)} disabled={page >= totalPages} className="w-8 h-8 rounded-lg border border-border-subtle/30 flex items-center justify-center text-text-secondary disabled:opacity-30"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg></button>
-                </div>
-              </div>
-            )}
-          </>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {items.map(item => <TeamCard key={item.id} item={item} basePath={basePath} />)}
+          </div>
         )}
       </section>
 
@@ -143,20 +231,16 @@ function TeamCard({ item, basePath }: { item: any; basePath: string }) {
           </div>
         )}
 
-        {/* Status + date */}
-        <div className="absolute top-2 right-2 flex items-center gap-1">
-          {item.is_active && <span className="w-2 h-2 rounded-full bg-emerald-400" />}
-          {item.formed_date && <span className="text-[9px] text-text-secondary/80 font-mono bg-bg-primary/70 backdrop-blur-sm px-1.5 py-0.5 rounded">{fmt(item.formed_date)}</span>}
-        </div>
+        {/* Active badge */}
+        {item.is_active && (
+          <div className="absolute top-2 right-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col flex-1 p-4">
         <h3 className="font-display text-sm font-bold text-text-white group-hover:text-neon-blue transition-colors">{item.name}</h3>
-        {item.formed_date && (
-          <p className="text-[10px] text-text-secondary mt-1">
-            {fmt(item.formed_date)} — {item.split_date ? fmt(item.split_date) : 'Present'}
-          </p>
-        )}
         <div className="mt-auto pt-3 flex items-center justify-between">
           <span className="text-[10px] text-text-secondary">{members.length} member{members.length !== 1 ? 's' : ''}</span>
           <span className="text-[10px] text-neon-blue font-medium group-hover:translate-x-1 transition-transform">View →</span>

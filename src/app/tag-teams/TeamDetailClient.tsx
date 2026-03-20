@@ -23,6 +23,7 @@ export default function TeamDetailClient({ type }: Props) {
   const [matchPage, setMatchPage] = useState(1)
   const [matchTotalPages, setMatchTotalPages] = useState(0)
   const [stats, setStats] = useState<any>(null)
+  const [championships, setChampionships] = useState<any[]>([])
   const [prev, setPrev] = useState<any>(null)
   const [next, setNext] = useState<any>(null)
   const [loading, setLoading] = useState(true)
@@ -44,6 +45,7 @@ export default function TeamDetailClient({ type }: Props) {
       setMatchPage(d.matchPage || 1)
       setMatchTotalPages(d.matchTotalPages || 0)
       setStats(d.stats || null)
+      setChampionships(d.championships || [])
       setPrev(d.prev || null)
       setNext(d.next || null)
     } catch {}
@@ -134,6 +136,36 @@ export default function TeamDetailClient({ type }: Props) {
                   ))}
                 </div>
               </div>
+
+              {/* Championships (tag teams only) */}
+              {championships.length > 0 && (
+                <div className="mb-4">
+                  <p className="text-[10px] text-text-secondary uppercase tracking-wider mb-2">Championship Reigns</p>
+                  <div className="flex flex-col gap-2">
+                    {championships.map((r: any) => (
+                      <div key={r.id} className="flex items-center gap-3 px-3 py-2 rounded-xl bg-neon-blue/5 border border-neon-blue/15">
+                        {r.championship?.image_url && (
+                          <div className="relative w-10 h-10 shrink-0">
+                            <Image src={r.championship.image_url} alt={r.championship.name} fill className="object-contain" sizes="40px" />
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          {r.championship?.slug ? (
+                            <Link href={`/champions/${r.championship.slug}`} className="text-xs text-neon-blue font-bold hover:underline">{r.championship.name}</Link>
+                          ) : (
+                            <span className="text-xs text-neon-blue font-bold">{r.championship?.name}</span>
+                          )}
+                          <p className="text-[10px] text-text-secondary">
+                            {r.reign_start ? fmt(r.reign_start) : '?'} — {r.reign_end ? fmt(r.reign_end) : 'Present'}
+                            {r.days_held ? ` · ${r.days_held} days` : ''}
+                            {r.defense_count ? ` · ${r.defense_count} defense${r.defense_count > 1 ? 's' : ''}` : ''}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <ShareButtons title={`${entity.name} — WWE ${label} | Pinfall Data`} />
             </div>
