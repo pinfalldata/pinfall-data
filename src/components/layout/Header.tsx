@@ -19,9 +19,11 @@ const NAV_ITEMS: NavItem[] = [
     href: '/matches',
     children: [
       { label: 'Match Search', href: '/matches/search', icon: '🔍' },
+      { label: 'Segment Search', href: '/matches/segments', icon: '🎤' },
       { label: 'All Shows', href: '/matches/shows', icon: '📺' },
       { label: 'All PLEs', href: '/matches/ple', icon: '🏟️' },
       { label: 'Match Stipulations', href: '/matches/stipulations', icon: '⚔️' },
+      { label: 'All Arenas', href: '/matches/arenas', icon: '🏛️' },
     ],
   },
   { key: 'superstars', href: '/superstars', children: [

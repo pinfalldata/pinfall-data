@@ -34,6 +34,7 @@ export async function GET(request: NextRequest) {
   const championshipId = searchParams.get('championshipId')
   const championshipOnly = searchParams.get('championshipOnly') === 'true'
   const titleChangeOnly = searchParams.get('titleChangeOnly') === 'true'
+  const omgOnly = searchParams.get('omgOnly') === 'true'
 
   try {
     // If superstarId filter is set, first get match IDs from participants
@@ -89,6 +90,25 @@ export async function GET(request: NextRequest) {
             return mateTeam !== undefined && mateTeam === myTeam
           })
         }
+      }
+
+      if (superstarMatchIds.length === 0) {
+        return NextResponse.json({ matches: [], total: 0, page, limit, totalPages: 0 })
+      }
+    }
+
+    // OMG Moments filter — only show matches that have an OMG moment
+    if (omgOnly) {
+      const { data: omgMatches } = await supabase
+        .from('omg_moments')
+        .select('match_id')
+        .not('match_id', 'is', null)
+      const omgMatchIds = new Set((omgMatches || []).map(o => o.match_id).filter(Boolean))
+
+      if (superstarMatchIds) {
+        superstarMatchIds = superstarMatchIds.filter(id => omgMatchIds.has(id))
+      } else {
+        superstarMatchIds = [...omgMatchIds]
       }
 
       if (superstarMatchIds.length === 0) {
