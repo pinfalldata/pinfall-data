@@ -13,6 +13,7 @@ export async function GET(request: NextRequest) {
   const search = searchParams.get('search')
   const classFilter = searchParams.get('class')
   const sort = searchParams.get('sort') || 'newest'
+  const superstarId = searchParams.get('superstarId')
 
   try {
     let query = supabase.from('hall_of_fame')
@@ -21,6 +22,7 @@ export async function GET(request: NextRequest) {
     if (year) query = query.eq('induction_year', parseInt(year))
     if (classFilter) query = query.eq('class', classFilter)
     if (search) query = query.ilike('inductee_name', `%${search}%`)
+    if (superstarId) query = query.eq('superstar_id', parseInt(superstarId))
 
     if (sort === 'oldest') query = query.order('induction_year', { ascending: true })
     else if (sort === 'alpha') query = query.order('inductee_name', { ascending: true })

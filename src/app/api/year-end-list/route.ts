@@ -13,6 +13,7 @@ export async function GET(request: NextRequest) {
   const category = searchParams.get('category')
   const search = searchParams.get('search')
   const sort = searchParams.get('sort') || 'newest'
+  const superstarId = searchParams.get('superstarId')
 
   try {
     let query = supabase.from('year_end_awards')
@@ -21,6 +22,7 @@ export async function GET(request: NextRequest) {
     if (year) query = query.eq('year', parseInt(year))
     if (category) query = query.eq('category', category)
     if (search) query = query.or(`winner_name.ilike.%${search}%,category.ilike.%${search}%`)
+    if (superstarId) query = query.eq('winner_id', parseInt(superstarId))
 
     if (sort === 'oldest') query = query.order('year', { ascending: true })
     else if (sort === 'alpha') query = query.order('winner_name', { ascending: true })

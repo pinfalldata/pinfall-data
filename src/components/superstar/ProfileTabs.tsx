@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { hasRole } from '@/lib/utils'
 import { TabProfile } from './TabProfile'
 import { TabTimeline } from './TabTimeline'
@@ -27,6 +27,9 @@ interface RoleCounts {
 export function ProfileTabs({ superstar }: { superstar: any }) {
   const [activeTab, setActiveTab] = useState('profile')
   const [roleCounts, setRoleCounts] = useState<RoleCounts | null>(null)
+  const [showLeft, setShowLeft] = useState(false)
+  const [showRight, setShowRight] = useState(false)
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   const isWrestler = hasRole(superstar, 'wrestler')
   const filmEntry = superstar.films?.[0]
@@ -34,13 +37,30 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
   const hasBooksOrFilms = (superstar.books?.length > 0) || hasFilmLinks
   const hasMatches = isWrestler && (superstar.total_matches > 0)
 
-  // Fetch role counts to determine which tabs to show
   useEffect(() => {
     fetch(`/api/superstar-role-counts?superstarId=${superstar.id}`)
       .then(r => r.json())
       .then(d => setRoleCounts(d))
       .catch(() => {})
   }, [superstar.id])
+
+  const checkScroll = () => {
+    const el = scrollRef.current
+    if (!el) return
+    setShowLeft(el.scrollLeft > 10)
+    setShowRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 10)
+  }
+
+  useEffect(() => {
+    checkScroll()
+    window.addEventListener('resize', checkScroll)
+    return () => window.removeEventListener('resize', checkScroll)
+  }, [roleCounts])
+
+  const scroll = (dir: number) => {
+    scrollRef.current?.scrollBy({ left: dir * 200, behavior: 'smooth' })
+    setTimeout(checkScroll, 300)
+  }
 
   const rc = roleCounts
 
@@ -73,27 +93,49 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
 
   return (
     <div className="max-w-[1440px] mx-auto">
-      {/* Tab navigation — sticky, scrollable */}
+      {/* Tab navigation — sticky with scroll arrows */}
       <div className="sticky top-[72px] z-30 bg-bg-primary/90 backdrop-blur-md border-b border-border-subtle/50">
-        <div className="px-4 sm:px-6 lg:px-8 flex items-center gap-0.5 overflow-x-auto scrollbar-hide">
-          {tabs.map((tab) => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-              className={`relative px-3 sm:px-5 py-4 text-xs sm:text-sm font-body font-medium whitespace-nowrap transition-colors flex items-center gap-1 ${
-                activeTab === tab.id ? 'text-neon-blue' : 'text-text-secondary hover:text-text-white'
-              }`}>
-              {tab.label}
-              {tab.count != null && tab.count > 0 && (
-                <span className={`text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-full font-mono ${
-                  activeTab === tab.id ? 'bg-neon-blue/20 text-neon-blue' : 'bg-bg-tertiary text-text-secondary'
-                }`}>
-                  {tab.count > 999 ? `${(tab.count / 1000).toFixed(1)}k` : tab.count}
-                </span>
-              )}
-              {activeTab === tab.id && (
-                <span className="absolute bottom-0 left-2 right-2 h-[2px] rounded-full bg-neon-blue shadow-[0_0_8px_rgba(199,160,90,0.5)]" />
-              )}
+        <div className="relative px-4 sm:px-6 lg:px-8">
+          {/* Left fade + arrow */}
+          {showLeft && (
+            <button onClick={() => scroll(-1)}
+              className="absolute left-0 top-0 bottom-0 z-10 w-10 flex items-center justify-center bg-gradient-to-r from-bg-primary via-bg-primary/90 to-transparent"
+              aria-label="Scroll tabs left">
+              <svg className="w-4 h-4 text-text-secondary hover:text-neon-blue transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
             </button>
-          ))}
+          )}
+          {/* Right fade + arrow */}
+          {showRight && (
+            <button onClick={() => scroll(1)}
+              className="absolute right-0 top-0 bottom-0 z-10 w-10 flex items-center justify-center bg-gradient-to-l from-bg-primary via-bg-primary/90 to-transparent"
+              aria-label="Scroll tabs right">
+              <svg className="w-4 h-4 text-text-secondary hover:text-neon-blue transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          )}
+
+          <div ref={scrollRef} onScroll={checkScroll}
+            className="flex items-center gap-0.5 overflow-x-auto scrollbar-hide">
+            {tabs.map((tab) => (
+              <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                className={`relative px-3 sm:px-5 py-4 text-xs sm:text-sm font-body font-medium whitespace-nowrap transition-colors flex items-center gap-1 shrink-0 ${
+                  activeTab === tab.id ? 'text-neon-blue' : 'text-text-secondary hover:text-text-white'
+                }`}>
+                {tab.label}
+                {tab.count != null && tab.count > 0 && (
+                  <span className={`text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-full font-mono ${
+                    activeTab === tab.id ? 'bg-neon-blue/20 text-neon-blue' : 'bg-bg-tertiary text-text-secondary'
+                  }`}>{tab.count > 999 ? `${(tab.count / 1000).toFixed(1)}k` : tab.count}</span>
+                )}
+                {activeTab === tab.id && (
+                  <span className="absolute bottom-0 left-2 right-2 h-[2px] rounded-full bg-neon-blue shadow-[0_0_8px_rgba(199,160,90,0.5)]" />
+                )}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
