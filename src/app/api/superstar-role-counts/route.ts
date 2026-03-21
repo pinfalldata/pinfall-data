@@ -36,6 +36,7 @@ export async function GET(request: NextRequest) {
       { count: hallOfFame },
       { count: slammyAwards },
       { count: yearEndAwards },
+      { count: objectsUsed },
     ] = await Promise.all([
       supabase.from('show_segment_participants').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
       supabase.from('match_managers').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
@@ -55,6 +56,7 @@ export async function GET(request: NextRequest) {
       supabase.from('hall_of_fame').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
       supabase.from('slammy_awards').select('*', { count: 'exact', head: true }).eq('winner_id', sid),
       supabase.from('year_end_awards').select('*', { count: 'exact', head: true }).eq('winner_id', sid),
+      supabase.from('match_object_usage').select('*', { count: 'exact', head: true }).eq('used_by_superstar_id', sid),
     ])
 
     // OMG count = unique moments (participant + direct)
@@ -79,9 +81,10 @@ export async function GET(request: NextRequest) {
       hallOfFame: hallOfFame || 0,
       slammyAwards: slammyAwards || 0,
       yearEndAwards: yearEndAwards || 0,
+      objectsUsed: objectsUsed || 0,
     })
   } catch (err) {
     console.error('[superstar-role-counts]', err)
-    return NextResponse.json({ segments:0,managed:0,commentated:0,matchCommentated:0,ringAnnounced:0,refereed:0,guestRefereed:0,interviewed:0,gmTenures:0,execTenures:0,championships:0,omgMoments:0,tagTeams:0,stables:0,hallOfFame:0,slammyAwards:0,yearEndAwards:0 })
+    return NextResponse.json({ segments:0,managed:0,commentated:0,matchCommentated:0,ringAnnounced:0,refereed:0,guestRefereed:0,interviewed:0,gmTenures:0,execTenures:0,championships:0,omgMoments:0,tagTeams:0,stables:0,hallOfFame:0,slammyAwards:0,yearEndAwards:0,objectsUsed:0 })
   }
 }
