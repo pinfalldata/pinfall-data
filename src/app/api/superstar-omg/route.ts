@@ -113,10 +113,34 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    // Enrich with match slugs (for linking to /shows/{showSlug}/matches/{matchSlug})
+    const matchIds = [...new Set((moments || []).map(m => m.match_id).filter(Boolean))]
+    let matchMap: Record<number, any> = {}
+    if (matchIds.length > 0) {
+      const { data: matches } = await supabase
+        .from('matches')
+        .select('id, slug, show_id')
+        .in('id', matchIds)
+      for (const m of (matches || [])) matchMap[m.id] = m
+    }
+
+    // Enrich with segment slugs (for linking to /shows/{showSlug}/segments/{segmentSlug})
+    const segmentIds = [...new Set((moments || []).map(m => m.segment_id).filter(Boolean))]
+    let segmentMap: Record<number, any> = {}
+    if (segmentIds.length > 0) {
+      const { data: segments } = await supabase
+        .from('show_segments')
+        .select('id, slug, show_id')
+        .in('id', segmentIds)
+      for (const s of (segments || [])) segmentMap[s.id] = s
+    }
+
     const enriched = (moments || []).map(m => ({
       ...m,
       show: m.show_id ? showMap[m.show_id] || null : null,
       participants: participantMap[m.id] || [],
+      match: m.match_id ? matchMap[m.match_id] || null : null,
+      segment: m.segment_id ? segmentMap[m.segment_id] || null : null,
     }))
 
     const total = count || 0

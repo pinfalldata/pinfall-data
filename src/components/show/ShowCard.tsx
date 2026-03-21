@@ -272,6 +272,53 @@ function MatchCard({ match, show, color, spoilerMode, index, isMainEvent, omgMom
               via {getResultLabel(match.result_type)}
             </p>
           )}
+
+          {/* OMG Moment — prominent banner inside match card */}
+          {omgMoments.length > 0 && (() => {
+            const omg = omgMoments[0]
+            const catConfig: Record<string, { label: string; color: string; icon: string }> = {
+              extreme: { label: 'Extreme', color: '#ef4444', icon: '🔥' },
+              wtf: { label: 'WTF', color: '#a855f7', icon: '🤯' },
+              sexy: { label: 'Sexy', color: '#ec4899', icon: '💋' },
+              return: { label: 'Return', color: '#22c55e', icon: '🚀' },
+              betrayal: { label: 'Betrayal', color: '#f97316', icon: '🗡️' },
+              emotional: { label: 'Emotional', color: '#3b82f6', icon: '💎' },
+            }
+            const cat = catConfig[omg.category] || { label: 'OMG', color: '#c7a05a', icon: '⚡' }
+            return (
+              <div
+                className="mt-4 relative overflow-hidden rounded-lg border"
+                style={{
+                  borderColor: `${cat.color}30`,
+                  background: `linear-gradient(135deg, ${cat.color}08, transparent)`,
+                }}
+              >
+                <div
+                  className="absolute top-0 left-0 right-0 h-[2px]"
+                  style={{
+                    background: `linear-gradient(90deg, transparent, ${cat.color}60, ${cat.color}, ${cat.color}60, transparent)`,
+                    backgroundSize: '200% 100%',
+                    animation: 'omg-sweep 3s ease-in-out infinite',
+                  }}
+                />
+                <div className="px-3 py-2.5 flex items-center gap-2.5">
+                  <span className="text-lg shrink-0" style={{ filter: `drop-shadow(0 0 3px ${cat.color}40)` }}>{cat.icon}</span>
+                  <div className="flex-1 min-w-0">
+                    <span className="text-[9px] font-black uppercase tracking-widest block" style={{ color: cat.color }}>
+                      ⚡ OMG {cat.label} Moment
+                    </span>
+                    <span className="text-xs text-text-white font-medium truncate block">{omg.title}</span>
+                  </div>
+                </div>
+                <style jsx>{`
+                  @keyframes omg-sweep {
+                    0% { background-position: -100% 0; }
+                    100% { background-position: 200% 0; }
+                  }
+                `}</style>
+              </div>
+            )
+          })()}
         </div>
       </div>
     </Link>

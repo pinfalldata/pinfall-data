@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
 
 /**
  * Animated OMG Moment badge — WWE premium design.
@@ -185,27 +184,13 @@ export function OMGBadge({ matchId, segmentId, showId, moments: preloaded, varia
               ⚡ OMG {cat.label} Moment
             </span>
           </div>
-          <Link
-            href={`/omg-moments/${getCategorySlug(m.category)}`}
-            className="text-sm text-text-white font-semibold hover:underline line-clamp-1 transition-colors"
+          <p
+            className="text-sm text-text-white font-semibold line-clamp-1"
             style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}
           >
             {m.title}
-          </Link>
+          </p>
         </div>
-
-        <Link
-          href={`/omg-moments/${getCategorySlug(m.category)}`}
-          className="text-[10px] font-bold shrink-0 px-3 py-1.5 rounded-lg transition-all uppercase tracking-wider hover:scale-105"
-          style={{
-            color: cat.color,
-            background: `${cat.color}15`,
-            border: `1px solid ${cat.color}25`,
-            boxShadow: `0 0 10px ${cat.color}10`,
-          }}
-        >
-          View →
-        </Link>
       </div>
 
       {/* CSS animations */}
@@ -229,12 +214,4 @@ export function OMGBadge({ matchId, segmentId, showId, moments: preloaded, varia
       `}</style>
     </div>
   )
-}
-
-function getCategorySlug(cat: string): string {
-  const map: Record<string, string> = {
-    extreme: 'extreme-moments', wtf: 'wtf-moments', sexy: 'sexy-moments',
-    return: 'greatest-returns', betrayal: 'greatest-betrayals', emotional: 'most-emotional-moments',
-  }
-  return map[cat] || 'extreme-moments'
 }

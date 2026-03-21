@@ -23,6 +23,27 @@ function fmtDate(d: string | null) {
   return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
 }
 
+/**
+ * Build the best link for an OMG moment:
+ * - match → /shows/{showSlug}/matches/{matchSlug}
+ * - segment → /shows/{showSlug}/segments/{segmentSlug}
+ * - show only → /shows/{showSlug}
+ * - fallback → /omg-moments/{categorySlug}
+ */
+function getOMGHref(m: any): string {
+  const showSlug = m.show?.slug
+  if (showSlug && m.match?.slug) {
+    return `/shows/${showSlug}/matches/${m.match.slug}`
+  }
+  if (showSlug && m.segment?.slug) {
+    return `/shows/${showSlug}/segments/${m.segment.slug}`
+  }
+  if (showSlug) {
+    return `/shows/${showSlug}`
+  }
+  return `/omg-moments/${CATEGORY_SLUGS[m.category] || 'extreme-moments'}`
+}
+
 export default function TabOMGMoments({ superstar }: { superstar: any }) {
   const [moments, setMoments] = useState<any[]>([])
   const [total, setTotal] = useState(0)
@@ -99,12 +120,12 @@ export default function TabOMGMoments({ superstar }: { superstar: any }) {
         <div className="space-y-3">
           {moments.map(m => {
             const cat = CATEGORY_CONFIG[m.category] || { label: 'OMG', color: '#c7a05a', icon: '⚡' }
-            const catSlug = CATEGORY_SLUGS[m.category] || 'extreme-moments'
+            const href = getOMGHref(m)
 
             return (
               <Link
                 key={m.id}
-                href={`/omg-moments/${catSlug}`}
+                href={href}
                 className="group block rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 overflow-hidden transition-all hover:border-border-subtle/40 hover:translate-y-[-1px]"
                 style={{ borderLeftWidth: '3px', borderLeftColor: cat.color }}
               >
@@ -133,10 +154,16 @@ export default function TabOMGMoments({ superstar }: { superstar: any }) {
                       {m.title}
                     </p>
 
-                    {/* Show + Participants */}
+                    {/* Show + link target + Participants */}
                     <div className="flex items-center gap-2 mt-1">
                       {m.show && (
                         <span className="text-[10px] text-text-secondary truncate">{m.show.name}</span>
+                      )}
+                      {m.match?.slug && (
+                        <span className="text-[8px] px-1.5 py-0.5 rounded bg-neon-blue/10 border border-neon-blue/20 text-neon-blue font-bold uppercase shrink-0">Match</span>
+                      )}
+                      {!m.match?.slug && m.segment?.slug && (
+                        <span className="text-[8px] px-1.5 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 text-purple-400 font-bold uppercase shrink-0">Segment</span>
                       )}
                       {m.participants && m.participants.length > 0 && (
                         <div className="flex items-center -space-x-1.5 shrink-0">
