@@ -24,6 +24,7 @@ const NAV_ITEMS: NavItem[] = [
       { label: 'All PLEs', href: '/matches/ple', icon: '🏟️' },
       { label: 'Match Stipulations', href: '/matches/stipulations', icon: '⚔️' },
       { label: 'All Arenas', href: '/matches/arenas', icon: '🏛️' },
+      { label: 'Objects Used', href: '/matches/objects', icon: '🪑' },
     ],
   },
   { key: 'superstars', href: '/superstars', children: [
@@ -35,6 +36,7 @@ const NAV_ITEMS: NavItem[] = [
     { label: 'Interviewers', href: '/superstars/interviewers', icon: '🎤' },
     { label: 'General Managers', href: '/superstars/general-managers', icon: '👔' },
     { label: 'Executives', href: '/superstars/executives', icon: '🏛️' },
+    { label: 'Comparator', href: '/superstars/compare', icon: '⚖️' },
   ]},
   { key: 'champions', href: '/champions', children: [
     { label: 'The Title Vault', href: '/champions/the-title-vault', icon: '🏆' },
@@ -194,17 +196,9 @@ export function Header() {
                 </svg>
               </button>
 
-              {/* Language Switcher — placeholder for future implementation */}
-              <button
-                className="p-2 text-text-secondary hover:text-neon-blue transition-all duration-200 relative group"
-                aria-label="Change language"
-                title="Language (coming soon)"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3.6 9h16.8M3.6 15h16.8" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 3a15.3 15.3 0 014 9 15.3 15.3 0 01-4 9 15.3 15.3 0 01-4-9 15.3 15.3 0 014-9z" />
-                </svg>
+              {/* Language Switcher — placeholder */}
+              <button className="p-2 text-text-secondary hover:text-neon-blue transition-all duration-200" aria-label="Change language" title="Language (coming soon)">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 21a9 9 0 100-18 9 9 0 000 18z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3.6 9h16.8M3.6 15h16.8" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 3a15.3 15.3 0 014 9 15.3 15.3 0 01-4 9 15.3 15.3 0 01-4-9 15.3 15.3 0 014-9z" /></svg>
               </button>
 
               <button

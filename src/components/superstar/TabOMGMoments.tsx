@@ -127,7 +127,6 @@ export default function TabOMGMoments({ superstar }: { superstar: any }) {
                 key={m.id}
                 href={href}
                 className="group block rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 overflow-hidden transition-all hover:border-border-subtle/40 hover:translate-y-[-1px]"
-                style={{ borderLeftWidth: '3px', borderLeftColor: cat.color }}
               >
                 <div className="flex items-center gap-4 px-4 py-3.5">
                   {/* Image */}

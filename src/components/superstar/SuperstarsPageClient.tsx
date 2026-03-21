@@ -208,6 +208,21 @@ export default function SuperstarsPageClient() {
             </Link>
           ))}
         </div>
+
+        {/* Comparator button — centered below grid */}
+        <div className="flex justify-center mt-6">
+          <Link href="/superstars/compare"
+            className="group flex items-center gap-4 px-6 sm:px-8 py-4 sm:py-5 rounded-2xl border border-neon-blue/25 bg-neon-blue/5 hover:bg-neon-blue/10 hover:border-neon-blue/40 transition-all duration-300">
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-neon-blue/15 border border-neon-blue/25 text-xl group-hover:scale-110 transition-transform">
+              ⚖️
+            </div>
+            <div className="text-left">
+              <h3 className="font-display text-lg font-bold text-text-white group-hover:text-neon-blue transition-colors">Superstar Comparator</h3>
+              <p className="text-text-secondary text-xs">Compare up to 4 superstars side by side — 20+ stats in one view</p>
+            </div>
+            <svg className="w-5 h-5 text-text-secondary/30 group-hover:text-neon-blue/60 group-hover:translate-x-1 transition-all shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+          </Link>
+        </div>
       </section>
 
       {/* ===== NEON SEPARATOR ===== */}

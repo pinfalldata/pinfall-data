@@ -97,6 +97,17 @@ const SECTIONS = [
     ),
     accent: 'neon-pink',
   },
+  {
+    title: 'Objects Used',
+    description: 'Chairs, tables, ladders, kendo sticks — every foreign object used in WWE matches.',
+    href: '/matches/objects',
+    icon: (
+      <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+      </svg>
+    ),
+    accent: 'neon-blue',
+  },
 ]
 
 export default function MatchesPage() {
@@ -131,11 +142,13 @@ export default function MatchesPage() {
       {/* ===== 6 SECTION BLOCKS (3x2) ===== */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-10 lg:py-14">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
-          {SECTIONS.map((section) => (
+          {SECTIONS.map((section, idx) => (
             <Link
               key={section.href}
               href={section.href}
-              className="group relative rounded-2xl border border-border-subtle/30 bg-bg-secondary/20 overflow-hidden hover:border-neon-blue/25 hover:bg-bg-secondary/40 transition-all duration-300"
+              className={`group relative rounded-2xl border border-border-subtle/30 bg-bg-secondary/20 overflow-hidden hover:border-neon-blue/25 hover:bg-bg-secondary/40 transition-all duration-300 ${
+                idx === SECTIONS.length - 1 ? 'sm:col-start-1 lg:col-start-2' : ''
+              }`}
             >
               <div className="p-5 sm:p-6 lg:p-7 flex items-start gap-4">
                 <div className={`shrink-0 w-12 h-12 rounded-xl flex items-center justify-center border transition-all duration-300
