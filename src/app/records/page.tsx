@@ -77,9 +77,9 @@ export default function RecordsPage() {
       {/* ===== HERO ===== */}
       <section className="relative w-full h-[240px] sm:h-[320px] lg:h-[400px] xl:h-[440px] overflow-hidden">
         <Image
-          src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20Stats%20&%20Records/edge_2026-03-21_17_21_33.138122.jpg.png"
+          src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20Stats%20&%20Records/Edge-20_2026-03-21_18_11_57.238674.jpg.png"
           alt="WWE Records & Statistics" fill priority sizes="100vw" quality={100} unoptimized
-          className="object-cover object-center lg:object-[50%_30%]" />
+          className="object-cover object-center lg:object-[50%_20%]" />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/50 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-bg-primary/30 via-transparent to-bg-primary/30" />
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />

@@ -63,7 +63,11 @@ const NAV_ITEMS: NavItem[] = [
     { label: 'Arena Records', href: '/records/arenas', icon: '🏟️' },
     { label: 'Historical Milestones', href: '/records/milestones', icon: '📊' },
   ]},
-  { key: 'hallOfFame', href: '/hall-of-fame' },
+  { key: 'hallOfFame', href: '/hall-of-fame', children: [
+    { label: 'Hall of Fame', href: '/hall-of-fame/inductees', icon: '🏛️' },
+    { label: 'Slammy Awards', href: '/hall-of-fame/slammy-awards', icon: '🏆' },
+    { label: 'Year-End Awards', href: '/hall-of-fame/year-end-awards', icon: '🎖️' },
+  ]},
   { key: 'bonus', href: '/bonus' },
 ]
 

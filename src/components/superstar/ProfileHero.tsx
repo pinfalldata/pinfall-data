@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { useState } from 'react'
 import { getStatusColor, getStatusLabel, getRoleLabels } from '@/lib/utils'
+import { AwardTrophies } from './AwardTrophies'
 
 export function ProfileHero({ superstar }: { superstar: any }) {
   const [imageError, setImageError] = useState(false)
@@ -106,6 +107,11 @@ export function ProfileHero({ superstar }: { superstar: any }) {
                   HALL OF FAME
                 </span>
               )}
+            </div>
+
+            {/* Award Trophies — Slammy & Year-End */}
+            <div className="flex justify-center sm:justify-start mb-1">
+              <AwardTrophies superstarId={superstar.id} />
             </div>
 
             {primaryNickname && (
