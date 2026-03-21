@@ -5,10 +5,8 @@ import { Oswald, Source_Sans_3, JetBrains_Mono } from 'next/font/google'
 import '@/styles/globals.css'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
-// --- AJOUT ICI ---
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
-// -----------------
 
 const oswald = Oswald({
   subsets: ['latin'],
@@ -37,21 +35,18 @@ export const metadata: Metadata = {
   description:
     'The most comprehensive WWE database ever built. Explore 70+ years of superstars, matches, championships, rivalries, and history. Every stat. Every match. Every moment.',
   keywords: [
-    'WWE stats',
-    'WWE statistics',
-    'WWE database',
-    'WWE match history',
-    'WWE superstars',
-    'WWE championships',
-    'wrestling stats',
-    'WWE records',
-    'WWE results',
-    'WWE match database',
-    'WWE show results',
-    'WrestleMania results',
-    'WWE championship history',
-    'Pinfall Data',
+    'WWE stats', 'WWE statistics', 'WWE database', 'WWE match history',
+    'WWE superstars', 'WWE championships', 'wrestling stats', 'WWE records',
+    'WWE results', 'WWE match database', 'WWE show results',
+    'WrestleMania results', 'WWE championship history', 'Pinfall Data',
   ],
+  icons: {
+    icon: [
+      { url: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Logo%20etc/Logo%202.0%20PNG.png', type: 'image/png' },
+    ],
+    shortcut: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Logo%20etc/Logo%202.0%20PNG.png',
+    apple: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Logo%20etc/Logo%202.0%20PNG.png',
+  },
   openGraph: {
     title: 'Pinfall Data — The Ultimate WWE Statistics Database',
     description:
@@ -110,10 +105,8 @@ export default async function RootLayout({
             <Footer />
           </div>
           
-          {/* --- AJOUT ICI --- */}
           <Analytics />
           <SpeedInsights />
-          {/* ----------------- */}
           
         </NextIntlClientProvider>
       </body>

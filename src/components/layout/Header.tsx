@@ -54,7 +54,15 @@ const NAV_ITEMS: NavItem[] = [
     { label: 'Tag Teams', href: '/tag-teams/teams', icon: '👥' },
     { label: 'Stables', href: '/tag-teams/stables', icon: '⚔️' },
   ]},
-  { key: 'records', href: '/records' },
+  { key: 'records', href: '/records', children: [
+    { label: 'Superstar Records', href: '/records/superstars', icon: '🏆' },
+    { label: 'Championship Records', href: '/records/championships', icon: '🎖️' },
+    { label: 'Match Records', href: '/records/matches', icon: '💥' },
+    { label: 'Tag Team & Stable', href: '/records/tag-teams', icon: '👥' },
+    { label: 'Show & Event', href: '/records/shows', icon: '📺' },
+    { label: 'Arena Records', href: '/records/arenas', icon: '🏟️' },
+    { label: 'Historical Milestones', href: '/records/milestones', icon: '📊' },
+  ]},
   { key: 'hallOfFame', href: '/hall-of-fame' },
   { key: 'bonus', href: '/bonus' },
 ]
