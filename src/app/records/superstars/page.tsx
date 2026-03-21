@@ -81,7 +81,7 @@ export default function SuperstarRecordsPage() {
 function Hero({ title, highlight, sub, img }: { title: string; highlight: string; sub: string; img: string }) {
   return (
     <section className="relative w-full h-[220px] sm:h-[300px] lg:h-[380px] overflow-hidden">
-      <Image src={img} alt={`${title} ${highlight}`} fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-[50%_20%]" />
+      <Image src={img} alt={`${title} ${highlight}`} fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-center lg:object-[50%_15%]" />
       <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/50 to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-r from-bg-primary/30 via-transparent to-bg-primary/30" />
       <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />

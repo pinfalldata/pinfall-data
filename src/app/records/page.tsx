@@ -96,11 +96,13 @@ export default function RecordsPage() {
       {/* ===== SECTION BLOCKS — button style like /matches ===== */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-10 lg:py-14">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
-          {SECTIONS.map((section) => (
+          {SECTIONS.map((section, idx) => (
             <Link
               key={section.href}
               href={section.href}
-              className="group relative rounded-2xl border border-border-subtle/30 bg-bg-secondary/20 overflow-hidden hover:border-neon-blue/25 hover:bg-bg-secondary/40 transition-all duration-300"
+              className={`group relative rounded-2xl border border-border-subtle/30 bg-bg-secondary/20 overflow-hidden hover:border-neon-blue/25 hover:bg-bg-secondary/40 transition-all duration-300 ${
+                idx === SECTIONS.length - 1 ? 'sm:col-start-1 lg:col-start-2' : ''
+              }`}
             >
               <div className="p-5 sm:p-6 lg:p-7 flex items-start gap-4">
                 <div className={`shrink-0 w-12 h-12 rounded-xl flex items-center justify-center border transition-all duration-300
