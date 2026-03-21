@@ -6,6 +6,7 @@ import { StarRating } from '@/components/ui/StarRating'
 import { MediaCarousel } from '@/components/ui/MediaCarousel'
 import { ShareButtons } from '@/components/ui/ShareButtons'
 import { TitleChangeFireworks } from '@/components/match/TitleChangeFireworks'
+import { OMGBadge } from '@/components/ui/OMGBadge'
 import {
   formatDate, formatDuration, formatHeight, formatWeight, formatNumber,
   formatCompactNumber, formatTime,
@@ -314,6 +315,11 @@ export function MatchHero({ match }: { match: any }) {
           <MediaCarousel items={match.media} columns={2} color={color} />
         </div>
       )}
+
+      {/* ===== OMG Moment Badge ===== */}
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+        <OMGBadge matchId={match.id} variant="full" />
+      </div>
 
       {/* ===== Share Buttons ===== */}
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pb-6">
