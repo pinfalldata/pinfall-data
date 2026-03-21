@@ -7,6 +7,7 @@ export const revalidate = 60
 /**
  * GET /api/superstar-role-counts?superstarId=123
  * Returns counts for each role activity to determine which tabs to show.
+ * Now includes: omgMoments, tagTeams, stables
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
@@ -28,6 +29,10 @@ export async function GET(request: NextRequest) {
       { count: gmTenures },
       { count: execTenures },
       { count: championships },
+      { count: omgParticipant },
+      { count: omgDirect },
+      { count: tagTeams },
+      { count: stables },
     ] = await Promise.all([
       supabase.from('show_segment_participants').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
       supabase.from('match_managers').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
@@ -40,7 +45,15 @@ export async function GET(request: NextRequest) {
       supabase.from('general_manager_tenures').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
       supabase.from('executive_tenures').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
       supabase.from('championship_reigns').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
+      supabase.from('omg_moment_participants').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
+      supabase.from('omg_moments').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
+      supabase.from('tag_team_members').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
+      supabase.from('stable_members').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
     ])
+
+    // OMG count = unique moments (participant + direct)
+    // This is an approximation — could double-count but it's for tab visibility only
+    const omgMoments = Math.max((omgParticipant || 0), (omgDirect || 0))
 
     return NextResponse.json({
       segments: segments || 0,
@@ -54,9 +67,12 @@ export async function GET(request: NextRequest) {
       gmTenures: gmTenures || 0,
       execTenures: execTenures || 0,
       championships: championships || 0,
+      omgMoments: omgMoments || 0,
+      tagTeams: tagTeams || 0,
+      stables: stables || 0,
     })
   } catch (err) {
     console.error('[superstar-role-counts]', err)
-    return NextResponse.json({ segments:0,managed:0,commentated:0,matchCommentated:0,ringAnnounced:0,refereed:0,guestRefereed:0,interviewed:0,gmTenures:0,execTenures:0,championships:0 })
+    return NextResponse.json({ segments:0,managed:0,commentated:0,matchCommentated:0,ringAnnounced:0,refereed:0,guestRefereed:0,interviewed:0,gmTenures:0,execTenures:0,championships:0,omgMoments:0,tagTeams:0,stables:0 })
   }
 }

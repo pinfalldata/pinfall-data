@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { StarRating } from '@/components/ui/StarRating'
 import { MediaCarousel } from '@/components/ui/MediaCarousel'
+import { OMGBadge } from '@/components/ui/OMGBadge'
 import {
   formatDuration, getRatingColor, getRatingBgColor, getResultLabel,
   isBattleRoyalType, isScoredMatch, groupParticipantsByTeam,
@@ -17,6 +18,21 @@ export function ShowCard({ show }: { show: any }) {
 
   const matchCount = (show.matches || []).length
   const segmentCount = (show.segments || []).length
+
+  // OMG moments batch fetch
+  const [omgByMatch, setOmgByMatch] = useState<Record<number, any[]>>({})
+  const [omgBySegment, setOmgBySegment] = useState<Record<number, any[]>>({})
+
+  useEffect(() => {
+    if (!show.id) return
+    fetch(`/api/omg-batch?showId=${show.id}`)
+      .then(r => r.json())
+      .then(d => {
+        setOmgByMatch(d.byMatch || {})
+        setOmgBySegment(d.bySegment || {})
+      })
+      .catch(() => {})
+  }, [show.id])
 
   // Merge matches and segments into timeline
   const timeline = useMemo(() => {
@@ -87,8 +103,9 @@ export function ShowCard({ show }: { show: any }) {
                 spoilerMode={spoilerMode}
                 index={i}
                 isMainEvent={item.data.id === lastMatchId}
+                omgMoments={omgByMatch[item.data.id] || []}
               />
-            : <SegmentCard key={`s-${item.data.id}`} segment={item.data} show={show} color={color} spoilerMode={spoilerMode} />
+            : <SegmentCard key={`s-${item.data.id}`} segment={item.data} show={show} color={color} spoilerMode={spoilerMode} omgMoments={omgBySegment[item.data.id] || []} />
         ))}
       </div>
 
@@ -106,8 +123,8 @@ export function ShowCard({ show }: { show: any }) {
 // MATCH CARD
 // ============================================================
 
-function MatchCard({ match, show, color, spoilerMode, index, isMainEvent }: {
-  match: any; show: any; color: string; spoilerMode: boolean; index: number; isMainEvent: boolean
+function MatchCard({ match, show, color, spoilerMode, index, isMainEvent, omgMoments }: {
+  match: any; show: any; color: string; spoilerMode: boolean; index: number; isMainEvent: boolean; omgMoments: any[]
 }) {
   const participants = match.participants || []
   const teams = groupParticipantsByTeam(participants)
@@ -150,6 +167,9 @@ function MatchCard({ match, show, color, spoilerMode, index, isMainEvent }: {
               <span className="text-[10px] px-2 py-0.5 bg-neon-pink/20 text-neon-pink border border-neon-pink/30 rounded-full font-bold uppercase">
                 Title Change
               </span>
+            )}
+            {omgMoments.length > 0 && (
+              <OMGBadge moments={omgMoments} variant="inline" />
             )}
           </div>
           <div className="flex items-center gap-2">
@@ -387,8 +407,8 @@ function BattleRoyalParticipants({ participants, spoilerMode, color, match }: {
 // SEGMENT CARD
 // ============================================================
 
-function SegmentCard({ segment, show, color, spoilerMode }: {
-  segment: any; show: any; color: string; spoilerMode: boolean
+function SegmentCard({ segment, show, color, spoilerMode, omgMoments }: {
+  segment: any; show: any; color: string; spoilerMode: boolean; omgMoments: any[]
 }) {
   const participants = segment.participants || []
   const isSpoiler = segment.is_spoiler && spoilerMode
@@ -404,9 +424,14 @@ function SegmentCard({ segment, show, color, spoilerMode }: {
         <div className="flex items-center gap-4 px-4 sm:px-6 py-4">
           <span className="text-xl shrink-0">{getSegmentCategoryIcon(segment.category)}</span>
           <div className="flex-1 min-w-0">
-            <p className="text-[10px] text-text-secondary uppercase tracking-widest mb-0.5">
-              {getSegmentCategoryLabel(segment.category)}
-            </p>
+            <div className="flex items-center gap-2 mb-0.5">
+              <p className="text-[10px] text-text-secondary uppercase tracking-widest">
+                {getSegmentCategoryLabel(segment.category)}
+              </p>
+              {omgMoments.length > 0 && (
+                <OMGBadge moments={omgMoments} variant="inline" />
+              )}
+            </div>
             {isSpoiler ? (
               <p className="text-sm text-text-secondary italic">
                 [Segment hidden — disable Spoiler-Free mode to reveal]

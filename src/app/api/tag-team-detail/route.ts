@@ -123,10 +123,11 @@ export async function GET(request: NextRequest) {
         .in('id', pageIds)
 
       // Query 2: participants SEPARATE (this is the key fix)
+      // NOTE: 'result' field does NOT exist in match_participants — removed to fix silent query failure
       const { data: partsData } = await supabase
         .from('match_participants')
         .select(`
-          id, match_id, team_number, result, is_winner,
+          id, match_id, team_number, is_winner, photo_url_override,
           superstar:superstar_id ( id, name, slug, photo_url )
         `)
         .in('match_id', pageIds)

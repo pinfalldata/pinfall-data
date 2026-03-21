@@ -3,6 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { OMGBadge } from '@/components/ui/OMGBadge';
 
 interface SegmentMedia {
   id: string;
@@ -248,6 +249,11 @@ export default function SegmentDetail({ segment }: { segment: Segment }) {
             <h1 className="font-display text-2xl sm:text-3xl lg:text-5xl font-bold text-text-white tracking-tight text-center mb-4">
               {segment.title}
             </h1>
+
+            {/* OMG Moment badge */}
+            <div className="flex justify-center mb-4">
+              <OMGBadge segmentId={parseInt(segment.id)} variant="full" />
+            </div>
 
             {segment.duration_seconds && (
               <p className="text-text-secondary text-center text-sm mb-6">

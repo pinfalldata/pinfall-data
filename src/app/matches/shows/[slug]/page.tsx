@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ShareButtons } from '@/components/ui/ShareButtons'
+import { OMGBadge } from '@/components/ui/OMGBadge'
 
 interface Series {
   id: number; name: string; slug: string; short_name: string | null
@@ -104,12 +105,37 @@ export default function ShowSeriesDetailPage() {
   const [stats, setStats] = useState<SeriesStats | null>(null)
   const [statsLoading, setStatsLoading] = useState(false)
 
+  // Filter state
+  const [filterYear, setFilterYear] = useState('')
+  const [filterMonth, setFilterMonth] = useState('')
+  const [filterShowType, setFilterShowType] = useState('')
+  const [filterArenaId, setFilterArenaId] = useState('')
+  const [filterState, setFilterState] = useState('')
+  const [filterCity, setFilterCity] = useState('')
+  const [filterCountry, setFilterCountry] = useState('')
+  const [filterOptions, setFilterOptions] = useState<{
+    years: string[]; showTypes: string[]; arenas: { id: number; name: string }[]
+    states: string[]; cities: string[]; countries: string[]
+  }>({ years: [], showTypes: [], arenas: [], states: [], cities: [], countries: [] })
+
+  // OMG moments for show series (show-level)
+  const [omgShowIds, setOmgShowIds] = useState<Set<number>>(new Set())
+
   // Fetch episodes
   const fetchData = useCallback(async (p: number) => {
     setLoading(true)
     setError(null)
     try {
-      const r = await fetch(`/api/show-series-detail?slug=${slug}&page=${p}&limit=50`)
+      const params = new URLSearchParams({ slug, page: String(p), limit: '50' })
+      if (filterYear) params.set('year', filterYear)
+      if (filterMonth) params.set('month', filterMonth)
+      if (filterShowType) params.set('show_type', filterShowType)
+      if (filterArenaId) params.set('arena_id', filterArenaId)
+      if (filterState) params.set('state', filterState)
+      if (filterCity) params.set('city', filterCity)
+      if (filterCountry) params.set('country', filterCountry)
+
+      const r = await fetch(`/api/show-series-detail?${params}`)
       const d = await r.json()
       if (!r.ok) {
         setError(d.error || `Error ${r.status}`)
@@ -125,13 +151,33 @@ export default function ShowSeriesDetailPage() {
       if (d.lastDate) setLastDate(d.lastDate)
       if (d.prevSeries) setPrevSeries(d.prevSeries)
       if (d.nextSeries) setNextSeries(d.nextSeries)
+      if (d.filterOptions) setFilterOptions(d.filterOptions)
+
+      // Batch check OMG moments for fetched episodes
+      const epIds = (d.episodes || []).map((e: any) => e.id)
+      if (epIds.length > 0) {
+        try {
+          const omgResults = await Promise.all(
+            epIds.map((id: number) =>
+              fetch(`/api/omg-check?showId=${id}`).then(r => r.json()).catch(() => ({ moments: [] }))
+            )
+          )
+          const idsWithOmg = new Set<number>()
+          omgResults.forEach((res, i) => {
+            if (res.moments && res.moments.length > 0) idsWithOmg.add(epIds[i])
+          })
+          setOmgShowIds(idsWithOmg)
+        } catch { }
+      }
     } catch (e: any) {
       setError(e.message || 'Network error')
     }
     setLoading(false)
-  }, [slug])
+  }, [slug, filterYear, filterMonth, filterShowType, filterArenaId, filterState, filterCity, filterCountry])
 
   useEffect(() => { fetchData(1) }, [fetchData])
+
+  // Re-fetch when filters change (fetchData dependency already handles this via useCallback deps)
 
   // Check available tabs
   useEffect(() => {
@@ -345,6 +391,68 @@ export default function ShowSeriesDetailPage() {
       {/* ===== EPISODES TAB ===== */}
       {activeTab === 'episodes' && (
         <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8 lg:py-12">
+          {/* ===== FILTER BAR ===== */}
+          <div className="mb-6 rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <svg className="w-4 h-4 text-neon-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
+              <span className="text-xs font-bold text-neon-blue uppercase tracking-wider">Filters</span>
+              {(filterYear || filterMonth || filterShowType || filterArenaId || filterState || filterCity || filterCountry) && (
+                <button
+                  onClick={() => { setFilterYear(''); setFilterMonth(''); setFilterShowType(''); setFilterArenaId(''); setFilterState(''); setFilterCity(''); setFilterCountry('') }}
+                  className="ml-auto text-[10px] px-2 py-0.5 rounded bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-colors"
+                >
+                  Clear All
+                </button>
+              )}
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3">
+              {/* Year */}
+              <select value={filterYear} onChange={e => { setFilterYear(e.target.value); if (!e.target.value) setFilterMonth('') }}
+                className="text-xs bg-bg-tertiary/50 border border-border-subtle/30 rounded-lg px-3 py-2 text-text-white focus:border-neon-blue/50 focus:outline-none transition-colors">
+                <option value="">All Years</option>
+                {filterOptions.years.map(y => <option key={y} value={y}>{y}</option>)}
+              </select>
+              {/* Month */}
+              <select value={filterMonth} onChange={e => setFilterMonth(e.target.value)} disabled={!filterYear}
+                className="text-xs bg-bg-tertiary/50 border border-border-subtle/30 rounded-lg px-3 py-2 text-text-white focus:border-neon-blue/50 focus:outline-none transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                <option value="">All Months</option>
+                {['January','February','March','April','May','June','July','August','September','October','November','December'].map((m, i) => (
+                  <option key={i+1} value={String(i+1)}>{m}</option>
+                ))}
+              </select>
+              {/* Show Type */}
+              <select value={filterShowType} onChange={e => setFilterShowType(e.target.value)}
+                className="text-xs bg-bg-tertiary/50 border border-border-subtle/30 rounded-lg px-3 py-2 text-text-white focus:border-neon-blue/50 focus:outline-none transition-colors">
+                <option value="">All Types</option>
+                {filterOptions.showTypes.map(t => <option key={t} value={t}>{showTypeLabels[t] || t}</option>)}
+              </select>
+              {/* Arena */}
+              <select value={filterArenaId} onChange={e => setFilterArenaId(e.target.value)}
+                className="text-xs bg-bg-tertiary/50 border border-border-subtle/30 rounded-lg px-3 py-2 text-text-white focus:border-neon-blue/50 focus:outline-none transition-colors">
+                <option value="">All Arenas</option>
+                {filterOptions.arenas.map(a => <option key={a.id} value={String(a.id)}>{a.name}</option>)}
+              </select>
+              {/* Country */}
+              <select value={filterCountry} onChange={e => { setFilterCountry(e.target.value); setFilterState(''); setFilterCity('') }}
+                className="text-xs bg-bg-tertiary/50 border border-border-subtle/30 rounded-lg px-3 py-2 text-text-white focus:border-neon-blue/50 focus:outline-none transition-colors">
+                <option value="">All Countries</option>
+                {filterOptions.countries.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+              {/* State */}
+              <select value={filterState} onChange={e => { setFilterState(e.target.value); setFilterCity('') }}
+                className="text-xs bg-bg-tertiary/50 border border-border-subtle/30 rounded-lg px-3 py-2 text-text-white focus:border-neon-blue/50 focus:outline-none transition-colors">
+                <option value="">All States</option>
+                {filterOptions.states.map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
+              {/* City */}
+              <select value={filterCity} onChange={e => setFilterCity(e.target.value)}
+                className="text-xs bg-bg-tertiary/50 border border-border-subtle/30 rounded-lg px-3 py-2 text-text-white focus:border-neon-blue/50 focus:outline-none transition-colors">
+                <option value="">All Cities</option>
+                {filterOptions.cities.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+          </div>
+
           <div className="flex items-center justify-between mb-6">
             <h2 className="font-display text-lg font-bold text-text-white">
               All Episodes <span className="text-text-secondary font-normal text-sm">({total})</span>
@@ -361,6 +469,12 @@ export default function ShowSeriesDetailPage() {
           ) : episodes.length === 0 && !error ? (
             <div className="text-center py-20">
               <p className="text-text-secondary text-lg">No episodes found</p>
+              {(filterYear || filterShowType || filterCountry || filterState || filterCity || filterArenaId) && (
+                <button onClick={() => { setFilterYear(''); setFilterMonth(''); setFilterShowType(''); setFilterArenaId(''); setFilterState(''); setFilterCity(''); setFilterCountry('') }}
+                  className="mt-3 text-xs px-4 py-2 rounded-lg bg-neon-blue/10 border border-neon-blue/20 text-neon-blue hover:bg-neon-blue/20 transition-colors">
+                  Clear Filters
+                </button>
+              )}
             </div>
           ) : episodes.length > 0 ? (
             <>
@@ -372,7 +486,10 @@ export default function ShowSeriesDetailPage() {
                   <Link key={ep.id} href={`/shows/${ep.slug}`} className="group block transition-all hover:bg-bg-secondary/30 rounded-xl">
                     <div className="hidden lg:grid lg:grid-cols-[120px_1fr_100px_1fr_160px_100px] gap-3 items-center px-4 py-3 border-b border-border-subtle/10">
                       <span className="text-xs text-text-secondary font-mono">{formatDate(ep.date)}</span>
-                      <span className="text-sm text-text-white font-semibold group-hover:text-neon-blue transition-colors truncate">{ep.name}</span>
+                      <span className="text-sm text-text-white font-semibold group-hover:text-neon-blue transition-colors truncate flex items-center gap-2">
+                        {ep.name}
+                        {omgShowIds.has(ep.id) && <OMGBadge showId={ep.id} variant="inline" />}
+                      </span>
                       <span className={`text-[10px] font-bold uppercase tracking-wider truncate ${ep.show_type === 'ppv' ? 'text-yellow-400' : ep.show_type === 'weekly' ? 'text-neon-blue' : 'text-text-secondary'}`}>{showTypeLabels[ep.show_type || ''] || ep.show_type || '—'}</span>
                       <span className="text-xs text-text-secondary truncate">{ep.venue || '—'}</span>
                       <span className="text-xs text-text-secondary truncate">{[ep.city, ep.state_province, ep.country].filter(Boolean).join(', ') || '—'}</span>
@@ -380,7 +497,10 @@ export default function ShowSeriesDetailPage() {
                     </div>
                     <div className="lg:hidden px-3 py-3 border-b border-border-subtle/10">
                       <div className="flex items-center justify-between gap-2 mb-1">
-                        <span className="text-sm text-text-white font-semibold group-hover:text-neon-blue transition-colors truncate flex-1">{ep.name}</span>
+                        <span className="text-sm text-text-white font-semibold group-hover:text-neon-blue transition-colors truncate flex-1 flex items-center gap-2">
+                          {ep.name}
+                          {omgShowIds.has(ep.id) && <OMGBadge showId={ep.id} variant="inline" />}
+                        </span>
                         <span className="text-[10px] text-text-secondary font-mono shrink-0">{formatDate(ep.date)}</span>
                       </div>
                       <div className="flex items-center gap-2 text-[11px] text-text-secondary">

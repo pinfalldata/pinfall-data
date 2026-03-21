@@ -9,11 +9,15 @@ import { TabMedia } from './TabMedia'
 import { TabMatches } from './TabMatches'
 import TabRoleData from './TabRoleData'
 import TabChampionships from './TabChampionships'
+import TabOMGMoments from './TabOMGMoments'
+import TabTagTeams from './TabTagTeams'
+import TabStables from './TabStables'
 
 interface RoleCounts {
   segments: number; managed: number; commentated: number; matchCommentated: number
   ringAnnounced: number; refereed: number; guestRefereed: number; interviewed: number
   gmTenures: number; execTenures: number; championships: number
+  omgMoments: number; tagTeams: number; stables: number
 }
 
 export function ProfileTabs({ superstar }: { superstar: any }) {
@@ -40,6 +44,9 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
     { id: 'profile', label: 'Profile', show: true },
     { id: 'matches', label: 'Matches', show: hasMatches, count: superstar.total_matches },
     { id: 'championships', label: 'Championships', show: (rc?.championships || superstar.total_reigns || 0) > 0, count: rc?.championships || superstar.total_reigns },
+    { id: 'omgMoments', label: '⚡ OMG Moments', show: (rc?.omgMoments || 0) > 0, count: rc?.omgMoments },
+    { id: 'tagTeams', label: 'Tag Teams', show: (rc?.tagTeams || 0) > 0, count: rc?.tagTeams },
+    { id: 'stables', label: 'Stables', show: (rc?.stables || 0) > 0, count: rc?.stables },
     { id: 'segments', label: 'Segments', show: (rc?.segments || 0) > 0, count: rc?.segments },
     { id: 'managed', label: 'Manager', show: (rc?.managed || 0) > 0, count: rc?.managed },
     { id: 'commentated', label: 'Commentator', show: (rc?.commentated || 0) > 0, count: rc?.commentated },
@@ -88,6 +95,9 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
         {activeTab === 'profile' && <TabProfile superstar={superstar} />}
         {activeTab === 'matches' && <TabMatches superstar={superstar} />}
         {activeTab === 'championships' && <TabChampionships superstar={superstar} />}
+        {activeTab === 'omgMoments' && <TabOMGMoments superstar={superstar} />}
+        {activeTab === 'tagTeams' && <TabTagTeams superstar={superstar} />}
+        {activeTab === 'stables' && <TabStables superstar={superstar} />}
         {activeTab === 'timeline' && <TabTimeline superstar={superstar} />}
         {activeTab === 'moves' && <TabMoves superstar={superstar} />}
         {activeTab === 'media' && <TabMedia superstar={superstar} />}
