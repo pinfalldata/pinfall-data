@@ -193,6 +193,19 @@ export async function GET(request: NextRequest) {
     }
 
     // Enrich matches
+    // Batch-fetch OMG moments for displayed matches
+    const matchIdsForOmg = filtered.map((m: any) => m.id)
+    const omgMap = new Map<number, any>()
+    if (matchIdsForOmg.length > 0) {
+      const { data: omgData } = await supabase
+        .from('omg_moments')
+        .select('id, title, category, match_id')
+        .in('match_id', matchIdsForOmg.slice(0, 500))
+      for (const o of (omgData || [])) {
+        if (o.match_id && !omgMap.has(o.match_id)) omgMap.set(o.match_id, o)
+      }
+    }
+
     const enriched = filtered.map((m: any) => {
       const participants = m.participants || []
       const teams = new Map<number, any[]>()
@@ -247,6 +260,7 @@ export async function GET(request: NextRequest) {
         } : null,
         teams: teamArrays,
         participantCount: participants.length,
+        omg: omgMap.get(m.id) || null,
       }
     })
 

@@ -26,6 +26,7 @@ interface MatchData {
     show_series: { id: number; name: string; short_name: string | null; logo_url: string | null } | null
   } | null
   teams: Team[]; participantCount: number
+  omg: { id: number; title: string; category: string } | null
 }
 
 interface Filters {
@@ -290,6 +291,11 @@ function MRow({ m }: { m: MatchData }) {
         </div>
         <span className="text-xs text-neon-blue font-semibold truncate uppercase">{m.match_type?.name||'Match'}</span>
         <div className="flex items-center gap-1.5 min-w-0 overflow-hidden">
+          {m.omg && (() => {
+            const oc: Record<string,string> = { extreme:'#ef4444',wtf:'#a855f7',sexy:'#ec4899',return:'#22c55e',betrayal:'#f97316',emotional:'#3b82f6' }
+            const c = oc[m.omg.category] || '#c7a05a'
+            return <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider shrink-0" style={{background:`${c}15`,color:c,border:`1px solid ${c}35`}}>⚡ OMG</span>
+          })()}
           {showP ? teams.map((t,i)=>(
             <span key={i} className="flex items-center gap-1 min-w-0 shrink-0">
               {i>0 && <span className="text-[11px] text-neon-blue font-bold mx-0.5 shrink-0">vs</span>}
@@ -342,6 +348,11 @@ function MRow({ m }: { m: MatchData }) {
         </div>
         <div className="flex items-center gap-2 mt-2 flex-wrap">
           <span className="text-[10px] text-neon-blue font-semibold uppercase">{m.match_type?.name||'Match'}</span>
+          {m.omg && (() => {
+            const oc: Record<string,string> = { extreme:'#ef4444',wtf:'#a855f7',sexy:'#ec4899',return:'#22c55e',betrayal:'#f97316',emotional:'#3b82f6' }
+            const c = oc[m.omg.category] || '#c7a05a'
+            return <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider shrink-0" style={{background:`${c}15`,color:c,border:`1px solid ${c}35`}}>⚡ OMG</span>
+          })()}
           {m.championship && <span className="text-[9px] px-1.5 py-0.5 rounded bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 font-bold">🏆 {m.championship.name}</span>}
           {m.rating && <div className="ml-auto shrink-0"><StarRating rating={m.rating} size="xs"/></div>}
         </div>

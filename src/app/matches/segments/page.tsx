@@ -139,7 +139,7 @@ export default function SegmentSearchPage() {
     <div className="relative">
       {/* ===== HERO ===== */}
       <section className="relative w-full h-[220px] sm:h-[300px] lg:h-[380px] xl:h-[420px] overflow-hidden">
-        <Image src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page/WWE_superstars_2026-03-21_15_07_50.510067.jpg.png"
+        <Image src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page/ston.png"
           alt="WWE Segment Search" fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-center" />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/50 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-bg-primary/30 via-transparent to-bg-primary/30" />
@@ -275,8 +275,7 @@ function SRow({ s }: { s: SegmentData }) {
   return (
     <Link href={href} className="block group">
       {/* Desktop */}
-      <div className="hidden lg:grid lg:grid-cols-[90px_minmax(120px,1.2fr)_110px_minmax(200px,3fr)_minmax(180px,2fr)_70px] gap-3 items-center px-4 py-4 rounded-lg border border-transparent transition-all duration-150 hover:bg-bg-secondary/40 hover:border-border-subtle/20"
-        style={omgColor ? { borderLeftWidth: '3px', borderLeftColor: `${omgColor}60` } : {}}>
+      <div className="hidden lg:grid lg:grid-cols-[90px_minmax(120px,1.2fr)_110px_minmax(200px,3fr)_minmax(180px,2fr)_70px] gap-3 items-center px-4 py-4 rounded-lg border border-transparent transition-all duration-150 hover:bg-bg-secondary/40 hover:border-border-subtle/20">
         <span className="text-xs text-text-secondary font-mono whitespace-nowrap">{s.show?.date ? fmtDate(s.show.date) : '—'}</span>
         <div className="flex items-center gap-2 min-w-0">
           {s.show?.show_series?.logo_url && <div className="w-5 h-5 rounded overflow-hidden shrink-0"><Image src={s.show.show_series.logo_url} alt="" width={20} height={20} className="w-full h-full object-contain" /></div>}
@@ -311,8 +310,7 @@ function SRow({ s }: { s: SegmentData }) {
       </div>
 
       {/* Mobile */}
-      <div className="lg:hidden px-3 py-4 rounded-xl border border-transparent transition-all hover:bg-bg-secondary/40 hover:border-border-subtle/20"
-        style={omgColor ? { borderLeftWidth: '3px', borderLeftColor: `${omgColor}60` } : {}}>
+      <div className="lg:hidden px-3 py-4 rounded-xl border border-transparent transition-all hover:bg-bg-secondary/40 hover:border-border-subtle/20">
         <div className="flex items-center gap-2 mb-2">
           {s.show?.show_series?.logo_url && <div className="w-4 h-4 rounded overflow-hidden shrink-0"><Image src={s.show.show_series.logo_url} alt="" width={16} height={16} className="w-full h-full object-contain" /></div>}
           <span className="text-[11px] text-text-secondary truncate flex-1">{s.show?.name}</span>

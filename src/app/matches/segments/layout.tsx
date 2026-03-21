@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     title: 'Segment Search — Find Any WWE Segment Ever',
     description: 'Search every WWE segment — promos, backstage, ceremonies, interviews. The most complete wrestling segment database.',
     type: 'website',
-    images: ['https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page/WWE_superstars_2026-03-21_15_07_50.510067.jpg.png'],
+    images: ['https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page/ston.png'],
   },
   twitter: { card: 'summary_large_image' },
   alternates: { canonical: 'https://pinfalldata.com/matches/segments' },
