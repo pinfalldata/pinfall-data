@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-const HERO = 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20Stats%20&%20Records/cena-ezremove_2026-03-21_16_54_30.216953.png.png'
+const HERO = 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20Stats%20&%20Records/gettyimages-2147580012-2048x2048-processed_lightpdf.com__2026-03-21_17_29_20.889618.jpg.png'
 
 const TABS = [
   { id: 'mostMatches', label: '💪 Most Matches' },

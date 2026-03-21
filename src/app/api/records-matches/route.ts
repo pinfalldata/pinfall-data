@@ -6,105 +6,155 @@ export const revalidate = 3600
 
 export async function GET() {
   try {
-    // Highest rated matches
+    // ===== HIGHEST RATED =====
     const { data: topRated } = await supabase.from('matches')
       .select('id, slug, date, rating, duration_seconds, is_title_change, match_type:match_types(name, slug), championship:championships(name, slug, image_url), show:shows(name, slug)')
       .not('rating', 'is', null).order('rating', { ascending: false }).limit(100)
 
-    // Enrich top rated with participant names
-    const topIds = (topRated || []).map(m => m.id)
-    let topPartMap: Record<number, string[]> = {}
-    if (topIds.length > 0) {
-      const { data: parts } = await supabase.from('match_participants')
-        .select('match_id, superstar:superstars(name)').in('match_id', topIds)
-      for (const p of (parts || [])) {
-        if (!topPartMap[p.match_id]) topPartMap[p.match_id] = []
-        if (p.superstar?.name) topPartMap[p.match_id].push(p.superstar.name)
-      }
-    }
-
-    const highestRated = (topRated || []).map(m => ({
-      id: m.id, slug: m.slug, date: m.date, rating: m.rating,
-      duration_seconds: m.duration_seconds, is_title_change: m.is_title_change,
-      match_type: m.match_type?.name, show: m.show?.name, show_slug: m.show?.slug,
-      championship: m.championship?.name, participants: (topPartMap[m.id] || []).slice(0, 6),
-    }))
-
-    // Longest matches
+    // ===== LONGEST MATCHES =====
     const { data: longestData } = await supabase.from('matches')
       .select('id, slug, date, duration_seconds, rating, match_type:match_types(name), show:shows(name, slug)')
       .not('duration_seconds', 'is', null).order('duration_seconds', { ascending: false }).limit(50)
 
-    const longIds = (longestData || []).map(m => m.id)
-    let longPartMap: Record<number, string[]> = {}
-    if (longIds.length > 0) {
-      const { data } = await supabase.from('match_participants').select('match_id, superstar:superstars(name)').in('match_id', longIds)
-      for (const p of (data || [])) { if (!longPartMap[p.match_id]) longPartMap[p.match_id] = []; if (p.superstar?.name) longPartMap[p.match_id].push(p.superstar.name) }
-    }
-    const longestMatches = (longestData || []).map(m => ({
-      id: m.id, slug: m.slug, date: m.date, duration_seconds: m.duration_seconds,
-      rating: m.rating, match_type: m.match_type?.name, show: m.show?.name, show_slug: m.show?.slug,
-      participants: (longPartMap[m.id] || []).slice(0, 6),
-    }))
-
-    // Shortest matches
+    // ===== SHORTEST MATCHES =====
     const { data: shortestData } = await supabase.from('matches')
       .select('id, slug, date, duration_seconds, rating, match_type:match_types(name), show:shows(name, slug)')
       .not('duration_seconds', 'is', null).gt('duration_seconds', 0).order('duration_seconds', { ascending: true }).limit(50)
 
-    const shortIds = (shortestData || []).map(m => m.id)
-    let shortPartMap: Record<number, string[]> = {}
-    if (shortIds.length > 0) {
-      const { data } = await supabase.from('match_participants').select('match_id, superstar:superstars(name)').in('match_id', shortIds)
-      for (const p of (data || [])) { if (!shortPartMap[p.match_id]) shortPartMap[p.match_id] = []; if (p.superstar?.name) shortPartMap[p.match_id].push(p.superstar.name) }
+    // Batch enrich all these with participants
+    const allMatchIds = [
+      ...(topRated || []).map(m => m.id),
+      ...(longestData || []).map(m => m.id),
+      ...(shortestData || []).map(m => m.id),
+    ]
+    const uniqueIds = [...new Set(allMatchIds)]
+
+    let partMap: Record<number, any[]> = {}
+    if (uniqueIds.length > 0) {
+      const batchSize = 300
+      for (let i = 0; i < uniqueIds.length; i += batchSize) {
+        const batch = uniqueIds.slice(i, i + batchSize)
+        const { data: parts } = await supabase.from('match_participants')
+          .select('match_id, is_winner, team_number, superstar:superstars(id, name, slug, photo_url)')
+          .in('match_id', batch)
+        for (const p of (parts || [])) {
+          if (!partMap[p.match_id]) partMap[p.match_id] = []
+          if (p.superstar) partMap[p.match_id].push({ ...p.superstar, is_winner: p.is_winner, team_number: p.team_number })
+        }
+      }
     }
-    const shortestMatches = (shortestData || []).map(m => ({
-      id: m.id, slug: m.slug, date: m.date, duration_seconds: m.duration_seconds,
-      rating: m.rating, match_type: m.match_type?.name, show: m.show?.name, show_slug: m.show?.slug,
-      participants: (shortPartMap[m.id] || []).slice(0, 6),
-    }))
 
-    // Most participants in a single match
-    const { data: partCounts } = await supabase.from('match_participants').select('match_id')
+    function enrichMatch(m: any) {
+      const participants = partMap[m.id] || []
+      return {
+        id: m.id, slug: m.slug, date: m.date, rating: m.rating,
+        duration_seconds: m.duration_seconds, is_title_change: m.is_title_change,
+        match_type: m.match_type?.name, show_name: m.show?.name, show_slug: m.show?.slug,
+        championship: m.championship?.name,
+        participants: participants.slice(0, 8).map(p => ({ id: p.id, name: p.name, slug: p.slug, photo_url: p.photo_url, is_winner: p.is_winner })),
+        participant_count: participants.length,
+      }
+    }
+
+    const highestRated = (topRated || []).map(enrichMatch)
+    const longestMatches = (longestData || []).map(enrichMatch)
+    const shortestMatches = (shortestData || []).map(enrichMatch)
+
+    // ===== MOST PARTICIPANTS =====
+    const { data: allParts } = await supabase.from('match_participants').select('match_id')
     const matchPartCount = new Map<number, number>()
-    for (const p of (partCounts || [])) matchPartCount.set(p.match_id, (matchPartCount.get(p.match_id) || 0) + 1)
-    const topPartMatchIds = [...matchPartCount.entries()].sort((a, b) => b[1] - a[1]).slice(0, 30).map(e => e[0])
+    for (const p of (allParts || [])) matchPartCount.set(p.match_id, (matchPartCount.get(p.match_id) || 0) + 1)
 
+    const topPartMatchIds = [...matchPartCount.entries()].sort((a, b) => b[1] - a[1]).slice(0, 30).map(e => e[0])
     let mostParticipants: any[] = []
     if (topPartMatchIds.length > 0) {
       const { data: mpMatches } = await supabase.from('matches')
         .select('id, slug, date, match_type:match_types(name), show:shows(name, slug)')
         .in('id', topPartMatchIds)
       const mpMap = new Map((mpMatches || []).map(m => [m.id, m]))
+
+      // Enrich with participants
+      for (let i = 0; i < topPartMatchIds.length; i += 300) {
+        const batch = topPartMatchIds.slice(i, i + 300)
+        const { data: parts } = await supabase.from('match_participants')
+          .select('match_id, superstar:superstars(id, name, slug, photo_url)')
+          .in('match_id', batch)
+        for (const p of (parts || [])) {
+          if (!partMap[p.match_id]) partMap[p.match_id] = []
+          // avoid duplicates
+          if (p.superstar && !partMap[p.match_id].find((x: any) => x.id === p.superstar.id)) {
+            partMap[p.match_id].push(p.superstar)
+          }
+        }
+      }
+
       mostParticipants = topPartMatchIds.map(id => {
         const m = mpMap.get(id)
-        return m ? { id: m.id, slug: m.slug, date: m.date, match_type: m.match_type?.name, show: m.show?.name, show_slug: m.show?.slug, participant_count: matchPartCount.get(id) || 0 } : null
+        if (!m) return null
+        const parts = partMap[m.id] || []
+        return {
+          id: m.id, slug: m.slug, date: m.date, match_type: m.match_type?.name,
+          show_name: m.show?.name, show_slug: m.show?.slug,
+          participant_count: matchPartCount.get(id) || 0,
+          participants: parts.slice(0, 10).map((p: any) => ({ id: p.id, name: p.name, slug: p.slug, photo_url: p.photo_url })),
+        }
       }).filter(Boolean)
     }
 
-    // Youngest & oldest to compete
-    const { data: ageData } = await supabase.from('match_participants')
-      .select('match_id, superstar:superstars(id, name, slug, photo_url, birth_date), match:matches(date)')
-      .not('superstar.birth_date', 'is', null)
+    // ===== YOUNGEST & OLDEST COMPETITORS =====
+    // Separate queries to avoid join issues
+    const { data: starsWithBirth } = await supabase.from('superstars')
+      .select('id, name, slug, photo_url, birth_date')
+      .not('birth_date', 'is', null)
 
-    let youngest: any[] = []
-    let oldest: any[] = []
-    const ageEntries = (ageData || []).filter(p => p.superstar?.birth_date && p.match?.date).map(p => {
-      const age = (new Date(p.match.date).getTime() - new Date(p.superstar.birth_date).getTime()) / (365.25 * 24 * 3600 * 1000)
-      return { id: p.superstar.id, name: p.superstar.name, slug: p.superstar.slug, photo_url: p.superstar.photo_url, age: Math.round(age * 10) / 10, date: p.match.date }
-    })
+    const birthMap = new Map<number, { name: string; slug: string; photo_url: string | null; birth_date: string }>()
+    for (const s of (starsWithBirth || [])) birthMap.set(s.id, s)
 
-    // Deduplicate — keep only the youngest/oldest appearance per superstar
-    const youngestMap = new Map<number, any>()
-    const oldestMap = new Map<number, any>()
-    for (const e of ageEntries) {
-      const ey = youngestMap.get(e.id)
-      if (!ey || e.age < ey.age) youngestMap.set(e.id, e)
-      const eo = oldestMap.get(e.id)
-      if (!eo || e.age > eo.age) oldestMap.set(e.id, e)
+    // Get all participations with match dates
+    const { data: partWithDates } = await supabase.from('match_participants')
+      .select('superstar_id, match_id')
+
+    // Get all match dates
+    const { data: matchDates } = await supabase.from('matches').select('id, date').not('date', 'is', null)
+    const dateMap = new Map<number, string>()
+    for (const m of (matchDates || [])) dateMap.set(m.id, m.date)
+
+    // Compute ages
+    const youngestMap = new Map<number, { age: number; date: string }>()
+    const oldestMap = new Map<number, { age: number; date: string }>()
+
+    for (const p of (partWithDates || [])) {
+      const star = birthMap.get(p.superstar_id)
+      const matchDate = dateMap.get(p.match_id)
+      if (!star || !matchDate) continue
+
+      const age = (new Date(matchDate).getTime() - new Date(star.birth_date).getTime()) / (365.25 * 24 * 3600 * 1000)
+      if (age <= 0 || age > 100) continue // sanity check
+
+      const ey = youngestMap.get(p.superstar_id)
+      if (!ey || age < ey.age) youngestMap.set(p.superstar_id, { age, date: matchDate })
+
+      const eo = oldestMap.get(p.superstar_id)
+      if (!eo || age > eo.age) oldestMap.set(p.superstar_id, { age, date: matchDate })
     }
-    youngest = [...youngestMap.values()].sort((a, b) => a.age - b.age).slice(0, 30)
-    oldest = [...oldestMap.values()].sort((a, b) => b.age - a.age).slice(0, 30)
+
+    const youngest = [...youngestMap.entries()]
+      .sort((a, b) => a[1].age - b[1].age)
+      .slice(0, 30)
+      .map(([id, data]) => {
+        const s = birthMap.get(id)
+        return s ? { id, name: s.name, slug: s.slug, photo_url: s.photo_url, age: Math.round(data.age * 10) / 10, date: data.date } : null
+      })
+      .filter(Boolean)
+
+    const oldest = [...oldestMap.entries()]
+      .sort((a, b) => b[1].age - a[1].age)
+      .slice(0, 30)
+      .map(([id, data]) => {
+        const s = birthMap.get(id)
+        return s ? { id, name: s.name, slug: s.slug, photo_url: s.photo_url, age: Math.round(data.age * 10) / 10, date: data.date } : null
+      })
+      .filter(Boolean)
 
     return NextResponse.json({ highestRated, longestMatches, shortestMatches, mostParticipants, youngest, oldest })
   } catch (err) {

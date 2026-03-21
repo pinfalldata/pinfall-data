@@ -8,12 +8,13 @@ export async function GET() {
   try {
     // Highest attendance
     const { data: topAtt } = await supabase.from('shows')
-      .select('id, name, slug, date, attendance, city, country, venue, show_series:show_series_id(name, slug)')
+      .select('id, name, slug, date, attendance, city, country, venue, show_series:show_series_id(name, slug, logo_url)')
       .not('attendance', 'is', null).order('attendance', { ascending: false }).limit(50)
 
     const highestAttendance = (topAtt || []).map(s => ({
       id: s.id, name: s.name, slug: s.slug, date: s.date, attendance: s.attendance,
-      city: s.city, country: s.country, venue: s.venue, series: s.show_series?.name,
+      city: s.city, country: s.country, venue: s.venue,
+      series: s.show_series?.name, series_logo: s.show_series?.logo_url,
     }))
 
     // Match count per show
@@ -24,11 +25,11 @@ export async function GET() {
     const topShowIds = [...showMatchCount.entries()].sort((a, b) => b[1] - a[1]).slice(0, 30).map(e => e[0])
     let mostMatchesPerCard: any[] = []
     if (topShowIds.length > 0) {
-      const { data: shows } = await supabase.from('shows').select('id, name, slug, date, show_series:show_series_id(name)').in('id', topShowIds)
+      const { data: shows } = await supabase.from('shows').select('id, name, slug, date, show_series:show_series_id(name, logo_url)').in('id', topShowIds)
       const showMap = new Map((shows || []).map(s => [s.id, s]))
       mostMatchesPerCard = topShowIds.map(id => {
         const s = showMap.get(id)
-        return s ? { id: s.id, name: s.name, slug: s.slug, date: s.date, series: s.show_series?.name, match_count: showMatchCount.get(id) } : null
+        return s ? { id: s.id, name: s.name, slug: s.slug, date: s.date, series: s.show_series?.name, series_logo: s.show_series?.logo_url, match_count: showMatchCount.get(id) } : null
       }).filter(Boolean)
     }
 
@@ -40,11 +41,11 @@ export async function GET() {
     const topTCIds = [...showTCCount.entries()].sort((a, b) => b[1] - a[1]).slice(0, 30).map(e => e[0])
     let mostTitleChanges: any[] = []
     if (topTCIds.length > 0) {
-      const { data: shows } = await supabase.from('shows').select('id, name, slug, date, show_series:show_series_id(name)').in('id', topTCIds)
+      const { data: shows } = await supabase.from('shows').select('id, name, slug, date, show_series:show_series_id(name, logo_url)').in('id', topTCIds)
       const showMap = new Map((shows || []).map(s => [s.id, s]))
       mostTitleChanges = topTCIds.map(id => {
         const s = showMap.get(id)
-        return s ? { id: s.id, name: s.name, slug: s.slug, date: s.date, series: s.show_series?.name, title_changes: showTCCount.get(id) } : null
+        return s ? { id: s.id, name: s.name, slug: s.slug, date: s.date, series: s.show_series?.name, series_logo: s.show_series?.logo_url, title_changes: showTCCount.get(id) } : null
       }).filter(Boolean)
     }
 
@@ -59,9 +60,8 @@ export async function GET() {
     })).sort((a, b) => b.episode_count - a.episode_count).slice(0, 30)
 
     // Shows by country
-    const countryCount = new Map<string, number>()
-    for (const s of (showsAll || [])) { /* we need country */ }
     const { data: showCountries } = await supabase.from('shows').select('country').not('country', 'is', null)
+    const countryCount = new Map<string, number>()
     for (const s of (showCountries || [])) if (s.country) countryCount.set(s.country, (countryCount.get(s.country) || 0) + 1)
     const showsByCountry = [...countryCount.entries()].sort((a, b) => b[1] - a[1]).map(([country, count]) => ({ country, count }))
 

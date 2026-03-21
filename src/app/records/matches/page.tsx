@@ -13,7 +13,7 @@ const TABS = [
   { id: 'oldest', label: '🎖️ Oldest Competitor' },
 ]
 
-function fmtDur(s: number) { const m = Math.floor(s / 60); const sec = s % 60; return m >= 60 ? `${Math.floor(m / 60)}h ${m % 60}m ${sec}s` : `${m}m ${sec}s` }
+function fmtDur(s: number) { const h = Math.floor(s / 3600); const m = Math.floor((s % 3600) / 60); const sec = s % 60; return h > 0 ? `${h}h ${m}m ${sec}s` : `${m}m ${sec}s` }
 function fmtDate(d: string) { return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) }
 
 export default function MatchRecordsPage() {
@@ -33,56 +33,71 @@ export default function MatchRecordsPage() {
         <TabBar tabs={TABS} active={tab} set={setTab} />
         {loading ? <Skel /> : list.length === 0 ? <Empty /> : (
           <div className="mt-6 space-y-1">
-            {list.map((item: any, i: number) => (
-              <div key={i} className="flex items-center gap-3 px-4 py-3.5 rounded-lg hover:bg-bg-secondary/40 transition-all border border-transparent hover:border-border-subtle/20">
-                <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${i < 3 ? 'bg-neon-blue/15 text-neon-blue border border-neon-blue/25' : 'bg-bg-tertiary/50 text-text-secondary border border-border-subtle/20'}`}>
-                  {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}
-                </span>
+            {list.map((item: any, i: number) => {
+              const matchHref = item.show_slug && item.slug ? `/shows/${item.show_slug}/matches/${item.slug}` : null
+              const superstarHref = item.slug ? `/superstars/${item.slug}` : null
 
-                {isMatch ? (
-                  <>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-0.5">
-                        {item.show_slug ? (
-                          <Link href={`/shows/${item.show_slug}/matches/${item.slug}`} className="text-sm text-text-white font-medium hover:text-neon-blue transition-colors truncate">
-                            {item.participants?.join(' vs ') || item.match_type || 'Match'}
-                          </Link>
-                        ) : (
-                          <span className="text-sm text-text-white font-medium truncate">{item.participants?.join(' vs ') || item.match_type || 'Match'}</span>
-                        )}
+              return (
+                <div key={i} className="rounded-lg border border-transparent hover:bg-bg-secondary/40 hover:border-border-subtle/20 transition-all">
+                  {isMatch ? (
+                    <Link href={matchHref || '#'} className="group flex items-center gap-3 px-4 py-3.5">
+                      <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${i < 3 ? 'bg-neon-blue/15 text-neon-blue border border-neon-blue/25' : 'bg-bg-tertiary/50 text-text-secondary border border-border-subtle/20'}`}>
+                        {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}
+                      </span>
+
+                      {/* Participant photos */}
+                      {item.participants && item.participants.length > 0 && (
+                        <div className="flex -space-x-1.5 shrink-0">
+                          {item.participants.slice(0, 5).map((p: any) => (
+                            <div key={p.id} className={`w-8 h-8 rounded-full overflow-hidden border-2 bg-bg-tertiary ${p.is_winner ? 'border-emerald-500/40' : 'border-bg-primary'}`}>
+                              {p.photo_url ? <Image src={p.photo_url} alt="" width={32} height={32} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-[10px]">👤</div>}
+                            </div>
+                          ))}
+                          {item.participant_count > 5 && <div className="w-8 h-8 rounded-full bg-bg-tertiary border-2 border-bg-primary flex items-center justify-center text-[8px] text-text-secondary">+{item.participant_count - 5}</div>}
+                        </div>
+                      )}
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <span className="text-sm text-text-white font-medium group-hover:text-neon-blue transition-colors truncate">
+                            {item.participants?.map((p: any) => p.name).join(' vs ') || item.match_type || 'Match'}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 text-[10px] text-text-secondary flex-wrap">
+                          {item.show_name && <span>{item.show_name}</span>}
+                          {item.date && <span className="font-mono">{fmtDate(item.date)}</span>}
+                          {item.match_type && <span className="text-neon-blue uppercase font-semibold">{item.match_type}</span>}
+                          {item.championship && <span className="text-yellow-400">🏆 {item.championship}</span>}
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2 text-[10px] text-text-secondary">
-                        {item.show && <span>{item.show}</span>}
-                        {item.date && <span className="font-mono">{fmtDate(item.date)}</span>}
-                        {item.match_type && <span className="text-neon-blue uppercase font-semibold">{item.match_type}</span>}
+                      <span className="text-sm text-neon-blue font-bold font-mono shrink-0">
+                        {tab === 'highestRated' && `${item.rating}★`}
+                        {(tab === 'longestMatches' || tab === 'shortestMatches') && fmtDur(item.duration_seconds)}
+                        {tab === 'mostParticipants' && `${item.participant_count} wrestlers`}
+                      </span>
+                    </Link>
+                  ) : (
+                    <Link href={superstarHref || '#'} className="group flex items-center gap-3 px-4 py-3.5">
+                      <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${i < 3 ? 'bg-neon-blue/15 text-neon-blue border border-neon-blue/25' : 'bg-bg-tertiary/50 text-text-secondary border border-border-subtle/20'}`}>
+                        {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}
+                      </span>
+                      <div className="w-10 h-10 rounded-full overflow-hidden border border-border-subtle/30 shrink-0 bg-bg-tertiary">
+                        {item.photo_url ? <Image src={item.photo_url} alt="" width={40} height={40} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-sm">👤</div>}
                       </div>
-                    </div>
-                    <span className="text-sm text-neon-blue font-bold font-mono shrink-0">
-                      {tab === 'highestRated' && `${item.rating}★`}
-                      {(tab === 'longestMatches' || tab === 'shortestMatches') && fmtDur(item.duration_seconds)}
-                      {tab === 'mostParticipants' && `${item.participant_count} wrestlers`}
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <Link href={`/superstars/${item.slug}`} className="flex items-center gap-2 flex-1 min-w-0 group">
-                      <div className="w-9 h-9 rounded-full overflow-hidden border border-border-subtle/30 shrink-0 bg-bg-tertiary">
-                        {item.photo_url ? <Image src={item.photo_url} alt="" width={36} height={36} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-xs">👤</div>}
-                      </div>
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <span className="text-sm text-text-white font-medium group-hover:text-neon-blue transition-colors truncate block">{item.name}</span>
                         {item.date && <span className="text-[10px] text-text-secondary font-mono">{fmtDate(item.date)}</span>}
                       </div>
+                      <span className="text-sm text-neon-blue font-bold font-mono shrink-0">{item.age} years old</span>
                     </Link>
-                    <span className="text-sm text-neon-blue font-bold font-mono shrink-0">{item.age} years old</span>
-                  </>
-                )}
-              </div>
-            ))}
+                  )}
+                </div>
+              )
+            })}
           </div>
         )}
       </section>
-      <SeoBlock t="Match Records" p="Every WWE match record computed from 100,000+ matches. Highest rated matches of all time, longest and shortest bouts, youngest and oldest competitors to ever step in a WWE ring." />
+      <SeoBlock t="Match Records" p="Every WWE match record computed from 100,000+ matches. Highest rated all-time, longest and shortest bouts, youngest and oldest competitors to ever step in a WWE ring." />
     </div>
   )
 }
