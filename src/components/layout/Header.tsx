@@ -54,7 +54,6 @@ const NAV_ITEMS: NavItem[] = [
     { label: 'Tag Teams', href: '/tag-teams/teams', icon: '👥' },
     { label: 'Stables', href: '/tag-teams/stables', icon: '⚔️' },
   ]},
-  { key: 'rivalries', href: '/rivalries' },
   { key: 'records', href: '/records' },
   { key: 'hallOfFame', href: '/hall-of-fame' },
   { key: 'bonus', href: '/bonus' },
