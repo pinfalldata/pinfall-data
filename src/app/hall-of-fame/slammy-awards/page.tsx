@@ -43,7 +43,7 @@ export default function SlammyAwardsPage() {
   return (
     <div className="relative">
       <section className="relative w-full h-[220px] sm:h-[300px] lg:h-[380px] overflow-hidden">
-        <Image src={HERO} alt="WWE Slammy Awards" fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-center" />
+        <Image src={HERO} alt="WWE Slammy Awards" fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-center lg:object-[50%_20%]" />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/50 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">

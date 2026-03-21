@@ -12,12 +12,16 @@ import TabChampionships from './TabChampionships'
 import TabOMGMoments from './TabOMGMoments'
 import TabTagTeams from './TabTagTeams'
 import TabStables from './TabStables'
+import TabHallOfFame from './TabHallOfFame'
+import TabSlammyAwards from './TabSlammyAwards'
+import TabYearEndAwards from './TabYearEndAwards'
 
 interface RoleCounts {
   segments: number; managed: number; commentated: number; matchCommentated: number
   ringAnnounced: number; refereed: number; guestRefereed: number; interviewed: number
   gmTenures: number; execTenures: number; championships: number
   omgMoments: number; tagTeams: number; stables: number
+  hallOfFame: number; slammyAwards: number; yearEndAwards: number
 }
 
 export function ProfileTabs({ superstar }: { superstar: any }) {
@@ -47,6 +51,9 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
     { id: 'omgMoments', label: '⚡ OMG Moments', show: (rc?.omgMoments || 0) > 0, count: rc?.omgMoments },
     { id: 'tagTeams', label: 'Tag Teams', show: (rc?.tagTeams || 0) > 0, count: rc?.tagTeams },
     { id: 'stables', label: 'Stables', show: (rc?.stables || 0) > 0, count: rc?.stables },
+    { id: 'hallOfFame', label: '🏛️ Hall of Fame', show: (rc?.hallOfFame || 0) > 0 },
+    { id: 'slammyAwards', label: '🏆 Slammy Awards', show: (rc?.slammyAwards || 0) > 0, count: rc?.slammyAwards },
+    { id: 'yearEndAwards', label: '🎖️ Year-End Awards', show: (rc?.yearEndAwards || 0) > 0, count: rc?.yearEndAwards },
     { id: 'segments', label: 'Segments', show: (rc?.segments || 0) > 0, count: rc?.segments },
     { id: 'managed', label: 'Manager', show: (rc?.managed || 0) > 0, count: rc?.managed },
     { id: 'commentated', label: 'Commentator', show: (rc?.commentated || 0) > 0, count: rc?.commentated },
@@ -98,6 +105,9 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
         {activeTab === 'omgMoments' && <TabOMGMoments superstar={superstar} />}
         {activeTab === 'tagTeams' && <TabTagTeams superstar={superstar} />}
         {activeTab === 'stables' && <TabStables superstar={superstar} />}
+        {activeTab === 'hallOfFame' && <TabHallOfFame superstar={superstar} />}
+        {activeTab === 'slammyAwards' && <TabSlammyAwards superstar={superstar} />}
+        {activeTab === 'yearEndAwards' && <TabYearEndAwards superstar={superstar} />}
         {activeTab === 'timeline' && <TabTimeline superstar={superstar} />}
         {activeTab === 'moves' && <TabMoves superstar={superstar} />}
         {activeTab === 'media' && <TabMedia superstar={superstar} />}

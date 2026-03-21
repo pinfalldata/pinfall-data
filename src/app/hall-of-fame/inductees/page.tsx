@@ -163,6 +163,15 @@ export default function HallOfFamePage() {
                         </div>
                       )}
 
+                      {/* Video icon — if speech video exists */}
+                      {item.speech_video_url && (
+                        <div className="absolute bottom-12 right-2">
+                          <span className="flex items-center justify-center w-7 h-7 rounded-full backdrop-blur-sm" style={{ background: `${GOLD}30`, border: `1px solid ${GOLD}40` }}>
+                            <svg className="w-3.5 h-3.5" style={{ color: GOLD }} fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                          </span>
+                        </div>
+                      )}
+
                       {/* Info — bottom */}
                       <div className="absolute bottom-0 left-0 right-0 p-3">
                         <h3 className="font-display text-sm font-bold text-text-white group-hover:text-[#d4af37] transition-colors line-clamp-2 leading-tight mb-0.5">
