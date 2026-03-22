@@ -3,14 +3,9 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { formatDateShort, formatDuration, getRatingColor, getSegmentCategoryIcon } from '@/lib/utils'
+import { formatDate, formatDateShort, formatDuration, getRatingColor, getSegmentCategoryIcon } from '@/lib/utils'
 
-interface TabProfileProps {
-  superstar: any
-  onTabChange?: (tabId: string) => void
-}
-
-export function TabProfile({ superstar, onTabChange }: TabProfileProps) {
+export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabChange?: (tabId: string) => void }) {
   const [preview, setPreview] = useState<any>(null)
 
   useEffect(() => {
@@ -20,14 +15,9 @@ export function TabProfile({ superstar, onTabChange }: TabProfileProps) {
       .catch(() => {})
   }, [superstar.id])
 
-  // ★ FIX: Helper to switch tabs — uses the onTabChange callback from ProfileTabs
-  const goToTab = (tabId: string) => {
-    if (onTabChange) onTabChange(tabId)
-  }
-
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-      {/* ═══ LEFT COLUMN ═══ */}
+      {/* ═══════ LEFT COLUMN: Bio + Records + Ring Names + Activity ═══════ */}
       <div className="lg:col-span-2 space-y-6">
         {superstar.bio_md && (
           <Card title="Biography">
@@ -52,47 +42,74 @@ export function TabProfile({ superstar, onTabChange }: TabProfileProps) {
           </Card>
         )}
 
-        {/* ★ RECENT ACTIVITY */}
+        {/* ★★★ RECENT ACTIVITY (matches/managed/commentated/etc.) ★★★ */}
         {preview?.recentActivity?.length > 0 && (
-          <PreviewBlock
-            icon={preview.primaryRole === 'wrestler' ? '🤼' : preview.primaryRole === 'commentator' ? '🎙️' : preview.primaryRole === 'manager' ? '👔' : '📺'}
-            title={preview.activityLabel}
-            onSeeMore={() => goToTab('matches')}
-          >
-            <div className="space-y-2">
-              {preview.recentActivity.map((item: any, i: number) => (
-                <MatchPreviewRow key={item.id || i} match={item} superstarId={superstar.id} primaryRole={preview.primaryRole} />
-              ))}
-            </div>
-          </PreviewBlock>
-        )}
-
-        {/* ★ RECENT SEGMENTS */}
-        {preview?.recentSegments?.length > 0 && (
-          <PreviewBlock icon="🎤" title="Recent Segments" onSeeMore={() => goToTab('segments')}>
-            <div className="space-y-2">
-              {preview.recentSegments.map((seg: any) => (
-                <Link key={seg.id} href={seg.show ? `/shows/${seg.show.slug}/segments/${seg.slug}` : '#'}
-                  className="flex items-center gap-3 p-3 rounded-xl bg-bg-tertiary/20 border border-border-subtle/15 hover:border-neon-blue/20 hover:bg-bg-tertiary/30 transition-all group">
-                  <span className="text-lg shrink-0">{getSegmentCategoryIcon(seg.category)}</span>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-text-white font-medium truncate group-hover:text-neon-blue transition-colors">{seg.title}</p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      {seg.show?.show_series?.logo_url && (
-                        <div className="w-4 h-4 rounded overflow-hidden shrink-0">
-                          <Image src={seg.show.show_series.logo_url} alt="" width={16} height={16} className="w-full h-full object-contain" unoptimized />
-                        </div>
-                      )}
-                      <span className="text-[11px] text-text-secondary truncate">{seg.show?.name}</span>
-                    </div>
+          <div className="relative overflow-hidden rounded-2xl border border-border-subtle/30 bg-gradient-to-br from-bg-secondary/20 via-bg-secondary/10 to-transparent">
+            <div className="p-5 sm:p-6">
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-neon-blue/15 flex items-center justify-center">
+                    <span className="text-sm">{preview.primaryRole === 'wrestler' ? '🤼' : preview.primaryRole === 'commentator' ? '🎙️' : preview.primaryRole === 'manager' ? '👔' : preview.primaryRole === 'referee' ? '👨‍⚖️' : '📺'}</span>
                   </div>
-                  <span className="text-[11px] text-text-secondary shrink-0">{formatDateShort(seg.show?.date)}</span>
-                </Link>
-              ))}
+                  <h3 className="font-display text-base font-bold text-text-white">{preview.activityLabel}</h3>
+                </div>
+                <button onClick={() => onTabChange?.('matches')}
+                  className="text-xs text-neon-blue hover:text-neon-blue/80 font-medium flex items-center gap-1 transition-colors">
+                  See all <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                {preview.recentActivity.map((item: any, i: number) => (
+                  <MatchPreviewRow key={item.id || i} match={item} superstarId={superstar.id} primaryRole={preview.primaryRole} />
+                ))}
+              </div>
             </div>
-          </PreviewBlock>
+          </div>
         )}
 
+        {/* ★★★ RECENT SEGMENTS ★★★ */}
+        {preview?.recentSegments?.length > 0 && (
+          <div className="relative overflow-hidden rounded-2xl border border-border-subtle/30 bg-gradient-to-br from-bg-secondary/20 via-bg-secondary/10 to-transparent">
+            <div className="p-5 sm:p-6">
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-purple-500/15 flex items-center justify-center">
+                    <span className="text-sm">🎤</span>
+                  </div>
+                  <h3 className="font-display text-base font-bold text-text-white">Recent Segments</h3>
+                </div>
+                <button onClick={() => onTabChange?.('segments')}
+                  className="text-xs text-neon-blue hover:text-neon-blue/80 font-medium flex items-center gap-1 transition-colors">
+                  See all <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                {preview.recentSegments.map((seg: any) => (
+                  <Link key={seg.id} href={seg.show ? `/shows/${seg.show.slug}/segments/${seg.slug}` : '#'}
+                    className="flex items-center gap-3 p-3 rounded-xl bg-bg-tertiary/20 border border-border-subtle/15 hover:border-neon-blue/20 hover:bg-bg-tertiary/30 transition-all group">
+                    <span className="text-lg shrink-0">{getSegmentCategoryIcon(seg.category)}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-text-white font-medium truncate group-hover:text-neon-blue transition-colors">{seg.title}</p>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        {seg.show?.show_series?.logo_url && (
+                          <div className="w-4 h-4 rounded overflow-hidden shrink-0">
+                            <Image src={seg.show.show_series.logo_url} alt="" width={16} height={16} className="w-full h-full object-contain" unoptimized />
+                          </div>
+                        )}
+                        <span className="text-[11px] text-text-secondary truncate">{seg.show?.name}</span>
+                      </div>
+                    </div>
+                    <span className="text-[11px] text-text-secondary shrink-0">{formatDateShort(seg.show?.date)}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Career Breaks + Draft History */}
         {superstar.careerBreaks?.length > 0 && (
           <Card title="Career Breaks">
             <div className="space-y-3">
@@ -126,8 +143,9 @@ export function TabProfile({ superstar, onTabChange }: TabProfileProps) {
         )}
       </div>
 
-      {/* ═══ RIGHT COLUMN ═══ */}
+      {/* ═══════ RIGHT COLUMN: Info + Preview Widgets ═══════ */}
       <div className="space-y-5">
+        {/* Eras */}
         {superstar.eras?.length > 0 && (
           <Card title="Eras">
             <div className="flex flex-wrap gap-2">
@@ -140,9 +158,9 @@ export function TabProfile({ superstar, onTabChange }: TabProfileProps) {
           </Card>
         )}
 
-        {/* Stats Widget */}
+        {/* ★★★ STATS WIDGET ★★★ */}
         {preview?.statsPreview && (
-          <Widget title="📊 Quick Stats" onSeeMore={() => goToTab('statistics')}>
+          <PreviewWidget title="📊 Quick Stats" onSeeMore={() => onTabChange?.('statistics')} icon="📊">
             <div className="grid grid-cols-2 gap-2">
               <StatMini label="Win Rate" value={`${preview.statsPreview.winRate}%`} accent />
               <StatMini label="Total Matches" value={preview.statsPreview.total_matches} />
@@ -151,12 +169,12 @@ export function TabProfile({ superstar, onTabChange }: TabProfileProps) {
               {preview.statsPreview.total_reigns > 0 && <StatMini label="Title Reigns" value={preview.statsPreview.total_reigns} accent />}
               {preview.statsPreview.draw_count > 0 && <StatMini label="Draws" value={preview.statsPreview.draw_count} />}
             </div>
-          </Widget>
+          </PreviewWidget>
         )}
 
-        {/* Finishers Widget */}
+        {/* ★★★ FINISHERS WIDGET ★★★ */}
         {preview?.finishersPreview?.length > 0 && (
-          <Widget title="💥 Signature Moves" onSeeMore={() => goToTab('moves')}>
+          <PreviewWidget title="💥 Signature Moves" onSeeMore={() => onTabChange?.('moves')} icon="💥">
             <div className="space-y-2">
               {preview.finishersPreview.map((f: any) => (
                 <div key={f.id} className="flex items-center gap-2">
@@ -166,12 +184,12 @@ export function TabProfile({ superstar, onTabChange }: TabProfileProps) {
                 </div>
               ))}
             </div>
-          </Widget>
+          </PreviewWidget>
         )}
 
-        {/* OMG Widget */}
+        {/* ★★★ OMG MOMENTS WIDGET ★★★ */}
         {preview?.omgPreview?.length > 0 && (
-          <Widget title="⚡ OMG Moments" onSeeMore={() => goToTab('omgMoments')}>
+          <PreviewWidget title="⚡ OMG Moments" onSeeMore={() => onTabChange?.('omgMoments')} icon="⚡">
             <div className="space-y-2">
               {preview.omgPreview.map((omg: any) => (
                 <div key={omg.id} className="p-2.5 rounded-lg bg-bg-tertiary/30 border border-orange-500/10">
@@ -183,40 +201,48 @@ export function TabProfile({ superstar, onTabChange }: TabProfileProps) {
                 </div>
               ))}
             </div>
-          </Widget>
+          </PreviewWidget>
         )}
 
-        {/* Tag Team Widget */}
+        {/* ★★★ TAG TEAM WIDGET ★★★ */}
         {preview?.tagTeamPreview && (
-          <Widget title="🤝 Tag Team" onSeeMore={() => goToTab('tagTeams')}>
+          <PreviewWidget title="🤝 Tag Team" onSeeMore={() => onTabChange?.('tagTeams')} icon="🤝">
             <Link href={`/tag-teams/teams/${preview.tagTeamPreview.slug}`} className="flex items-center gap-3 p-3 rounded-xl bg-bg-tertiary/30 border border-border-subtle/20 hover:border-neon-blue/20 transition-all group">
               {preview.tagTeamPreview.photo_url ? (
-                <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0"><Image src={preview.tagTeamPreview.photo_url} alt="" width={48} height={48} className="w-full h-full object-cover" unoptimized /></div>
+                <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
+                  <Image src={preview.tagTeamPreview.photo_url} alt="" width={48} height={48} className="w-full h-full object-cover" unoptimized />
+                </div>
               ) : (
                 <div className="w-12 h-12 rounded-lg bg-neon-blue/10 flex items-center justify-center shrink-0"><span className="text-xl">🤝</span></div>
               )}
-              <p className="text-sm text-text-white font-bold group-hover:text-neon-blue transition-colors">{preview.tagTeamPreview.name}</p>
+              <div>
+                <p className="text-sm text-text-white font-bold group-hover:text-neon-blue transition-colors">{preview.tagTeamPreview.name}</p>
+              </div>
             </Link>
-          </Widget>
+          </PreviewWidget>
         )}
 
-        {/* Stable Widget */}
+        {/* ★★★ STABLE WIDGET ★★★ */}
         {preview?.stablePreview && (
-          <Widget title="🛡️ Stable" onSeeMore={() => goToTab('stables')}>
+          <PreviewWidget title="🛡️ Stable" onSeeMore={() => onTabChange?.('stables')} icon="🛡️">
             <Link href={`/tag-teams/stables/${preview.stablePreview.slug}`} className="flex items-center gap-3 p-3 rounded-xl bg-bg-tertiary/30 border border-border-subtle/20 hover:border-neon-blue/20 transition-all group">
               {preview.stablePreview.photo_url ? (
-                <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0"><Image src={preview.stablePreview.photo_url} alt="" width={48} height={48} className="w-full h-full object-cover" unoptimized /></div>
+                <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
+                  <Image src={preview.stablePreview.photo_url} alt="" width={48} height={48} className="w-full h-full object-cover" unoptimized />
+                </div>
               ) : (
                 <div className="w-12 h-12 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0"><span className="text-xl">🛡️</span></div>
               )}
-              <p className="text-sm text-text-white font-bold group-hover:text-neon-blue transition-colors">{preview.stablePreview.name}</p>
+              <div>
+                <p className="text-sm text-text-white font-bold group-hover:text-neon-blue transition-colors">{preview.stablePreview.name}</p>
+              </div>
             </Link>
-          </Widget>
+          </PreviewWidget>
         )}
 
-        {/* Media Widget */}
+        {/* ★★★ MEDIA WIDGET ★★★ */}
         {preview?.mediaPreview?.length > 0 && (
-          <Widget title="📸 Media" onSeeMore={() => goToTab('gallery')}>
+          <PreviewWidget title="📸 Media" onSeeMore={() => onTabChange?.('gallery')} icon="📸">
             <div className="grid grid-cols-2 gap-2">
               {preview.mediaPreview.map((m: any) => {
                 const isVideo = m.media_type === 'video'
@@ -225,21 +251,31 @@ export function TabProfile({ superstar, onTabChange }: TabProfileProps) {
                 return (
                   <div key={m.id} className="relative aspect-video rounded-lg overflow-hidden bg-bg-tertiary/30">
                     {thumb && <img src={thumb} alt="" className="w-full h-full object-cover" loading="lazy" />}
-                    {isVideo && <div className="absolute inset-0 flex items-center justify-center"><div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><svg className="w-4 h-4 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg></div></div>}
+                    {isVideo && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><svg className="w-4 h-4 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg></div>
+                      </div>
+                    )}
+                    {m.title && <div className="absolute bottom-0 inset-x-0 p-1.5 bg-gradient-to-t from-black/80 to-transparent"><p className="text-[9px] text-white truncate">{m.title}</p></div>}
                   </div>
                 )
               })}
             </div>
-          </Widget>
+          </PreviewWidget>
         )}
 
+        {/* Family */}
         {superstar.families?.length > 0 && (
           <Card title="Family in WWE">
             <div className="space-y-2">
               {superstar.families.map((f: any) => (
                 <div key={f.id} className="flex items-center gap-3">
                   <span className="text-text-secondary text-xs capitalize w-20 shrink-0">{f.relation_type.replace('_', ' ')}</span>
-                  {f.related?.slug ? <Link href={`/superstars/${f.related.slug}`} className="text-neon-blue text-sm hover:underline">{f.related.name}</Link> : <span className="text-text-white text-sm">{f.related?.name || 'Unknown'}</span>}
+                  {f.related?.slug ? (
+                    <Link href={`/superstars/${f.related.slug}`} className="text-neon-blue text-sm hover:underline">{f.related.name}</Link>
+                  ) : (
+                    <span className="text-text-white text-sm">{f.related?.name || 'Unknown'}</span>
+                  )}
                 </div>
               ))}
             </div>
@@ -250,7 +286,13 @@ export function TabProfile({ superstar, onTabChange }: TabProfileProps) {
           <Card title="Trained By">
             <div className="space-y-1">
               {superstar.trainers.map((t: any) => (
-                <div key={t.id}>{t.trainer?.slug ? <Link href={`/superstars/${t.trainer.slug}`} className="text-neon-blue text-sm hover:underline">{t.trainer.name}</Link> : <span className="text-text-white text-sm">{t.trainer_name || 'Unknown'}</span>}</div>
+                <div key={t.id}>
+                  {t.trainer?.slug ? (
+                    <Link href={`/superstars/${t.trainer.slug}`} className="text-neon-blue text-sm hover:underline">{t.trainer.name}</Link>
+                  ) : (
+                    <span className="text-text-white text-sm">{t.trainer_name || 'Unknown'}</span>
+                  )}
+                </div>
               ))}
             </div>
           </Card>
@@ -273,34 +315,68 @@ export function TabProfile({ superstar, onTabChange }: TabProfileProps) {
   )
 }
 
-/* ═══ Preview Block (left column — large) ═══ */
-function PreviewBlock({ icon, title, onSeeMore, children }: { icon: string; title: string; onSeeMore: () => void; children: React.ReactNode }) {
+/* ═══════════════════════════════════════════════════════ */
+/* MATCH PREVIEW ROW                                       */
+/* ═══════════════════════════════════════════════════════ */
+function MatchPreviewRow({ match, superstarId, primaryRole }: { match: any; superstarId: number; primaryRole: string }) {
+  const showSlug = match.show?.slug
+  const matchSlug = match.slug
+  const href = showSlug && matchSlug ? `/shows/${showSlug}/matches/${matchSlug}` : showSlug ? `/shows/${showSlug}` : '#'
+
+  const resultColors: Record<string, string> = {
+    win: 'bg-green-500/20 text-green-400 border-green-500/30',
+    loss: 'bg-red-500/20 text-red-400 border-red-500/30',
+    draw: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+  }
+
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-border-subtle/30 bg-gradient-to-br from-bg-secondary/20 via-bg-secondary/10 to-transparent">
-      <div className="p-5 sm:p-6">
-        <div className="flex items-center justify-between mb-5">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-neon-blue/15 flex items-center justify-center"><span className="text-sm">{icon}</span></div>
-            <h3 className="font-display text-base font-bold text-text-white">{title}</h3>
-          </div>
-          <button onClick={onSeeMore} className="text-xs text-neon-blue hover:text-neon-blue/80 font-medium flex items-center gap-1 transition-colors">
-            See all <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-          </button>
+    <Link href={href} className="flex items-center gap-3 p-3 rounded-xl bg-bg-tertiary/20 border border-border-subtle/15 hover:border-neon-blue/20 hover:bg-bg-tertiary/30 transition-all group">
+      {/* Result badge (for wrestlers) */}
+      {primaryRole === 'wrestler' && match.matchResult && (
+        <div className={`w-9 h-9 rounded-lg flex items-center justify-center text-[10px] font-bold uppercase border shrink-0 ${resultColors[match.matchResult] || 'bg-bg-tertiary text-text-secondary border-border-subtle/30'}`}>
+          {match.matchResult === 'win' ? 'W' : match.matchResult === 'loss' ? 'L' : 'D'}
         </div>
-        {children}
+      )}
+
+      {/* Show series logo */}
+      {match.show?.show_series?.logo_url && (
+        <div className="w-6 h-6 rounded overflow-hidden shrink-0">
+          <Image src={match.show.show_series.logo_url} alt="" width={24} height={24} className="w-full h-full object-contain" unoptimized />
+        </div>
+      )}
+
+      {/* Match info */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          {match.match_type && <span className="text-xs text-text-white truncate group-hover:text-neon-blue transition-colors">{match.match_type.name}</span>}
+          {!match.match_type && match.show && <span className="text-xs text-text-white truncate group-hover:text-neon-blue transition-colors">{match.show.name}</span>}
+        </div>
+        <div className="flex items-center gap-2 mt-0.5">
+          <span className="text-[11px] text-text-secondary">{match.show?.name}</span>
+          {match.rating && <span className={`text-[11px] font-mono ${getRatingColor(match.rating)}`}>{match.rating}★</span>}
+        </div>
       </div>
-    </div>
+
+      {/* Date + duration */}
+      <div className="text-right shrink-0">
+        <span className="text-[11px] text-text-secondary block">{formatDateShort(match.date)}</span>
+        {match.duration_seconds && <span className="text-[10px] text-text-secondary/60">{formatDuration(match.duration_seconds)}</span>}
+      </div>
+    </Link>
   )
 }
 
-/* ═══ Widget (right column — compact) ═══ */
-function Widget({ title, onSeeMore, children }: { title: string; onSeeMore: () => void; children: React.ReactNode }) {
+/* ═══════════════════════════════════════════════════════ */
+/* PREVIEW WIDGET — Glass card with "See more" link        */
+/* ═══════════════════════════════════════════════════════ */
+function PreviewWidget({ title, onSeeMore, icon, children }: { title: string; onSeeMore: () => void; icon: string; children: React.ReactNode }) {
   return (
     <div className="rounded-2xl border border-border-subtle/30 bg-gradient-to-br from-bg-secondary/20 to-transparent overflow-hidden">
       <div className="p-4">
         <div className="flex items-center justify-between mb-3">
           <h4 className="text-sm font-bold text-text-white flex items-center gap-2">
-            <span className="w-1 h-3.5 bg-neon-blue rounded-full" />{title}
+            <span className="w-1 h-3.5 bg-neon-blue rounded-full" />
+            {title}
           </h4>
           <button onClick={onSeeMore} className="text-[10px] text-neon-blue hover:text-neon-blue/80 font-medium flex items-center gap-0.5 transition-colors">
             See more <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
@@ -312,77 +388,69 @@ function Widget({ title, onSeeMore, children }: { title: string; onSeeMore: () =
   )
 }
 
-/* ═══ Match Preview Row ═══ */
-function MatchPreviewRow({ match, superstarId, primaryRole }: { match: any; superstarId: number; primaryRole: string }) {
-  const showSlug = match.show?.slug
-  const matchSlug = match.slug
-  const href = showSlug && matchSlug ? `/shows/${showSlug}/matches/${matchSlug}` : showSlug ? `/shows/${showSlug}` : '#'
-  const rc: Record<string, string> = { win: 'bg-green-500/20 text-green-400 border-green-500/30', loss: 'bg-red-500/20 text-red-400 border-red-500/30', draw: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' }
-
-  return (
-    <Link href={href} className="flex items-center gap-3 p-3 rounded-xl bg-bg-tertiary/20 border border-border-subtle/15 hover:border-neon-blue/20 hover:bg-bg-tertiary/30 transition-all group">
-      {primaryRole === 'wrestler' && match.matchResult && (
-        <div className={`w-9 h-9 rounded-lg flex items-center justify-center text-[10px] font-bold uppercase border shrink-0 ${rc[match.matchResult] || 'bg-bg-tertiary text-text-secondary border-border-subtle/30'}`}>
-          {match.matchResult === 'win' ? 'W' : match.matchResult === 'loss' ? 'L' : 'D'}
-        </div>
-      )}
-      {match.show?.show_series?.logo_url && (
-        <div className="w-6 h-6 rounded overflow-hidden shrink-0"><Image src={match.show.show_series.logo_url} alt="" width={24} height={24} className="w-full h-full object-contain" unoptimized /></div>
-      )}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-text-white truncate group-hover:text-neon-blue transition-colors">{match.match_type?.name || match.show?.name || 'Match'}</span>
-        </div>
-        <div className="flex items-center gap-2 mt-0.5">
-          <span className="text-[11px] text-text-secondary">{match.show?.name}</span>
-          {match.rating && <span className={`text-[11px] font-mono ${getRatingColor(match.rating)}`}>{match.rating}★</span>}
-        </div>
-      </div>
-      <div className="text-right shrink-0">
-        <span className="text-[11px] text-text-secondary block">{formatDateShort(match.date)}</span>
-        {match.duration_seconds && <span className="text-[10px] text-text-secondary/60">{formatDuration(match.duration_seconds)}</span>}
-      </div>
-    </Link>
-  )
-}
-
-/* ═══ Stat Mini ═══ */
+/* ═══════════════════════════════════════════════════════ */
+/* STAT MINI — Small stat block for the stats widget       */
+/* ═══════════════════════════════════════════════════════ */
 function StatMini({ label, value, accent, color }: { label: string; value: any; accent?: boolean; color?: string }) {
   return (
     <div className={`p-2.5 rounded-lg text-center ${accent ? 'bg-neon-blue/10 border border-neon-blue/20' : 'bg-bg-tertiary/30 border border-border-subtle/15'}`}>
       <span className="block text-[9px] text-text-secondary uppercase tracking-wider mb-0.5">{label}</span>
-      <span className={`block text-base font-bold font-display ${color || (accent ? 'text-neon-blue' : 'text-text-white')}`}>{typeof value === 'number' ? value.toLocaleString() : value}</span>
+      <span className={`block text-base font-bold font-display ${color || (accent ? 'text-neon-blue' : 'text-text-white')}`}>
+        {typeof value === 'number' ? value.toLocaleString() : value}
+      </span>
     </div>
   )
 }
 
-/* ═══ Golden Records ═══ */
+/* ═══════════════════════════════════════════════════════ */
+/* GOLDEN RECORDS BLOCKS                                   */
+/* ═══════════════════════════════════════════════════════ */
 function RecordsBlocks({ superstarId }: { superstarId: number }) {
   const [records, setRecords] = useState<any[]>([])
+
   useEffect(() => {
     fetch(`/api/superstar-records?superstarId=${superstarId}`)
-      .then(r => r.json()).then(d => setRecords(d.records || [])).catch(() => {})
+      .then(r => r.json())
+      .then(d => setRecords(d.records || []))
+      .catch(() => {})
   }, [superstarId])
+
   if (records.length === 0) return null
+
   return (
     <div className="space-y-3">
       {records.map((rec, i) => (
-        <div key={i} className="relative overflow-hidden rounded-2xl border border-yellow-500/30" style={{ background: 'linear-gradient(135deg, rgba(199,160,90,0.08) 0%, rgba(199,160,90,0.03) 50%, rgba(199,160,90,0.08) 100%)' }}>
-          <div className="absolute inset-0 opacity-[0.06]" style={{ background: 'linear-gradient(135deg, transparent 20%, rgba(255,215,0,0.5) 45%, rgba(255,215,0,0.7) 50%, rgba(255,215,0,0.5) 55%, transparent 80%)', backgroundSize: '300% 300%', animation: 'belt-shimmer 5s ease-in-out infinite' }} />
+        <div key={i} className="relative overflow-hidden rounded-2xl border border-yellow-500/30"
+          style={{ background: 'linear-gradient(135deg, rgba(199,160,90,0.08) 0%, rgba(199,160,90,0.03) 50%, rgba(199,160,90,0.08) 100%)' }}>
+          <div className="absolute inset-0 opacity-[0.06]" style={{
+            background: 'linear-gradient(135deg, transparent 20%, rgba(255,215,0,0.5) 45%, rgba(255,215,0,0.7) 50%, rgba(255,215,0,0.5) 55%, transparent 80%)',
+            backgroundSize: '300% 300%', animation: 'belt-shimmer 5s ease-in-out infinite',
+          }} />
           <div className="relative flex items-center gap-4 px-5 py-4 sm:px-6 sm:py-5">
             <div className="shrink-0">
               {rec.championshipImage ? (
-                <div className="w-14 h-14 sm:w-16 sm:h-16 relative"><Image src={rec.championshipImage} alt="" fill className="object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.3)]" sizes="64px" unoptimized /></div>
+                <div className="w-14 h-14 sm:w-16 sm:h-16 relative">
+                  <Image src={rec.championshipImage} alt="" fill className="object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.3)]" sizes="64px" unoptimized />
+                </div>
               ) : (
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-yellow-400/20 to-yellow-600/10 border border-yellow-500/30 flex items-center justify-center"><span className="text-2xl">{rec.icon || '🏆'}</span></div>
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-yellow-400/20 to-yellow-600/10 border border-yellow-500/30 flex items-center justify-center">
+                  <span className="text-2xl">{rec.icon || '🏆'}</span>
+                </div>
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <span className="text-[9px] px-2 py-0.5 rounded-full bg-yellow-500/15 border border-yellow-500/25 text-yellow-400 font-bold uppercase tracking-[0.15em]">Record Holder</span>
-              <h4 className="text-sm sm:text-base font-bold text-yellow-400/90 font-display mt-1">{rec.type}</h4>
+              <div className="flex items-center gap-2 mb-0.5">
+                <span className="text-[9px] px-2 py-0.5 rounded-full bg-yellow-500/15 border border-yellow-500/25 text-yellow-400 font-bold uppercase tracking-[0.15em]">Record Holder</span>
+              </div>
+              <h4 className="text-sm sm:text-base font-bold text-yellow-400/90 font-display">{rec.type}</h4>
               {rec.subtitle && <p className="text-xs text-yellow-400/50 mt-0.5">{rec.subtitle}</p>}
             </div>
-            <span className="text-lg sm:text-2xl font-bold font-display text-transparent bg-clip-text shrink-0" style={{ backgroundImage: 'linear-gradient(180deg, #e8d5a0 0%, #c7a05a 50%, #a07830 100%)' }}>{rec.value}</span>
+            <div className="text-right shrink-0">
+              <span className="text-lg sm:text-2xl font-bold font-display text-transparent bg-clip-text"
+                style={{ backgroundImage: 'linear-gradient(180deg, #e8d5a0 0%, #c7a05a 50%, #a07830 100%)' }}>
+                {rec.value}
+              </span>
+            </div>
           </div>
           <div className="h-[1px]" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,215,0,0.2) 30%, rgba(255,215,0,0.35) 50%, rgba(255,215,0,0.2) 70%, transparent)' }} />
         </div>

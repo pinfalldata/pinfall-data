@@ -187,14 +187,14 @@ export function RecentSegmentsBlock({ segments }: { segments: any[] }) {
 }
 
 // ═══════════════════════════════════════════════
-// RANDOM SPOTLIGHT CARDS (arena, object, show, PLE)
+// RANDOM SPOTLIGHT CARDS (arena, object, tag team, stable)
 // ═══════════════════════════════════════════════
-export function SpotlightCards({ arena, object, show, ple }: { arena: any; object: any; show: any; ple: any }) {
+export function SpotlightCards({ arena, object, tagTeam, stable }: { arena: any; object: any; tagTeam: any; stable: any }) {
   const items = [
-    arena && { ...arena, label: '🏟️ Arena', href: `/arenas/${arena.slug}`, sub: [arena.city, arena.country].filter(Boolean).join(', ') },
-    object && { ...object, label: '🪑 Object', href: `/matches/objects/${object.slug}`, sub: '' },
-    show && { ...show, label: '📺 Show', href: `/shows/${show.slug}`, sub: show.show_series?.short_name || '' },
-    ple && { ...ple, label: '🎆 PLE', href: `/shows/${ple.slug}`, sub: ple.date ? new Date(ple.date + 'T00:00:00').getFullYear().toString() : '' },
+    arena && { ...arena, label: '🏟️ Arena', href: `/arenas/${arena.slug}`, img: arena.image_url, sub: [arena.city, arena.country].filter(Boolean).join(', ') },
+    object && { ...object, label: '🪑 Object', href: `/matches/objects/${object.slug}`, img: object.image_url, sub: '' },
+    tagTeam && { ...tagTeam, label: '🤝 Tag Team', href: `/tag-teams/teams/${tagTeam.slug}`, img: tagTeam.photo_url, sub: '' },
+    stable && { ...stable, label: '🛡️ Stable', href: `/tag-teams/stables/${stable.slug}`, img: stable.photo_url, sub: '' },
   ].filter(Boolean)
 
   if (items.length === 0) return null
@@ -204,8 +204,8 @@ export function SpotlightCards({ arena, object, show, ple }: { arena: any; objec
       {items.map((item: any, i) => (
         <Link key={i} href={item.href} className="group rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 overflow-hidden hover:border-neon-blue/30 transition-all">
           <div className="relative h-28 sm:h-32 bg-bg-tertiary/30 overflow-hidden">
-            {(item.image_url || item.logo_url) ? (
-              <Image src={item.image_url || item.logo_url} alt={item.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="25vw" unoptimized />
+            {item.img ? (
+              <Image src={item.img} alt={item.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="25vw" unoptimized />
             ) : (
               <div className="w-full h-full flex items-center justify-center"><span className="text-3xl opacity-20">{item.label?.slice(0, 2)}</span></div>
             )}
@@ -269,63 +269,6 @@ export function BeltCarousel({ championships }: { championships: any[] }) {
 }
 
 // ═══════════════════════════════════════════════
-// OMG + TAG TEAM + STABLE ROW
-// ═══════════════════════════════════════════════
-export function OmgTagStableRow({ omgMoments, tagTeam, stable }: { omgMoments: any[]; tagTeam: any; stable: any }) {
-  const [omgIdx, setOmgIdx] = useState(0)
-  const omg = omgMoments?.[omgIdx]
-
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-      {/* OMG Moments */}
-      {omg && (
-        <div className="rounded-2xl border border-orange-500/20 bg-gradient-to-br from-orange-500/5 to-transparent overflow-hidden">
-          <div className="px-4 pt-4 flex items-center justify-between">
-            <h3 className="font-display text-sm font-bold text-orange-400 flex items-center gap-1.5">⚡ OMG Moment</h3>
-            <div className="flex items-center gap-1">
-              <button onClick={() => setOmgIdx(i => (i - 1 + omgMoments.length) % omgMoments.length)} className="w-6 h-6 rounded-full border border-border-subtle/30 flex items-center justify-center text-text-secondary hover:text-orange-400 text-xs">‹</button>
-              <span className="text-[9px] text-text-secondary font-mono">{omgIdx + 1}/{omgMoments.length}</span>
-              <button onClick={() => setOmgIdx(i => (i + 1) % omgMoments.length)} className="w-6 h-6 rounded-full border border-border-subtle/30 flex items-center justify-center text-text-secondary hover:text-orange-400 text-xs">›</button>
-            </div>
-          </div>
-          <div className="p-4">
-            <p className="text-sm text-text-white font-medium leading-snug mb-2">{omg.title}</p>
-            <div className="flex items-center gap-2">
-              {omg.category && <span className="text-[9px] px-1.5 py-0.5 rounded bg-orange-500/15 text-orange-400 capitalize">{omg.category.replace('_', ' ')}</span>}
-              {omg.show && <Link href={`/shows/${omg.show.slug}`} className="text-[10px] text-text-secondary hover:text-neon-blue">{omg.show.name}</Link>}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Tag Team */}
-      {tagTeam && (
-        <Link href={`/tag-teams/teams/${tagTeam.slug}`} className="rounded-2xl border border-border-subtle/30 bg-bg-secondary/20 overflow-hidden hover:border-neon-blue/30 transition-all group">
-          <div className="relative h-28 bg-bg-tertiary/30 overflow-hidden">
-            {tagTeam.photo_url ? <Image src={tagTeam.photo_url} alt={tagTeam.name} fill className="object-cover group-hover:scale-105 transition-transform" sizes="33vw" unoptimized /> : <div className="w-full h-full flex items-center justify-center"><span className="text-3xl opacity-20">🤝</span></div>}
-            <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/80 to-transparent" />
-            <span className="absolute top-2 left-2 text-[8px] px-1.5 py-0.5 rounded bg-bg-primary/70 backdrop-blur-sm text-neon-blue font-bold uppercase">🤝 Tag Team</span>
-          </div>
-          <div className="p-3"><p className="text-sm font-bold text-text-white group-hover:text-neon-blue transition-colors truncate">{tagTeam.name}</p></div>
-        </Link>
-      )}
-
-      {/* Stable */}
-      {stable && (
-        <Link href={`/tag-teams/stables/${stable.slug}`} className="rounded-2xl border border-border-subtle/30 bg-bg-secondary/20 overflow-hidden hover:border-neon-pink/30 transition-all group">
-          <div className="relative h-28 bg-bg-tertiary/30 overflow-hidden">
-            {stable.photo_url ? <Image src={stable.photo_url} alt={stable.name} fill className="object-cover group-hover:scale-105 transition-transform" sizes="33vw" unoptimized /> : <div className="w-full h-full flex items-center justify-center"><span className="text-3xl opacity-20">🛡️</span></div>}
-            <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/80 to-transparent" />
-            <span className="absolute top-2 left-2 text-[8px] px-1.5 py-0.5 rounded bg-bg-primary/70 backdrop-blur-sm text-neon-pink font-bold uppercase">🛡️ Stable</span>
-          </div>
-          <div className="p-3"><p className="text-sm font-bold text-text-white group-hover:text-neon-pink transition-colors truncate">{stable.name}</p></div>
-        </Link>
-      )}
-    </div>
-  )
-}
-
-// ═══════════════════════════════════════════════
 // HOF + SLAMMY ROW
 // ═══════════════════════════════════════════════
 export function HofSlammyRow({ hofEntry, slammyAward }: { hofEntry: any; slammyAward: any }) {
@@ -359,6 +302,16 @@ export function HofSlammyRow({ hofEntry, slammyAward }: { hofEntry: any; slammyA
   )
 }
 
+// Standalone birthday component for use alongside OnThisDay in page.tsx
+export function BirthdayStandalone() {
+  const [birthdays, setBirthdays] = useState<any[]>([])
+  useEffect(() => {
+    fetch('/api/homepage-data').then(r => r.json()).then(d => { if (!d.error && d.birthdays?.length > 0) setBirthdays(d.birthdays) }).catch(() => {})
+  }, [])
+  if (birthdays.length === 0) return null
+  return <BirthdayBlock birthdays={birthdays} />
+}
+
 // ═══════════════════════════════════════════════
 // MASTER WRAPPER — fetches data and renders all
 // ═══════════════════════════════════════════════
@@ -373,17 +326,7 @@ export function HomeExtraSections() {
 
   return (
     <>
-      {/* On This Day + Birthday row */}
-      {data.birthdays?.length > 0 && (
-        <section className="max-w-[1440px] mx-auto px-4 sm:px-6 -mt-4">
-          <div className="grid grid-cols-1 sm:grid-cols-[1fr_280px] gap-4">
-            <div /> {/* Placeholder — OnThisDay is rendered separately */}
-            <BirthdayBlock birthdays={data.birthdays} />
-          </div>
-        </section>
-      )}
-
-      {/* Recent Matches + Segments */}
+      {/* ★ Row 1: Latest Matches + Latest Segments */}
       {(data.recentMatches?.length > 0 || data.recentSegments?.length > 0) && (
         <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -393,26 +336,33 @@ export function HomeExtraSections() {
         </section>
       )}
 
-      {/* Spotlight cards */}
-      {(data.arena || data.object || data.show || data.ple) && (
-        <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-4">
-          <SpotlightCards arena={data.arena} object={data.object} show={data.show} ple={data.ple} />
-        </section>
-      )}
-
-      {/* Belt carousel */}
+      {/* ★ Row 2: Championship belts carousel */}
       {data.championships?.length > 0 && (
         <BeltCarousel championships={data.championships} />
       )}
 
-      {/* OMG + Tag Team + Stable */}
-      {(data.omgMoments?.length > 0 || data.tagTeam || data.stable) && (
+      {/* ★ Row 3: Arena + Object + Tag Team + Stable (4 cards) */}
+      {(data.arena || data.object || data.tagTeam || data.stable) && (
         <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-4">
-          <OmgTagStableRow omgMoments={data.omgMoments} tagTeam={data.tagTeam} stable={data.stable} />
+          <SpotlightCards arena={data.arena} object={data.object} tagTeam={data.tagTeam} stable={data.stable} />
         </section>
       )}
+    </>
+  )
+}
 
-      {/* HOF + Slammy */}
+// Separate component for sections AFTER Hall of Legends
+export function HomeAfterLegends() {
+  const [data, setData] = useState<any>(null)
+
+  useEffect(() => {
+    fetch('/api/homepage-data').then(r => r.json()).then(d => { if (!d.error) setData(d) }).catch(() => {})
+  }, [])
+
+  if (!data) return null
+
+  return (
+    <>
       {(data.hofEntry || data.slammyAward) && (
         <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-4 pb-8">
           <HofSlammyRow hofEntry={data.hofEntry} slammyAward={data.slammyAward} />

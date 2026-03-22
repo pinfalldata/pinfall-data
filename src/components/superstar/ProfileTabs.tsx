@@ -62,7 +62,7 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
 
   const scroll = (dir: number) => { scrollRef.current?.scrollBy({ left: dir * 200, behavior: 'smooth' }) }
 
-  // ★ FIX: Tab change handler that scrolls to top
+  // ★ FIX: Tab change handler passed to TabProfile for "See more" buttons
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId)
     window.scrollTo({ top: 0, behavior: 'smooth' })

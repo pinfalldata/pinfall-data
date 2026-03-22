@@ -5,47 +5,47 @@ import { OnThisDay } from '@/components/home/OnThisDay'
 import { SuperstarGrid } from '@/components/home/SuperstarGrid'
 import { ShowCalendar } from '@/components/home/ShowCalendar'
 import { SocialWidgets } from '@/components/home/SocialWidgets'
-import { WweLogosCarousel, HomeExtraSections } from '@/components/home/HomeExtraSections'
+import { WweLogosCarousel, HomeExtraSections, HomeAfterLegends, BirthdayStandalone } from '@/components/home/HomeExtraSections'
 
 export default function HomePage() {
   return (
     <div className="relative">
-      {/* ===== HERO — Animated Ring ===== */}
+      {/* 1. HERO — Ring animé */}
       <HeroRing />
-
       <div className="neon-line max-w-5xl mx-auto" />
 
-      {/* ===== STATS ===== */}
+      {/* 2. STATS du site */}
       <HomeStats />
-
       <div className="neon-line max-w-5xl mx-auto" />
 
-      {/* ===== ERA TIMELINE ===== */}
+      {/* 3. Wrestling Through the Ages */}
       <EraTimeline />
-
       <div className="neon-line-pink max-w-5xl mx-auto" />
 
-      {/* ===== SHOW CALENDAR ===== */}
-      <ShowCalendar />
-
-      <div className="neon-line max-w-5xl mx-auto" />
-
-      {/* ★ NEW: WWE LOGOS CAROUSEL */}
-      <WweLogosCarousel />
-
-      <div className="neon-line-pink max-w-5xl mx-auto" />
-
-      {/* ===== ON THIS DAY + BIRTHDAY (side by side) ===== */}
+      {/* 4. On This Day (left) + Born Today (right) */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-10">
-        <OnThisDay />
+        <div className="grid grid-cols-1 sm:grid-cols-[1fr_280px] gap-4 items-start">
+          <OnThisDay />
+          <BirthdayStandalone />
+        </div>
       </section>
 
-      {/* ★ NEW: All extra homepage sections (birthdays, matches, segments, spotlights, belts, omg, hof...) */}
+      {/* 5-7. Latest Matches+Segments, Belt Carousel, Spotlight Cards */}
       <HomeExtraSections />
 
       <div className="neon-line max-w-5xl mx-auto" />
 
-      {/* ===== SUPERSTAR GRID + SOCIAL WIDGETS ===== */}
+      {/* 8. Calendrier */}
+      <ShowCalendar />
+
+      <div className="neon-line-pink max-w-5xl mx-auto" />
+
+      {/* 9. WWE Logos Carousel */}
+      <WweLogosCarousel />
+
+      <div className="neon-line max-w-5xl mx-auto" />
+
+      {/* 10. Hall of Legends + Social */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8">
         <h2 className="font-display text-2xl lg:text-3xl font-bold text-text-white mb-5 text-center">
           <span className="text-neon-pink">Hall</span> of Legends
@@ -63,7 +63,8 @@ export default function HomePage() {
 
       <div className="neon-line-pink max-w-5xl mx-auto" />
 
-      {/* ===== HOF + SLAMMY rendered inside HomeExtraSections ===== */}
+      {/* 11. HOF + Slammy Awards */}
+      <HomeAfterLegends />
     </div>
   )
 }

@@ -16,52 +16,47 @@ export async function GET(request: NextRequest) {
   if (!slug) return NextResponse.json({ error: 'slug is required' }, { status: 400 })
 
   try {
-    const { data: arenaRaw, error: arenaErr } = await supabase
+    const { data: arena, error: arenaErr } = await supabase
       .from('arenas')
       .select('*')
       .eq('slug', slug)
       .single()
 
-    if (arenaErr || !arenaRaw) {
+    if (arenaErr || !arena) {
       return NextResponse.json({ error: 'Arena not found' }, { status: 404 })
     }
 
+    // Arena name history
     const { data: arenaNames } = await supabase
       .from('arena_names')
       .select('*')
-      .eq('arena_id', arenaRaw.id)
+      .eq('arena_id', arena.id)
       .order('start_date', { ascending: true, nullsFirst: true })
 
     const names = arenaNames || []
 
-    // ★ FIX: Multiple strategies to find the current name
-    // Strategy 1: is_current = true (truthy check)
+    // ★ FIX: Compute currentName as a SEPARATE field
+    // Strategy 1: is_current = true
     let currentName = null
     for (const n of names) {
-      if (n.is_current === true || n.is_current === 'true' || n.is_current === 1) {
+      if (n.is_current === true || n.is_current === 'true') {
         currentName = n.name
         break
       }
     }
-    // Strategy 2: end_date IS NULL (the name that hasn't ended)
+    // Strategy 2: end_date IS NULL
     if (!currentName) {
       for (const n of names) {
-        if (n.end_date === null || n.end_date === undefined || n.end_date === '') {
+        if (n.end_date === null || n.end_date === undefined) {
           currentName = n.name
           break
         }
       }
     }
-    // Strategy 3: Latest start_date (most recent name)
+    // Strategy 3: latest start_date
     if (!currentName && names.length > 0) {
       const sorted = [...names].sort((a, b) => (b.start_date || '').localeCompare(a.start_date || ''))
       currentName = sorted[0].name
-    }
-
-    // ★ FIX: Build a completely new plain object — NOT mutating arenaRaw
-    const arena = JSON.parse(JSON.stringify(arenaRaw))
-    if (currentName) {
-      arena.name = currentName
     }
 
     // Paginated shows
@@ -81,7 +76,7 @@ export async function GET(request: NextRequest) {
     const total = count || 0
     const totalPages = Math.ceil(total / limit)
 
-    // Prev/Next arena with current names
+    // Prev/Next arena
     const { data: allArenas } = await supabase
       .from('arenas')
       .select('id, name, slug')
@@ -90,31 +85,15 @@ export async function GET(request: NextRequest) {
     let prevArena = null
     let nextArena = null
     if (allArenas && allArenas.length > 1) {
-      const { data: allCurrentNames } = await supabase
-        .from('arena_names')
-        .select('arena_id, name, is_current, end_date')
-
-      const currentNameMap = new Map()
-      for (const n of (allCurrentNames || [])) {
-        if (n.is_current === true || n.is_current === 'true' || n.end_date === null) {
-          if (!currentNameMap.has(n.arena_id)) {
-            currentNameMap.set(n.arena_id, n.name)
-          }
-        }
-      }
-
-      const enrichedList = allArenas.map(a => ({
-        ...a,
-        name: currentNameMap.get(a.id) || a.name,
-      }))
-
-      const idx = enrichedList.findIndex(a => a.id === arena.id)
-      if (idx > 0) prevArena = { slug: enrichedList[idx - 1].slug, name: enrichedList[idx - 1].name }
-      if (idx >= 0 && idx < enrichedList.length - 1) nextArena = { slug: enrichedList[idx + 1].slug, name: enrichedList[idx + 1].name }
+      const idx = allArenas.findIndex(a => a.id === arena.id)
+      if (idx > 0) prevArena = { slug: allArenas[idx - 1].slug, name: allArenas[idx - 1].name }
+      if (idx >= 0 && idx < allArenas.length - 1) nextArena = { slug: allArenas[idx + 1].slug, name: allArenas[idx + 1].name }
     }
 
+    // ★ Return currentName as a SEPARATE top-level field
     return new Response(JSON.stringify({
       arena,
+      currentName: currentName || arena.name,
       arenaNames: names,
       shows: shows || [],
       total,
