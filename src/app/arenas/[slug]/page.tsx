@@ -21,13 +21,6 @@ function getArenaNameAtDate(arenaNames: any[], date: string | null, fallbackName
   return fallbackName
 }
 
-// Get the current display name: prefer arena_names where is_current=true, fallback to arenas.name
-function getCurrentDisplayName(names: any[], fallback: string): string {
-  if (!names || names.length === 0) return fallback
-  const cur = names.find((n: any) => n.is_current === true)
-  return cur ? cur.name : fallback
-}
-
 const showTypeLabels: Record<string, string> = {
   ppv: 'PPV / PLE', weekly: 'TV Show', special: 'Special', tournament: 'Tournament', other: 'Other', house_show: 'House Show',
 }
@@ -141,21 +134,17 @@ export default function ArenaDetailPage() {
             <span className="text-neon-blue">Arena</span>
           </nav>
           <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-text-white text-center tracking-tight mb-2">
-            {arena ? getCurrentDisplayName(arenaNames, arena.name) : <span className="bg-bg-secondary/50 rounded w-60 h-10 inline-block animate-pulse" />}
+            {arena?.display_name || arena?.name || <span className="bg-bg-secondary/50 rounded w-60 h-10 inline-block animate-pulse" />}
           </h1>
-          {/* All names this arena has had */}
-          {arenaNames.length > 0 && (
+          {/* All historical names */}
+          {arenaNames.filter(an => !an.is_current).length > 0 && (
             <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 mb-1">
-              {arenaNames.filter(an => !an.is_current).length > 0 && (
-                <>
-                  <span className="text-[10px] text-text-secondary/60">Also known as:</span>
-                  {arenaNames.filter(an => !an.is_current).map((an, i) => (
-                    <span key={an.id || i} className="text-[10px] text-neon-blue/60 italic">
-                      {an.name}{an.start_date ? ` (${an.start_date.substring(0, 4)}–${an.end_date ? an.end_date.substring(0, 4) : 'now'})` : ''}
-                    </span>
-                  ))}
-                </>
-              )}
+              <span className="text-[10px] text-text-secondary/60">Also known as:</span>
+              {arenaNames.filter(an => !an.is_current).map((an, i) => (
+                <span key={an.id || i} className="text-[10px] text-neon-blue/60 italic">
+                  {an.name}{an.start_date ? ` (${an.start_date.substring(0, 4)}–${an.end_date ? an.end_date.substring(0, 4) : 'now'})` : ''}
+                </span>
+              ))}
             </div>
           )}
           {arena && (
@@ -244,8 +233,9 @@ export default function ArenaDetailPage() {
 
               <div className="space-y-0.5">
                 {shows.map((s: any) => {
-                  const nameAtDate = arenaNames.length > 1 ? getArenaNameAtDate(arenaNames, s.date, arena?.name || '') : null
-                  const isDifferent = nameAtDate && nameAtDate !== getCurrentDisplayName(arenaNames, arena?.name || '')
+                  const displayName = arena?.display_name || arena?.name || ''
+                  const nameAtDate = arenaNames.length > 1 ? getArenaNameAtDate(arenaNames, s.date, displayName) : null
+                  const isDiff = nameAtDate && nameAtDate !== displayName
 
                   return (
                   <Link key={s.id} href={`/shows/${s.slug}`} className="group block">
@@ -258,7 +248,7 @@ export default function ArenaDetailPage() {
                         <span className="text-sm text-text-white font-medium truncate group-hover:text-neon-blue transition-colors">{s.name}</span>
                       </div>
                       <span className="text-xs text-text-secondary font-mono text-right">{s.attendance ? s.attendance.toLocaleString() : '—'}</span>
-                      <span className="text-[10px] truncate">{isDifferent ? <span className="text-neon-blue/70 italic">{nameAtDate}</span> : <span className="text-neon-blue">{s.show_series?.short_name || s.show_series?.name || ''}</span>}</span>
+                      <span className="text-[10px] truncate">{isDiff ? <span className="text-neon-blue/70 italic">{nameAtDate}</span> : <span className="text-neon-blue">{s.show_series?.short_name || s.show_series?.name || ''}</span>}</span>
                     </div>
                     {/* Mobile */}
                     <div className="lg:hidden flex items-center gap-3 px-3 py-3 rounded-xl border border-transparent hover:bg-bg-secondary/40 hover:border-border-subtle/20 transition-all">
@@ -271,7 +261,7 @@ export default function ArenaDetailPage() {
                           <span>{showTypeLabels[s.show_type] || s.show_type}</span>
                           {s.attendance && <><span>•</span><span>{s.attendance.toLocaleString()}</span></>}
                         </div>
-                        {isDifferent && <p className="text-[9px] text-neon-blue/60 italic mt-0.5">as {nameAtDate}</p>}
+                        {isDiff && <p className="text-[9px] text-neon-blue/60 italic mt-0.5">as {nameAtDate}</p>}
                       </div>
                       <svg className="w-4 h-4 text-text-secondary/30 group-hover:text-neon-blue shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                     </div>
@@ -416,7 +406,7 @@ export default function ArenaDetailPage() {
       {/* Share */}
       {arena && (
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 pb-4">
-          <ShareButtons title={`${getCurrentDisplayName(arenaNames, arena.name)} — WWE Arena History | Pinfall Data`} />
+          <ShareButtons title={`${arena.display_name || arena.name} — WWE Arena History | Pinfall Data`} />
         </div>
       )}
 
@@ -424,10 +414,10 @@ export default function ArenaDetailPage() {
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8">
         <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/10 p-6 sm:p-8">
           <h2 className="font-display text-xl font-bold text-text-white mb-3">
-            <span className="text-neon-blue">{arena ? getCurrentDisplayName(arenaNames, arena.name) : 'Arena'}</span> — Complete WWE Event History
+            <span className="text-neon-blue">{arena?.display_name || arena?.name || 'Arena'}</span> — Complete WWE Event History
           </h2>
           <p className="text-text-secondary text-sm leading-relaxed">
-            Full history of every WWE event held at {arena ? getCurrentDisplayName(arenaNames, arena.name) : 'this arena'}
+            Full history of every WWE event held at {arena?.display_name || arena?.name || 'this arena'}
             {arena?.city ? ` in ${arena.city}` : ''}.{arenaNames.filter(an => !an.is_current).length > 0 ? ` Formerly known as ${arenaNames.filter(an => !an.is_current).map(an => an.name).join(', ')}.` : ''} Browse all shows, discover which superstars competed here the most, 
             and explore detailed statistics including attendance records, match ratings, and title changes — only on Pinfall Data.
           </p>

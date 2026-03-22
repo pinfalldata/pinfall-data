@@ -204,30 +204,43 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Step 5: Fetch multi-championships from match_championships table
+    // Step 5: Fetch multi-championships + era photos
     const filteredIds = filtered.map((m: any) => m.id)
     let mcMap = new Map()
     if (filteredIds.length > 0) {
       try {
-        const { data: mcRows } = await supabase
-          .from('match_championships')
-          .select('match_id, championship_id, is_title_change')
-          .in('match_id', filteredIds)
+        const { data: mcRows } = await supabase.from('match_championships').select('match_id, championship_id, is_title_change').in('match_id', filteredIds)
         if (mcRows && mcRows.length > 0) {
           const champIds = [...new Set(mcRows.map(r => r.championship_id))]
-          const { data: mcChamps } = await supabase
-            .from('championships')
-            .select('id, name, slug, image_url')
-            .in('id', champIds)
+          const { data: mcChamps } = await supabase.from('championships').select('id, name, slug, image_url').in('id', champIds)
           const cMap = new Map((mcChamps || []).map(c => [c.id, c]))
-          for (const r of mcRows) {
-            const c = cMap.get(r.championship_id)
-            if (!c) continue
-            if (!mcMap.has(r.match_id)) mcMap.set(r.match_id, [])
-            mcMap.get(r.match_id).push({ ...c, is_title_change: r.is_title_change || false })
-          }
+          for (const r of mcRows) { const c = cMap.get(r.championship_id); if (!c) continue; if (!mcMap.has(r.match_id)) mcMap.set(r.match_id, []); mcMap.get(r.match_id).push({ ...c, is_title_change: r.is_title_change || false }) }
         }
       } catch {}
+    }
+
+    // Era photos: collect all superstar IDs, batch-fetch superstar_photos
+    const allSids = new Set<number>()
+    for (const m of filtered) {
+      for (const p of (m.participants || [])) { if (p.superstar?.id) allSids.add(p.superstar.id) }
+    }
+    let photoMap = new Map<number, { year: number; photo_url: string }[]>()
+    if (allSids.size > 0) {
+      try {
+        const { data: photos } = await supabase.from('superstar_photos').select('superstar_id, year, photo_url').in('superstar_id', [...allSids].slice(0, 500)).order('year', { ascending: true })
+        for (const p of (photos || [])) {
+          if (!photoMap.has(p.superstar_id)) photoMap.set(p.superstar_id, [])
+          photoMap.get(p.superstar_id)!.push({ year: p.year, photo_url: p.photo_url })
+        }
+      } catch {}
+    }
+    const pickPhoto = (sid: number, matchDate: string | null, fallback: string | null): string | null => {
+      const list = photoMap.get(sid)
+      if (!list || list.length === 0) return fallback
+      const yr = matchDate ? parseInt(matchDate.slice(0, 4)) : 9999
+      let best = list[0]
+      for (const p of list) { if (p.year <= yr) best = p; else break }
+      return best.photo_url
     }
 
     // Step 6: Enrich each match
@@ -249,11 +262,8 @@ export async function GET(request: NextRequest) {
         mg.team_number === myTeam || mg.managing_for?.id === sid
       ) || []
 
-      // Multi-championships: use match_championships if available, fallback to single
       const mc = mcMap.get(m.id)
-      const championships = mc && mc.length > 0
-        ? mc
-        : m.championship ? [{ ...m.championship, is_title_change: m.is_title_change || false }] : []
+      const championships = mc && mc.length > 0 ? mc : m.championship ? [{ ...m.championship, is_title_change: m.is_title_change || false }] : []
 
       return {
         id: m.id,
@@ -281,13 +291,13 @@ export async function GET(request: NextRequest) {
           id: p.superstar?.id,
           name: p.superstar?.name,
           slug: p.superstar?.slug,
-          photo_url: p.superstar?.photo_url,
+          photo_url: pickPhoto(p.superstar?.id, m.date, p.superstar?.photo_url),
         })),
         opponents: opponents.map((p: any) => ({
           id: p.superstar?.id,
           name: p.superstar?.name,
           slug: p.superstar?.slug,
-          photo_url: p.superstar?.photo_url,
+          photo_url: pickPhoto(p.superstar?.id, m.date, p.superstar?.photo_url),
         })),
         managers: myManagers.map((mg: any) => ({
           id: mg.superstar?.id,

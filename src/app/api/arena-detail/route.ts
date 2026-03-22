@@ -25,6 +25,17 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Arena not found' }, { status: 404 })
     }
 
+    // Arena name history
+    const { data: arenaNames } = await supabase
+      .from('arena_names')
+      .select('*')
+      .eq('arena_id', arena.id)
+      .order('start_date', { ascending: true, nullsFirst: true })
+
+    // ★ Compute display_name server-side from arena_names
+    const currentNameEntry = (arenaNames || []).find(n => n.is_current === true)
+    const displayName = currentNameEntry ? currentNameEntry.name : arena.name
+
     // Paginated shows at this arena
     const { data: shows, error: showErr, count } = await supabase
       .from('shows')
@@ -58,15 +69,8 @@ export async function GET(request: NextRequest) {
       if (idx >= 0 && idx < allArenas.length - 1) nextArena = { slug: allArenas[idx + 1].slug, name: allArenas[idx + 1].name }
     }
 
-    // Arena name history
-    const { data: arenaNames } = await supabase
-      .from('arena_names')
-      .select('*')
-      .eq('arena_id', arena.id)
-      .order('start_date', { ascending: true, nullsFirst: true })
-
     return NextResponse.json({
-      arena,
+      arena: { ...arena, display_name: displayName },
       arenaNames: arenaNames || [],
       shows: shows || [],
       total,

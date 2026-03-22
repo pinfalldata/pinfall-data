@@ -15,39 +15,106 @@ function logError(label: string, error: any) {
 }
 
 /**
- * Fetch match_championships for a set of match IDs.
- * Returns a Map: matchId → championship[] (with id, name, slug, image_url, is_title_change)
- * This replaces the single matches.championship_id approach.
+ * Fetch match_championships for a set of match IDs (multi-championship support).
  */
 async function fetchMatchChampionships(matchIds: number[]): Promise<Map<number, any[]>> {
   const map = new Map<number, any[]>()
   if (!matchIds.length) return map
   try {
-    const { data: rows } = await supabase
-      .from('match_championships')
-      .select('match_id, championship_id, is_title_change')
-      .in('match_id', matchIds)
+    const { data: rows } = await supabase.from('match_championships').select('match_id, championship_id, is_title_change').in('match_id', matchIds)
     if (!rows || rows.length === 0) return map
-
     const champIds = [...new Set(rows.map(r => r.championship_id))]
-    const { data: champs } = await supabase
-      .from('championships')
-      .select('id, name, slug, image_url')
-      .in('id', champIds)
-
+    const { data: champs } = await supabase.from('championships').select('id, name, slug, image_url').in('id', champIds)
     const champMap = new Map((champs || []).map(c => [c.id, c]))
-
     for (const r of rows) {
-      const champ = champMap.get(r.championship_id)
-      if (!champ) continue
-      const entry = { ...champ, is_title_change: r.is_title_change || false }
+      const c = champMap.get(r.championship_id)
+      if (!c) continue
       if (!map.has(r.match_id)) map.set(r.match_id, [])
-      map.get(r.match_id)!.push(entry)
+      map.get(r.match_id)!.push({ ...c, is_title_change: r.is_title_change || false })
+    }
+  } catch (err) { logError('fetchMatchChampionships', err) }
+  return map
+}
+
+/**
+ * ★ Dynamic superstar photos by year.
+ * Given matches with participants, replace each superstar's photo_url
+ * with the era-appropriate photo from superstar_photos table.
+ * Falls back to the original photo_url if no entry exists.
+ */
+async function applyEraPhotos(matches: any[], showYear: number | null) {
+  if (!showYear || !matches || matches.length === 0) return
+
+  // Collect all unique superstar IDs from participants, managers, referees
+  const sids = new Set<number>()
+  for (const m of matches) {
+    for (const p of (m.participants || [])) {
+      if (p.superstar?.id) sids.add(p.superstar.id)
+    }
+    for (const mg of (m.managers || [])) {
+      if (mg.superstar?.id) sids.add(mg.superstar.id)
+      if (mg.managing_for?.id) sids.add(mg.managing_for.id)
+    }
+    for (const r of (m.referees || [])) {
+      if (r.superstar?.id) sids.add(r.superstar.id)
+    }
+  }
+  if (sids.size === 0) return
+
+  // Batch-fetch all photos for these superstars
+  try {
+    const { data: photos } = await supabase
+      .from('superstar_photos')
+      .select('superstar_id, year, photo_url')
+      .in('superstar_id', [...sids].slice(0, 500))
+      .order('year', { ascending: true })
+
+    if (!photos || photos.length === 0) return
+
+    // Build map: superstarId → [{year, photo_url}, ...]
+    const photoMap = new Map<number, { year: number; photo_url: string }[]>()
+    for (const p of photos) {
+      if (!photoMap.has(p.superstar_id)) photoMap.set(p.superstar_id, [])
+      photoMap.get(p.superstar_id)!.push({ year: p.year, photo_url: p.photo_url })
+    }
+
+    // Helper: pick the best photo for a given year
+    const pick = (sid: number, fallback: string | null): string | null => {
+      const list = photoMap.get(sid)
+      if (!list || list.length === 0) return fallback
+      // Find the closest year <= showYear, or the earliest available
+      let best = list[0]
+      for (const p of list) {
+        if (p.year <= showYear) best = p
+        else break // sorted ascending, so first > showYear means we passed it
+      }
+      return best.photo_url
+    }
+
+    // Override photo_url in-place for all participants
+    for (const m of matches) {
+      for (const p of (m.participants || [])) {
+        if (p.superstar?.id && photoMap.has(p.superstar.id)) {
+          p.superstar.photo_url = pick(p.superstar.id, p.superstar.photo_url)
+        }
+      }
+      for (const mg of (m.managers || [])) {
+        if (mg.superstar?.id && photoMap.has(mg.superstar.id)) {
+          mg.superstar.photo_url = pick(mg.superstar.id, mg.superstar.photo_url)
+        }
+        if (mg.managing_for?.id && photoMap.has(mg.managing_for.id)) {
+          mg.managing_for.photo_url = pick(mg.managing_for.id, mg.managing_for.photo_url)
+        }
+      }
+      for (const r of (m.referees || [])) {
+        if (r.superstar?.id && photoMap.has(r.superstar.id)) {
+          r.superstar.photo_url = pick(r.superstar.id, r.superstar.photo_url)
+        }
+      }
     }
   } catch (err) {
-    logError('fetchMatchChampionships', err)
+    logError('applyEraPhotos', err)
   }
-  return map
 }
 
 // ============================================================
@@ -254,19 +321,18 @@ export async function getShowBySlug(slug: string) {
   logError('getShowBySlug(ringAnnouncers)', announcersError)
   logError('getShowBySlug(media)', mediaError)
 
-  // ★ Fetch multi-championships from match_championships table
+  // ★ Multi-championships from match_championships table
   const matchIds = (matches || []).map((m: any) => m.id)
   const mcMap = await fetchMatchChampionships(matchIds)
-
-  // Merge championships array onto each match
   const enrichedMatches = (matches || []).map((m: any) => {
     const mc = mcMap.get(m.id)
-    // Use match_championships if available, otherwise fallback to single championship
-    const championships = mc && mc.length > 0
-      ? mc
-      : m.championship ? [{ ...m.championship, is_title_change: m.is_title_change || false }] : []
+    const championships = mc && mc.length > 0 ? mc : m.championship ? [{ ...m.championship, is_title_change: m.is_title_change || false }] : []
     return { ...m, championships }
   })
+
+  // ★ Dynamic era-appropriate superstar photos
+  const showYear = show.date ? parseInt(show.date.slice(0, 4)) : null
+  await applyEraPhotos(enrichedMatches, showYear)
 
   // Calculate average wrestler age at show date
   let averageAge: number | null = null
@@ -411,12 +477,14 @@ export async function getMatchBySlug(showSlug: string, matchSlug: string) {
     return { ...matchBase, show: enrichedShow, participants: [], managers: [], referees: [], objects: [], media: [], championships: [] }
   }
 
-  // ★ Fetch multi-championships from match_championships table
+  // ★ Multi-championships
   const mcMap = await fetchMatchChampionships([matchFull.id])
   const mc = mcMap.get(matchFull.id)
-  const championships = mc && mc.length > 0
-    ? mc
-    : matchFull.championship ? [{ ...matchFull.championship, is_title_change: matchFull.is_title_change || false }] : []
+  const championships = mc && mc.length > 0 ? mc : matchFull.championship ? [{ ...matchFull.championship, is_title_change: matchFull.is_title_change || false }] : []
+
+  // ★ Dynamic era-appropriate superstar photos
+  const matchYear = show.date ? parseInt(show.date.slice(0, 4)) : null
+  await applyEraPhotos([matchFull], matchYear)
 
   return { ...matchFull, show: enrichedShow, championships }
 }
