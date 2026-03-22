@@ -5,7 +5,13 @@ import { OnThisDay } from '@/components/home/OnThisDay'
 import { SuperstarGrid } from '@/components/home/SuperstarGrid'
 import { ShowCalendar } from '@/components/home/ShowCalendar'
 import { SocialWidgets } from '@/components/home/SocialWidgets'
-import { HomepageDataProvider, WweLogosCarousel, BirthdayStandalone, HomeExtraSections, HomeAfterLegends } from '@/components/home/HomeExtraSections'
+import {
+  HomepageDataProvider,
+  WweLogosCarousel,
+  BirthdayStandalone,
+  HomeExtraSections,
+  HomeAfterLegends,
+} from '@/components/home/HomeExtraSections'
 
 export default function HomePage() {
   return (

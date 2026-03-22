@@ -5,9 +5,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 /* ══════════════════════════════════════════════════
-   SHARED DATA CONTEXT — avoids duplicate /api/homepage-data calls
-   HomeExtraSections + HomeAfterLegends both used to call the same API independently.
-   Now we fetch once and share via context.
+   SHARED DATA CONTEXT
+   Single fetch of /api/homepage-data shared by all sections.
+   Avoids the double-call bug where HomeExtraSections + HomeAfterLegends
+   each fetched the same API independently.
    ══════════════════════════════════════════════════ */
 const HomepageDataCtx = createContext<any>(null)
 
@@ -27,7 +28,7 @@ function useHomepageData() {
 }
 
 /* ══════════════════════════════════════════════════
-   WWE LOGOS CAROUSEL — auto-scrolling like Eras
+   WWE LOGOS CAROUSEL — auto-scrolling infinite loop
    ══════════════════════════════════════════════════ */
 export function WweLogosCarousel() {
   const [logos, setLogos] = useState<any[]>([])
@@ -99,7 +100,8 @@ export function WweLogosCarousel() {
 }
 
 /* ══════════════════════════════════════════════════
-   🎂 BORN TODAY — photo, name, birth year, arrows
+   🎂 BORN TODAY — photo, name, birth year, age, arrows
+   Sorted by total_matches desc in the API
    ══════════════════════════════════════════════════ */
 function BirthdayBlock({ birthdays }: { birthdays: any[] }) {
   const [idx, setIdx] = useState(0)
@@ -144,7 +146,7 @@ function BirthdayBlock({ birthdays }: { birthdays: any[] }) {
             </p>
           )}
           {star.total_matches > 0 && (
-            <p className="text-[10px] text-text-secondary/50 mt-0.5">{star.total_matches} career matches</p>
+            <p className="text-[10px] text-text-secondary/50 mt-0.5">{star.total_matches.toLocaleString()} career matches</p>
           )}
         </div>
       </div>
@@ -172,7 +174,7 @@ function BirthdayBlock({ birthdays }: { birthdays: any[] }) {
   )
 }
 
-/** Standalone Birthday component — fetches via shared context */
+/** Standalone Birthday — uses shared HomepageData context */
 export function BirthdayStandalone() {
   const data = useHomepageData()
   if (!data || !data.birthdays || data.birthdays.length === 0) return <div />
@@ -186,7 +188,11 @@ function RecentMatchesBlock({ matches }: { matches: any[] }) {
   if (!matches || matches.length === 0) return null
   return (
     <div className="rounded-2xl border border-border-subtle/30 bg-bg-secondary/20 overflow-hidden">
-      <div className="px-5 pt-5"><h3 className="font-display text-base font-bold text-text-white flex items-center gap-2"><span className="text-neon-blue">🤼</span> Latest Matches</h3></div>
+      <div className="px-5 pt-5">
+        <h3 className="font-display text-base font-bold text-text-white flex items-center gap-2">
+          <span className="text-neon-blue">🤼</span> Latest Matches
+        </h3>
+      </div>
       <div className="p-4 space-y-2">
         {matches.map((m: any) => {
           const href = m.show?.slug && m.slug ? `/shows/${m.show.slug}/matches/${m.slug}` : '#'
@@ -196,26 +202,42 @@ function RecentMatchesBlock({ matches }: { matches: any[] }) {
               <div className="flex -space-x-2 shrink-0">
                 {parts.map((p: any, i: number) => (
                   <div key={i} className="w-8 h-8 rounded-full overflow-hidden border-2 border-bg-primary">
-                    {p.superstar?.photo_url ? <Image src={p.superstar.photo_url} alt="" width={32} height={32} className="w-full h-full object-cover" unoptimized /> : <div className="w-full h-full bg-bg-tertiary" />}
+                    {p.superstar?.photo_url ? (
+                      <Image src={p.superstar.photo_url} alt="" width={32} height={32} className="w-full h-full object-cover" unoptimized />
+                    ) : (
+                      <div className="w-full h-full bg-bg-tertiary" />
+                    )}
                   </div>
                 ))}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs text-text-white font-medium truncate group-hover:text-neon-blue transition-colors">{m.match_type?.name || 'Match'}</p>
+                <p className="text-xs text-text-white font-medium truncate group-hover:text-neon-blue transition-colors">
+                  {m.match_type?.name || 'Match'}
+                </p>
                 <div className="flex items-center gap-2 mt-0.5">
-                  {m.show?.show_series?.logo_url && <div className="w-3.5 h-3.5 rounded overflow-hidden shrink-0"><Image src={m.show.show_series.logo_url} alt="" width={14} height={14} className="object-contain" unoptimized /></div>}
+                  {m.show?.show_series?.logo_url && (
+                    <div className="w-3.5 h-3.5 rounded overflow-hidden shrink-0">
+                      <Image src={m.show.show_series.logo_url} alt="" width={14} height={14} className="object-contain" unoptimized />
+                    </div>
+                  )}
                   <span className="text-[10px] text-text-secondary truncate">{m.show?.name}</span>
                 </div>
               </div>
               <div className="text-right shrink-0">
-                <span className="text-[10px] text-text-secondary">{m.date ? new Date(m.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}</span>
+                <span className="text-[10px] text-text-secondary">
+                  {m.date ? new Date(m.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}
+                </span>
                 {m.rating && <span className="block text-[10px] text-yellow-400 font-mono">{m.rating}★</span>}
               </div>
             </Link>
           )
         })}
       </div>
-      <div className="px-5 pb-4"><Link href="/matches/search" className="text-xs text-neon-blue hover:text-neon-blue/80 font-medium">Browse all matches →</Link></div>
+      <div className="px-5 pb-4">
+        <Link href="/matches/search" className="text-xs text-neon-blue hover:text-neon-blue/80 font-medium">
+          Browse all matches →
+        </Link>
+      </div>
     </div>
   )
 }
@@ -227,7 +249,11 @@ function RecentSegmentsBlock({ segments }: { segments: any[] }) {
   if (!segments || segments.length === 0) return null
   return (
     <div className="rounded-2xl border border-border-subtle/30 bg-bg-secondary/20 overflow-hidden">
-      <div className="px-5 pt-5"><h3 className="font-display text-base font-bold text-text-white flex items-center gap-2"><span className="text-neon-pink">🎤</span> Latest Segments</h3></div>
+      <div className="px-5 pt-5">
+        <h3 className="font-display text-base font-bold text-text-white flex items-center gap-2">
+          <span className="text-neon-pink">🎤</span> Latest Segments
+        </h3>
+      </div>
       <div className="p-4 space-y-2">
         {segments.map((s: any) => {
           const href = s.show?.slug && s.slug ? `/shows/${s.show.slug}/segments/${s.slug}` : '#'
@@ -237,55 +263,81 @@ function RecentSegmentsBlock({ segments }: { segments: any[] }) {
               <div className="flex -space-x-2 shrink-0">
                 {parts.map((p: any, i: number) => (
                   <div key={i} className="w-8 h-8 rounded-full overflow-hidden border-2 border-bg-primary">
-                    {p.superstar?.photo_url ? <Image src={p.superstar.photo_url} alt="" width={32} height={32} className="w-full h-full object-cover" unoptimized /> : <div className="w-full h-full bg-bg-tertiary" />}
+                    {p.superstar?.photo_url ? (
+                      <Image src={p.superstar.photo_url} alt="" width={32} height={32} className="w-full h-full object-cover" unoptimized />
+                    ) : (
+                      <div className="w-full h-full bg-bg-tertiary" />
+                    )}
                   </div>
                 ))}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-text-white font-medium truncate group-hover:text-neon-pink transition-colors">{s.title}</p>
                 <div className="flex items-center gap-2 mt-0.5">
-                  {s.show?.show_series?.logo_url && <div className="w-3.5 h-3.5 rounded overflow-hidden shrink-0"><Image src={s.show.show_series.logo_url} alt="" width={14} height={14} className="object-contain" unoptimized /></div>}
+                  {s.show?.show_series?.logo_url && (
+                    <div className="w-3.5 h-3.5 rounded overflow-hidden shrink-0">
+                      <Image src={s.show.show_series.logo_url} alt="" width={14} height={14} className="object-contain" unoptimized />
+                    </div>
+                  )}
                   <span className="text-[10px] text-text-secondary truncate">{s.show?.name}</span>
                 </div>
               </div>
-              <span className="text-[10px] text-text-secondary shrink-0">{s.show?.date ? new Date(s.show.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}</span>
+              <span className="text-[10px] text-text-secondary shrink-0">
+                {s.show?.date ? new Date(s.show.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''}
+              </span>
             </Link>
           )
         })}
       </div>
-      <div className="px-5 pb-4"><Link href="/matches/segments" className="text-xs text-neon-pink hover:text-neon-pink/80 font-medium">Browse all segments →</Link></div>
+      <div className="px-5 pb-4">
+        <Link href="/matches/segments" className="text-xs text-neon-pink hover:text-neon-pink/80 font-medium">
+          Browse all segments →
+        </Link>
+      </div>
     </div>
   )
 }
 
 /* ══════════════════════════════════════════════════
    🏆 CHAMPIONSHIP BELT CAROUSEL
-   ★ FIX: Auto-scroll with requestAnimationFrame
-   Pause on hover + touch. Duplicated array for infinite loop.
+   ★ Auto-scroll with requestAnimationFrame
+   scrollLeft += 0.3 — infinite loop via duplicated array
+   Pauses on mouse hover and mobile touch
    ══════════════════════════════════════════════════ */
 function BeltCarousel({ championships }: { championships: any[] }) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const animRef = useRef<number | null>(null)
   const isPaused = useRef(false)
 
+  // Animation loop — runs every frame (~60fps)
   const animate = useCallback(() => {
     const el = scrollRef.current
     if (el && !isPaused.current) {
       el.scrollLeft += 0.3
-      // Reset to start when we've scrolled past the first copy
-      if (el.scrollLeft >= el.scrollWidth / 2) el.scrollLeft = 0
+      // When we've scrolled past the first set, jump back to start
+      if (el.scrollLeft >= el.scrollWidth / 2) {
+        el.scrollLeft = 0
+      }
     }
     animRef.current = requestAnimationFrame(animate)
   }, [])
 
+  // Start animation when championships are loaded
   useEffect(() => {
     if (championships.length === 0) return
-    animRef.current = requestAnimationFrame(animate)
-    return () => { if (animRef.current) cancelAnimationFrame(animRef.current) }
+    // Small delay to ensure DOM is rendered and scrollWidth is correct
+    const timer = setTimeout(() => {
+      animRef.current = requestAnimationFrame(animate)
+    }, 100)
+    return () => {
+      clearTimeout(timer)
+      if (animRef.current) cancelAnimationFrame(animRef.current)
+    }
   }, [championships, animate])
 
   if (championships.length === 0) return null
-  // Duplicate for infinite scroll effect
+
+  // Duplicate array for seamless infinite scroll
   const display = [...championships, ...championships]
 
   return (
@@ -293,17 +345,27 @@ function BeltCarousel({ championships }: { championships: any[] }) {
       <h2 className="font-display text-lg font-bold text-text-white mb-4 text-center">
         <span className="text-neon-blue">Championship</span> Titles
       </h2>
-      <div ref={scrollRef}
+      <div
+        ref={scrollRef}
         onMouseEnter={() => { isPaused.current = true }}
         onMouseLeave={() => { isPaused.current = false }}
         onTouchStart={() => { isPaused.current = true }}
         onTouchEnd={() => { setTimeout(() => { isPaused.current = false }, 2000) }}
-        className="flex gap-6 overflow-x-auto scrollbar-hide py-3">
+        className="flex gap-6 overflow-x-auto scrollbar-hide py-3"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
         {display.map((c, i) => (
-          <Link key={`${c.id}-${i}`} href={`/champions/${c.slug}`} className="shrink-0 group" title={c.name}>
+          <Link key={`belt-${c.id}-${i}`} href={`/champions/${c.slug}`} className="shrink-0 group" title={c.name}>
             <div className="w-32 h-16 sm:w-40 sm:h-20 rounded-xl border border-border-subtle/20 bg-bg-secondary/10 flex items-center justify-center px-3 py-2 group-hover:border-neon-blue/40 group-hover:bg-neon-blue/5 transition-all">
               {c.image_url ? (
-                <Image src={c.image_url} alt={c.name} width={140} height={70} className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300" unoptimized />
+                <Image
+                  src={c.image_url}
+                  alt={c.name}
+                  width={140}
+                  height={70}
+                  className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                  unoptimized
+                />
               ) : (
                 <span className="text-2xl opacity-30">🏆</span>
               )}
@@ -317,7 +379,7 @@ function BeltCarousel({ championships }: { championships: any[] }) {
 
 /* ══════════════════════════════════════════════════
    SPOTLIGHT CARDS — arena, object, tag team, stable
-   ★ FIX: Reduced height with aspect-[16/9] + max-h
+   ★ Reduced card height with aspect-[2/1]
    ══════════════════════════════════════════════════ */
 function SpotlightCards({ arena, object, tagTeam, stable }: { arena: any; object: any; tagTeam: any; stable: any }) {
   const items = [
@@ -333,15 +395,26 @@ function SpotlightCards({ arena, object, tagTeam, stable }: { arena: any; object
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
       {items.map((item: any, i) => (
         <Link key={i} href={item.href} className="group rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 overflow-hidden hover:border-neon-blue/30 transition-all">
-          {/* ★ FIX: aspect-[2/1] — wider, shorter cards */}
+          {/* ★ REDUCED: aspect-[2/1] — wider, shorter rectangle */}
           <div className="relative aspect-[2/1] bg-bg-tertiary/30 overflow-hidden">
             {item.img ? (
-              <Image src={item.img} alt={item.name} fill className="object-contain group-hover:scale-105 transition-transform duration-500" sizes="(max-width:1024px) 50vw, 25vw" unoptimized />
+              <Image
+                src={item.img}
+                alt={item.name}
+                fill
+                className="object-contain group-hover:scale-105 transition-transform duration-500"
+                sizes="(max-width:1024px) 50vw, 25vw"
+                unoptimized
+              />
             ) : (
-              <div className="w-full h-full flex items-center justify-center"><span className="text-4xl opacity-15">{item.label?.slice(0, 2)}</span></div>
+              <div className="w-full h-full flex items-center justify-center">
+                <span className="text-4xl opacity-15">{item.label?.slice(0, 2)}</span>
+              </div>
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/80 via-transparent to-transparent" />
-            <span className="absolute top-2 left-2 text-[8px] px-1.5 py-0.5 rounded bg-bg-primary/70 backdrop-blur-sm border border-border-subtle/30 text-text-secondary font-bold uppercase">{item.label}</span>
+            <span className="absolute top-2 left-2 text-[8px] px-1.5 py-0.5 rounded bg-bg-primary/70 backdrop-blur-sm border border-border-subtle/30 text-text-secondary font-bold uppercase">
+              {item.label}
+            </span>
           </div>
           <div className="p-2.5">
             <p className="text-xs font-bold text-text-white group-hover:text-neon-blue transition-colors truncate">{item.name}</p>
@@ -354,14 +427,22 @@ function SpotlightCards({ arena, object, tagTeam, stable }: { arena: any; object
 }
 
 /* ══════════════════════════════════════════════════
-   🏛️ HOF + 🏆 SLAMMY — random entries side by side
+   🏛️ HOF + 🏆 SLAMMY — two random cards side by side
+   API returns: hofEntry.year (mapped from induction_year),
+   hofEntry.wing (mapped from class), hofEntry.superstar
+   slammyAward.year, slammyAward.category, slammyAward.winner
    ══════════════════════════════════════════════════ */
 function HofSlammyRow({ hofEntry, slammyAward }: { hofEntry: any; slammyAward: any }) {
+  if (!hofEntry && !slammyAward) return null
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* Hall of Fame card */}
       {hofEntry?.superstar && (
-        <Link href={`/superstars/${hofEntry.superstar.slug}`}
-          className="flex items-center gap-4 p-5 rounded-2xl border border-yellow-500/20 bg-gradient-to-r from-yellow-500/5 to-transparent hover:border-yellow-500/30 transition-all group">
+        <Link
+          href={`/superstars/${hofEntry.superstar.slug}`}
+          className="flex items-center gap-4 p-5 rounded-2xl border border-yellow-500/20 bg-gradient-to-r from-yellow-500/5 to-transparent hover:border-yellow-500/30 transition-all group"
+        >
           <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-yellow-500/30 shrink-0">
             {hofEntry.superstar.photo_url ? (
               <Image src={hofEntry.superstar.photo_url} alt="" width={64} height={64} className="w-full h-full object-cover" unoptimized />
@@ -370,15 +451,25 @@ function HofSlammyRow({ hofEntry, slammyAward }: { hofEntry: any; slammyAward: a
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <span className="text-[9px] text-yellow-400 font-bold uppercase tracking-wider block">🏛️ Hall of Fame · {hofEntry.year}</span>
-            <p className="text-base font-bold text-text-white group-hover:text-yellow-400 transition-colors mt-0.5 truncate">{hofEntry.superstar.name}</p>
-            {hofEntry.wing && <span className="text-[11px] text-text-secondary">{hofEntry.wing}</span>}
+            <span className="text-[9px] text-yellow-400 font-bold uppercase tracking-wider block">
+              🏛️ Hall of Fame · {hofEntry.year}
+            </span>
+            <p className="text-base font-bold text-text-white group-hover:text-yellow-400 transition-colors mt-0.5 truncate">
+              {hofEntry.superstar.name}
+            </p>
+            {hofEntry.wing && (
+              <span className="text-[11px] text-text-secondary">{hofEntry.wing}</span>
+            )}
           </div>
         </Link>
       )}
+
+      {/* Slammy Award card */}
       {slammyAward?.winner && (
-        <Link href={`/superstars/${slammyAward.winner.slug}`}
-          className="flex items-center gap-4 p-5 rounded-2xl border border-neon-blue/20 bg-gradient-to-r from-neon-blue/5 to-transparent hover:border-neon-blue/30 transition-all group">
+        <Link
+          href={`/superstars/${slammyAward.winner.slug}`}
+          className="flex items-center gap-4 p-5 rounded-2xl border border-neon-blue/20 bg-gradient-to-r from-neon-blue/5 to-transparent hover:border-neon-blue/30 transition-all group"
+        >
           <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-neon-blue/30 shrink-0">
             {slammyAward.winner.photo_url ? (
               <Image src={slammyAward.winner.photo_url} alt="" width={64} height={64} className="w-full h-full object-cover" unoptimized />
@@ -387,9 +478,15 @@ function HofSlammyRow({ hofEntry, slammyAward }: { hofEntry: any; slammyAward: a
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <span className="text-[9px] text-neon-blue font-bold uppercase tracking-wider block">🏆 Slammy Award · {slammyAward.year}</span>
-            <p className="text-base font-bold text-text-white group-hover:text-neon-blue transition-colors mt-0.5 truncate">{slammyAward.winner.name}</p>
-            {slammyAward.category && <span className="text-[11px] text-text-secondary">{slammyAward.category}</span>}
+            <span className="text-[9px] text-neon-blue font-bold uppercase tracking-wider block">
+              🏆 Slammy Award · {slammyAward.year}
+            </span>
+            <p className="text-base font-bold text-text-white group-hover:text-neon-blue transition-colors mt-0.5 truncate">
+              {slammyAward.winner.name}
+            </p>
+            {slammyAward.category && (
+              <span className="text-[11px] text-text-secondary">{slammyAward.category}</span>
+            )}
           </div>
         </Link>
       )}
@@ -398,8 +495,9 @@ function HofSlammyRow({ hofEntry, slammyAward }: { hofEntry: any; slammyAward: a
 }
 
 /* ══════════════════════════════════════════════════
-   MASTER: Sections 5-6-7 (between OnThisDay and Calendar)
-   Uses shared HomepageData context
+   MASTER: Sections 5-6-7
+   (between OnThisDay+BornToday and ShowCalendar)
+   Uses shared HomepageData context — ONE api call
    ══════════════════════════════════════════════════ */
 export function HomeExtraSections() {
   const data = useHomepageData()
@@ -407,7 +505,7 @@ export function HomeExtraSections() {
 
   return (
     <>
-      {/* 5. Latest Matches + Latest Segments */}
+      {/* 5. Latest Matches + Latest Segments — 2 colonnes */}
       {(data.recentMatches?.length > 0 || data.recentSegments?.length > 0) && (
         <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -417,13 +515,20 @@ export function HomeExtraSections() {
         </section>
       )}
 
-      {/* 6. Championship Belt Carousel */}
-      {data.championships?.length > 0 && <BeltCarousel championships={data.championships} />}
+      {/* 6. Championship Belt Carousel — auto-scroll */}
+      {data.championships?.length > 0 && (
+        <BeltCarousel championships={data.championships} />
+      )}
 
-      {/* 7. Arena + Object + Tag Team + Stable */}
+      {/* 7. Arena + Object + Tag Team + Stable — spotlight cards */}
       {(data.arena || data.object || data.tagTeam || data.stable) && (
         <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-4">
-          <SpotlightCards arena={data.arena} object={data.object} tagTeam={data.tagTeam} stable={data.stable} />
+          <SpotlightCards
+            arena={data.arena}
+            object={data.object}
+            tagTeam={data.tagTeam}
+            stable={data.stable}
+          />
         </section>
       )}
     </>
@@ -442,6 +547,9 @@ export function HomeAfterLegends() {
     <>
       {(data.hofEntry || data.slammyAward) && (
         <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6 pb-10">
+          <h2 className="font-display text-lg font-bold text-text-white mb-4 text-center">
+            <span className="text-yellow-400">Legends</span> & <span className="text-neon-blue">Awards</span>
+          </h2>
           <HofSlammyRow hofEntry={data.hofEntry} slammyAward={data.slammyAward} />
         </section>
       )}
