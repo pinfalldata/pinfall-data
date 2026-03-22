@@ -13,19 +13,19 @@ function fmtDur(s: number) { const m = Math.floor(s / 60); const sec = s % 60; r
 function getArenaNameAtDate(arenaNames: any[], date: string | null, fallbackName: string): string {
   if (!arenaNames || arenaNames.length === 0 || !date) return fallbackName
   for (let i = arenaNames.length - 1; i >= 0; i--) {
-
-// Get current display name (from arena_names if available, else from arenas.name)
-function getCurrentDisplayName(arenaNames: any[], arenaName: string): string {
-  if (!arenaNames || arenaNames.length === 0) return arenaName
-  const current = arenaNames.find((an: any) => an.is_current)
-  return current ? current.name : arenaName
-}
     const an = arenaNames[i]
     const start = an.start_date || '0000-01-01'
     const end = an.end_date || '9999-12-31'
     if (date >= start && date <= end) return an.name
   }
   return fallbackName
+}
+
+// Get current display name (from arena_names if available, else from arenas.name)
+function getCurrentDisplayName(arenaNames: any[], arenaName: string): string {
+  if (!arenaNames || arenaNames.length === 0) return arenaName
+  const current = arenaNames.find((an: any) => an.is_current)
+  return current ? current.name : arenaName
 }
 
 const showTypeLabels: Record<string, string> = {

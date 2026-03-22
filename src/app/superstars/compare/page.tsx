@@ -80,8 +80,10 @@ export default function ComparePage() {
         setError(null)
       } else {
         setCompared([])
-        setError(`API returned ${arr.length} superstar(s) instead of ${stars.length}. Check console.`)
+        const debugStr = d.debug ? ` | Debug: ${JSON.stringify(d.debug)}` : ''
+        setError(`API returned ${arr.length} superstar(s) instead of ${stars.length}.${debugStr}`)
         console.warn('[Compare] API response:', d)
+        console.warn('[Compare] URL called:', `/api/superstar-compare?ids=${stars.map(s => s.id).join(',')}`)
       }
     } catch (e: any) {
       if (ticket === fetchRef.current) {
@@ -201,11 +203,21 @@ export default function ComparePage() {
         {loading ? (
           <div className="space-y-2">{Array.from({ length: 10 }).map((_, i) => <div key={i} className="h-14 rounded-xl bg-bg-secondary/30 animate-pulse" />)}</div>
         ) : error ? (
-          /* ★ Error state with retry */
+          /* ★ Error state with retry + debug info */
           <div className="text-center py-16">
             <span className="text-4xl block mb-3">⚠️</span>
-            <p className="text-red-400 text-sm mb-2">Error: {error}</p>
-            <p className="text-text-secondary/60 text-xs mb-4">Open your browser console (F12) for details.</p>
+            <p className="text-red-400 text-sm mb-3">{error}</p>
+            <p className="text-text-secondary/60 text-xs mb-2">
+              Try opening this URL directly to test the API:
+            </p>
+            <a
+              href={`/api/superstar-compare?ids=${selected.map(s => s.id).join(',')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-neon-blue text-xs underline mb-4 block font-mono"
+            >
+              /api/superstar-compare?ids={selected.map(s => s.id).join(',')}
+            </a>
             <button
               onClick={() => fetchComparison(selected)}
               className="px-5 py-2 rounded-xl bg-neon-blue/15 border border-neon-blue/30 text-neon-blue text-sm font-medium hover:bg-neon-blue/25 transition-all"
