@@ -224,15 +224,19 @@ export default function ArenaDetailPage() {
           ) : (
             <>
               {/* Desktop header */}
-              <div className="hidden lg:grid lg:grid-cols-[100px_minmax(80px,0.5fr)_minmax(200px,2fr)_100px_100px] gap-4 px-4 pb-2 text-[9px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
-                <span>Date</span><span>Type</span><span>Event</span><span>Attendance</span><span>Show</span>
+              <div className="hidden lg:grid lg:grid-cols-[100px_minmax(80px,0.5fr)_minmax(200px,2fr)_100px_120px] gap-4 px-4 pb-2 text-[9px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
+                <span>Date</span><span>Type</span><span>Event</span><span>Attendance</span><span>Venue Name</span>
               </div>
 
               <div className="space-y-0.5">
-                {shows.map((s: any) => (
+                {shows.map((s: any) => {
+                  const venueAtDate = arenaNames.length > 1 ? getArenaNameAtDate(arenaNames, s.date, arena?.name || '') : null
+                  const showVenueName = venueAtDate && venueAtDate !== arena?.name
+
+                  return (
                   <Link key={s.id} href={`/shows/${s.slug}`} className="group block">
                     {/* Desktop */}
-                    <div className="hidden lg:grid lg:grid-cols-[100px_minmax(80px,0.5fr)_minmax(200px,2fr)_100px_100px] gap-4 items-center px-4 py-3 rounded-lg border border-transparent hover:bg-bg-secondary/40 hover:border-border-subtle/20 transition-all">
+                    <div className="hidden lg:grid lg:grid-cols-[100px_minmax(80px,0.5fr)_minmax(200px,2fr)_100px_120px] gap-4 items-center px-4 py-3 rounded-lg border border-transparent hover:bg-bg-secondary/40 hover:border-border-subtle/20 transition-all">
                       <span className="text-xs text-text-secondary font-mono">{fmt(s.date)}</span>
                       <span className="text-[10px] px-2 py-0.5 rounded-full bg-bg-tertiary border border-border-subtle/20 text-text-secondary text-center truncate">{showTypeLabels[s.show_type] || s.show_type}</span>
                       <div className="flex items-center gap-2 min-w-0">
@@ -240,7 +244,7 @@ export default function ArenaDetailPage() {
                         <span className="text-sm text-text-white font-medium truncate group-hover:text-neon-blue transition-colors">{s.name}</span>
                       </div>
                       <span className="text-xs text-text-secondary font-mono text-right">{s.attendance ? s.attendance.toLocaleString() : '—'}</span>
-                      <span className="text-[10px] text-neon-blue truncate">{s.show_series?.short_name || s.show_series?.name || ''}</span>
+                      <span className="text-[10px] text-neon-blue/70 italic truncate">{showVenueName ? venueAtDate : (s.show_series?.short_name || s.show_series?.name || '')}</span>
                     </div>
                     {/* Mobile */}
                     <div className="lg:hidden flex items-center gap-3 px-3 py-3 rounded-xl border border-transparent hover:bg-bg-secondary/40 hover:border-border-subtle/20 transition-all">
@@ -253,11 +257,15 @@ export default function ArenaDetailPage() {
                           <span>{showTypeLabels[s.show_type] || s.show_type}</span>
                           {s.attendance && <><span>•</span><span>{s.attendance.toLocaleString()}</span></>}
                         </div>
+                        {showVenueName && (
+                          <p className="text-[9px] text-neon-blue/60 italic mt-0.5">as {venueAtDate}</p>
+                        )}
                       </div>
                       <svg className="w-4 h-4 text-text-secondary/30 group-hover:text-neon-blue shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                     </div>
                   </Link>
-                ))}
+                  )
+                })}
               </div>
 
               {totalPages > 1 && <Pag page={page} tp={totalPages} total={total} go={goPage} label="events" />}

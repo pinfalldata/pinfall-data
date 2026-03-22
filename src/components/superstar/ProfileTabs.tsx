@@ -16,6 +16,7 @@ import TabHallOfFame from './TabHallOfFame'
 import TabSlammyAwards from './TabSlammyAwards'
 import TabYearEndAwards from './TabYearEndAwards'
 import TabObjectsUsed from './TabObjectsUsed'
+import TabPersona from './TabPersona'
 
 interface RoleCounts {
   segments: number; managed: number; commentated: number; matchCommentated: number
@@ -23,6 +24,7 @@ interface RoleCounts {
   gmTenures: number; execTenures: number; championships: number
   omgMoments: number; tagTeams: number; stables: number
   hallOfFame: number; slammyAwards: number; yearEndAwards: number; objectsUsed: number
+  entranceThemes: number; attires: number; outsideRing: number
 }
 
 export function ProfileTabs({ superstar }: { superstar: any }) {
@@ -60,7 +62,10 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
 
   const rc = roleCounts
 
-  // TAB ORDER: profil - matchs - segments - timeline - omg - championships - tag team - stables -
+  // Persona tab: visible if any of the 3 sub-datasets have data
+  const personaCount = (rc?.entranceThemes || 0) + (rc?.attires || 0) + (rc?.outsideRing || 0)
+
+  // TAB ORDER: profil - matchs - segments - timeline - persona - omg - championships - tag team - stables -
   // hall of fame - slammy - year-end - manager - guest commentary - guest referee -
   // books & films - objects used - referee - ring announcer - executive - interviewer - commentator - gm
   const tabs = [
@@ -68,6 +73,7 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
     { id: 'matches', label: 'Matches', show: hasMatches, count: superstar.total_matches },
     { id: 'segments', label: 'Segments', show: (rc?.segments || 0) > 0, count: rc?.segments },
     { id: 'timeline', label: 'Timeline', show: superstar.timeline?.length > 0 },
+    { id: 'persona', label: '🎭 Persona', show: personaCount > 0, count: personaCount > 0 ? personaCount : undefined },
     { id: 'omgMoments', label: '⚡ OMG Moments', show: (rc?.omgMoments || 0) > 0, count: rc?.omgMoments },
     { id: 'championships', label: 'Championships', show: (rc?.championships || superstar.total_reigns || 0) > 0, count: rc?.championships || superstar.total_reigns },
     { id: 'tagTeams', label: 'Tag Teams', show: (rc?.tagTeams || 0) > 0, count: rc?.tagTeams },
@@ -136,6 +142,7 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
         {activeTab === 'timeline' && <TabTimeline superstar={superstar} />}
         {activeTab === 'moves' && <TabMoves superstar={superstar} />}
         {activeTab === 'media' && <TabMedia superstar={superstar} />}
+        {activeTab === 'persona' && <TabPersona superstar={superstar} />}
         {ROLE_TABS.includes(activeTab) && <TabRoleData superstar={superstar} tab={activeTab} />}
       </div>
     </div>

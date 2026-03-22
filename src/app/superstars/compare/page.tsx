@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -48,6 +48,9 @@ export default function ComparePage() {
   const debounceRef = useRef<NodeJS.Timeout>()
   const inputRef = useRef<HTMLInputElement>(null)
 
+  // ★ FIX: Compute a stable string of selected IDs via useMemo
+  const selectedIdsKey = useMemo(() => selected.map(s => s.id).join(','), [selected])
+
   // Search superstars
   const doSearch = (q: string) => {
     setQuery(q)
@@ -76,23 +79,27 @@ export default function ComparePage() {
     setCompared(prev => prev.filter(s => s.id !== id))
   }
 
-  // Auto-compare when 2+ selected
+  // ★ FIX: Auto-compare when 2+ selected — use stable dependency
   useEffect(() => {
     if (selected.length < 2) { setCompared([]); return }
     let cancelled = false
     const doCompare = async () => {
       setLoading(true)
       try {
-        const ids = selected.map(s => s.id).join(',')
-        const r = await fetch(`/api/superstar-compare?ids=${ids}`)
+        const r = await fetch(`/api/superstar-compare?ids=${selectedIdsKey}`)
         const d = await r.json()
-        if (!cancelled) setCompared(d.superstars || [])
+        if (!cancelled) {
+          // Ensure the order matches selected order
+          const map = new Map((d.superstars || []).map((s: ComparedStar) => [s.id, s]))
+          const ordered = selected.map(s => map.get(s.id)).filter(Boolean) as ComparedStar[]
+          setCompared(ordered)
+        }
       } catch { }
       if (!cancelled) setLoading(false)
     }
     doCompare()
     return () => { cancelled = true }
-  }, [selected.map(s => s.id).join(',')])
+  }, [selectedIdsKey]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Close dropdown on click outside
   useEffect(() => {
