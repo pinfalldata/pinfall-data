@@ -14,7 +14,7 @@ export default function HomePage() {
       <HeroRing />
       <div className="neon-line max-w-5xl mx-auto" />
 
-      {/* 2. Stats du site */}
+      {/* 2. Stats */}
       <HomeStats />
       <div className="neon-line max-w-5xl mx-auto" />
 
@@ -22,29 +22,25 @@ export default function HomePage() {
       <EraTimeline />
       <div className="neon-line-pink max-w-5xl mx-auto" />
 
-      {/* 4. On This Day + Born Today (côte à côte) */}
+      {/* 4. On This Day + Born Today */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-10">
         <div className="grid grid-cols-1 sm:grid-cols-[1fr_280px] gap-4 items-start">
           <OnThisDay />
           <BirthdayStandalone />
         </div>
       </section>
-
       <div className="neon-line max-w-5xl mx-auto" />
 
-      {/* 5. Latest Matches + Segments  |  6. Belt Carousel  |  7. Spotlight Cards */}
+      {/* 5. Matches + Segments | 6. Belt Carousel | 7. Spotlight Cards */}
       <HomeExtraSections />
-
       <div className="neon-line-pink max-w-5xl mx-auto" />
 
       {/* 8. Calendrier */}
       <ShowCalendar />
-
       <div className="neon-line max-w-5xl mx-auto" />
 
-      {/* 9. WWE Logos Carousel */}
+      {/* 9. WWE Logos */}
       <WweLogosCarousel />
-
       <div className="neon-line-pink max-w-5xl mx-auto" />
 
       {/* 10. Hall of Legends */}
@@ -62,10 +58,9 @@ export default function HomePage() {
           <SocialWidgets mode="compact" />
         </div>
       </section>
-
       <div className="neon-line max-w-5xl mx-auto" />
 
-      {/* 11. HOF + Slammy Awards */}
+      {/* 11. HOF + Slammy */}
       <HomeAfterLegends />
     </div>
   )
