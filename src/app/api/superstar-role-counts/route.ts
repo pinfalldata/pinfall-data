@@ -4,11 +4,6 @@ import { supabase } from '@/lib/supabase'
 
 export const revalidate = 60
 
-/**
- * GET /api/superstar-role-counts?superstarId=123
- * Returns counts for each role activity to determine which tabs to show.
- * Includes: omgMoments, tagTeams, stables, entranceThemes, attires
- */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const id = searchParams.get('superstarId')
@@ -63,7 +58,30 @@ export async function GET(request: NextRequest) {
       supabase.from('superstar_attires').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
     ])
 
-    // OMG count = unique moments (participant + direct)
+    // Gallery count: count media from superstar's matches + segments
+    let gallery = 0
+    try {
+      const [{ data: mp }, { data: sp }] = await Promise.all([
+        supabase.from('match_participants').select('match_id').eq('superstar_id', sid).limit(5000),
+        supabase.from('show_segment_participants').select('segment_id').eq('superstar_id', sid).limit(5000),
+      ])
+      const mIds = [...new Set((mp || []).map(p => p.match_id))]
+      const sIds = [...new Set((sp || []).map(p => p.segment_id))]
+
+      let mmCount = 0
+      let smCount = 0
+
+      if (mIds.length > 0) {
+        const { count: c } = await supabase.from('match_media').select('*', { count: 'exact', head: true }).in('match_id', mIds.slice(0, 1000))
+        mmCount = c || 0
+      }
+      if (sIds.length > 0) {
+        const { count: c } = await supabase.from('segment_media').select('*', { count: 'exact', head: true }).in('segment_id', sIds.slice(0, 1000))
+        smCount = c || 0
+      }
+      gallery = mmCount + smCount
+    } catch {}
+
     const omgMoments = Math.max((omgParticipant || 0), (omgDirect || 0))
 
     return NextResponse.json({
@@ -87,9 +105,10 @@ export async function GET(request: NextRequest) {
       objectsUsed: objectsUsed || 0,
       entranceThemes: entranceThemes || 0,
       attires: attires || 0,
+      gallery,
     })
   } catch (err) {
     console.error('[superstar-role-counts]', err)
-    return NextResponse.json({ segments:0,managed:0,commentated:0,matchCommentated:0,ringAnnounced:0,refereed:0,guestRefereed:0,interviewed:0,gmTenures:0,execTenures:0,championships:0,omgMoments:0,tagTeams:0,stables:0,hallOfFame:0,slammyAwards:0,yearEndAwards:0,objectsUsed:0,entranceThemes:0,attires:0 })
+    return NextResponse.json({ segments:0,managed:0,commentated:0,matchCommentated:0,ringAnnounced:0,refereed:0,guestRefereed:0,interviewed:0,gmTenures:0,execTenures:0,championships:0,omgMoments:0,tagTeams:0,stables:0,hallOfFame:0,slammyAwards:0,yearEndAwards:0,objectsUsed:0,entranceThemes:0,attires:0,gallery:0 })
   }
 }

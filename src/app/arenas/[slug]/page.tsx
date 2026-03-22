@@ -21,7 +21,7 @@ function getArenaNameAtDate(arenaNames: any[], date: string | null, fallbackName
   return fallbackName
 }
 
-// Get current display name (from arena_names if available, else from arenas.name)
+// Get current display name from arena_names (is_current=true), fallback to arenas.name
 function getCurrentDisplayName(arenaNames: any[], arenaName: string): string {
   if (!arenaNames || arenaNames.length === 0) return arenaName
   const current = arenaNames.find((an: any) => an.is_current)
@@ -144,7 +144,7 @@ export default function ArenaDetailPage() {
             {arena ? getCurrentDisplayName(arenaNames, arena.name) : <span className="bg-bg-secondary/50 rounded w-60 h-10 inline-block animate-pulse" />}
           </h1>
           {/* Arena name history — show all alternate names */}
-          {arenaNames.length > 1 && (
+          {arenaNames.length > 0 && arenaNames.filter(an => an.name !== getCurrentDisplayName(arenaNames, arena?.name || '')).length > 0 && (
             <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 mb-1">
               <span className="text-[10px] text-text-secondary/60">Also known as:</span>
               {arenaNames.filter(an => an.name !== getCurrentDisplayName(arenaNames, arena?.name || '')).map((an, i) => (
@@ -177,7 +177,7 @@ export default function ArenaDetailPage() {
               {arena.city && <div className="text-center"><span className="block text-[10px] text-text-secondary uppercase tracking-wider">Location</span><span className="text-text-white font-semibold">{arena.city}{arena.country ? `, ${arena.country}` : ''}</span></div>}
             </div>
 
-            {/* Arena name history timeline — visible when there are historical names */}
+            {/* Arena name history timeline — always show when arena has name entries */}
             {arenaNames.length > 0 && (
               <div className="mt-4 pt-3 border-t border-border-subtle/15">
                 <p className="text-[10px] text-text-secondary uppercase tracking-wider text-center mb-2">Name History</p>
@@ -241,7 +241,7 @@ export default function ArenaDetailPage() {
               <div className="space-y-0.5">
                 {shows.map((s: any) => {
                   const venueAtDate = arenaNames.length > 1 ? getArenaNameAtDate(arenaNames, s.date, arena?.name || '') : null
-                  const showVenueDiff = venueAtDate && venueAtDate !== getCurrentDisplayName(arenaNames, arena?.name || '')
+                  const showDiffName = venueAtDate && venueAtDate !== getCurrentDisplayName(arenaNames, arena?.name || '')
 
                   return (
                   <Link key={s.id} href={`/shows/${s.slug}`} className="group block">
@@ -254,12 +254,7 @@ export default function ArenaDetailPage() {
                         <span className="text-sm text-text-white font-medium truncate group-hover:text-neon-blue transition-colors">{s.name}</span>
                       </div>
                       <span className="text-xs text-text-secondary font-mono text-right">{s.attendance ? s.attendance.toLocaleString() : '—'}</span>
-                      <span className="text-[10px] truncate">
-                        {showVenueDiff
-                          ? <span className="text-neon-blue/70 italic">{venueAtDate}</span>
-                          : <span className="text-neon-blue">{s.show_series?.short_name || s.show_series?.name || ''}</span>
-                        }
-                      </span>
+                      <span className="text-[10px] truncate">{showDiffName ? <span className="text-neon-blue/70 italic">{venueAtDate}</span> : <span className="text-neon-blue">{s.show_series?.short_name || s.show_series?.name || ''}</span>}</span>
                     </div>
                     {/* Mobile */}
                     <div className="lg:hidden flex items-center gap-3 px-3 py-3 rounded-xl border border-transparent hover:bg-bg-secondary/40 hover:border-border-subtle/20 transition-all">
@@ -272,9 +267,7 @@ export default function ArenaDetailPage() {
                           <span>{showTypeLabels[s.show_type] || s.show_type}</span>
                           {s.attendance && <><span>•</span><span>{s.attendance.toLocaleString()}</span></>}
                         </div>
-                        {showVenueDiff && (
-                          <p className="text-[9px] text-neon-blue/60 italic mt-0.5">as {venueAtDate}</p>
-                        )}
+                        {showDiffName && <p className="text-[9px] text-neon-blue/60 italic mt-0.5">as {venueAtDate}</p>}
                       </div>
                       <svg className="w-4 h-4 text-text-secondary/30 group-hover:text-neon-blue shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                     </div>

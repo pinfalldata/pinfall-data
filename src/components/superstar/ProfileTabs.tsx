@@ -17,6 +17,7 @@ import TabSlammyAwards from './TabSlammyAwards'
 import TabYearEndAwards from './TabYearEndAwards'
 import TabObjectsUsed from './TabObjectsUsed'
 import TabPersona from './TabPersona'
+import TabGallery from './TabGallery'
 
 interface RoleCounts {
   segments: number; managed: number; commentated: number; matchCommentated: number
@@ -24,7 +25,7 @@ interface RoleCounts {
   gmTenures: number; execTenures: number; championships: number
   omgMoments: number; tagTeams: number; stables: number
   hallOfFame: number; slammyAwards: number; yearEndAwards: number; objectsUsed: number
-  entranceThemes: number; attires: number
+  entranceThemes: number; attires: number; gallery: number
 }
 
 export function ProfileTabs({ superstar }: { superstar: any }) {
@@ -61,14 +62,13 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
   const scroll = (dir: number) => { scrollRef.current?.scrollBy({ left: dir * 200, behavior: 'smooth' }) }
 
   const rc = roleCounts
-
-  // Persona tab: visible if entrance themes OR attires exist
   const personaTotal = (rc?.entranceThemes || 0) + (rc?.attires || 0)
 
   const tabs = [
     { id: 'profile', label: 'Profile', show: true },
     { id: 'matches', label: 'Matches', show: hasMatches, count: superstar.total_matches },
     { id: 'segments', label: 'Segments', show: (rc?.segments || 0) > 0, count: rc?.segments },
+    { id: 'gallery', label: '📸 Gallery', show: (rc?.gallery || 0) > 0, count: rc?.gallery },
     { id: 'timeline', label: 'Timeline', show: superstar.timeline?.length > 0 },
     { id: 'persona', label: '🎭 Persona', show: personaTotal > 0 },
     { id: 'omgMoments', label: '⚡ OMG Moments', show: (rc?.omgMoments || 0) > 0, count: rc?.omgMoments },
@@ -140,6 +140,7 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
         {activeTab === 'moves' && <TabMoves superstar={superstar} />}
         {activeTab === 'media' && <TabMedia superstar={superstar} />}
         {activeTab === 'persona' && <TabPersona superstar={superstar} />}
+        {activeTab === 'gallery' && <TabGallery superstar={superstar} />}
         {ROLE_TABS.includes(activeTab) && <TabRoleData superstar={superstar} tab={activeTab} />}
       </div>
     </div>
