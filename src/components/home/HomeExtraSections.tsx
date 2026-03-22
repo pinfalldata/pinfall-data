@@ -4,9 +4,9 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-// ═══════════════════════════════════════════════
-// WWE LOGOS CAROUSEL (like eras but with logos)
-// ═══════════════════════════════════════════════
+/* ══════════════════════════════════════════════════
+   WWE LOGOS CAROUSEL
+   ══════════════════════════════════════════════════ */
 export function WweLogosCarousel() {
   const [logos, setLogos] = useState<any[]>([])
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -55,13 +55,12 @@ export function WweLogosCarousel() {
   )
 }
 
-// ═══════════════════════════════════════════════
-// BIRTHDAY BLOCK — "Born on This Day"
-// ═══════════════════════════════════════════════
-export function BirthdayBlock({ birthdays }: { birthdays: any[] }) {
+/* ══════════════════════════════════════════════════
+   BORN TODAY — small block next to On This Day
+   ══════════════════════════════════════════════════ */
+function BirthdayBlock({ birthdays }: { birthdays: any[] }) {
   const [idx, setIdx] = useState(0)
   if (!birthdays || birthdays.length === 0) return null
-
   const star = birthdays[idx]
   const today = new Date()
   const age = star.birth_year ? today.getFullYear() - star.birth_year : null
@@ -69,9 +68,7 @@ export function BirthdayBlock({ birthdays }: { birthdays: any[] }) {
   return (
     <div className="rounded-2xl border border-border-subtle/30 bg-bg-secondary/20 overflow-hidden h-full">
       <div className="px-4 pt-4 pb-0 flex items-center justify-between">
-        <h3 className="font-display text-sm font-bold text-neon-pink flex items-center gap-1.5">
-          <span>🎂</span> Born Today
-        </h3>
+        <h3 className="font-display text-sm font-bold text-neon-pink flex items-center gap-1.5">🎂 Born Today</h3>
         <span className="text-[10px] text-text-secondary font-mono">{idx + 1}/{birthdays.length}</span>
       </div>
       <div className="p-4 flex items-center gap-3">
@@ -86,13 +83,13 @@ export function BirthdayBlock({ birthdays }: { birthdays: any[] }) {
         </Link>
         <div className="flex-1 min-w-0">
           <Link href={`/superstars/${star.slug}`} className="text-sm font-bold text-text-white hover:text-neon-blue transition-colors block truncate">{star.name}</Link>
-          {star.birth_year && <p className="text-xs text-text-secondary">Born {star.birth_year}{age ? ` · ${age} years old` : ''}</p>}
+          {star.birth_year && <p className="text-xs text-text-secondary">Born in {star.birth_year}{age ? ` · ${age} years old` : ''}</p>}
         </div>
       </div>
       {birthdays.length > 1 && (
         <div className="px-4 pb-3 flex items-center justify-center gap-1.5">
           <button onClick={() => setIdx(i => (i - 1 + birthdays.length) % birthdays.length)} className="w-6 h-6 rounded-full border border-border-subtle/30 flex items-center justify-center text-text-secondary hover:text-neon-blue transition-all text-xs">‹</button>
-          {birthdays.map((_, i) => (
+          {birthdays.slice(0, 8).map((_, i) => (
             <button key={i} onClick={() => setIdx(i)} className={`w-1.5 h-1.5 rounded-full transition-all ${i === idx ? 'bg-neon-pink w-3' : 'bg-border-subtle/50'}`} />
           ))}
           <button onClick={() => setIdx(i => (i + 1) % birthdays.length)} className="w-6 h-6 rounded-full border border-border-subtle/30 flex items-center justify-center text-text-secondary hover:text-neon-blue transition-all text-xs">›</button>
@@ -102,16 +99,23 @@ export function BirthdayBlock({ birthdays }: { birthdays: any[] }) {
   )
 }
 
-// ═══════════════════════════════════════════════
-// RECENT MATCHES BLOCK
-// ═══════════════════════════════════════════════
-export function RecentMatchesBlock({ matches }: { matches: any[] }) {
+export function BirthdayStandalone() {
+  const [birthdays, setBirthdays] = useState<any[]>([])
+  useEffect(() => {
+    fetch('/api/homepage-data').then(r => r.json()).then(d => { if (!d.error && d.birthdays?.length > 0) setBirthdays(d.birthdays) }).catch(() => {})
+  }, [])
+  if (birthdays.length === 0) return <div />
+  return <BirthdayBlock birthdays={birthdays} />
+}
+
+/* ══════════════════════════════════════════════════
+   RECENT MATCHES
+   ══════════════════════════════════════════════════ */
+function RecentMatchesBlock({ matches }: { matches: any[] }) {
   if (!matches || matches.length === 0) return null
   return (
     <div className="rounded-2xl border border-border-subtle/30 bg-bg-secondary/20 overflow-hidden">
-      <div className="px-5 pt-5 pb-0">
-        <h3 className="font-display text-base font-bold text-text-white flex items-center gap-2"><span className="text-neon-blue">🤼</span> Latest Matches</h3>
-      </div>
+      <div className="px-5 pt-5"><h3 className="font-display text-base font-bold text-text-white flex items-center gap-2"><span className="text-neon-blue">🤼</span> Latest Matches</h3></div>
       <div className="p-4 space-y-2">
         {matches.map((m: any) => {
           const href = m.show?.slug && m.slug ? `/shows/${m.show.slug}/matches/${m.slug}` : '#'
@@ -124,7 +128,6 @@ export function RecentMatchesBlock({ matches }: { matches: any[] }) {
                     {p.superstar?.photo_url ? <Image src={p.superstar.photo_url} alt="" width={32} height={32} className="w-full h-full object-cover" unoptimized /> : <div className="w-full h-full bg-bg-tertiary" />}
                   </div>
                 ))}
-                {(m.participants || []).length > 6 && <div className="w-8 h-8 rounded-full bg-bg-tertiary border-2 border-bg-primary flex items-center justify-center text-[9px] text-text-secondary">+{(m.participants || []).length - 6}</div>}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-text-white font-medium truncate group-hover:text-neon-blue transition-colors">{m.match_type?.name || 'Match'}</p>
@@ -146,16 +149,14 @@ export function RecentMatchesBlock({ matches }: { matches: any[] }) {
   )
 }
 
-// ═══════════════════════════════════════════════
-// RECENT SEGMENTS BLOCK
-// ═══════════════════════════════════════════════
-export function RecentSegmentsBlock({ segments }: { segments: any[] }) {
+/* ══════════════════════════════════════════════════
+   RECENT SEGMENTS
+   ══════════════════════════════════════════════════ */
+function RecentSegmentsBlock({ segments }: { segments: any[] }) {
   if (!segments || segments.length === 0) return null
   return (
     <div className="rounded-2xl border border-border-subtle/30 bg-bg-secondary/20 overflow-hidden">
-      <div className="px-5 pt-5 pb-0">
-        <h3 className="font-display text-base font-bold text-text-white flex items-center gap-2"><span className="text-neon-pink">🎤</span> Latest Segments</h3>
-      </div>
+      <div className="px-5 pt-5"><h3 className="font-display text-base font-bold text-text-white flex items-center gap-2"><span className="text-neon-pink">🎤</span> Latest Segments</h3></div>
       <div className="p-4 space-y-2">
         {segments.map((s: any) => {
           const href = s.show?.slug && s.slug ? `/shows/${s.show.slug}/segments/${s.slug}` : '#'
@@ -186,15 +187,64 @@ export function RecentSegmentsBlock({ segments }: { segments: any[] }) {
   )
 }
 
-// ═══════════════════════════════════════════════
-// RANDOM SPOTLIGHT CARDS (arena, object, tag team, stable)
-// ═══════════════════════════════════════════════
-export function SpotlightCards({ arena, object, tagTeam, stable }: { arena: any; object: any; tagTeam: any; stable: any }) {
+/* ══════════════════════════════════════════════════
+   CHAMPIONSHIP BELT CAROUSEL
+   ══════════════════════════════════════════════════ */
+function BeltCarousel({ championships }: { championships: any[] }) {
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const animRef = useRef<number | null>(null)
+  const isPaused = useRef(false)
+
+  const animate = useCallback(() => {
+    const el = scrollRef.current
+    if (el && !isPaused.current) {
+      el.scrollLeft += 0.3
+      if (el.scrollLeft >= el.scrollWidth / 2) el.scrollLeft = 0
+    }
+    animRef.current = requestAnimationFrame(animate)
+  }, [])
+
+  useEffect(() => {
+    if (championships.length === 0) return
+    animRef.current = requestAnimationFrame(animate)
+    return () => { if (animRef.current) cancelAnimationFrame(animRef.current) }
+  }, [championships, animate])
+
+  if (championships.length === 0) return null
+  const display = [...championships, ...championships]
+
+  return (
+    <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6">
+      <h2 className="font-display text-lg font-bold text-text-white mb-4 text-center">
+        <span className="text-neon-blue">Championship</span> Titles
+      </h2>
+      <div ref={scrollRef} onMouseEnter={() => { isPaused.current = true }} onMouseLeave={() => { isPaused.current = false }}
+        className="flex gap-5 overflow-x-auto scrollbar-hide py-2">
+        {display.map((c, i) => (
+          <Link key={`${c.id}-${i}`} href={`/champions/${c.slug}`} className="shrink-0 group">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl border border-border-subtle/20 bg-bg-secondary/10 flex items-center justify-center p-2 group-hover:border-neon-blue/40 group-hover:bg-neon-blue/5 transition-all">
+              {c.image_url ? (
+                <Image src={c.image_url} alt={c.name} width={80} height={80} className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform" unoptimized />
+              ) : (
+                <span className="text-2xl opacity-30">🏆</span>
+              )}
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+/* ══════════════════════════════════════════════════
+   SPOTLIGHT CARDS — arena, object, tag team, stable
+   ══════════════════════════════════════════════════ */
+function SpotlightCards({ arena, object, tagTeam, stable }: { arena: any; object: any; tagTeam: any; stable: any }) {
   const items = [
-    arena && { ...arena, label: '🏟️ Arena', href: `/arenas/${arena.slug}`, img: arena.image_url, sub: [arena.city, arena.country].filter(Boolean).join(', ') },
-    object && { ...object, label: '🪑 Object', href: `/matches/objects/${object.slug}`, img: object.image_url, sub: '' },
-    tagTeam && { ...tagTeam, label: '🤝 Tag Team', href: `/tag-teams/teams/${tagTeam.slug}`, img: tagTeam.photo_url, sub: '' },
-    stable && { ...stable, label: '🛡️ Stable', href: `/tag-teams/stables/${stable.slug}`, img: stable.photo_url, sub: '' },
+    arena && { name: arena.name, label: '🏟️ Arena', href: `/arenas/${arena.slug}`, img: arena.image_url, sub: [arena.city, arena.country].filter(Boolean).join(', ') },
+    object && { name: object.name, label: '🪑 Object', href: `/matches/objects/${object.slug}`, img: object.image_url, sub: '' },
+    tagTeam && { name: tagTeam.name, label: '🤝 Tag Team', href: `/tag-teams/teams/${tagTeam.slug}`, img: tagTeam.photo_url, sub: '' },
+    stable && { name: stable.name, label: '🛡️ Stable', href: `/tag-teams/stables/${stable.slug}`, img: stable.photo_url, sub: '' },
   ].filter(Boolean)
 
   if (items.length === 0) return null
@@ -222,56 +272,10 @@ export function SpotlightCards({ arena, object, tagTeam, stable }: { arena: any;
   )
 }
 
-// ═══════════════════════════════════════════════
-// CHAMPIONSHIP BELT CAROUSEL
-// ═══════════════════════════════════════════════
-export function BeltCarousel({ championships }: { championships: any[] }) {
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const animRef = useRef<number | null>(null)
-  const isPaused = useRef(false)
-
-  const animate = useCallback(() => {
-    const el = scrollRef.current
-    if (el && !isPaused.current) {
-      el.scrollLeft += 0.3
-      if (el.scrollLeft >= el.scrollWidth / 2) el.scrollLeft = 0
-    }
-    animRef.current = requestAnimationFrame(animate)
-  }, [])
-
-  useEffect(() => {
-    if (championships.length === 0) return
-    animRef.current = requestAnimationFrame(animate)
-    return () => { if (animRef.current) cancelAnimationFrame(animRef.current) }
-  }, [championships, animate])
-
-  if (championships.length === 0) return null
-  const display = [...championships, ...championships]
-
-  return (
-    <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6">
-      <div ref={scrollRef} onMouseEnter={() => { isPaused.current = true }} onMouseLeave={() => { isPaused.current = false }}
-        className="flex gap-4 overflow-x-auto scrollbar-hide py-2">
-        {display.map((c, i) => (
-          <Link key={`${c.id}-${i}`} href={`/champions/${c.slug}`} className="shrink-0 group">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl border border-border-subtle/20 bg-bg-secondary/10 flex items-center justify-center p-2 group-hover:border-neon-blue/40 group-hover:bg-neon-blue/5 transition-all">
-              {c.image_url ? (
-                <Image src={c.image_url} alt={c.name} width={80} height={80} className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform" unoptimized />
-              ) : (
-                <span className="text-2xl opacity-30">🏆</span>
-              )}
-            </div>
-          </Link>
-        ))}
-      </div>
-    </section>
-  )
-}
-
-// ═══════════════════════════════════════════════
-// HOF + SLAMMY ROW
-// ═══════════════════════════════════════════════
-export function HofSlammyRow({ hofEntry, slammyAward }: { hofEntry: any; slammyAward: any }) {
+/* ══════════════════════════════════════════════════
+   HOF + SLAMMY
+   ══════════════════════════════════════════════════ */
+function HofSlammyRow({ hofEntry, slammyAward }: { hofEntry: any; slammyAward: any }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       {hofEntry && hofEntry.superstar && (
@@ -302,31 +306,18 @@ export function HofSlammyRow({ hofEntry, slammyAward }: { hofEntry: any; slammyA
   )
 }
 
-// Standalone birthday component for use alongside OnThisDay in page.tsx
-export function BirthdayStandalone() {
-  const [birthdays, setBirthdays] = useState<any[]>([])
-  useEffect(() => {
-    fetch('/api/homepage-data').then(r => r.json()).then(d => { if (!d.error && d.birthdays?.length > 0) setBirthdays(d.birthdays) }).catch(() => {})
-  }, [])
-  if (birthdays.length === 0) return null
-  return <BirthdayBlock birthdays={birthdays} />
-}
-
-// ═══════════════════════════════════════════════
-// MASTER WRAPPER — fetches data and renders all
-// ═══════════════════════════════════════════════
+/* ══════════════════════════════════════════════════
+   MASTER: Sections between OnThisDay and Calendar
+   ══════════════════════════════════════════════════ */
 export function HomeExtraSections() {
   const [data, setData] = useState<any>(null)
-
   useEffect(() => {
     fetch('/api/homepage-data').then(r => r.json()).then(d => { if (!d.error) setData(d) }).catch(() => {})
   }, [])
-
   if (!data) return null
 
   return (
     <>
-      {/* ★ Row 1: Latest Matches + Latest Segments */}
       {(data.recentMatches?.length > 0 || data.recentSegments?.length > 0) && (
         <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -336,12 +327,8 @@ export function HomeExtraSections() {
         </section>
       )}
 
-      {/* ★ Row 2: Championship belts carousel */}
-      {data.championships?.length > 0 && (
-        <BeltCarousel championships={data.championships} />
-      )}
+      {data.championships?.length > 0 && <BeltCarousel championships={data.championships} />}
 
-      {/* ★ Row 3: Arena + Object + Tag Team + Stable (4 cards) */}
       {(data.arena || data.object || data.tagTeam || data.stable) && (
         <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-4">
           <SpotlightCards arena={data.arena} object={data.object} tagTeam={data.tagTeam} stable={data.stable} />
@@ -351,20 +338,20 @@ export function HomeExtraSections() {
   )
 }
 
-// Separate component for sections AFTER Hall of Legends
+/* ══════════════════════════════════════════════════
+   Sections AFTER Hall of Legends
+   ══════════════════════════════════════════════════ */
 export function HomeAfterLegends() {
   const [data, setData] = useState<any>(null)
-
   useEffect(() => {
     fetch('/api/homepage-data').then(r => r.json()).then(d => { if (!d.error) setData(d) }).catch(() => {})
   }, [])
-
   if (!data) return null
 
   return (
     <>
       {(data.hofEntry || data.slammyAward) && (
-        <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-4 pb-8">
+        <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6 pb-10">
           <HofSlammyRow hofEntry={data.hofEntry} slammyAward={data.slammyAward} />
         </section>
       )}

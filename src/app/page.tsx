@@ -5,16 +5,16 @@ import { OnThisDay } from '@/components/home/OnThisDay'
 import { SuperstarGrid } from '@/components/home/SuperstarGrid'
 import { ShowCalendar } from '@/components/home/ShowCalendar'
 import { SocialWidgets } from '@/components/home/SocialWidgets'
-import { WweLogosCarousel, HomeExtraSections, HomeAfterLegends, BirthdayStandalone } from '@/components/home/HomeExtraSections'
+import { WweLogosCarousel, BirthdayStandalone, HomeExtraSections, HomeAfterLegends } from '@/components/home/HomeExtraSections'
 
 export default function HomePage() {
   return (
     <div className="relative">
-      {/* 1. HERO — Ring animé */}
+      {/* 1. Hero Ring */}
       <HeroRing />
       <div className="neon-line max-w-5xl mx-auto" />
 
-      {/* 2. STATS du site */}
+      {/* 2. Stats du site */}
       <HomeStats />
       <div className="neon-line max-w-5xl mx-auto" />
 
@@ -22,7 +22,7 @@ export default function HomePage() {
       <EraTimeline />
       <div className="neon-line-pink max-w-5xl mx-auto" />
 
-      {/* 4. On This Day (left) + Born Today (right) */}
+      {/* 4. On This Day + Born Today (côte à côte) */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-10">
         <div className="grid grid-cols-1 sm:grid-cols-[1fr_280px] gap-4 items-start">
           <OnThisDay />
@@ -30,22 +30,24 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5-7. Latest Matches+Segments, Belt Carousel, Spotlight Cards */}
+      <div className="neon-line max-w-5xl mx-auto" />
+
+      {/* 5. Latest Matches + Segments  |  6. Belt Carousel  |  7. Spotlight Cards */}
       <HomeExtraSections />
 
-      <div className="neon-line max-w-5xl mx-auto" />
+      <div className="neon-line-pink max-w-5xl mx-auto" />
 
       {/* 8. Calendrier */}
       <ShowCalendar />
 
-      <div className="neon-line-pink max-w-5xl mx-auto" />
+      <div className="neon-line max-w-5xl mx-auto" />
 
       {/* 9. WWE Logos Carousel */}
       <WweLogosCarousel />
 
-      <div className="neon-line max-w-5xl mx-auto" />
+      <div className="neon-line-pink max-w-5xl mx-auto" />
 
-      {/* 10. Hall of Legends + Social */}
+      {/* 10. Hall of Legends */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8">
         <h2 className="font-display text-2xl lg:text-3xl font-bold text-text-white mb-5 text-center">
           <span className="text-neon-pink">Hall</span> of Legends
@@ -61,7 +63,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div className="neon-line-pink max-w-5xl mx-auto" />
+      <div className="neon-line max-w-5xl mx-auto" />
 
       {/* 11. HOF + Slammy Awards */}
       <HomeAfterLegends />

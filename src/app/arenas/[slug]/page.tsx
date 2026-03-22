@@ -21,6 +21,17 @@ function getArenaNameAtDate(arenaNames: any[], date: string | null, fallbackName
   return fallbackName
 }
 
+// ★ FIX: Get current arena name from arena_names (client-side)
+function getCurrentName(names: any[], fallback: string): string {
+  if (!names || names.length === 0) return fallback
+  const current = names.find((n: any) => n.is_current === true)
+  if (current) return current.name
+  const openEnded = names.find((n: any) => !n.end_date)
+  if (openEnded) return openEnded.name
+  const sorted = [...names].sort((a: any, b: any) => (b.start_date || '').localeCompare(a.start_date || ''))
+  return sorted[0]?.name || fallback
+}
+
 const showTypeLabels: Record<string, string> = {
   ppv: 'PPV / PLE', weekly: 'TV Show', special: 'Special', tournament: 'Tournament', other: 'Other', house_show: 'House Show',
 }
@@ -44,6 +55,9 @@ export default function ArenaDetailPage() {
   const [nextArena, setNextArena] = useState<any>(null)
   const [arenaNames, setArenaNames] = useState<any[]>([])
   const [tab, setTab] = useState<TabKey>('shows')
+
+  // ★ FIX: Compute display name CLIENT-SIDE from arenaNames
+  const displayName = arenaNames.length > 0 ? getCurrentName(arenaNames, arena?.name || '') : (arena?.name || '')
 
   // Superstars
   const [stars, setStars] = useState<any[]>([])
@@ -400,7 +414,7 @@ export default function ArenaDetailPage() {
       {/* Share */}
       {arena && (
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 pb-4">
-          <ShareButtons title={`${displayName} — WWE Arena History | Pinfall Data`} />
+          <ShareButtons title={`${displayName || "Arena"} — WWE Arena History | Pinfall Data`} />
         </div>
       )}
 
