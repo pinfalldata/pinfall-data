@@ -190,8 +190,15 @@ function MatchCard({ match, show, color, spoilerMode, index, isMainEvent, omgMom
           </div>
         )}
 
-{/* Championship — compact golden banner with shimmer */}
-        {match.championship && (
+{/* Championship — supports multiple championships via match_championships table */}
+        {(() => {
+          const champs = match.championships?.length > 0
+            ? match.championships
+            : match.championship ? [match.championship] : []
+          if (champs.length === 0) return null
+          const isDouble = champs.length >= 2
+
+          return (
           <div className="relative overflow-hidden">
             {/* Golden shimmer overlay */}
             <div className="absolute inset-0 opacity-[0.04]" style={{
@@ -206,22 +213,24 @@ function MatchCard({ match, show, color, spoilerMode, index, isMainEvent, omgMom
                 background: 'linear-gradient(90deg, transparent, rgba(255,215,0,0.3))',
               }} />
 
-              {/* Belt image — compact */}
-              {match.championship.image_url && (
-                <div className="relative w-16 h-10 sm:w-20 sm:h-14 lg:w-24 lg:h-16 shrink-0 group/belt">
-                  <Image
-                    src={match.championship.image_url}
-                    alt={match.championship.name}
-                    fill
-                    className="object-contain drop-shadow-[0_0_12px_rgba(255,215,0,0.25)] group-hover/belt:drop-shadow-[0_0_20px_rgba(255,215,0,0.4)] transition-all duration-500"
-                    sizes="(max-width: 640px) 64px, (max-width: 1024px) 80px, 96px"
-                  />
-                </div>
-              )}
+              {/* Belt images */}
+              <div className="flex items-center gap-2">
+                {champs.map((c: any) => c.image_url && (
+                  <div key={c.id} className={`relative shrink-0 group/belt ${isDouble ? 'w-12 h-8 sm:w-16 sm:h-11 lg:w-20 lg:h-14' : 'w-16 h-10 sm:w-20 sm:h-14 lg:w-24 lg:h-16'}`}>
+                    <Image
+                      src={c.image_url}
+                      alt={c.name}
+                      fill
+                      className="object-contain drop-shadow-[0_0_12px_rgba(255,215,0,0.25)] group-hover/belt:drop-shadow-[0_0_20px_rgba(255,215,0,0.4)] transition-all duration-500"
+                      sizes="96px"
+                    />
+                  </div>
+                ))}
+              </div>
 
-              {/* Title name */}
-              <span className="text-[10px] sm:text-[11px] lg:text-xs text-yellow-400/90 font-bold uppercase tracking-[0.15em] text-center leading-tight max-w-[200px] sm:max-w-none">
-                {match.championship.name}
+              {/* Title name(s) */}
+              <span className="text-[10px] sm:text-[11px] lg:text-xs text-yellow-400/90 font-bold uppercase tracking-[0.15em] text-center leading-tight max-w-[240px] sm:max-w-none">
+                {isDouble ? 'Double Championship' : champs[0].name}
               </span>
 
               {/* Right ornament line */}
@@ -230,12 +239,25 @@ function MatchCard({ match, show, color, spoilerMode, index, isMainEvent, omgMom
               }} />
             </div>
 
+            {/* Individual names for double championship */}
+            {isDouble && (
+              <div className="flex items-center justify-center gap-3 pb-2 -mt-1">
+                {champs.map((c: any, i: number) => (
+                  <span key={c.id} className="text-[8px] sm:text-[9px] text-yellow-400/50 uppercase tracking-wider">
+                    {i > 0 && <span className="mr-2 text-yellow-400/20">+</span>}
+                    {c.name}
+                  </span>
+                ))}
+              </div>
+            )}
+
             {/* Bottom golden border */}
             <div className="h-[1px]" style={{
               background: 'linear-gradient(90deg, transparent, rgba(255,215,0,0.15) 30%, rgba(255,215,0,0.25) 50%, rgba(255,215,0,0.15) 70%, transparent)',
             }} />
           </div>
-        )}
+          )
+        })()}
                         
         {/* Participants */}
         <div className="px-4 sm:px-6 py-5">

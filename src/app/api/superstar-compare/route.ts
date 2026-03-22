@@ -2,41 +2,35 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 
-// Safe count helper — never throws, always returns a number
 async function safeCount(query: any): Promise<number> {
   try {
     const result = await query
     return result?.count ?? 0
-  } catch {
-    return 0
-  }
+  } catch { return 0 }
 }
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
-  const rawIds = searchParams.get('ids') || ''
-  const ids = rawIds.split(',').map(Number).filter(n => n > 0)
+  const ids = (searchParams.get('ids') || '').split(',').map(Number).filter(n => n > 0)
 
   if (ids.length === 0 || ids.length > 4) {
-    return NextResponse.json({ superstars: [], debug: { reason: 'invalid ids', rawIds, ids } })
+    return NextResponse.json({ superstars: [] })
   }
 
   try {
-    // Step 1: Fetch basic superstar data
     const { data: stars, error: starsError } = await supabase.from('superstars')
-      .select('id, name, slug, photo_url, birth_date, height_cm, weight_kg, debut_date, retirement_date, status, gender, hometown, current_brand, total_matches, win_count, loss_count, draw_count, total_reigns, total_championship_days')
+      .select('id, name, slug, photo_url, birth_date, height_cm, weight_kg, debut_date, retirement_date, status, gender, billed_from, current_brand, total_matches, win_count, loss_count, draw_count, total_reigns, total_championship_days')
       .in('id', ids)
 
     if (starsError) {
       console.error('[superstar-compare] stars query error:', starsError)
-      return NextResponse.json({ superstars: [], debug: { step: 'stars_query', error: starsError.message } })
+      return NextResponse.json({ superstars: [], debug: { error: starsError.message } })
     }
 
     if (!stars || stars.length === 0) {
-      return NextResponse.json({ superstars: [], debug: { step: 'no_stars_found', ids, starsCount: 0 } })
+      return NextResponse.json({ superstars: [], debug: { ids, found: 0 } })
     }
 
-    // Step 2: Enrich — each count is individually safe (never throws)
     const enriched = await Promise.all(stars.map(async (s) => {
       const [titleReigns, omgMoments, tagTeams, segments, hofCount, slammyCount, yearEndCount] = await Promise.all([
         safeCount(supabase.from('championship_reigns').select('*', { count: 'exact', head: true }).eq('superstar_id', s.id)),
@@ -56,7 +50,7 @@ export async function GET(request: NextRequest) {
         id: s.id, name: s.name, slug: s.slug, photo_url: s.photo_url,
         birth_date: s.birth_date, age, height_cm: s.height_cm, weight_kg: s.weight_kg,
         debut_date: s.debut_date, retirement_date: s.retirement_date,
-        status: s.status, gender: s.gender, hometown: s.hometown, current_brand: s.current_brand,
+        status: s.status, gender: s.gender, billed_from: s.billed_from, current_brand: s.current_brand,
         total_matches: s.total_matches || 0, wins: s.win_count || 0, losses: s.loss_count || 0,
         draws: s.draw_count || 0, win_rate: winRate, career_years: careerYears,
         title_reigns: titleReigns, championship_days: s.total_championship_days || 0,
@@ -67,7 +61,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ superstars: enriched })
   } catch (err: any) {
-    console.error('[superstar-compare] unexpected error:', err)
-    return NextResponse.json({ superstars: [], debug: { step: 'catch', error: err?.message || String(err) } })
+    console.error('[superstar-compare]', err)
+    return NextResponse.json({ superstars: [], debug: { error: err?.message } })
   }
 }

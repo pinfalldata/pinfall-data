@@ -565,18 +565,23 @@ function MatchRow({ match, superstarId, index }: {
 
         {/* Championship */}
         <div className="flex items-center gap-1.5 min-w-0">
-          {match.championship ? (
-            <>
-              {match.championship.image_url && (
-                <div className="w-7 h-5 shrink-0">
-                  <Image src={match.championship.image_url} alt="" width={28} height={20} className="w-full h-full object-contain" />
-                </div>
-              )}
-              <span className="text-[10px] text-yellow-400 font-medium truncate">{match.championship.name}</span>
-            </>
-          ) : (
-            <span className="text-[10px] text-text-secondary/30">—</span>
-          )}
+          {(() => {
+            const champs = match.championships?.length > 0 ? match.championships : match.championship ? [match.championship] : []
+            if (champs.length === 0) return <span className="text-[10px] text-text-secondary/30">—</span>
+            const isDouble = champs.length >= 2
+            return (
+              <>
+                {champs.slice(0, 2).map((c: any) => c.image_url && (
+                  <div key={c.id} className={`${isDouble ? 'w-5 h-4' : 'w-7 h-5'} shrink-0`}>
+                    <Image src={c.image_url} alt="" width={28} height={20} className="w-full h-full object-contain" />
+                  </div>
+                ))}
+                <span className="text-[10px] text-yellow-400 font-medium truncate">
+                  {isDouble ? 'DOUBLE CHAMPIONSHIP' : champs[0].name}
+                </span>
+              </>
+            )
+          })()}
         </div>
 
         {/* Rating */}
@@ -607,9 +612,9 @@ function MatchRow({ match, superstarId, index }: {
               {hasTeammates && showDetails ? `w/ ${teammateStr} ` : ''}
               {showDetails ? `vs ${opponentStr}` : match.match_type?.name || 'Match'}
             </span>
-            {match.championship && (
+            {(match.championships?.length > 0 || match.championship) && (
               <span className="text-[9px] px-1.5 py-0.5 rounded bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 font-bold shrink-0">
-                🏆
+                {(match.championships?.length || 0) >= 2 ? '🏆🏆' : '🏆'}
               </span>
             )}
           </div>

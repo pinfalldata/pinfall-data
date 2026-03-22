@@ -204,7 +204,33 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Step 5: Enrich each match
+    // Step 5: Fetch multi-championships from match_championships table
+    const filteredIds = filtered.map((m: any) => m.id)
+    let mcMap = new Map()
+    if (filteredIds.length > 0) {
+      try {
+        const { data: mcRows } = await supabase
+          .from('match_championships')
+          .select('match_id, championship_id, is_title_change')
+          .in('match_id', filteredIds)
+        if (mcRows && mcRows.length > 0) {
+          const champIds = [...new Set(mcRows.map(r => r.championship_id))]
+          const { data: mcChamps } = await supabase
+            .from('championships')
+            .select('id, name, slug, image_url')
+            .in('id', champIds)
+          const cMap = new Map((mcChamps || []).map(c => [c.id, c]))
+          for (const r of mcRows) {
+            const c = cMap.get(r.championship_id)
+            if (!c) continue
+            if (!mcMap.has(r.match_id)) mcMap.set(r.match_id, [])
+            mcMap.get(r.match_id).push({ ...c, is_title_change: r.is_title_change || false })
+          }
+        }
+      } catch {}
+    }
+
+    // Step 6: Enrich each match
     const enriched = filtered.map((m: any) => {
       const myParticipation = m.participants?.find((p: any) => p.superstar?.id === sid)
       const isWinner = myParticipation?.is_winner || false
@@ -223,6 +249,12 @@ export async function GET(request: NextRequest) {
         mg.team_number === myTeam || mg.managing_for?.id === sid
       ) || []
 
+      // Multi-championships: use match_championships if available, fallback to single
+      const mc = mcMap.get(m.id)
+      const championships = mc && mc.length > 0
+        ? mc
+        : m.championship ? [{ ...m.championship, is_title_change: m.is_title_change || false }] : []
+
       return {
         id: m.id,
         slug: m.slug,
@@ -235,6 +267,7 @@ export async function GET(request: NextRequest) {
         is_dark_match: m.is_dark_match,
         match_type: m.match_type,
         championship: m.championship,
+        championships,
         show: m.show ? {
           id: m.show.id,
           name: m.show.name,

@@ -14,6 +14,42 @@ function logError(label: string, error: any) {
   console.error(`[queries] ${label}`, error)
 }
 
+/**
+ * Fetch match_championships for a set of match IDs.
+ * Returns a Map: matchId → championship[] (with id, name, slug, image_url, is_title_change)
+ * This replaces the single matches.championship_id approach.
+ */
+async function fetchMatchChampionships(matchIds: number[]): Promise<Map<number, any[]>> {
+  const map = new Map<number, any[]>()
+  if (!matchIds.length) return map
+  try {
+    const { data: rows } = await supabase
+      .from('match_championships')
+      .select('match_id, championship_id, is_title_change')
+      .in('match_id', matchIds)
+    if (!rows || rows.length === 0) return map
+
+    const champIds = [...new Set(rows.map(r => r.championship_id))]
+    const { data: champs } = await supabase
+      .from('championships')
+      .select('id, name, slug, image_url')
+      .in('id', champIds)
+
+    const champMap = new Map((champs || []).map(c => [c.id, c]))
+
+    for (const r of rows) {
+      const champ = champMap.get(r.championship_id)
+      if (!champ) continue
+      const entry = { ...champ, is_title_change: r.is_title_change || false }
+      if (!map.has(r.match_id)) map.set(r.match_id, [])
+      map.get(r.match_id)!.push(entry)
+    }
+  } catch (err) {
+    logError('fetchMatchChampionships', err)
+  }
+  return map
+}
+
 // ============================================================
 // SUPERSTAR
 // ============================================================
@@ -218,6 +254,20 @@ export async function getShowBySlug(slug: string) {
   logError('getShowBySlug(ringAnnouncers)', announcersError)
   logError('getShowBySlug(media)', mediaError)
 
+  // ★ Fetch multi-championships from match_championships table
+  const matchIds = (matches || []).map((m: any) => m.id)
+  const mcMap = await fetchMatchChampionships(matchIds)
+
+  // Merge championships array onto each match
+  const enrichedMatches = (matches || []).map((m: any) => {
+    const mc = mcMap.get(m.id)
+    // Use match_championships if available, otherwise fallback to single championship
+    const championships = mc && mc.length > 0
+      ? mc
+      : m.championship ? [{ ...m.championship, is_title_change: m.is_title_change || false }] : []
+    return { ...m, championships }
+  })
+
   // Calculate average wrestler age at show date
   let averageAge: number | null = null
   if (matches && matches.length > 0 && show.date) {
@@ -249,7 +299,7 @@ export async function getShowBySlug(slug: string) {
     episodeNumber,
     prevShow,
     nextShow,
-    matches: matches || [],
+    matches: enrichedMatches,
     segments: segments || [],
     commentators: commentators || [],
     ringAnnouncers: ringAnnouncers || [],
@@ -358,10 +408,17 @@ export async function getMatchBySlug(showSlug: string, matchSlug: string) {
 
   if (fullError || !matchFull) {
     logError('getMatchBySlug(match full) — falling back to base', fullError)
-    return { ...matchBase, show: enrichedShow, participants: [], managers: [], referees: [], objects: [], media: [] }
+    return { ...matchBase, show: enrichedShow, participants: [], managers: [], referees: [], objects: [], media: [], championships: [] }
   }
 
-  return { ...matchFull, show: enrichedShow }
+  // ★ Fetch multi-championships from match_championships table
+  const mcMap = await fetchMatchChampionships([matchFull.id])
+  const mc = mcMap.get(matchFull.id)
+  const championships = mc && mc.length > 0
+    ? mc
+    : matchFull.championship ? [{ ...matchFull.championship, is_title_change: matchFull.is_title_change || false }] : []
+
+  return { ...matchFull, show: enrichedShow, championships }
 }
 
 export async function getSegmentBySlug(showSlug: string, segmentSlug: string) {

@@ -313,11 +313,16 @@ function MRow({ m }: { m: MatchData }) {
           )) : <span className="text-xs text-text-secondary italic truncate">{m.match_type?.name||'Match'} — {m.participantCount} participants</span>}
         </div>
         <div className="flex items-center gap-1.5 min-w-0">
-          {m.championship ? <>
-            {m.championship.image_url && <div className="w-7 h-5 shrink-0"><Image src={m.championship.image_url} alt="" width={28} height={20} className="w-full h-full object-contain"/></div>}
-            <span className="text-[10px] text-yellow-400 font-medium truncate">{m.championship.name}</span>
-            {m.is_title_change && <span className="text-[8px] px-1 py-0.5 rounded bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 font-bold shrink-0">NEW!</span>}
-          </> : <span className="text-[10px] text-text-secondary/30">—</span>}
+          {(() => {
+            const champs = m.championships?.length > 0 ? m.championships : m.championship ? [m.championship] : []
+            if (champs.length === 0) return <span className="text-[10px] text-text-secondary/30">—</span>
+            const isDouble = champs.length >= 2
+            return <>
+              {champs.slice(0, 2).map((c: any) => c.image_url && <div key={c.id} className={`${isDouble ? 'w-5 h-4' : 'w-7 h-5'} shrink-0`}><Image src={c.image_url} alt="" width={28} height={20} className="w-full h-full object-contain"/></div>)}
+              <span className="text-[10px] text-yellow-400 font-medium truncate">{isDouble ? 'DOUBLE CHAMPIONSHIP' : champs[0].name}</span>
+              {m.is_title_change && <span className="text-[8px] px-1 py-0.5 rounded bg-yellow-500/20 border border-yellow-500/30 text-yellow-300 font-bold shrink-0">NEW!</span>}
+            </>
+          })()}
         </div>
         <div className="flex justify-center">{m.rating?<StarRating rating={m.rating} size="xs"/>:<span className="text-[10px] text-text-secondary/30">—</span>}</div>
       </div>
@@ -353,7 +358,12 @@ function MRow({ m }: { m: MatchData }) {
             const c = oc[m.omg.category] || '#c7a05a'
             return <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider shrink-0" style={{background:`${c}15`,color:c,border:`1px solid ${c}35`}}>⚡ OMG</span>
           })()}
-          {m.championship && <span className="text-[9px] px-1.5 py-0.5 rounded bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 font-bold">🏆 {m.championship.name}</span>}
+          {(() => {
+            const champs = m.championships?.length > 0 ? m.championships : m.championship ? [m.championship] : []
+            if (champs.length === 0) return null
+            const isDouble = champs.length >= 2
+            return <span className="text-[9px] px-1.5 py-0.5 rounded bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 font-bold">{isDouble ? '🏆🏆 DOUBLE CHAMPIONSHIP' : `🏆 ${champs[0].name}`}</span>
+          })()}
           {m.rating && <div className="ml-auto shrink-0"><StarRating rating={m.rating} size="xs"/></div>}
         </div>
       </div>

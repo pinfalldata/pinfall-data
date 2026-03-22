@@ -206,6 +206,31 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    // Batch-fetch multi-championships
+    const mcMap = new Map<number, any[]>()
+    if (matchIdsForOmg.length > 0) {
+      try {
+        const { data: mcRows } = await supabase
+          .from('match_championships')
+          .select('match_id, championship_id, is_title_change')
+          .in('match_id', matchIdsForOmg.slice(0, 500))
+        if (mcRows && mcRows.length > 0) {
+          const champIds = [...new Set(mcRows.map(r => r.championship_id))]
+          const { data: mcChamps } = await supabase
+            .from('championships')
+            .select('id, name, slug, image_url')
+            .in('id', champIds)
+          const cMap = new Map((mcChamps || []).map(c => [c.id, c]))
+          for (const r of mcRows) {
+            const c = cMap.get(r.championship_id)
+            if (!c) continue
+            if (!mcMap.has(r.match_id)) mcMap.set(r.match_id, [])
+            mcMap.get(r.match_id)!.push({ ...c, is_title_change: r.is_title_change || false })
+          }
+        }
+      } catch {}
+    }
+
     const enriched = filtered.map((m: any) => {
       const participants = m.participants || []
       const teams = new Map<number, any[]>()
@@ -237,6 +262,12 @@ export async function GET(request: NextRequest) {
         })
       }
 
+      // Multi-championships
+      const mc = mcMap.get(m.id)
+      const championships = mc && mc.length > 0
+        ? mc
+        : m.championship ? [{ ...m.championship, is_title_change: m.is_title_change || false }] : []
+
       return {
         id: m.id,
         slug: m.slug,
@@ -250,6 +281,7 @@ export async function GET(request: NextRequest) {
         isDraw,
         match_type: m.match_type,
         championship: m.championship,
+        championships,
         show: m.show ? {
           id: m.show.id,
           name: m.show.name,

@@ -152,8 +152,15 @@ export function MatchHero({ match }: { match: any }) {
               )}
             </div>
 
-{/* Championship — belt prominent, name smaller and clickable */}
-            {match.championship && (
+{/* Championship — supports multiple championships */}
+            {(() => {
+              const champs = match.championships?.length > 0
+                ? match.championships
+                : match.championship ? [match.championship] : []
+              if (champs.length === 0) return null
+              const isDouble = champs.length >= 2
+
+              return (
               <div className="flex flex-col items-center pb-2 z-10 relative">
                 {/* Fireworks for title changes */}
                 {match.is_title_change && <TitleChangeFireworks />}
@@ -164,28 +171,45 @@ export function MatchHero({ match }: { match: any }) {
                   </div>
                 )}
 
-                {match.championship.image_url && (
-                  match.championship.slug ? (
-                    <Link href={`/champions/${match.championship.slug}`} className="relative w-44 h-44 sm:w-56 sm:h-56 lg:w-72 lg:h-72 block hover:scale-105 transition-transform duration-300 z-10">
-                      <Image src={match.championship.image_url} alt={match.championship.name} fill className="object-contain drop-shadow-2xl" sizes="(max-width: 640px) 176px, (max-width: 1024px) 224px, 288px" />
-                    </Link>
-                  ) : (
-                    <div className="relative w-44 h-44 sm:w-56 sm:h-56 lg:w-72 lg:h-72 z-10">
-                      <Image src={match.championship.image_url} alt={match.championship.name} fill className="object-contain drop-shadow-2xl" sizes="(max-width: 640px) 176px, (max-width: 1024px) 224px, 288px" />
-                    </div>
-                  )
+                {isDouble && (
+                  <span className="text-[10px] sm:text-xs text-yellow-400 font-bold uppercase tracking-[0.2em] mb-2 z-10 relative">Double Championship</span>
                 )}
-                {match.championship.slug ? (
-                  <Link href={`/champions/${match.championship.slug}`} className="text-sm sm:text-base lg:text-lg text-neon-blue font-bold uppercase tracking-wider mt-0 text-center drop-shadow-md z-10 relative hover:text-neon-blue/80 transition-colors">
-                    {match.championship.name}
-                  </Link>
-                ) : (
-                  <span className="text-sm sm:text-base lg:text-lg text-neon-blue font-bold uppercase tracking-wider mt-0 text-center drop-shadow-md z-10 relative">
-                    {match.championship.name}
-                  </span>
-                )}
+
+                {/* Belt images */}
+                <div className={`flex items-center ${isDouble ? 'gap-2 sm:gap-4' : ''} z-10`}>
+                  {champs.map((c: any) => c.image_url && (
+                    c.slug ? (
+                      <Link key={c.id} href={`/champions/${c.slug}`} className={`relative block hover:scale-105 transition-transform duration-300 ${isDouble ? 'w-28 h-28 sm:w-40 sm:h-40 lg:w-52 lg:h-52' : 'w-44 h-44 sm:w-56 sm:h-56 lg:w-72 lg:h-72'}`}>
+                        <Image src={c.image_url} alt={c.name} fill className="object-contain drop-shadow-2xl" sizes="288px" />
+                      </Link>
+                    ) : (
+                      <div key={c.id} className={`relative ${isDouble ? 'w-28 h-28 sm:w-40 sm:h-40 lg:w-52 lg:h-52' : 'w-44 h-44 sm:w-56 sm:h-56 lg:w-72 lg:h-72'}`}>
+                        <Image src={c.image_url} alt={c.name} fill className="object-contain drop-shadow-2xl" sizes="288px" />
+                      </div>
+                    )
+                  ))}
+                </div>
+
+                {/* Championship names */}
+                <div className={`flex ${isDouble ? 'flex-col sm:flex-row items-center gap-1 sm:gap-3' : ''} z-10 relative mt-0`}>
+                  {champs.map((c: any, i: number) => (
+                    <span key={c.id} className="flex items-center gap-1.5">
+                      {isDouble && i > 0 && <span className="hidden sm:inline text-yellow-400/30 text-xs">+</span>}
+                      {c.slug ? (
+                        <Link href={`/champions/${c.slug}`} className={`text-neon-blue font-bold uppercase tracking-wider text-center drop-shadow-md hover:text-neon-blue/80 transition-colors ${isDouble ? 'text-xs sm:text-sm' : 'text-sm sm:text-base lg:text-lg'}`}>
+                          {c.name}
+                        </Link>
+                      ) : (
+                        <span className={`text-neon-blue font-bold uppercase tracking-wider text-center drop-shadow-md ${isDouble ? 'text-xs sm:text-sm' : 'text-sm sm:text-base lg:text-lg'}`}>
+                          {c.name}
+                        </span>
+                      )}
+                    </span>
+                  ))}
+                </div>
               </div>
-            )}
+              )
+            })()}
                                     
             {/* ===== Participants display ===== */}
             {!isBattleRoyal ? (
@@ -328,7 +352,7 @@ export function MatchHero({ match }: { match: any }) {
             participants.map((p: any) => p.superstar?.name).filter(Boolean).join(' vs '),
             ' — ',
             match.match_type?.name || 'Match',
-            match.championship ? ` for the ${match.championship.name}` : '',
+            match.championships?.length > 0 ? ` for the ${match.championships.length >= 2 ? 'Double Championship' : match.championships[0].name}` : (match.championship ? ` for the ${match.championship.name}` : ''),
             ` at ${show?.name || ''}`,
             show?.date ? ` (${new Date(show.date + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })})` : '',
             ' | Pinfall Data',
