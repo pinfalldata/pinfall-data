@@ -37,13 +37,16 @@ async function fetchMatchChampionships(matchIds: number[]): Promise<Map<number, 
 }
 
 /**
- * ★ Dynamic superstar photos by year.
+ * ★ Dynamic superstar photos by DATE (migrated from year integer).
  * Given matches with participants, replace each superstar's photo_url
  * with the era-appropriate photo from superstar_photos table.
  * Falls back to the original photo_url if no entry exists.
+ *
+ * @param matches - array of match objects with participants/managers/referees
+ * @param showDate - the show date as a string (YYYY-MM-DD), or null
  */
-async function applyEraPhotos(matches: any[], showYear: number | null) {
-  if (!showYear || !matches || matches.length === 0) return
+async function applyEraPhotos(matches: any[], showDate: string | null) {
+  if (!showDate || !matches || matches.length === 0) return
 
   // Collect all unique superstar IDs from participants, managers, referees
   const sids = new Set<number>()
@@ -63,30 +66,32 @@ async function applyEraPhotos(matches: any[], showYear: number | null) {
 
   // Batch-fetch all photos for these superstars
   try {
+    // ★ CHANGED: select 'date' instead of 'year', order by 'date'
     const { data: photos } = await supabase
       .from('superstar_photos')
-      .select('superstar_id, year, photo_url')
+      .select('superstar_id, date, photo_url')
       .in('superstar_id', [...sids].slice(0, 500))
-      .order('year', { ascending: true })
+      .order('date', { ascending: true })
 
     if (!photos || photos.length === 0) return
 
-    // Build map: superstarId → [{year, photo_url}, ...]
-    const photoMap = new Map<number, { year: number; photo_url: string }[]>()
+    // Build map: superstarId → [{date, photo_url}, ...] sorted ascending
+    const photoMap = new Map<number, { date: string; photo_url: string }[]>()
     for (const p of photos) {
       if (!photoMap.has(p.superstar_id)) photoMap.set(p.superstar_id, [])
-      photoMap.get(p.superstar_id)!.push({ year: p.year, photo_url: p.photo_url })
+      photoMap.get(p.superstar_id)!.push({ date: p.date, photo_url: p.photo_url })
     }
 
-    // Helper: pick the best photo for a given year
+    // Helper: pick the best photo for a given date
+    // Finds the photo with the latest date that is <= showDate
     const pick = (sid: number, fallback: string | null): string | null => {
       const list = photoMap.get(sid)
       if (!list || list.length === 0) return fallback
-      // Find the closest year <= showYear, or the earliest available
+      // ★ CHANGED: compare date strings (YYYY-MM-DD) instead of year integers
       let best = list[0]
       for (const p of list) {
-        if (p.year <= showYear) best = p
-        else break // sorted ascending, so first > showYear means we passed it
+        if (p.date <= showDate) best = p
+        else break // sorted ascending, so first > showDate means we passed it
       }
       return best.photo_url
     }
@@ -330,9 +335,8 @@ export async function getShowBySlug(slug: string) {
     return { ...m, championships }
   })
 
-  // ★ Dynamic era-appropriate superstar photos
-  const showYear = show.date ? parseInt(show.date.slice(0, 4)) : null
-  await applyEraPhotos(enrichedMatches, showYear)
+  // ★ CHANGED: Pass full show date string instead of just year
+  await applyEraPhotos(enrichedMatches, show.date || null)
 
   // Calculate average wrestler age at show date
   let averageAge: number | null = null
@@ -482,9 +486,8 @@ export async function getMatchBySlug(showSlug: string, matchSlug: string) {
   const mc = mcMap.get(matchFull.id)
   const championships = mc && mc.length > 0 ? mc : matchFull.championship ? [{ ...matchFull.championship, is_title_change: matchFull.is_title_change || false }] : []
 
-  // ★ Dynamic era-appropriate superstar photos
-  const matchYear = show.date ? parseInt(show.date.slice(0, 4)) : null
-  await applyEraPhotos([matchFull], matchYear)
+  // ★ CHANGED: Pass full show date instead of just year
+  await applyEraPhotos([matchFull], show.date || null)
 
   return { ...matchFull, show: enrichedShow, championships }
 }

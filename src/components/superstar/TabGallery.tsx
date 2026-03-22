@@ -24,11 +24,14 @@ function getYoutubeId(url: string): string | null {
 }
 
 function getThumbnail(item: MediaItem): string | null {
+  // 1) Explicit thumbnail_url first
   if (item.thumbnail_url) return item.thumbnail_url
+  // 2) YouTube auto-thumbnail
   if (item.media_type === 'video') {
     const ytId = getYoutubeId(item.url)
     if (ytId) return `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`
   }
+  // 3) For images, use the URL itself as thumbnail
   if (item.media_type === 'image') return item.url
   return null
 }
@@ -162,26 +165,45 @@ export default function TabGallery({ superstar }: { superstar: any }) {
   )
 }
 
-/* ★ Gallery Card — uses a DIV container, not button with aspect-ratio */
+/* ★ FIX: Gallery Card — uses React state for image load error handling
+ * The old version used onError to set display:none on the img, which hid the image
+ * permanently without showing any fallback. Now we track loaded/error state properly. */
 function GalleryCard({ item, onClick }: { item: MediaItem; onClick: () => void }) {
   const thumb = getThumbnail(item)
   const isVideo = item.media_type === 'video'
+  const [imgStatus, setImgStatus] = useState<'loading' | 'loaded' | 'error'>('loading')
 
   return (
     <div onClick={onClick} role="button" tabIndex={0} className="group cursor-pointer rounded-xl overflow-hidden border border-border-subtle/15 hover:border-neon-blue/25 transition-all hover:shadow-[0_0_20px_rgba(199,160,90,0.06)]">
       {/* Image container — fixed aspect ratio via padding trick */}
       <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-        {thumb ? (
-          <img
-            src={thumb}
-            alt={item.title || ''}
-            loading="lazy"
-            className="absolute top-0 left-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-          />
+        {thumb && imgStatus !== 'error' ? (
+          <>
+            {/* ★ FIX: Show a loading shimmer while image loads */}
+            {imgStatus === 'loading' && (
+              <div className="absolute top-0 left-0 w-full h-full bg-bg-tertiary/30 animate-pulse flex items-center justify-center">
+                <span className="text-2xl opacity-15">{isVideo ? '🎬' : '📸'}</span>
+              </div>
+            )}
+            <img
+              src={thumb}
+              alt={item.title || ''}
+              loading="lazy"
+              className={`absolute top-0 left-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ${imgStatus === 'loaded' ? 'opacity-100' : 'opacity-0'}`}
+              onLoad={() => setImgStatus('loaded')}
+              onError={() => setImgStatus('error')}
+              crossOrigin="anonymous"
+            />
+          </>
         ) : (
+          /* ★ FIX: Proper fallback when no thumbnail or image failed to load */
           <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-bg-tertiary/30">
-            <span className="text-2xl opacity-15">{isVideo ? '🎬' : '📸'}</span>
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-2xl opacity-30">{isVideo ? '🎬' : '📸'}</span>
+              {imgStatus === 'error' && (
+                <span className="text-[8px] text-text-secondary/40 uppercase tracking-wider">Preview unavailable</span>
+              )}
+            </div>
           </div>
         )}
 

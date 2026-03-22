@@ -219,27 +219,34 @@ export async function GET(request: NextRequest) {
       } catch {}
     }
 
-    // Era photos: collect all superstar IDs, batch-fetch superstar_photos
+    // ★ CHANGED: Era photos now use date (string) instead of year (integer)
     const allSids = new Set<number>()
     for (const m of filtered) {
       for (const p of (m.participants || [])) { if (p.superstar?.id) allSids.add(p.superstar.id) }
     }
-    let photoMap = new Map<number, { year: number; photo_url: string }[]>()
+    let photoMap = new Map<number, { date: string; photo_url: string }[]>()
     if (allSids.size > 0) {
       try {
-        const { data: photos } = await supabase.from('superstar_photos').select('superstar_id, year, photo_url').in('superstar_id', [...allSids].slice(0, 500)).order('year', { ascending: true })
+        // ★ CHANGED: select 'date' instead of 'year', order by 'date'
+        const { data: photos } = await supabase.from('superstar_photos').select('superstar_id, date, photo_url').in('superstar_id', [...allSids].slice(0, 500)).order('date', { ascending: true })
         for (const p of (photos || [])) {
           if (!photoMap.has(p.superstar_id)) photoMap.set(p.superstar_id, [])
-          photoMap.get(p.superstar_id)!.push({ year: p.year, photo_url: p.photo_url })
+          photoMap.get(p.superstar_id)!.push({ date: p.date, photo_url: p.photo_url })
         }
       } catch {}
     }
+
+    // ★ CHANGED: pickPhoto now compares date strings (YYYY-MM-DD) instead of year integers
     const pickPhoto = (sid: number, matchDate: string | null, fallback: string | null): string | null => {
       const list = photoMap.get(sid)
       if (!list || list.length === 0) return fallback
-      const yr = matchDate ? parseInt(matchDate.slice(0, 4)) : 9999
+      // Use match date directly for comparison (YYYY-MM-DD strings sort correctly)
+      const compareDate = matchDate || '9999-12-31'
       let best = list[0]
-      for (const p of list) { if (p.year <= yr) best = p; else break }
+      for (const p of list) {
+        if (p.date <= compareDate) best = p
+        else break
+      }
       return best.photo_url
     }
 

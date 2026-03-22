@@ -2,6 +2,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 
+export const dynamic = 'force-dynamic'
+
 /**
  * GET /api/arenas-list?page=1&limit=40&year=2012&month=3&country=US&state=NY&city=New+York&sort=most_used
  * sort: alphabetical | most_used | highest_attendance
@@ -111,18 +113,28 @@ export async function GET(request: NextRequest) {
     }
 
     // === Step 5: Enrich and sort ===
-    let enriched = allArenas.map(a => ({
-      ...a,
-      show_count: countMap.get(a.id) || 0,
-      max_attendance: maxAttMap.get(a.id) || 0,
-      name_history: nameMap[a.id] || [],
-    }))
+    let enriched = allArenas.map(a => {
+      const nameHistory = nameMap[a.id] || []
+
+      // ★ FIX: Override arena.name with the current name from arena_names
+      const currentNameEntry = nameHistory.find((n: any) => !!n.is_current)
+      const displayName = currentNameEntry ? currentNameEntry.name : a.name
+
+      return {
+        ...a,
+        name: displayName, // ★ Override name with current arena_names entry
+        show_count: countMap.get(a.id) || 0,
+        max_attendance: maxAttMap.get(a.id) || 0,
+        name_history: nameHistory,
+      }
+    })
 
     if (sort === 'most_used') {
       enriched.sort((a, b) => b.show_count - a.show_count)
     } else if (sort === 'highest_attendance') {
       enriched.sort((a, b) => (b.max_attendance || 0) - (a.max_attendance || 0))
     } else {
+      // ★ FIX: Sort by the display name (which is now overridden)
       enriched.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
     }
 
