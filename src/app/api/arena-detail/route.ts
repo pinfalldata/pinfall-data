@@ -32,9 +32,13 @@ export async function GET(request: NextRequest) {
       .eq('arena_id', arena.id)
       .order('start_date', { ascending: true, nullsFirst: true })
 
-    // ★ Compute display_name server-side from arena_names
-    const currentNameEntry = (arenaNames || []).find(n => n.is_current === true)
-    const displayName = currentNameEntry ? currentNameEntry.name : arena.name
+    // ★ OVERRIDE arena.name with the is_current entry from arena_names
+    // This way EVERY reference to arena.name in the client automatically gets the right name
+    const names = arenaNames || []
+    const currentEntry = names.find(n => n.is_current === true)
+    if (currentEntry) {
+      arena.name = currentEntry.name
+    }
 
     // Paginated shows at this arena
     const { data: shows, error: showErr, count } = await supabase
@@ -70,8 +74,8 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json({
-      arena: { ...arena, display_name: displayName },
-      arenaNames: arenaNames || [],
+      arena,
+      arenaNames: names,
       shows: shows || [],
       total,
       page,

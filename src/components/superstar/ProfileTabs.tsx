@@ -18,6 +18,7 @@ import TabYearEndAwards from './TabYearEndAwards'
 import TabObjectsUsed from './TabObjectsUsed'
 import TabPersona from './TabPersona'
 import TabGallery from './TabGallery'
+import TabStatistics from './TabStatistics'
 
 interface RoleCounts {
   segments: number; managed: number; commentated: number; matchCommentated: number
@@ -67,6 +68,7 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
   const tabs = [
     { id: 'profile', label: 'Profile', show: true },
     { id: 'matches', label: 'Matches', show: hasMatches, count: superstar.total_matches },
+    { id: 'statistics', label: '📊 Statistics', show: hasMatches },
     { id: 'segments', label: 'Segments', show: (rc?.segments || 0) > 0, count: rc?.segments },
     { id: 'gallery', label: '📸 Gallery', show: (rc?.gallery || 0) > 0, count: rc?.gallery },
     { id: 'timeline', label: 'Timeline', show: superstar.timeline?.length > 0 },
@@ -128,6 +130,7 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
       <div className="px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         {activeTab === 'profile' && <TabProfile superstar={superstar} />}
         {activeTab === 'matches' && <TabMatches superstar={superstar} />}
+        {activeTab === 'statistics' && <TabStatistics superstar={superstar} />}
         {activeTab === 'championships' && <TabChampionships superstar={superstar} />}
         {activeTab === 'omgMoments' && <TabOMGMoments superstar={superstar} />}
         {activeTab === 'tagTeams' && <TabTagTeams superstar={superstar} />}

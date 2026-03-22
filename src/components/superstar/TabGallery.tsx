@@ -63,11 +63,7 @@ export default function TabGallery({ superstar }: { superstar: any }) {
 
   useEffect(() => { fetchGallery(1, filters) }, [fetchGallery]) // eslint-disable-line
 
-  const applyFilter = (key: keyof Filters, val: string) => {
-    const next = { ...filters, [key]: val }
-    setFilters(next)
-    fetchGallery(1, next)
-  }
+  const applyFilter = (key: keyof Filters, val: string) => { const n = { ...filters, [key]: val }; setFilters(n); fetchGallery(1, n) }
   const resetFilters = () => { const n: Filters = { year:'', mediaType:'', showSeriesId:'' }; setFilters(n); fetchGallery(1, n) }
   const goPage = (p: number) => { if (p<1||p>totalPages) return; fetchGallery(p, filters); document.getElementById('gallery-top')?.scrollIntoView({ behavior:'smooth', block:'start' }) }
   const hasActive = filters.year || filters.mediaType || filters.showSeriesId
@@ -85,14 +81,14 @@ export default function TabGallery({ superstar }: { superstar: any }) {
         </div>
         {filterOpts.years.length > 0 && (
           <select value={filters.year} onChange={e => applyFilter('year', e.target.value)}
-            className="px-3 py-2 rounded-xl bg-bg-secondary/30 border border-border-subtle/30 text-xs text-text-white appearance-none cursor-pointer focus:outline-none focus:border-neon-blue/40">
+            className="px-3 py-2 rounded-xl bg-bg-secondary/30 border border-border-subtle/30 text-xs text-text-white cursor-pointer focus:outline-none focus:border-neon-blue/40">
             <option value="">All years</option>
             {filterOpts.years.map(y => <option key={y} value={y}>{y}</option>)}
           </select>
         )}
         {filterOpts.showSeries.length > 0 && (
           <select value={filters.showSeriesId} onChange={e => applyFilter('showSeriesId', e.target.value)}
-            className="px-3 py-2 rounded-xl bg-bg-secondary/30 border border-border-subtle/30 text-xs text-text-white appearance-none cursor-pointer focus:outline-none focus:border-neon-blue/40">
+            className="px-3 py-2 rounded-xl bg-bg-secondary/30 border border-border-subtle/30 text-xs text-text-white cursor-pointer focus:outline-none focus:border-neon-blue/40">
             <option value="">All shows</option>
             {filterOpts.showSeries.map(s => <option key={s.id} value={String(s.id)}>{s.name}</option>)}
           </select>
@@ -166,40 +162,65 @@ export default function TabGallery({ superstar }: { superstar: any }) {
   )
 }
 
-/* ★ Gallery Card — uses plain <img> tag, NOT Next.js <Image> */
+/* ★ Gallery Card — uses a DIV container, not button with aspect-ratio */
 function GalleryCard({ item, onClick }: { item: MediaItem; onClick: () => void }) {
   const thumb = getThumbnail(item)
   const isVideo = item.media_type === 'video'
 
   return (
-    <button onClick={onClick} className="group relative aspect-video rounded-xl overflow-hidden bg-bg-tertiary/30 border border-border-subtle/15 hover:border-neon-blue/25 transition-all hover:shadow-[0_0_20px_rgba(199,160,90,0.06)] text-left">
-      {thumb ? (
-        <img src={thumb} alt={item.title || ''} loading="lazy" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-      ) : (
-        <div className="w-full h-full flex items-center justify-center"><span className="text-2xl opacity-15">{isVideo ? '🎬' : '📸'}</span></div>
-      )}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-      {isVideo && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/20 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all">
-            <svg className="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+    <div onClick={onClick} role="button" tabIndex={0} className="group cursor-pointer rounded-xl overflow-hidden border border-border-subtle/15 hover:border-neon-blue/25 transition-all hover:shadow-[0_0_20px_rgba(199,160,90,0.06)]">
+      {/* Image container — fixed aspect ratio via padding trick */}
+      <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+        {thumb ? (
+          <img
+            src={thumb}
+            alt={item.title || ''}
+            loading="lazy"
+            className="absolute top-0 left-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+          />
+        ) : (
+          <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-bg-tertiary/30">
+            <span className="text-2xl opacity-15">{isVideo ? '🎬' : '📸'}</span>
+          </div>
+        )}
+
+        {/* Hover overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+        {/* Play button */}
+        {isVideo && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/20 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all">
+              <svg className="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+            </div>
+          </div>
+        )}
+
+        {/* Type badge */}
+        <div className="absolute top-1.5 left-1.5">
+          <span className={`text-[8px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider ${isVideo ? 'bg-red-600/90 text-white' : 'bg-neon-blue/80 text-white'}`}>
+            {isVideo ? 'Video' : 'Photo'}
+          </span>
+        </div>
+
+        {/* Source badge */}
+        <div className="absolute top-1.5 right-1.5">
+          <span className="text-[8px] px-1.5 py-0.5 rounded bg-black/50 text-white/70 font-medium">
+            {item.source === 'match' ? '🤼' : '🎤'}
+          </span>
+        </div>
+
+        {/* Bottom info on hover */}
+        <div className="absolute bottom-0 left-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          {item.title && <p className="text-[10px] text-white font-medium truncate">{item.title}</p>}
+          <div className="flex items-center gap-1 mt-0.5">
+            {item.show && <span className="text-[9px] text-white/60 truncate">{item.show.name}</span>}
+            {item.date && <span className="text-[9px] text-white/40 shrink-0">{item.date.slice(0,4)}</span>}
           </div>
         </div>
-      )}
-      <div className="absolute top-1.5 left-1.5">
-        <span className={`text-[8px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider ${isVideo ? 'bg-red-600/90 text-white' : 'bg-neon-blue/80 text-white'}`}>{isVideo ? 'Video' : 'Photo'}</span>
       </div>
-      <div className="absolute top-1.5 right-1.5">
-        <span className="text-[8px] px-1.5 py-0.5 rounded bg-black/50 text-white/70 font-medium">{item.source==='match' ? '🤼' : '🎤'}</span>
-      </div>
-      <div className="absolute bottom-0 left-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-        {item.title && <p className="text-[10px] text-white font-medium truncate">{item.title}</p>}
-        <div className="flex items-center gap-1 mt-0.5">
-          {item.show && <span className="text-[9px] text-white/60 truncate">{item.show.name}</span>}
-          {item.date && <span className="text-[9px] text-white/40 shrink-0">{item.date.slice(0,4)}</span>}
-        </div>
-      </div>
-    </button>
+    </div>
   )
 }
 
@@ -211,7 +232,6 @@ function PagBtn({ disabled, onClick, dir }: { disabled: boolean; onClick: () => 
 
 function getVis(page: number, tp: number): (number|'e')[] {
   const p: (number|'e')[] = []
-  if (tp<=7) { for (let i=1;i<=tp;i++) p.push(i) }
-  else { p.push(1); if (page>3) p.push('e'); for (let i=Math.max(2,page-1);i<=Math.min(tp-1,page+1);i++) p.push(i); if (page<tp-2) p.push('e'); p.push(tp) }
+  if (tp<=7) { for (let i=1;i<=tp;i++) p.push(i) } else { p.push(1); if (page>3) p.push('e'); for (let i=Math.max(2,page-1);i<=Math.min(tp-1,page+1);i++) p.push(i); if (page<tp-2) p.push('e'); p.push(tp) }
   return p
 }

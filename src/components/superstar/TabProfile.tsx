@@ -1,16 +1,23 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { formatDate, formatDateShort } from '@/lib/utils'
 
 export function TabProfile({ superstar }: { superstar: any }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-      {/* LEFT COLUMN: Bio + History */}
+      {/* LEFT COLUMN: Bio + Records + History */}
       <div className="lg:col-span-2 space-y-6">
         {superstar.bio_md && (
           <Card title="Biography">
             <p className="text-text-primary leading-relaxed whitespace-pre-line">{superstar.bio_md}</p>
           </Card>
         )}
+
+        {/* ★ Golden Records Blocks */}
+        <RecordsBlocks superstarId={superstar.id} />
 
         {superstar.aliases?.length > 0 && (
           <Card title="Ring Names">
@@ -108,7 +115,6 @@ export function TabProfile({ superstar }: { superstar: any }) {
           </Card>
         )}
 
-        {/* Roles detail (if multiple) */}
         {superstar.roles?.length > 1 && (
           <Card title="Roles">
             <div className="space-y-2">
@@ -122,6 +128,82 @@ export function TabProfile({ superstar }: { superstar: any }) {
           </Card>
         )}
       </div>
+    </div>
+  )
+}
+
+/* ═══════════════════════════════════════════════════════ */
+/* GOLDEN RECORDS BLOCKS                                   */
+/* ═══════════════════════════════════════════════════════ */
+
+function RecordsBlocks({ superstarId }: { superstarId: number }) {
+  const [records, setRecords] = useState<any[]>([])
+
+  useEffect(() => {
+    fetch(`/api/superstar-records?superstarId=${superstarId}`)
+      .then(r => r.json())
+      .then(d => setRecords(d.records || []))
+      .catch(() => {})
+  }, [superstarId])
+
+  if (records.length === 0) return null
+
+  return (
+    <div className="space-y-3">
+      {records.map((rec, i) => (
+        <div
+          key={i}
+          className="relative overflow-hidden rounded-2xl border border-yellow-500/30"
+          style={{
+            background: 'linear-gradient(135deg, rgba(199,160,90,0.08) 0%, rgba(199,160,90,0.03) 50%, rgba(199,160,90,0.08) 100%)',
+          }}
+        >
+          {/* Shimmer overlay */}
+          <div className="absolute inset-0 opacity-[0.06]" style={{
+            background: 'linear-gradient(135deg, transparent 20%, rgba(255,215,0,0.5) 45%, rgba(255,215,0,0.7) 50%, rgba(255,215,0,0.5) 55%, transparent 80%)',
+            backgroundSize: '300% 300%',
+            animation: 'belt-shimmer 5s ease-in-out infinite',
+          }} />
+
+          <div className="relative flex items-center gap-4 px-5 py-4 sm:px-6 sm:py-5">
+            {/* Trophy icon or championship image */}
+            <div className="shrink-0">
+              {rec.championshipImage ? (
+                <div className="w-14 h-14 sm:w-16 sm:h-16 relative">
+                  <Image src={rec.championshipImage} alt="" fill className="object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.3)]" sizes="64px" unoptimized />
+                </div>
+              ) : (
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-yellow-400/20 to-yellow-600/10 border border-yellow-500/30 flex items-center justify-center">
+                  <span className="text-2xl">{rec.icon || '🏆'}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-0.5">
+                <span className="text-[9px] px-2 py-0.5 rounded-full bg-yellow-500/15 border border-yellow-500/25 text-yellow-400 font-bold uppercase tracking-[0.15em]">
+                  Record Holder
+                </span>
+              </div>
+              <h4 className="text-sm sm:text-base font-bold text-yellow-400/90 font-display">{rec.type}</h4>
+              {rec.subtitle && <p className="text-xs text-yellow-400/50 mt-0.5">{rec.subtitle}</p>}
+            </div>
+
+            {/* Value */}
+            <div className="text-right shrink-0">
+              <span className="text-lg sm:text-2xl font-bold font-display text-transparent bg-clip-text" style={{
+                backgroundImage: 'linear-gradient(180deg, #e8d5a0 0%, #c7a05a 50%, #a07830 100%)',
+              }}>
+                {rec.value}
+              </span>
+            </div>
+          </div>
+
+          {/* Bottom gold line */}
+          <div className="h-[1px]" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,215,0,0.2) 30%, rgba(255,215,0,0.35) 50%, rgba(255,215,0,0.2) 70%, transparent)' }} />
+        </div>
+      ))}
     </div>
   )
 }

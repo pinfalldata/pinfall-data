@@ -134,12 +134,12 @@ export default function ArenaDetailPage() {
             <span className="text-neon-blue">Arena</span>
           </nav>
           <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-text-white text-center tracking-tight mb-2">
-            {arena?.display_name || arena?.name || <span className="bg-bg-secondary/50 rounded w-60 h-10 inline-block animate-pulse" />}
+            {arena?.name || <span className="bg-bg-secondary/50 rounded w-60 h-10 inline-block animate-pulse" />}
           </h1>
-          {/* All historical names */}
+          {/* Arena name history */}
           {arenaNames.filter(an => !an.is_current).length > 0 && (
             <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 mb-1">
-              <span className="text-[10px] text-text-secondary/60">Also known as:</span>
+              <span className="text-[10px] text-text-secondary/60">Formerly:</span>
               {arenaNames.filter(an => !an.is_current).map((an, i) => (
                 <span key={an.id || i} className="text-[10px] text-neon-blue/60 italic">
                   {an.name}{an.start_date ? ` (${an.start_date.substring(0, 4)}–${an.end_date ? an.end_date.substring(0, 4) : 'now'})` : ''}
@@ -177,7 +177,7 @@ export default function ArenaDetailPage() {
                 <div className="flex flex-wrap items-center justify-center gap-2">
                   {arenaNames.map((an, i) => (
                     <div key={an.id || i} className="flex items-center gap-1.5">
-                      {i > 0 && <svg className="w-3 h-3 text-text-secondary/30 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>}
+                      {i > 0 && <span className="text-text-secondary/30 text-xs">›</span>}
                       <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs ${an.is_current ? 'border-neon-blue/30 bg-neon-blue/10 text-neon-blue font-bold' : 'border-border-subtle/20 bg-bg-tertiary/30 text-text-secondary'}`}>
                         <span>{an.name}</span>
                         <span className="text-[9px] opacity-60">
@@ -233,13 +233,10 @@ export default function ArenaDetailPage() {
 
               <div className="space-y-0.5">
                 {shows.map((s: any) => {
-                  const displayName = arena?.display_name || arena?.name || ''
-                  const nameAtDate = arenaNames.length > 1 ? getArenaNameAtDate(arenaNames, s.date, displayName) : null
-                  const isDiff = nameAtDate && nameAtDate !== displayName
-
+                  const nameAtDate = arenaNames.length > 1 ? getArenaNameAtDate(arenaNames, s.date, arena?.name || '') : null
+                  const isDiff = nameAtDate && nameAtDate !== arena?.name
                   return (
                   <Link key={s.id} href={`/shows/${s.slug}`} className="group block">
-                    {/* Desktop */}
                     <div className="hidden lg:grid lg:grid-cols-[100px_minmax(80px,0.5fr)_minmax(200px,2fr)_100px_120px] gap-4 items-center px-4 py-3 rounded-lg border border-transparent hover:bg-bg-secondary/40 hover:border-border-subtle/20 transition-all">
                       <span className="text-xs text-text-secondary font-mono">{fmt(s.date)}</span>
                       <span className="text-[10px] px-2 py-0.5 rounded-full bg-bg-tertiary border border-border-subtle/20 text-text-secondary text-center truncate">{showTypeLabels[s.show_type] || s.show_type}</span>
@@ -250,15 +247,12 @@ export default function ArenaDetailPage() {
                       <span className="text-xs text-text-secondary font-mono text-right">{s.attendance ? s.attendance.toLocaleString() : '—'}</span>
                       <span className="text-[10px] truncate">{isDiff ? <span className="text-neon-blue/70 italic">{nameAtDate}</span> : <span className="text-neon-blue">{s.show_series?.short_name || s.show_series?.name || ''}</span>}</span>
                     </div>
-                    {/* Mobile */}
                     <div className="lg:hidden flex items-center gap-3 px-3 py-3 rounded-xl border border-transparent hover:bg-bg-secondary/40 hover:border-border-subtle/20 transition-all">
                       {s.show_series?.logo_url && <div className="w-8 h-8 rounded overflow-hidden shrink-0"><Image src={s.show_series.logo_url} alt="" width={32} height={32} className="w-full h-full object-contain" /></div>}
                       <div className="flex-1 min-w-0">
                         <p className="text-sm text-text-white font-medium truncate group-hover:text-neon-blue">{s.name}</p>
                         <div className="flex items-center gap-2 mt-0.5 text-[10px] text-text-secondary">
-                          <span className="font-mono">{fmt(s.date)}</span>
-                          <span>•</span>
-                          <span>{showTypeLabels[s.show_type] || s.show_type}</span>
+                          <span className="font-mono">{fmt(s.date)}</span><span>•</span><span>{showTypeLabels[s.show_type] || s.show_type}</span>
                           {s.attendance && <><span>•</span><span>{s.attendance.toLocaleString()}</span></>}
                         </div>
                         {isDiff && <p className="text-[9px] text-neon-blue/60 italic mt-0.5">as {nameAtDate}</p>}
@@ -406,7 +400,7 @@ export default function ArenaDetailPage() {
       {/* Share */}
       {arena && (
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 pb-4">
-          <ShareButtons title={`${arena.display_name || arena.name} — WWE Arena History | Pinfall Data`} />
+          <ShareButtons title={`${arena.name} — WWE Arena History | Pinfall Data`} />
         </div>
       )}
 
@@ -414,11 +408,11 @@ export default function ArenaDetailPage() {
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8">
         <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/10 p-6 sm:p-8">
           <h2 className="font-display text-xl font-bold text-text-white mb-3">
-            <span className="text-neon-blue">{arena?.display_name || arena?.name || 'Arena'}</span> — Complete WWE Event History
+            <span className="text-neon-blue">{arena?.name || 'Arena'}</span> — Complete WWE Event History
           </h2>
           <p className="text-text-secondary text-sm leading-relaxed">
-            Full history of every WWE event held at {arena?.display_name || arena?.name || 'this arena'}
-            {arena?.city ? ` in ${arena.city}` : ''}.{arenaNames.filter(an => !an.is_current).length > 0 ? ` Formerly known as ${arenaNames.filter(an => !an.is_current).map(an => an.name).join(', ')}.` : ''} Browse all shows, discover which superstars competed here the most, 
+            Full history of every WWE event held at {arena?.name || 'this arena'}
+            {arena?.city ? ` in ${arena.city}` : ''}. Browse all shows, discover which superstars competed here the most, 
             and explore detailed statistics including attendance records, match ratings, and title changes — only on Pinfall Data.
           </p>
         </div>
