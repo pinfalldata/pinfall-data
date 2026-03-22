@@ -2,13 +2,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 
-// ★ Prevent Vercel from caching this route
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
+export const fetchCache = 'force-no-store'
 
-/**
- * GET /api/arena-detail?slug=madison-square-garden&page=1&limit=50
- */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const slug = searchParams.get('slug')
@@ -29,7 +26,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Arena not found' }, { status: 404 })
     }
 
-    // Arena name history
     const { data: arenaNames } = await supabase
       .from('arena_names')
       .select('*')
@@ -38,15 +34,37 @@ export async function GET(request: NextRequest) {
 
     const names = arenaNames || []
 
-    // ★ FIX: Create a NEW object instead of mutating the Supabase result.
-    // Supabase objects may be frozen/sealed, so mutation silently fails.
-    const currentEntry = names.find((n: any) => n.is_current === true || n.is_current === 'true')
-    const arena = {
-      ...arenaRaw,
-      name: currentEntry ? currentEntry.name : arenaRaw.name,
+    // ★ FIX: Multiple strategies to find the current name
+    // Strategy 1: is_current = true (truthy check)
+    let currentName = null
+    for (const n of names) {
+      if (n.is_current === true || n.is_current === 'true' || n.is_current === 1) {
+        currentName = n.name
+        break
+      }
+    }
+    // Strategy 2: end_date IS NULL (the name that hasn't ended)
+    if (!currentName) {
+      for (const n of names) {
+        if (n.end_date === null || n.end_date === undefined || n.end_date === '') {
+          currentName = n.name
+          break
+        }
+      }
+    }
+    // Strategy 3: Latest start_date (most recent name)
+    if (!currentName && names.length > 0) {
+      const sorted = [...names].sort((a, b) => (b.start_date || '').localeCompare(a.start_date || ''))
+      currentName = sorted[0].name
     }
 
-    // Paginated shows at this arena
+    // ★ FIX: Build a completely new plain object — NOT mutating arenaRaw
+    const arena = JSON.parse(JSON.stringify(arenaRaw))
+    if (currentName) {
+      arena.name = currentName
+    }
+
+    // Paginated shows
     const { data: shows, error: showErr, count } = await supabase
       .from('shows')
       .select(`
@@ -58,14 +76,12 @@ export async function GET(request: NextRequest) {
       .order('date', { ascending: false })
       .range(offset, offset + limit - 1)
 
-    if (showErr) {
-      console.error('[arena-detail] shows error:', showErr)
-    }
+    if (showErr) console.error('[arena-detail] shows error:', showErr)
 
     const total = count || 0
     const totalPages = Math.ceil(total / limit)
 
-    // Prev/Next arena — also with current names
+    // Prev/Next arena with current names
     const { data: allArenas } = await supabase
       .from('arenas')
       .select('id, name, slug')
@@ -74,18 +90,19 @@ export async function GET(request: NextRequest) {
     let prevArena = null
     let nextArena = null
     if (allArenas && allArenas.length > 1) {
-      // Fetch all current arena_names for display name override
       const { data: allCurrentNames } = await supabase
         .from('arena_names')
-        .select('arena_id, name')
-        .eq('is_current', true)
+        .select('arena_id, name, is_current, end_date')
 
-      const currentNameMap = new Map<number, string>()
+      const currentNameMap = new Map()
       for (const n of (allCurrentNames || [])) {
-        currentNameMap.set(n.arena_id, n.name)
+        if (n.is_current === true || n.is_current === 'true' || n.end_date === null) {
+          if (!currentNameMap.has(n.arena_id)) {
+            currentNameMap.set(n.arena_id, n.name)
+          }
+        }
       }
 
-      // Build list with overridden names
       const enrichedList = allArenas.map(a => ({
         ...a,
         name: currentNameMap.get(a.id) || a.name,
@@ -96,7 +113,7 @@ export async function GET(request: NextRequest) {
       if (idx >= 0 && idx < enrichedList.length - 1) nextArena = { slug: enrichedList[idx + 1].slug, name: enrichedList[idx + 1].name }
     }
 
-    const response = NextResponse.json({
+    return new Response(JSON.stringify({
       arena,
       arenaNames: names,
       shows: shows || [],
@@ -106,14 +123,18 @@ export async function GET(request: NextRequest) {
       totalPages,
       prevArena,
       nextArena,
+    }), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0',
+        'CDN-Cache-Control': 'no-store',
+        'Vercel-CDN-Cache-Control': 'no-store',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
     })
-
-    // ★ Prevent all caching
-    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
-    response.headers.set('Pragma', 'no-cache')
-    response.headers.set('Expires', '0')
-    return response
-  } catch (err: any) {
+  } catch (err) {
     console.error('[arena-detail] error:', err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }

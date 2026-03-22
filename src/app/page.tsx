@@ -5,6 +5,7 @@ import { OnThisDay } from '@/components/home/OnThisDay'
 import { SuperstarGrid } from '@/components/home/SuperstarGrid'
 import { ShowCalendar } from '@/components/home/ShowCalendar'
 import { SocialWidgets } from '@/components/home/SocialWidgets'
+import { WweLogosCarousel, HomeExtraSections } from '@/components/home/HomeExtraSections'
 
 export default function HomePage() {
   return (
@@ -12,27 +13,36 @@ export default function HomePage() {
       {/* ===== HERO — Animated Ring ===== */}
       <HeroRing />
 
-      {/* ===== NEON SEPARATOR ===== */}
       <div className="neon-line max-w-5xl mx-auto" />
 
-      {/* ===== STATS — Real Supabase data ===== */}
+      {/* ===== STATS ===== */}
       <HomeStats />
 
-      {/* ===== NEON SEPARATOR ===== */}
       <div className="neon-line max-w-5xl mx-auto" />
 
       {/* ===== ERA TIMELINE ===== */}
       <EraTimeline />
 
-      {/* ===== NEON SEPARATOR ===== */}
       <div className="neon-line-pink max-w-5xl mx-auto" />
 
-      {/* ===== ON THIS DAY ===== */}
+      {/* ===== SHOW CALENDAR ===== */}
+      <ShowCalendar />
+
+      <div className="neon-line max-w-5xl mx-auto" />
+
+      {/* ★ NEW: WWE LOGOS CAROUSEL */}
+      <WweLogosCarousel />
+
+      <div className="neon-line-pink max-w-5xl mx-auto" />
+
+      {/* ===== ON THIS DAY + BIRTHDAY (side by side) ===== */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-10">
         <OnThisDay />
       </section>
 
-      {/* ===== NEON SEPARATOR ===== */}
+      {/* ★ NEW: All extra homepage sections (birthdays, matches, segments, spotlights, belts, omg, hof...) */}
+      <HomeExtraSections />
+
       <div className="neon-line max-w-5xl mx-auto" />
 
       {/* ===== SUPERSTAR GRID + SOCIAL WIDGETS ===== */}
@@ -51,11 +61,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ===== NEON SEPARATOR ===== */}
       <div className="neon-line-pink max-w-5xl mx-auto" />
 
-      {/* ===== SHOW CALENDAR ===== */}
-      <ShowCalendar />
+      {/* ===== HOF + SLAMMY rendered inside HomeExtraSections ===== */}
     </div>
   )
 }

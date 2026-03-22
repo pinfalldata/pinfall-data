@@ -62,6 +62,12 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
 
   const scroll = (dir: number) => { scrollRef.current?.scrollBy({ left: dir * 200, behavior: 'smooth' }) }
 
+  // ★ FIX: Tab change handler that scrolls to top
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   const rc = roleCounts
   const personaTotal = (rc?.entranceThemes || 0) + (rc?.attires || 0)
 
@@ -128,7 +134,8 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
       </div>
 
       <div className="px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-        {activeTab === 'profile' && <TabProfile superstar={superstar} />}
+        {/* ★ FIX: Pass handleTabChange to TabProfile */}
+        {activeTab === 'profile' && <TabProfile superstar={superstar} onTabChange={handleTabChange} />}
         {activeTab === 'matches' && <TabMatches superstar={superstar} />}
         {activeTab === 'statistics' && <TabStatistics superstar={superstar} />}
         {activeTab === 'championships' && <TabChampionships superstar={superstar} />}
