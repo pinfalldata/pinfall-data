@@ -3,7 +3,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-const HERO = 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/whatistheexcel-2-e1455555433890.jpg'
+const HERO = 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/whatistheexcel-2-e1455555433890_2026-03-22_10_41_26.754419.jpg.png'
 const COLORS = ['#c7a05a', '#3b82f6', '#ef4444', '#22c55e']
 
 interface SuperstarResult { id: number; name: string; slug: string; photo_url: string | null }
@@ -15,9 +15,10 @@ interface ComparedStar {
   career_years: number | null; title_reigns: number; championship_days: number
   omg_moments: number; tag_teams: number; segments: number
   hall_of_fame: number; slammy_awards: number; year_end_awards: number
+  [key: string]: any
 }
 
-const STAT_ROWS: { key: keyof ComparedStar; label: string; format?: (v: any) => string; higher?: boolean }[] = [
+const STAT_ROWS: { key: string; label: string; format?: (v: any) => string; higher?: boolean }[] = [
   { key: 'total_matches', label: 'Total Matches', higher: true },
   { key: 'wins', label: 'Wins', higher: true },
   { key: 'losses', label: 'Losses', higher: false },
@@ -47,18 +48,21 @@ export default function ComparePage() {
   const debounceRef = useRef<NodeJS.Timeout>()
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const searchSuperstars = useCallback((q: string) => {
+  // Search superstars
+  const doSearch = (q: string) => {
+    setQuery(q)
     if (q.length < 2) { setResults([]); setShowDropdown(false); return }
     clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(async () => {
       try {
         const r = await fetch(`/api/superstar-search?q=${encodeURIComponent(q)}&limit=8`)
         const d = await r.json()
-        setResults((d.results || d || []).filter((s: any) => !selected.find(x => x.id === s.id)))
+        const existing = new Set(selected.map(s => s.id))
+        setResults((d.results || []).filter((s: any) => !existing.has(s.id)))
         setShowDropdown(true)
       } catch { }
-    }, 300)
-  }, [selected])
+    }, 250)
+  }
 
   const addStar = (s: SuperstarResult) => {
     if (selected.length >= 4 || selected.find(x => x.id === s.id)) return
@@ -72,25 +76,38 @@ export default function ComparePage() {
     setCompared(prev => prev.filter(s => s.id !== id))
   }
 
-  const compare = async () => {
-    if (selected.length < 2) return
-    setLoading(true)
-    try {
-      const ids = selected.map(s => s.id).join(',')
-      const r = await fetch(`/api/superstar-compare?ids=${ids}`)
-      const d = await r.json()
-      setCompared(d.superstars || [])
-    } catch { }
-    setLoading(false)
-  }
+  // Auto-compare when 2+ selected
+  useEffect(() => {
+    if (selected.length < 2) { setCompared([]); return }
+    let cancelled = false
+    const doCompare = async () => {
+      setLoading(true)
+      try {
+        const ids = selected.map(s => s.id).join(',')
+        const r = await fetch(`/api/superstar-compare?ids=${ids}`)
+        const d = await r.json()
+        if (!cancelled) setCompared(d.superstars || [])
+      } catch { }
+      if (!cancelled) setLoading(false)
+    }
+    doCompare()
+    return () => { cancelled = true }
+  }, [selected.map(s => s.id).join(',')])
 
-  useEffect(() => { if (selected.length >= 2) compare() }, [selected])
+  // Close dropdown on click outside
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (!(e.target as HTMLElement).closest('.search-zone')) setShowDropdown(false)
+    }
+    document.addEventListener('click', handler)
+    return () => document.removeEventListener('click', handler)
+  }, [])
 
   return (
     <div className="relative">
       {/* Hero */}
       <section className="relative w-full h-[220px] sm:h-[300px] lg:h-[380px] overflow-hidden">
-        <Image src={HERO} alt="Superstar Comparator" fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-center lg:object-[50%_30%]" />
+        <Image src={HERO} alt="Superstar Comparator" fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-center lg:object-[50%_25%]" />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/50 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">
@@ -116,14 +133,14 @@ export default function ComparePage() {
               </div>
             ))}
             {selected.length < 4 && (
-              <div className="relative flex-1 min-w-[200px]">
+              <div className="relative flex-1 min-w-[200px] search-zone">
                 <input ref={inputRef} type="text" value={query}
-                  onChange={e => { setQuery(e.target.value); searchSuperstars(e.target.value) }}
-                  onFocus={() => results.length > 0 && setShowDropdown(true)}
+                  onChange={e => doSearch(e.target.value)}
+                  onFocus={() => { if (results.length > 0) setShowDropdown(true) }}
                   placeholder={selected.length === 0 ? 'Search first superstar…' : `Add superstar (${4 - selected.length} remaining)…`}
                   className="w-full px-4 py-2.5 rounded-xl bg-bg-primary border border-border-subtle/40 text-sm text-text-white placeholder:text-text-secondary/50 focus:outline-none focus:border-neon-blue/50" />
                 {showDropdown && results.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 mt-1 z-50 rounded-xl border border-border-subtle/40 bg-bg-secondary/95 backdrop-blur-md shadow-xl max-h-64 overflow-y-auto">
+                  <div className="absolute top-full left-0 right-0 mt-1 z-50 rounded-xl border border-border-subtle/40 bg-bg-secondary/95 backdrop-blur-md shadow-xl max-h-64 overflow-y-auto search-zone">
                     {results.map(s => (
                       <button key={s.id} onClick={() => addStar(s)} className="flex items-center gap-3 w-full px-4 py-2.5 hover:bg-bg-tertiary/50 transition-colors text-left">
                         <div className="w-8 h-8 rounded-full overflow-hidden border border-border-subtle/30 bg-bg-tertiary shrink-0">
@@ -137,45 +154,45 @@ export default function ComparePage() {
               </div>
             )}
           </div>
-          <p className="text-[10px] text-text-secondary">{selected.length < 2 ? `Select at least 2 superstars to compare` : `${selected.length} superstars selected — comparing ${STAT_ROWS.length} stats`}</p>
+          <p className="text-[10px] text-text-secondary">
+            {selected.length === 0 ? 'Start typing to search and add superstars' : selected.length === 1 ? 'Add at least one more superstar to compare' : `Comparing ${selected.length} superstars — ${STAT_ROWS.length} stats`}
+          </p>
         </div>
 
         {/* Comparison table */}
         {loading ? (
           <div className="space-y-2">{Array.from({ length: 10 }).map((_, i) => <div key={i} className="h-14 rounded-xl bg-bg-secondary/30 animate-pulse" />)}</div>
         ) : compared.length >= 2 ? (
-          <div className="rounded-2xl border border-border-subtle/20 overflow-hidden">
-            {/* Header row — photos + names */}
-            <div className="grid gap-0" style={{ gridTemplateColumns: `180px repeat(${compared.length}, 1fr)` }}>
+          <div className="rounded-2xl border border-border-subtle/20 overflow-x-auto">
+            {/* Header row */}
+            <div className="grid gap-0 min-w-[600px]" style={{ gridTemplateColumns: `160px repeat(${compared.length}, 1fr)` }}>
               <div className="p-4 bg-bg-secondary/30 border-b border-r border-border-subtle/20" />
               {compared.map((s, i) => (
                 <Link key={s.id} href={`/superstars/${s.slug}`} className="group p-4 bg-bg-secondary/30 border-b border-r border-border-subtle/20 flex flex-col items-center gap-2">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-3" style={{ borderColor: COLORS[i] }}>
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-3 shrink-0" style={{ borderColor: COLORS[i] }}>
                     {s.photo_url ? <Image src={s.photo_url} alt="" width={80} height={80} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-bg-tertiary flex items-center justify-center text-2xl">👤</div>}
                   </div>
                   <span className="text-sm font-bold text-text-white group-hover:text-neon-blue transition-colors text-center">{s.name}</span>
                   {s.current_brand && <span className="text-[9px] px-2 py-0.5 rounded-full bg-bg-tertiary border border-border-subtle/20 text-text-secondary">{s.current_brand}</span>}
+                  <span className="text-[10px] text-text-secondary capitalize">{s.status}</span>
                 </Link>
               ))}
             </div>
 
             {/* Stat rows */}
             {STAT_ROWS.map((row, ri) => {
-              const vals = compared.map(s => {
-                const v = s[row.key]
-                return typeof v === 'number' ? v : 0
-              })
+              const vals = compared.map(s => typeof s[row.key] === 'number' ? s[row.key] as number : 0)
               const maxVal = Math.max(...vals.filter(v => v > 0))
 
               return (
-                <div key={row.key} className="grid gap-0" style={{ gridTemplateColumns: `180px repeat(${compared.length}, 1fr)` }}>
+                <div key={row.key} className="grid gap-0 min-w-[600px]" style={{ gridTemplateColumns: `160px repeat(${compared.length}, 1fr)` }}>
                   <div className={`px-4 py-3 border-b border-r border-border-subtle/10 flex items-center ${ri % 2 === 0 ? 'bg-bg-secondary/10' : ''}`}>
                     <span className="text-xs text-text-secondary font-medium">{row.label}</span>
                   </div>
                   {compared.map((s, i) => {
                     const rawVal = s[row.key]
                     const numVal = typeof rawVal === 'number' ? rawVal : 0
-                    const isMax = row.higher !== undefined && numVal > 0 && numVal === maxVal && compared.filter(c => (typeof c[row.key] === 'number' ? c[row.key] as number : 0) === maxVal).length === 1
+                    const isMax = row.higher !== undefined && numVal > 0 && numVal === maxVal && vals.filter(v => v === maxVal).length === 1
                     const barPct = maxVal > 0 ? (numVal / maxVal) * 100 : 0
                     const display = row.format ? row.format(rawVal) : (typeof rawVal === 'number' ? rawVal.toLocaleString() : rawVal || '—')
 
@@ -205,9 +222,18 @@ export default function ComparePage() {
           </div>
         ) : (
           <div className="text-center py-16">
+            <span className="text-4xl block mb-3 opacity-30">⚖️</span>
             <p className="text-text-secondary">Select at least one more superstar to compare.</p>
           </div>
         )}
+      </section>
+
+      {/* SEO */}
+      <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8">
+        <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/10 p-6 sm:p-8">
+          <h2 className="font-display text-xl font-bold text-text-white mb-3">About the <span className="text-neon-blue">Superstar Comparator</span></h2>
+          <p className="text-text-secondary text-sm leading-relaxed">Compare up to 4 WWE superstars side by side across 17 key statistics. Win rates, championship reigns, career length, physical attributes, awards — all computed from our database of 100,000+ matches.</p>
+        </div>
       </section>
     </div>
   )

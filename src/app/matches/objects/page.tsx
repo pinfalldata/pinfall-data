@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-const HERO = 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page/resultats-wwe-tlc-couverture-en-direct.jpg'
+const HERO = 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page/resultats-wwe-tlc-couverture-en-direct_2026-03-22_10_41_26.529402.jpg.png'
 
 export default function ObjectsListPage() {
   const [objects, setObjects] = useState<any[]>([])
@@ -20,7 +20,7 @@ export default function ObjectsListPage() {
     <div className="relative">
       {/* Hero */}
       <section className="relative w-full h-[220px] sm:h-[300px] lg:h-[380px] overflow-hidden">
-        <Image src={HERO} alt="WWE Objects Used" fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-center lg:object-[50%_30%]" />
+        <Image src={HERO} alt="WWE Objects Used" fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-center lg:object-[50%_60%]" />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/50 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">

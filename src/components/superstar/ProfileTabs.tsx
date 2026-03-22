@@ -72,6 +72,7 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
     { id: 'championships', label: 'Championships', show: (rc?.championships || superstar.total_reigns || 0) > 0, count: rc?.championships || superstar.total_reigns },
     { id: 'tagTeams', label: 'Tag Teams', show: (rc?.tagTeams || 0) > 0, count: rc?.tagTeams },
     { id: 'stables', label: 'Stables', show: (rc?.stables || 0) > 0, count: rc?.stables },
+    { id: 'moves', label: 'Moves', show: isWrestler && superstar.finishers?.length > 0 },
     { id: 'hallOfFame', label: '🏛️ Hall of Fame', show: (rc?.hallOfFame || 0) > 0 },
     { id: 'slammyAwards', label: '🏆 Slammy Awards', show: (rc?.slammyAwards || 0) > 0, count: rc?.slammyAwards },
     { id: 'yearEndAwards', label: '🎖️ Year-End Awards', show: (rc?.yearEndAwards || 0) > 0, count: rc?.yearEndAwards },
@@ -86,7 +87,6 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
     { id: 'interviewed', label: 'Interviewer', show: (rc?.interviewed || 0) > 0, count: rc?.interviewed },
     { id: 'commentated', label: 'Commentator', show: (rc?.commentated || 0) > 0, count: rc?.commentated },
     { id: 'gmTenures', label: 'General Manager', show: (rc?.gmTenures || 0) > 0, count: rc?.gmTenures },
-    { id: 'moves', label: 'Moves', show: isWrestler && superstar.finishers?.length > 0 },
   ].filter(t => t.show)
 
   const ROLE_TABS = ['segments', 'managed', 'commentated', 'matchCommentated', 'ringAnnounced', 'refereed', 'guestRefereed', 'interviewed', 'gmTenures', 'execTenures']
