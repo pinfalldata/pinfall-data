@@ -7,7 +7,7 @@ export const revalidate = 60
 /**
  * GET /api/superstar-role-counts?superstarId=123
  * Returns counts for each role activity to determine which tabs to show.
- * Now includes: omgMoments, tagTeams, stables, entranceThemes, attires, outsideRing
+ * Includes: omgMoments, tagTeams, stables, entranceThemes, attires
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
@@ -39,7 +39,6 @@ export async function GET(request: NextRequest) {
       { count: objectsUsed },
       { count: entranceThemes },
       { count: attires },
-      { count: outsideRing },
     ] = await Promise.all([
       supabase.from('show_segment_participants').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
       supabase.from('match_managers').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
@@ -62,11 +61,9 @@ export async function GET(request: NextRequest) {
       supabase.from('match_object_usage').select('*', { count: 'exact', head: true }).eq('used_by_superstar_id', sid),
       supabase.from('entrance_themes').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
       supabase.from('superstar_attires').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
-      supabase.from('superstar_outside_ring').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
     ])
 
     // OMG count = unique moments (participant + direct)
-    // This is an approximation — could double-count but it's for tab visibility only
     const omgMoments = Math.max((omgParticipant || 0), (omgDirect || 0))
 
     return NextResponse.json({
@@ -90,10 +87,9 @@ export async function GET(request: NextRequest) {
       objectsUsed: objectsUsed || 0,
       entranceThemes: entranceThemes || 0,
       attires: attires || 0,
-      outsideRing: outsideRing || 0,
     })
   } catch (err) {
     console.error('[superstar-role-counts]', err)
-    return NextResponse.json({ segments:0,managed:0,commentated:0,matchCommentated:0,ringAnnounced:0,refereed:0,guestRefereed:0,interviewed:0,gmTenures:0,execTenures:0,championships:0,omgMoments:0,tagTeams:0,stables:0,hallOfFame:0,slammyAwards:0,yearEndAwards:0,objectsUsed:0,entranceThemes:0,attires:0,outsideRing:0 })
+    return NextResponse.json({ segments:0,managed:0,commentated:0,matchCommentated:0,ringAnnounced:0,refereed:0,guestRefereed:0,interviewed:0,gmTenures:0,execTenures:0,championships:0,omgMoments:0,tagTeams:0,stables:0,hallOfFame:0,slammyAwards:0,yearEndAwards:0,objectsUsed:0,entranceThemes:0,attires:0 })
   }
 }

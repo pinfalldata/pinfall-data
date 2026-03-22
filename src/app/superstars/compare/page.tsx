@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -42,14 +42,56 @@ export default function ComparePage() {
   const [selected, setSelected] = useState<SuperstarResult[]>([])
   const [compared, setCompared] = useState<ComparedStar[]>([])
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<SuperstarResult[]>([])
   const [showDropdown, setShowDropdown] = useState(false)
   const debounceRef = useRef<NodeJS.Timeout>()
   const inputRef = useRef<HTMLInputElement>(null)
+  const fetchRef = useRef(0) // abort guard
 
-  // ★ FIX: Compute a stable string of selected IDs via useMemo
-  const selectedIdsKey = useMemo(() => selected.map(s => s.id).join(','), [selected])
+  // ★ CORE FIX: explicit fetch function, no useEffect
+  const fetchComparison = useCallback(async (stars: SuperstarResult[]) => {
+    if (stars.length < 2) {
+      setCompared([])
+      setError(null)
+      return
+    }
+    const ticket = ++fetchRef.current
+    setLoading(true)
+    setError(null)
+    try {
+      const ids = stars.map(s => s.id).join(',')
+      const r = await fetch(`/api/superstar-compare?ids=${ids}`)
+      if (ticket !== fetchRef.current) return // stale
+      if (!r.ok) {
+        setError(`Server error (${r.status})`)
+        setLoading(false)
+        return
+      }
+      const d = await r.json()
+      if (ticket !== fetchRef.current) return // stale
+      const arr = d.superstars || d.data || []
+      if (arr.length >= 2) {
+        // Keep the selection order
+        const map = new Map(arr.map((s: ComparedStar) => [s.id, s]))
+        const ordered = stars.map(s => map.get(s.id)).filter(Boolean) as ComparedStar[]
+        setCompared(ordered)
+        setError(null)
+      } else {
+        setCompared([])
+        setError(`API returned ${arr.length} superstar(s) instead of ${stars.length}. Check console.`)
+        console.warn('[Compare] API response:', d)
+      }
+    } catch (e: any) {
+      if (ticket === fetchRef.current) {
+        setError(e?.message || 'Network error')
+        setCompared([])
+        console.error('[Compare] Fetch error:', e)
+      }
+    }
+    if (ticket === fetchRef.current) setLoading(false)
+  }, [])
 
   // Search superstars
   const doSearch = (q: string) => {
@@ -67,39 +109,28 @@ export default function ComparePage() {
     }, 250)
   }
 
+  // ★ addStar now explicitly triggers comparison
   const addStar = (s: SuperstarResult) => {
     if (selected.length >= 4 || selected.find(x => x.id === s.id)) return
-    setSelected(prev => [...prev, s])
+    const newSelected = [...selected, s]
+    setSelected(newSelected)
     setQuery(''); setResults([]); setShowDropdown(false)
     inputRef.current?.focus()
+    fetchComparison(newSelected)
   }
 
+  // ★ removeStar now explicitly triggers comparison (or clears)
   const removeStar = (id: number) => {
-    setSelected(prev => prev.filter(s => s.id !== id))
-    setCompared(prev => prev.filter(s => s.id !== id))
-  }
-
-  // ★ FIX: Auto-compare when 2+ selected — use stable dependency
-  useEffect(() => {
-    if (selected.length < 2) { setCompared([]); return }
-    let cancelled = false
-    const doCompare = async () => {
-      setLoading(true)
-      try {
-        const r = await fetch(`/api/superstar-compare?ids=${selectedIdsKey}`)
-        const d = await r.json()
-        if (!cancelled) {
-          // Ensure the order matches selected order
-          const map = new Map((d.superstars || []).map((s: ComparedStar) => [s.id, s]))
-          const ordered = selected.map(s => map.get(s.id)).filter(Boolean) as ComparedStar[]
-          setCompared(ordered)
-        }
-      } catch { }
-      if (!cancelled) setLoading(false)
+    const newSelected = selected.filter(s => s.id !== id)
+    setSelected(newSelected)
+    if (newSelected.length >= 2) {
+      // Filter compared locally (instant), then re-fetch for fresh data
+      setCompared(prev => prev.filter(s => s.id !== id))
+    } else {
+      setCompared([])
     }
-    doCompare()
-    return () => { cancelled = true }
-  }, [selectedIdsKey]) // eslint-disable-line react-hooks/exhaustive-deps
+    fetchComparison(newSelected)
+  }
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -169,6 +200,19 @@ export default function ComparePage() {
         {/* Comparison table */}
         {loading ? (
           <div className="space-y-2">{Array.from({ length: 10 }).map((_, i) => <div key={i} className="h-14 rounded-xl bg-bg-secondary/30 animate-pulse" />)}</div>
+        ) : error ? (
+          /* ★ Error state with retry */
+          <div className="text-center py-16">
+            <span className="text-4xl block mb-3">⚠️</span>
+            <p className="text-red-400 text-sm mb-2">Error: {error}</p>
+            <p className="text-text-secondary/60 text-xs mb-4">Open your browser console (F12) for details.</p>
+            <button
+              onClick={() => fetchComparison(selected)}
+              className="px-5 py-2 rounded-xl bg-neon-blue/15 border border-neon-blue/30 text-neon-blue text-sm font-medium hover:bg-neon-blue/25 transition-all"
+            >
+              Retry comparison
+            </button>
+          </div>
         ) : compared.length >= 2 ? (
           <div className="rounded-2xl border border-border-subtle/20 overflow-x-auto">
             {/* Header row */}

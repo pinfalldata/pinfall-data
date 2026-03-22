@@ -17,17 +17,15 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* ★ Fix mobile tap highlight — removes the colored rectangle on tap */
-  a, button, [role="button"], input, select, textarea, label, summary,
-  [tabindex], .group, [onclick] {
+  /* Remove mobile tap highlight rectangle */
+  a, button, [role="button"], input, select, textarea, label,
+  summary, [tabindex], .group, [onclick] {
     -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
   }
 
   img {
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
-    -webkit-user-drag: none;
   }
 
   body {

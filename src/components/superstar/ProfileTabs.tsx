@@ -24,7 +24,7 @@ interface RoleCounts {
   gmTenures: number; execTenures: number; championships: number
   omgMoments: number; tagTeams: number; stables: number
   hallOfFame: number; slammyAwards: number; yearEndAwards: number; objectsUsed: number
-  entranceThemes: number; attires: number; outsideRing: number
+  entranceThemes: number; attires: number
 }
 
 export function ProfileTabs({ superstar }: { superstar: any }) {
@@ -62,18 +62,15 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
 
   const rc = roleCounts
 
-  // Persona tab: visible if any of the 3 sub-datasets have data
-  const personaCount = (rc?.entranceThemes || 0) + (rc?.attires || 0) + (rc?.outsideRing || 0)
+  // Persona tab: visible if entrance themes OR attires exist
+  const personaTotal = (rc?.entranceThemes || 0) + (rc?.attires || 0)
 
-  // TAB ORDER: profil - matchs - segments - timeline - persona - omg - championships - tag team - stables -
-  // hall of fame - slammy - year-end - manager - guest commentary - guest referee -
-  // books & films - objects used - referee - ring announcer - executive - interviewer - commentator - gm
   const tabs = [
     { id: 'profile', label: 'Profile', show: true },
     { id: 'matches', label: 'Matches', show: hasMatches, count: superstar.total_matches },
     { id: 'segments', label: 'Segments', show: (rc?.segments || 0) > 0, count: rc?.segments },
     { id: 'timeline', label: 'Timeline', show: superstar.timeline?.length > 0 },
-    { id: 'persona', label: '🎭 Persona', show: personaCount > 0, count: personaCount > 0 ? personaCount : undefined },
+    { id: 'persona', label: '🎭 Persona', show: personaTotal > 0 },
     { id: 'omgMoments', label: '⚡ OMG Moments', show: (rc?.omgMoments || 0) > 0, count: rc?.omgMoments },
     { id: 'championships', label: 'Championships', show: (rc?.championships || superstar.total_reigns || 0) > 0, count: rc?.championships || superstar.total_reigns },
     { id: 'tagTeams', label: 'Tag Teams', show: (rc?.tagTeams || 0) > 0, count: rc?.tagTeams },
