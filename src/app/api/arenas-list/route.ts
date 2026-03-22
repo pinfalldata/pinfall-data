@@ -6,7 +6,6 @@ export const dynamic = 'force-dynamic'
 
 /**
  * GET /api/arenas-list?page=1&limit=40&year=2012&month=3&country=US&state=NY&city=New+York&sort=most_used
- * sort: alphabetical | most_used | highest_attendance
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
@@ -22,7 +21,6 @@ export async function GET(request: NextRequest) {
   const sort = searchParams.get('sort') || 'most_used'
 
   try {
-    // === Step 1: Get arena IDs matching date filter ===
     let arenaIdFilter: number[] | null = null
 
     if (year) {
@@ -43,27 +41,18 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // === Step 2: Get all arenas with location filters ===
     let query = supabase.from('arenas').select('*', { count: 'exact' })
-
     if (arenaIdFilter) query = query.in('id', arenaIdFilter.slice(0, 2000))
     if (country) query = query.eq('country', country)
     if (state) query = query.eq('state_province', state)
     if (city) query = query.eq('city', city)
 
-    // Don't paginate yet — we need to sort in memory for most_used/highest_attendance
-    const { data: allArenas, error, count } = await query
+    const { data: allArenas, error } = await query
 
-    if (error) {
-      console.error('[arenas-list] error:', error)
-      return NextResponse.json({ error: 'Failed to fetch arenas' }, { status: 500 })
-    }
-
-    if (!allArenas || allArenas.length === 0) {
+    if (error || !allArenas || allArenas.length === 0) {
       return NextResponse.json({ arenas: [], total: 0, page, totalPages: 0, filterOptions: await getFilterOptions() })
     }
 
-    // === Step 3: Get show counts and max attendance per arena ===
     const arenaIds = allArenas.map(a => a.id)
     const batchSize = 500
     let showStats: { arena_id: number; attendance: number | null }[] = []
@@ -71,7 +60,6 @@ export async function GET(request: NextRequest) {
     for (let i = 0; i < arenaIds.length; i += batchSize) {
       const batch = arenaIds.slice(i, i + batchSize)
       let sq = supabase.from('shows').select('arena_id, attendance').in('arena_id', batch)
-      // If year filter, only count shows in that year
       if (year) {
         if (month) {
           const m = month.padStart(2, '0')
@@ -85,7 +73,6 @@ export async function GET(request: NextRequest) {
       if (data) showStats.push(...data)
     }
 
-    // Compute stats per arena
     const countMap = new Map<number, number>()
     const maxAttMap = new Map<number, number>()
     for (const s of showStats) {
@@ -97,7 +84,6 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // === Step 4: Get arena name histories ===
     let nameMap: Record<number, any[]> = {}
     for (let i = 0; i < arenaIds.length; i += batchSize) {
       const batch = arenaIds.slice(i, i + batchSize)
@@ -112,17 +98,13 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // === Step 5: Enrich and sort ===
+    // ★ FIX: Create new objects with overridden names
     let enriched = allArenas.map(a => {
       const nameHistory = nameMap[a.id] || []
-
-      // ★ FIX: Override arena.name with the current name from arena_names
-      const currentNameEntry = nameHistory.find((n: any) => !!n.is_current)
-      const displayName = currentNameEntry ? currentNameEntry.name : a.name
-
+      const currentNameEntry = nameHistory.find((n: any) => n.is_current === true || n.is_current === 'true')
       return {
         ...a,
-        name: displayName, // ★ Override name with current arena_names entry
+        name: currentNameEntry ? currentNameEntry.name : a.name,
         show_count: countMap.get(a.id) || 0,
         max_attendance: maxAttMap.get(a.id) || 0,
         name_history: nameHistory,
@@ -134,20 +116,15 @@ export async function GET(request: NextRequest) {
     } else if (sort === 'highest_attendance') {
       enriched.sort((a, b) => (b.max_attendance || 0) - (a.max_attendance || 0))
     } else {
-      // ★ FIX: Sort by the display name (which is now overridden)
       enriched.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
     }
 
-    // Paginate
     const total = enriched.length
     const totalPages = Math.ceil(total / limit)
     const paged = enriched.slice(offset, offset + limit)
 
     return NextResponse.json({
-      arenas: paged,
-      total,
-      page,
-      totalPages,
+      arenas: paged, total, page, totalPages,
       filterOptions: await getFilterOptions(),
     })
   } catch (err) {
@@ -158,20 +135,13 @@ export async function GET(request: NextRequest) {
 
 async function getFilterOptions() {
   try {
-    const [
-      { data: countries },
-      { data: states },
-      { data: cities },
-      { data: showYears },
-    ] = await Promise.all([
+    const [{ data: countries }, { data: states }, { data: cities }, { data: showYears }] = await Promise.all([
       supabase.from('arenas').select('country').not('country', 'is', null),
       supabase.from('arenas').select('state_province').not('state_province', 'is', null),
       supabase.from('arenas').select('city').not('city', 'is', null),
       supabase.from('shows').select('date').not('arena_id', 'is', null),
     ])
-
     const years = [...new Set((showYears || []).map(s => s.date?.slice(0, 4)).filter(Boolean))].sort((a, b) => b.localeCompare(a))
-
     return {
       countries: [...new Set((countries || []).map(c => c.country).filter(Boolean))].sort(),
       states: [...new Set((states || []).map(s => s.state_province).filter(Boolean))].sort(),

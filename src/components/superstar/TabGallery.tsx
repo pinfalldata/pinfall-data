@@ -4,9 +4,10 @@ import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 
 interface MediaItem {
-  id: string; source: 'match' | 'segment'
+  id: string; source: 'match' | 'segment' | 'superstar'
   media_type: string; title: string | null
   url: string; thumbnail_url: string | null; date: string | null
+  description?: string | null
   show: { id: number; name: string; slug: string } | null
   match_id: number | null; segment_id: number | null
 }
@@ -19,25 +20,39 @@ function fmt(d: string | null) {
 }
 
 function getYoutubeId(url: string): string | null {
+  if (!url) return null
   const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?\s]+)/)
   return m ? m[1] : null
 }
 
+/** Detect if a URL looks like an image (by extension or Supabase storage path) */
+function looksLikeImageUrl(url: string): boolean {
+  if (!url) return false
+  const lower = url.toLowerCase()
+  if (/\.(jpg|jpeg|png|gif|webp|avif|svg|bmp|tiff)(\?.*)?$/i.test(lower)) return true
+  // Supabase storage public URLs are images unless they're videos
+  if (lower.includes('supabase.co/storage/v1/object/public/') && !lower.includes('.mp4') && !lower.includes('.mov') && !lower.includes('.webm')) return true
+  return false
+}
+
 function getThumbnail(item: MediaItem): string | null {
-  // 1) Explicit thumbnail_url first
+  // 1) Explicit thumbnail
   if (item.thumbnail_url) return item.thumbnail_url
-  // 2) YouTube auto-thumbnail
-  if (item.media_type === 'video') {
+  // 2) YouTube auto-thumbnail for videos
+  if (item.media_type === 'video' || (!item.media_type && getYoutubeId(item.url))) {
     const ytId = getYoutubeId(item.url)
     if (ytId) return `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`
   }
-  // 3) For images, use the URL itself as thumbnail
+  // 3) For images, the URL IS the thumbnail
   if (item.media_type === 'image') return item.url
+  // 4) ★ Fallback: detect image URLs even if media_type is wrong
+  if (looksLikeImageUrl(item.url)) return item.url
   return null
 }
 
 export default function TabGallery({ superstar }: { superstar: any }) {
   const [items, setItems] = useState<MediaItem[]>([])
+  const [superstarMedia, setSuperstarMedia] = useState<MediaItem[]>([])
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(0)
@@ -56,6 +71,7 @@ export default function TabGallery({ superstar }: { superstar: any }) {
       const r = await fetch(`/api/superstar-gallery?${params}`)
       const d = await r.json()
       setItems(d.items || [])
+      setSuperstarMedia(d.superstarMedia || [])
       setTotal(d.total || 0)
       setPage(d.page || 1)
       setTotalPages(d.totalPages || 0)
@@ -67,18 +83,46 @@ export default function TabGallery({ superstar }: { superstar: any }) {
   useEffect(() => { fetchGallery(1, filters) }, [fetchGallery]) // eslint-disable-line
 
   const applyFilter = (key: keyof Filters, val: string) => { const n = { ...filters, [key]: val }; setFilters(n); fetchGallery(1, n) }
-  const resetFilters = () => { const n: Filters = { year:'', mediaType:'', showSeriesId:'' }; setFilters(n); fetchGallery(1, n) }
-  const goPage = (p: number) => { if (p<1||p>totalPages) return; fetchGallery(p, filters); document.getElementById('gallery-top')?.scrollIntoView({ behavior:'smooth', block:'start' }) }
+  const resetFilters = () => { const n: Filters = { year: '', mediaType: '', showSeriesId: '' }; setFilters(n); fetchGallery(1, n) }
+  const goPage = (p: number) => { if (p < 1 || p > totalPages) return; fetchGallery(p, filters); document.getElementById('gallery-top')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }
   const hasActive = filters.year || filters.mediaType || filters.showSeriesId
+
+  // All items for lightbox navigation (merge both lists)
+  const allForLightbox = [...items, ...superstarMedia]
 
   return (
     <div className="max-w-6xl mx-auto" id="gallery-top">
+      {/* ★ Superstar Direct Media Section */}
+      {superstarMedia.length > 0 && !hasActive && page === 1 && (
+        <div className="mb-10">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-1 h-5 rounded-full bg-neon-blue" />
+            <h3 className="font-display text-base font-bold text-text-white">Other Media</h3>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-neon-blue/15 text-neon-blue font-mono">{superstarMedia.length}</span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
+            {superstarMedia.map(item => (
+              <GalleryCard key={item.id} item={item} onClick={() => setLightbox(item)} />
+            ))}
+          </div>
+          {items.length > 0 && (
+            <div className="mt-6 border-t border-border-subtle/20 pt-4">
+              <div className="flex items-center gap-3">
+                <div className="w-1 h-5 rounded-full bg-neon-blue" />
+                <h3 className="font-display text-base font-bold text-text-white">Match & Segment Media</h3>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-neon-blue/15 text-neon-blue font-mono">{total}</span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-2 mb-6">
         <div className="flex items-center rounded-xl border border-border-subtle/30 overflow-hidden">
-          {[{ k:'', l:'All' },{ k:'video', l:'🎬 Videos' },{ k:'image', l:'📸 Photos' }].map(o => (
+          {[{ k: '', l: 'All' }, { k: 'video', l: '🎬 Videos' }, { k: 'image', l: '📸 Photos' }].map(o => (
             <button key={o.k} onClick={() => applyFilter('mediaType', o.k)}
-              className={`px-3 py-2 text-xs font-medium transition-all ${filters.mediaType===o.k ? 'bg-neon-blue/15 text-neon-blue' : 'text-text-secondary hover:text-text-white hover:bg-bg-secondary/30'}`}
+              className={`px-3 py-2 text-xs font-medium transition-all ${filters.mediaType === o.k ? 'bg-neon-blue/15 text-neon-blue' : 'text-text-secondary hover:text-text-white hover:bg-bg-secondary/30'}`}
             >{o.l}</button>
           ))}
         </div>
@@ -108,7 +152,7 @@ export default function TabGallery({ superstar }: { superstar: any }) {
       ) : items.length === 0 ? (
         <div className="text-center py-16">
           <span className="text-5xl block mb-3 opacity-15">📸</span>
-          <p className="text-text-secondary">{hasActive ? 'No media found with these filters.' : 'No media available yet.'}</p>
+          <p className="text-text-secondary">{hasActive ? 'No media found with these filters.' : 'No match/segment media available yet.'}</p>
           {hasActive && <button onClick={resetFilters} className="mt-3 text-xs text-neon-blue">Clear all filters</button>}
         </div>
       ) : (
@@ -122,123 +166,111 @@ export default function TabGallery({ superstar }: { superstar: any }) {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-8 pt-6 border-t border-border-subtle/20">
           <p className="text-xs text-text-secondary">Page {page} of {totalPages} — {total} media</p>
           <div className="flex items-center gap-1">
-            <PagBtn disabled={page===1} onClick={() => goPage(page-1)} dir="prev" />
+            <PagBtn disabled={page === 1} onClick={() => goPage(page - 1)} dir="prev" />
             {getVis(page, totalPages).map((p, i) =>
-              p==='e' ? <span key={`e${i}`} className="w-8 text-center text-text-secondary text-xs">…</span> :
-              <button key={p} onClick={() => goPage(p as number)} className={`w-8 h-8 rounded-lg text-xs font-medium transition-all ${p===page ? 'bg-neon-blue/20 border border-neon-blue/40 text-neon-blue' : 'border border-transparent text-text-secondary hover:text-text-white hover:bg-bg-secondary/50'}`}>{p}</button>
+              p === 'e' ? <span key={`e${i}`} className="w-8 text-center text-text-secondary text-xs">…</span> :
+                <button key={p} onClick={() => goPage(p as number)} className={`w-8 h-8 rounded-lg text-xs font-medium transition-all ${p === page ? 'bg-neon-blue/20 border border-neon-blue/40 text-neon-blue' : 'border border-transparent text-text-secondary hover:text-text-white hover:bg-bg-secondary/50'}`}>{p}</button>
             )}
-            <PagBtn disabled={page===totalPages} onClick={() => goPage(page+1)} dir="next" />
+            <PagBtn disabled={page === totalPages} onClick={() => goPage(page + 1)} dir="next" />
           </div>
         </div>
       )}
 
       {/* Lightbox */}
-      {lightbox && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4" onClick={() => setLightbox(null)}>
-          <button onClick={() => setLightbox(null)} className="absolute top-4 right-4 z-[110] w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-          </button>
-          {(() => { const idx = items.findIndex(i => i.id === lightbox.id); return <>
-            {idx > 0 && <button onClick={e => { e.stopPropagation(); setLightbox(items[idx-1]) }} className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-[110] w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg></button>}
-            {idx < items.length-1 && <button onClick={e => { e.stopPropagation(); setLightbox(items[idx+1]) }} className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-[110] w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg></button>}
-          </> })()}
-          <div className="max-w-5xl w-full flex flex-col items-center" onClick={e => e.stopPropagation()}>
-            {lightbox.media_type === 'video' ? (() => {
-              const ytId = getYoutubeId(lightbox.url)
-              if (ytId) return <div className="w-full rounded-2xl overflow-hidden bg-black"><div className="relative w-full pt-[56.25%]"><iframe src={`https://www.youtube.com/embed/${ytId}?autoplay=1`} title={lightbox.title||''} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen className="absolute inset-0 w-full h-full" /></div></div>
-              return <div className="w-full rounded-2xl overflow-hidden bg-black"><video src={lightbox.url} controls autoPlay className="w-full max-h-[75vh]" /></div>
-            })() : (
-              <div className="rounded-2xl overflow-hidden"><img src={lightbox.url} alt={lightbox.title||''} className="max-w-full max-h-[75vh] object-contain" /></div>
-            )}
-            <div className="mt-4 text-center">
-              {lightbox.title && <p className="text-sm font-bold text-white">{lightbox.title}</p>}
-              <div className="flex items-center justify-center gap-2 mt-1 flex-wrap">
-                {lightbox.show && <Link href={`/shows/${lightbox.show.slug}`} onClick={() => setLightbox(null)} className="text-xs text-neon-blue hover:text-neon-blue/80">{lightbox.show.name}</Link>}
-                {lightbox.date && <span className="text-xs text-white/40">{fmt(lightbox.date)}</span>}
-                <span className="text-[10px] text-white/30 uppercase">{lightbox.source==='match' ? 'Match' : 'Segment'}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {lightbox && <Lightbox item={lightbox} items={allForLightbox} onClose={() => setLightbox(null)} onChange={setLightbox} />}
     </div>
   )
 }
 
-/* ★ FIX: Gallery Card — uses React state for image load error handling
- * The old version used onError to set display:none on the img, which hid the image
- * permanently without showing any fallback. Now we track loaded/error state properly. */
+/* ★★★ GALLERY CARD — Robust image loading with retry ★★★ */
 function GalleryCard({ item, onClick }: { item: MediaItem; onClick: () => void }) {
   const thumb = getThumbnail(item)
   const isVideo = item.media_type === 'video'
-  const [imgStatus, setImgStatus] = useState<'loading' | 'loaded' | 'error'>('loading')
+  const [status, setStatus] = useState<'idle' | 'loaded' | 'error'>('idle')
+  const [retried, setRetried] = useState(false)
+
+  // ★ Reset status when item changes
+  useEffect(() => {
+    setStatus('idle')
+    setRetried(false)
+  }, [item.id])
+
+  const handleError = () => {
+    // ★ One retry with cache-busting before giving up
+    if (!retried && thumb) {
+      setRetried(true)
+      // Force state reset to trigger a re-render with cache-bust
+      setStatus('idle')
+    } else {
+      setStatus('error')
+    }
+  }
+
+  // Build the src — add cache-bust on retry
+  const imgSrc = thumb ? (retried ? `${thumb}${thumb.includes('?') ? '&' : '?'}t=${Date.now()}` : thumb) : null
 
   return (
-    <div onClick={onClick} role="button" tabIndex={0} className="group cursor-pointer rounded-xl overflow-hidden border border-border-subtle/15 hover:border-neon-blue/25 transition-all hover:shadow-[0_0_20px_rgba(199,160,90,0.06)]">
-      {/* Image container — fixed aspect ratio via padding trick */}
+    <div onClick={onClick} role="button" tabIndex={0}
+      className="group cursor-pointer rounded-xl overflow-hidden border border-border-subtle/15 hover:border-neon-blue/25 transition-all hover:shadow-[0_0_20px_rgba(199,160,90,0.06)]"
+    >
       <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-        {thumb && imgStatus !== 'error' ? (
+        {imgSrc && status !== 'error' ? (
           <>
-            {/* ★ FIX: Show a loading shimmer while image loads */}
-            {imgStatus === 'loading' && (
-              <div className="absolute top-0 left-0 w-full h-full bg-bg-tertiary/30 animate-pulse flex items-center justify-center">
+            {/* Loading shimmer */}
+            {status === 'idle' && (
+              <div className="absolute inset-0 bg-bg-tertiary/30 animate-pulse flex items-center justify-center">
                 <span className="text-2xl opacity-15">{isVideo ? '🎬' : '📸'}</span>
               </div>
             )}
             <img
-              src={thumb}
+              key={retried ? 'retry' : 'first'}
+              src={imgSrc}
               alt={item.title || ''}
               loading="lazy"
-              className={`absolute top-0 left-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ${imgStatus === 'loaded' ? 'opacity-100' : 'opacity-0'}`}
-              onLoad={() => setImgStatus('loaded')}
-              onError={() => setImgStatus('error')}
-              crossOrigin="anonymous"
+              referrerPolicy="no-referrer"
+              className={`absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ${status === 'loaded' ? '' : 'opacity-0 absolute'}`}
+              onLoad={() => setStatus('loaded')}
+              onError={handleError}
             />
           </>
         ) : (
-          /* ★ FIX: Proper fallback when no thumbnail or image failed to load */
-          <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-bg-tertiary/30">
+          <div className="absolute inset-0 flex items-center justify-center bg-bg-tertiary/30">
             <div className="flex flex-col items-center gap-1">
               <span className="text-2xl opacity-30">{isVideo ? '🎬' : '📸'}</span>
-              {imgStatus === 'error' && (
-                <span className="text-[8px] text-text-secondary/40 uppercase tracking-wider">Preview unavailable</span>
-              )}
+              {status === 'error' && <span className="text-[8px] text-text-secondary/40 uppercase">Preview N/A</span>}
             </div>
           </div>
         )}
 
-        {/* Hover overlay */}
+        {/* Overlays */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
-        {/* Play button */}
         {isVideo && (
-          <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/20 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all">
               <svg className="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
             </div>
           </div>
         )}
 
-        {/* Type badge */}
+        {/* Badges */}
         <div className="absolute top-1.5 left-1.5">
           <span className={`text-[8px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider ${isVideo ? 'bg-red-600/90 text-white' : 'bg-neon-blue/80 text-white'}`}>
             {isVideo ? 'Video' : 'Photo'}
           </span>
         </div>
-
-        {/* Source badge */}
         <div className="absolute top-1.5 right-1.5">
           <span className="text-[8px] px-1.5 py-0.5 rounded bg-black/50 text-white/70 font-medium">
-            {item.source === 'match' ? '🤼' : '🎤'}
+            {item.source === 'match' ? '🤼' : item.source === 'segment' ? '🎤' : '⭐'}
           </span>
         </div>
 
-        {/* Bottom info on hover */}
+        {/* Hover info */}
         <div className="absolute bottom-0 left-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
           {item.title && <p className="text-[10px] text-white font-medium truncate">{item.title}</p>}
           <div className="flex items-center gap-1 mt-0.5">
             {item.show && <span className="text-[9px] text-white/60 truncate">{item.show.name}</span>}
-            {item.date && <span className="text-[9px] text-white/40 shrink-0">{item.date.slice(0,4)}</span>}
+            {item.date && <span className="text-[9px] text-white/40 shrink-0">{item.date.slice(0, 4)}</span>}
           </div>
         </div>
       </div>
@@ -246,14 +278,67 @@ function GalleryCard({ item, onClick }: { item: MediaItem; onClick: () => void }
   )
 }
 
-function PagBtn({ disabled, onClick, dir }: { disabled: boolean; onClick: () => void; dir: 'prev'|'next' }) {
+/* ═══ Lightbox ═══ */
+function Lightbox({ item, items, onClose, onChange }: { item: MediaItem; items: MediaItem[]; onClose: () => void; onChange: (i: MediaItem) => void }) {
+  const idx = items.findIndex(i => i.id === item.id)
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+      if (e.key === 'ArrowLeft' && idx > 0) onChange(items[idx - 1])
+      if (e.key === 'ArrowRight' && idx < items.length - 1) onChange(items[idx + 1])
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [idx, items, onClose, onChange])
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4" onClick={onClose}>
+      <button onClick={onClose} className="absolute top-4 right-4 z-[110] w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors">
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+      </button>
+
+      {idx > 0 && (
+        <button onClick={e => { e.stopPropagation(); onChange(items[idx - 1]) }} className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-[110] w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+        </button>
+      )}
+      {idx < items.length - 1 && (
+        <button onClick={e => { e.stopPropagation(); onChange(items[idx + 1]) }} className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-[110] w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+        </button>
+      )}
+
+      <div className="max-w-5xl w-full flex flex-col items-center" onClick={e => e.stopPropagation()}>
+        {item.media_type === 'video' ? (() => {
+          const ytId = getYoutubeId(item.url)
+          if (ytId) return <div className="w-full rounded-2xl overflow-hidden bg-black"><div className="relative w-full pt-[56.25%]"><iframe src={`https://www.youtube.com/embed/${ytId}?autoplay=1`} title={item.title || ''} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen className="absolute inset-0 w-full h-full" /></div></div>
+          return <div className="w-full rounded-2xl overflow-hidden bg-black"><video src={item.url} controls autoPlay className="w-full max-h-[75vh]" /></div>
+        })() : (
+          <div className="rounded-2xl overflow-hidden"><img src={item.url} alt={item.title || ''} className="max-w-full max-h-[75vh] object-contain" /></div>
+        )}
+        <div className="mt-4 text-center">
+          {item.title && <p className="text-sm font-bold text-white">{item.title}</p>}
+          {item.description && <p className="text-xs text-white/50 mt-1 max-w-xl">{item.description}</p>}
+          <div className="flex items-center justify-center gap-2 mt-1 flex-wrap">
+            {item.show && <Link href={`/shows/${item.show.slug}`} onClick={e => { e.stopPropagation(); }} className="text-xs text-neon-blue hover:text-neon-blue/80">{item.show.name}</Link>}
+            {item.date && <span className="text-xs text-white/40">{fmt(item.date)}</span>}
+            <span className="text-[10px] text-white/30 uppercase">{item.source === 'match' ? 'Match' : item.source === 'segment' ? 'Segment' : 'Direct'}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function PagBtn({ disabled, onClick, dir }: { disabled: boolean; onClick: () => void; dir: 'prev' | 'next' }) {
   return <button onClick={onClick} disabled={disabled} className="w-8 h-8 rounded-lg border border-border-subtle/30 flex items-center justify-center text-text-secondary hover:text-text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all">
-    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={dir==='prev' ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'} /></svg>
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={dir === 'prev' ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'} /></svg>
   </button>
 }
 
-function getVis(page: number, tp: number): (number|'e')[] {
-  const p: (number|'e')[] = []
-  if (tp<=7) { for (let i=1;i<=tp;i++) p.push(i) } else { p.push(1); if (page>3) p.push('e'); for (let i=Math.max(2,page-1);i<=Math.min(tp-1,page+1);i++) p.push(i); if (page<tp-2) p.push('e'); p.push(tp) }
+function getVis(page: number, tp: number): (number | 'e')[] {
+  const p: (number | 'e')[] = []
+  if (tp <= 7) { for (let i = 1; i <= tp; i++) p.push(i) } else { p.push(1); if (page > 3) p.push('e'); for (let i = Math.max(2, page - 1); i <= Math.min(tp - 1, page + 1); i++) p.push(i); if (page < tp - 2) p.push('e'); p.push(tp) }
   return p
 }

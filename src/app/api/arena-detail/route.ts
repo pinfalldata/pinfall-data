@@ -2,8 +2,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 
-// ★ FIX: Force dynamic to prevent Vercel from caching stale arena names
+// ★ Prevent Vercel from caching this route
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 /**
  * GET /api/arena-detail?slug=madison-square-garden&page=1&limit=50
@@ -18,13 +19,13 @@ export async function GET(request: NextRequest) {
   if (!slug) return NextResponse.json({ error: 'slug is required' }, { status: 400 })
 
   try {
-    const { data: arena, error: arenaErr } = await supabase
+    const { data: arenaRaw, error: arenaErr } = await supabase
       .from('arenas')
       .select('*')
       .eq('slug', slug)
       .single()
 
-    if (arenaErr || !arena) {
+    if (arenaErr || !arenaRaw) {
       return NextResponse.json({ error: 'Arena not found' }, { status: 404 })
     }
 
@@ -32,15 +33,17 @@ export async function GET(request: NextRequest) {
     const { data: arenaNames } = await supabase
       .from('arena_names')
       .select('*')
-      .eq('arena_id', arena.id)
+      .eq('arena_id', arenaRaw.id)
       .order('start_date', { ascending: true, nullsFirst: true })
 
-    // ★ FIX: Override arena.name with the current entry from arena_names
-    // Use truthy check (not strict ===) because Supabase may return the value differently
     const names = arenaNames || []
-    const currentEntry = names.find((n: any) => !!n.is_current)
-    if (currentEntry) {
-      arena.name = currentEntry.name
+
+    // ★ FIX: Create a NEW object instead of mutating the Supabase result.
+    // Supabase objects may be frozen/sealed, so mutation silently fails.
+    const currentEntry = names.find((n: any) => n.is_current === true || n.is_current === 'true')
+    const arena = {
+      ...arenaRaw,
+      name: currentEntry ? currentEntry.name : arenaRaw.name,
     }
 
     // Paginated shows at this arena
@@ -62,39 +65,37 @@ export async function GET(request: NextRequest) {
     const total = count || 0
     const totalPages = Math.ceil(total / limit)
 
-    // Prev/Next arena — also override names with current arena_names
+    // Prev/Next arena — also with current names
     const { data: allArenas } = await supabase
       .from('arenas')
       .select('id, name, slug')
       .order('name', { ascending: true })
 
-    // ★ FIX: Also fetch arena_names for prev/next so their display names are correct
     let prevArena = null
     let nextArena = null
     if (allArenas && allArenas.length > 1) {
-      // Fetch all arena_names for the current name overrides
-      const { data: allNames } = await supabase
+      // Fetch all current arena_names for display name override
+      const { data: allCurrentNames } = await supabase
         .from('arena_names')
-        .select('arena_id, name, is_current')
+        .select('arena_id, name')
         .eq('is_current', true)
 
       const currentNameMap = new Map<number, string>()
-      for (const n of (allNames || [])) {
-        if (n.is_current) currentNameMap.set(n.arena_id, n.name)
+      for (const n of (allCurrentNames || [])) {
+        currentNameMap.set(n.arena_id, n.name)
       }
 
-      // Override arena names in the list
-      for (const a of allArenas) {
-        const cn = currentNameMap.get(a.id)
-        if (cn) a.name = cn
-      }
+      // Build list with overridden names
+      const enrichedList = allArenas.map(a => ({
+        ...a,
+        name: currentNameMap.get(a.id) || a.name,
+      }))
 
-      const idx = allArenas.findIndex(a => a.id === arena.id)
-      if (idx > 0) prevArena = { slug: allArenas[idx - 1].slug, name: allArenas[idx - 1].name }
-      if (idx >= 0 && idx < allArenas.length - 1) nextArena = { slug: allArenas[idx + 1].slug, name: allArenas[idx + 1].name }
+      const idx = enrichedList.findIndex(a => a.id === arena.id)
+      if (idx > 0) prevArena = { slug: enrichedList[idx - 1].slug, name: enrichedList[idx - 1].name }
+      if (idx >= 0 && idx < enrichedList.length - 1) nextArena = { slug: enrichedList[idx + 1].slug, name: enrichedList[idx + 1].name }
     }
 
-    // ★ FIX: Add no-cache headers to prevent stale responses
     const response = NextResponse.json({
       arena,
       arenaNames: names,
@@ -106,7 +107,11 @@ export async function GET(request: NextRequest) {
       prevArena,
       nextArena,
     })
-    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate')
+
+    // ★ Prevent all caching
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
+    response.headers.set('Pragma', 'no-cache')
+    response.headers.set('Expires', '0')
     return response
   } catch (err: any) {
     console.error('[arena-detail] error:', err)

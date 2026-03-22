@@ -34,6 +34,7 @@ export async function GET(request: NextRequest) {
       { count: objectsUsed },
       { count: entranceThemes },
       { count: attires },
+      { count: superstarMediaCount },
     ] = await Promise.all([
       supabase.from('show_segment_participants').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
       supabase.from('match_managers').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
@@ -56,10 +57,12 @@ export async function GET(request: NextRequest) {
       supabase.from('match_object_usage').select('*', { count: 'exact', head: true }).eq('used_by_superstar_id', sid),
       supabase.from('entrance_themes').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
       supabase.from('superstar_attires').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
+      // ★ NEW: count superstar_media
+      supabase.from('superstar_media').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
     ])
 
-    // Gallery count: count media from superstar's matches + segments
-    let gallery = 0
+    // Gallery count: match_media + segment_media + superstar_media
+    let gallery = superstarMediaCount || 0
     try {
       const [{ data: mp }, { data: sp }] = await Promise.all([
         supabase.from('match_participants').select('match_id').eq('superstar_id', sid).limit(5000),
@@ -68,18 +71,14 @@ export async function GET(request: NextRequest) {
       const mIds = [...new Set((mp || []).map(p => p.match_id))]
       const sIds = [...new Set((sp || []).map(p => p.segment_id))]
 
-      let mmCount = 0
-      let smCount = 0
-
       if (mIds.length > 0) {
         const { count: c } = await supabase.from('match_media').select('*', { count: 'exact', head: true }).in('match_id', mIds.slice(0, 1000))
-        mmCount = c || 0
+        gallery += (c || 0)
       }
       if (sIds.length > 0) {
         const { count: c } = await supabase.from('segment_media').select('*', { count: 'exact', head: true }).in('segment_id', sIds.slice(0, 1000))
-        smCount = c || 0
+        gallery += (c || 0)
       }
-      gallery = mmCount + smCount
     } catch {}
 
     const omgMoments = Math.max((omgParticipant || 0), (omgDirect || 0))
