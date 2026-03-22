@@ -1,8 +1,30 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, createContext, useContext } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+
+/* ══════════════════════════════════════════════════
+   SHARED DATA CONTEXT — avoids duplicate /api/homepage-data calls
+   HomeExtraSections + HomeAfterLegends both used to call the same API independently.
+   Now we fetch once and share via context.
+   ══════════════════════════════════════════════════ */
+const HomepageDataCtx = createContext<any>(null)
+
+export function HomepageDataProvider({ children }: { children: React.ReactNode }) {
+  const [data, setData] = useState<any>(null)
+  useEffect(() => {
+    fetch('/api/homepage-data')
+      .then(r => r.json())
+      .then(d => { if (!d.error) setData(d) })
+      .catch(() => {})
+  }, [])
+  return <HomepageDataCtx.Provider value={data}>{children}</HomepageDataCtx.Provider>
+}
+
+function useHomepageData() {
+  return useContext(HomepageDataCtx)
+}
 
 /* ══════════════════════════════════════════════════
    WWE LOGOS CAROUSEL — auto-scrolling like Eras
@@ -150,17 +172,11 @@ function BirthdayBlock({ birthdays }: { birthdays: any[] }) {
   )
 }
 
-/** Standalone component that fetches its own data */
+/** Standalone Birthday component — fetches via shared context */
 export function BirthdayStandalone() {
-  const [birthdays, setBirthdays] = useState<any[]>([])
-  useEffect(() => {
-    fetch('/api/homepage-data')
-      .then(r => r.json())
-      .then(d => { if (!d.error && d.birthdays?.length > 0) setBirthdays(d.birthdays) })
-      .catch(() => {})
-  }, [])
-  if (birthdays.length === 0) return <div />
-  return <BirthdayBlock birthdays={birthdays} />
+  const data = useHomepageData()
+  if (!data || !data.birthdays || data.birthdays.length === 0) return <div />
+  return <BirthdayBlock birthdays={data.birthdays} />
 }
 
 /* ══════════════════════════════════════════════════
@@ -244,7 +260,8 @@ function RecentSegmentsBlock({ segments }: { segments: any[] }) {
 
 /* ══════════════════════════════════════════════════
    🏆 CHAMPIONSHIP BELT CAROUSEL
-   ★ FIX: Wider cards, more spacing, auto-scroll
+   ★ FIX: Auto-scroll with requestAnimationFrame
+   Pause on hover + touch. Duplicated array for infinite loop.
    ══════════════════════════════════════════════════ */
 function BeltCarousel({ championships }: { championships: any[] }) {
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -255,6 +272,7 @@ function BeltCarousel({ championships }: { championships: any[] }) {
     const el = scrollRef.current
     if (el && !isPaused.current) {
       el.scrollLeft += 0.3
+      // Reset to start when we've scrolled past the first copy
       if (el.scrollLeft >= el.scrollWidth / 2) el.scrollLeft = 0
     }
     animRef.current = requestAnimationFrame(animate)
@@ -267,6 +285,7 @@ function BeltCarousel({ championships }: { championships: any[] }) {
   }, [championships, animate])
 
   if (championships.length === 0) return null
+  // Duplicate for infinite scroll effect
   const display = [...championships, ...championships]
 
   return (
@@ -298,7 +317,7 @@ function BeltCarousel({ championships }: { championships: any[] }) {
 
 /* ══════════════════════════════════════════════════
    SPOTLIGHT CARDS — arena, object, tag team, stable
-   ★ FIX: Rectangle images (aspect-[16/10]) not cut
+   ★ FIX: Reduced height with aspect-[16/9] + max-h
    ══════════════════════════════════════════════════ */
 function SpotlightCards({ arena, object, tagTeam, stable }: { arena: any; object: any; tagTeam: any; stable: any }) {
   const items = [
@@ -314,8 +333,8 @@ function SpotlightCards({ arena, object, tagTeam, stable }: { arena: any; object
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
       {items.map((item: any, i) => (
         <Link key={i} href={item.href} className="group rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 overflow-hidden hover:border-neon-blue/30 transition-all">
-          {/* ★ FIX: aspect-[16/10] for wider rectangle images */}
-          <div className="relative aspect-[16/10] bg-bg-tertiary/30 overflow-hidden">
+          {/* ★ FIX: aspect-[2/1] — wider, shorter cards */}
+          <div className="relative aspect-[2/1] bg-bg-tertiary/30 overflow-hidden">
             {item.img ? (
               <Image src={item.img} alt={item.name} fill className="object-contain group-hover:scale-105 transition-transform duration-500" sizes="(max-width:1024px) 50vw, 25vw" unoptimized />
             ) : (
@@ -324,7 +343,7 @@ function SpotlightCards({ arena, object, tagTeam, stable }: { arena: any; object
             <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/80 via-transparent to-transparent" />
             <span className="absolute top-2 left-2 text-[8px] px-1.5 py-0.5 rounded bg-bg-primary/70 backdrop-blur-sm border border-border-subtle/30 text-text-secondary font-bold uppercase">{item.label}</span>
           </div>
-          <div className="p-3">
+          <div className="p-2.5">
             <p className="text-xs font-bold text-text-white group-hover:text-neon-blue transition-colors truncate">{item.name}</p>
             {item.sub && <p className="text-[10px] text-text-secondary mt-0.5 truncate">{item.sub}</p>}
           </div>
@@ -335,7 +354,7 @@ function SpotlightCards({ arena, object, tagTeam, stable }: { arena: any; object
 }
 
 /* ══════════════════════════════════════════════════
-   🏛️ HOF + 🏆 SLAMMY
+   🏛️ HOF + 🏆 SLAMMY — random entries side by side
    ══════════════════════════════════════════════════ */
 function HofSlammyRow({ hofEntry, slammyAward }: { hofEntry: any; slammyAward: any }) {
   return (
@@ -380,12 +399,10 @@ function HofSlammyRow({ hofEntry, slammyAward }: { hofEntry: any; slammyAward: a
 
 /* ══════════════════════════════════════════════════
    MASTER: Sections 5-6-7 (between OnThisDay and Calendar)
+   Uses shared HomepageData context
    ══════════════════════════════════════════════════ */
 export function HomeExtraSections() {
-  const [data, setData] = useState<any>(null)
-  useEffect(() => {
-    fetch('/api/homepage-data').then(r => r.json()).then(d => { if (!d.error) setData(d) }).catch(() => {})
-  }, [])
+  const data = useHomepageData()
   if (!data) return null
 
   return (
@@ -414,13 +431,11 @@ export function HomeExtraSections() {
 }
 
 /* ══════════════════════════════════════════════════
-   Section 11: AFTER Hall of Legends
+   Section 11: AFTER Hall of Legends — HOF + Slammy
+   Uses shared HomepageData context (no double API call)
    ══════════════════════════════════════════════════ */
 export function HomeAfterLegends() {
-  const [data, setData] = useState<any>(null)
-  useEffect(() => {
-    fetch('/api/homepage-data').then(r => r.json()).then(d => { if (!d.error) setData(d) }).catch(() => {})
-  }, [])
+  const data = useHomepageData()
   if (!data) return null
 
   return (
