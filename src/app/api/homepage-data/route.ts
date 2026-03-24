@@ -4,15 +4,6 @@ import { supabase } from '@/lib/supabase'
 
 export const revalidate = 300
 
-function shuffle(arr: any[]) {
-  const a = [...(arr || [])]
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[a[i], a[j]] = [a[j], a[i]]
-  }
-  return a
-}
-
 export async function GET(req: NextRequest) {
   try {
     const today = new Date()
@@ -23,7 +14,6 @@ export async function GET(req: NextRequest) {
 
     // ═══════════════════════════════════════════
     // SEPARATE QUERIES — no nested joins (rule #1)
-    // Supabase nested joins fail silently
     // ═══════════════════════════════════════════
 
     const [
@@ -31,94 +21,38 @@ export async function GET(req: NextRequest) {
       { data: recentMatchesRaw },
       { data: recentSegmentsRaw },
       { data: championships },
-      { data: tagTeams },
-      { data: stables },
-      { data: hofEntries },
-      { data: slammyAwardsRaw },
-      { data: arenas },
-      { data: objects },
     ] = await Promise.all([
-      // Birthdays — simple query, no join
       supabase
         .from('superstars')
         .select('id, name, slug, photo_url, birth_date, total_matches')
         .not('birth_date', 'is', null)
         .order('total_matches', { ascending: false, nullsFirst: false }),
 
-      // Recent matches — flat query
       supabase
         .from('matches')
         .select('id, slug, date, rating, duration_seconds, result_type, match_type_id, show_id')
         .order('date', { ascending: false })
         .limit(5),
 
-      // Recent segments — flat query
       supabase
         .from('show_segments')
         .select('id, title, slug, category, show_id')
         .order('created_at', { ascending: false })
         .limit(5),
 
-      // Championships — simple query, no join
       supabase
         .from('championships')
         .select('id, name, slug, image_url, status')
         .order('sort_order', { ascending: true }),
-
-      // Tag teams with photo
-      supabase
-        .from('tag_teams')
-        .select('id, name, slug, photo_url')
-        .not('photo_url', 'is', null)
-        .limit(50),
-
-      // Stables with photo
-      supabase
-        .from('stables')
-        .select('id, name, slug, photo_url')
-        .not('photo_url', 'is', null)
-        .limit(50),
-
-      // ★ FIX: Hall of Fame — correct columns: induction_year, class (NOT year, wing)
-      supabase
-        .from('hall_of_fame')
-        .select('id, superstar_id, inductee_name, induction_year, class')
-        .not('superstar_id', 'is', null)
-        .order('induction_year', { ascending: false })
-        .limit(50),
-
-      // Slammy Awards — flat query (join winner separately)
-      supabase
-        .from('slammy_awards')
-        .select('id, year, category, winner_id, winner_name')
-        .not('winner_id', 'is', null)
-        .order('year', { ascending: false })
-        .limit(50),
-
-      // Arenas with image
-      supabase
-        .from('arenas')
-        .select('id, name, slug, image_url, city, country')
-        .not('image_url', 'is', null)
-        .limit(50),
-
-      // Objects with image
-      supabase
-        .from('match_objects')
-        .select('id, name, slug, image_url')
-        .not('image_url', 'is', null)
-        .limit(50),
     ])
 
     // ═══════════════════════════════════════════
     // BIRTHDAYS — filter month/day in JavaScript
-    // (Supabase .like() on date columns is unreliable)
     // ═══════════════════════════════════════════
     const birthdays = (allStarsForBday || [])
       .filter(s => {
         if (!s.birth_date) return false
-        const bd = String(s.birth_date)
-        return bd.endsWith(`-${monthStr}-${dayStr}`)
+        return String(s.birth_date).endsWith(`-${monthStr}-${dayStr}`)
       })
       .slice(0, 20)
       .map(s => ({
@@ -128,7 +62,6 @@ export async function GET(req: NextRequest) {
 
     // ═══════════════════════════════════════════
     // MERGE: Recent Matches + related data
-    // Separate queries for shows, match_types, participants
     // ═══════════════════════════════════════════
     let recentMatches = []
     if (recentMatchesRaw && recentMatchesRaw.length > 0) {
@@ -150,7 +83,6 @@ export async function GET(req: NextRequest) {
         supabase.from('match_participants').select('id, match_id, team_number, is_winner, superstar_id').in('match_id', matchIds),
       ])
 
-      // Fetch show_series for shows
       const seriesIds = [...new Set((shows || []).map(s => s.show_series_id).filter(Boolean))]
       let showSeriesMap = {}
       if (seriesIds.length > 0) {
@@ -158,7 +90,6 @@ export async function GET(req: NextRequest) {
         for (const s of (series || [])) showSeriesMap[s.id] = s
       }
 
-      // Fetch superstar photos for participants
       const starIds = [...new Set((participants || []).map(p => p.superstar_id).filter(Boolean))]
       let starsMap = {}
       if (starIds.length > 0) {
@@ -167,9 +98,7 @@ export async function GET(req: NextRequest) {
       }
 
       const showsMap = {}
-      for (const s of (shows || [])) {
-        showsMap[s.id] = { ...s, show_series: showSeriesMap[s.show_series_id] || null }
-      }
+      for (const s of (shows || [])) showsMap[s.id] = { ...s, show_series: showSeriesMap[s.show_series_id] || null }
       const typesMap = {}
       for (const t of (matchTypes || [])) typesMap[t.id] = t
 
@@ -201,7 +130,6 @@ export async function GET(req: NextRequest) {
         supabase.from('show_segment_participants').select('id, show_segment_id, superstar_id').in('show_segment_id', segIds),
       ])
 
-      // Show series for segment shows
       const segSeriesIds = [...new Set((segShows || []).map(s => s.show_series_id).filter(Boolean))]
       let segSeriesMap = {}
       if (segSeriesIds.length > 0) {
@@ -209,7 +137,6 @@ export async function GET(req: NextRequest) {
         for (const s of (series || [])) segSeriesMap[s.id] = s
       }
 
-      // Superstar photos for segment participants
       const segStarIds = [...new Set((segParts || []).map(p => p.superstar_id).filter(Boolean))]
       let segStarsMap = {}
       if (segStarIds.length > 0) {
@@ -218,9 +145,7 @@ export async function GET(req: NextRequest) {
       }
 
       const segShowsMap = {}
-      for (const s of (segShows || [])) {
-        segShowsMap[s.id] = { ...s, show_series: segSeriesMap[s.show_series_id] || null }
-      }
+      for (const s of (segShows || [])) segShowsMap[s.id] = { ...s, show_series: segSeriesMap[s.show_series_id] || null }
 
       recentSegments = recentSegmentsRaw.map(s => ({
         ...s,
@@ -231,63 +156,11 @@ export async function GET(req: NextRequest) {
       }))
     }
 
-    // ═══════════════════════════════════════════
-    // MERGE: HOF entry — separate query for superstar
-    // ★ FIX: uses induction_year and class (NOT year, wing)
-    // ═══════════════════════════════════════════
-    let hofEntry = null
-    const pickedHof = shuffle(hofEntries || [])[0]
-    if (pickedHof && pickedHof.superstar_id) {
-      const { data: hofStar } = await supabase
-        .from('superstars')
-        .select('id, name, slug, photo_url')
-        .eq('id', pickedHof.superstar_id)
-        .single()
-
-      if (hofStar) {
-        hofEntry = {
-          id: pickedHof.id,
-          year: pickedHof.induction_year,        // ★ mapped to "year" for component
-          wing: pickedHof.class,                  // ★ mapped to "wing" for component
-          inductee_name: pickedHof.inductee_name,
-          superstar: { ...hofStar },              // ★ new object (not frozen)
-        }
-      }
-    }
-
-    // ═══════════════════════════════════════════
-    // MERGE: Slammy Award — separate query for winner superstar
-    // ═══════════════════════════════════════════
-    let slammyAward = null
-    const pickedSlammy = shuffle(slammyAwardsRaw || [])[0]
-    if (pickedSlammy && pickedSlammy.winner_id) {
-      const { data: slammyStar } = await supabase
-        .from('superstars')
-        .select('id, name, slug, photo_url')
-        .eq('id', pickedSlammy.winner_id)
-        .single()
-
-      if (slammyStar) {
-        slammyAward = {
-          id: pickedSlammy.id,
-          year: pickedSlammy.year,
-          category: pickedSlammy.category,
-          winner: { ...slammyStar },              // ★ new object (not frozen)
-        }
-      }
-    }
-
     return NextResponse.json({
       birthdays,
       recentMatches,
       recentSegments,
       championships: championships || [],
-      tagTeam: shuffle(tagTeams || [])[0] || null,
-      stable: shuffle(stables || [])[0] || null,
-      hofEntry,
-      slammyAward,
-      arena: shuffle(arenas || [])[0] || null,
-      object: shuffle(objects || [])[0] || null,
     })
   } catch (err) {
     console.error('[homepage-data]', err)

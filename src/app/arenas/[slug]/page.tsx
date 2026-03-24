@@ -21,13 +21,19 @@ function getArenaNameAtDate(arenaNames: any[], date: string | null, fallbackName
   return fallbackName
 }
 
-// ★ FIX: Get current arena name from arena_names (client-side)
+// ★ ROBUST FIX: Get current arena name from arena_names (client-side)
+// Handles is_current as: true, 'true', 1, '1', etc.
 function getCurrentName(names: any[], fallback: string): string {
   if (!names || names.length === 0) return fallback
-  const current = names.find((n: any) => n.is_current === true)
+  // Strategy 1: explicit is_current flag
+  const current = names.find((n: any) => 
+    n.is_current === true || n.is_current === 'true' || n.is_current === 1 || n.is_current === '1'
+  )
   if (current) return current.name
-  const openEnded = names.find((n: any) => !n.end_date)
+  // Strategy 2: no end_date = still current
+  const openEnded = names.find((n: any) => !n.end_date || n.end_date === null)
   if (openEnded) return openEnded.name
+  // Strategy 3: latest start_date
   const sorted = [...names].sort((a: any, b: any) => (b.start_date || '').localeCompare(a.start_date || ''))
   return sorted[0]?.name || fallback
 }
@@ -150,13 +156,21 @@ export default function ArenaDetailPage() {
           <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-text-white text-center tracking-tight mb-2">
             {displayName || <span className="bg-bg-secondary/50 rounded w-60 h-10 inline-block animate-pulse" />}
           </h1>
-          {/* Arena name history */}
+          {/* ★ FIX: Former names — MUCH more visible */}
           {arenaNames.filter(an => an.name !== displayName).length > 0 && (
-            <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 mb-1">
-              <span className="text-[10px] text-text-secondary/60">Formerly:</span>
+            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 mb-2">
+              <span className="text-xs text-text-secondary font-medium">Formerly known as:</span>
               {arenaNames.filter(an => an.name !== displayName).map((an, i) => (
-                <span key={an.id || i} className="text-[10px] text-neon-blue/60 italic">
-                  {an.name}{an.start_date ? ` (${an.start_date.substring(0, 4)}–${an.end_date ? an.end_date.substring(0, 4) : 'now'})` : ''}
+                <span key={an.id || i} className="text-sm text-neon-blue font-semibold italic">
+                  {an.name}
+                  {an.start_date && (
+                    <span className="text-xs text-text-secondary/70 font-normal ml-1">
+                      ({an.start_date.substring(0, 4)}–{an.end_date ? an.end_date.substring(0, 4) : 'now'})
+                    </span>
+                  )}
+                  {i < arenaNames.filter(an2 => an2.name !== displayName).length - 1 && (
+                    <span className="text-text-secondary/40 mx-1">·</span>
+                  )}
                 </span>
               ))}
             </div>

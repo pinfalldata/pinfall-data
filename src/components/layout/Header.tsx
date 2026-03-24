@@ -100,6 +100,18 @@ export function Header() {
     return () => { document.body.style.overflow = '' }
   }, [isMobileMenuOpen])
 
+  // ★ Ctrl+K / Cmd+K to open search
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setIsSearchOpen(prev => !prev)
+      }
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [])
+
   const handleMouseEnter = (key: string) => {
     if (dropdownTimeout.current) clearTimeout(dropdownTimeout.current)
     setOpenDropdown(key)
@@ -164,7 +176,6 @@ export function Header() {
                       onMouseEnter={() => handleMouseEnter(item.key)}
                       onMouseLeave={handleMouseLeave}
                     >
-                      {/* Gold accent line on top */}
                       <div className="h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent" />
                       <div className="py-1.5">
                         {item.children.map((child) => (
@@ -186,17 +197,21 @@ export function Header() {
 
             {/* Right side */}
             <div className="flex items-center gap-2 relative z-10">
+              {/* ★ Search button with Ctrl+K hint */}
               <button
                 onClick={() => setIsSearchOpen(true)}
-                className="search-btn-champ p-2 transition-all duration-200"
+                className="search-btn-champ p-2 transition-all duration-200 flex items-center gap-2"
                 aria-label="Search"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
+                <span className="hidden xl:flex items-center gap-0.5 text-[10px] text-text-secondary/40 font-mono">
+                  <kbd className="px-1 py-0.5 border border-border-subtle/20 rounded text-[9px] bg-bg-secondary/20">⌘K</kbd>
+                </span>
               </button>
 
-              {/* Language Switcher — placeholder */}
+              {/* Language Switcher */}
               <button className="p-2 text-text-secondary hover:text-neon-blue transition-all duration-200" aria-label="Change language" title="Language (coming soon)">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 21a9 9 0 100-18 9 9 0 000 18z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3.6 9h16.8M3.6 15h16.8" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 3a15.3 15.3 0 014 9 15.3 15.3 0 01-4 9 15.3 15.3 0 01-4-9 15.3 15.3 0 014-9z" /></svg>
               </button>
@@ -216,7 +231,6 @@ export function Header() {
           </div>
         </div>
 
-        {/* Championship Gold bottom border */}
         <div className="champ-border-bottom" />
       </header>
 
@@ -228,7 +242,6 @@ export function Header() {
             onClick={() => setIsMobileMenuOpen(false)}
           />
           <nav className="absolute right-0 top-0 h-full w-72 bg-bg-primary border-l border-border-subtle overflow-y-auto pt-20 pb-8 px-6">
-            {/* Gold line on top */}
             <div className="absolute top-16 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent" />
 
             {NAV_ITEMS.map((item, i) => (
