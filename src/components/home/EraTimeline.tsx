@@ -18,7 +18,6 @@ export function EraTimeline() {
   const [eras, setEras] = useState<Era[]>([])
   const [loading, setLoading] = useState(true)
 
-  // ★ CSS translateX approach — works on mobile (no scrollLeft conflict)
   const containerRef = useRef<HTMLDivElement>(null)
   const offsetRef = useRef(0)
   const animRef = useRef<number | null>(null)
@@ -63,7 +62,6 @@ export function EraTimeline() {
   const resume = () => { isPaused.current = false }
   const resumeDelayed = () => { setTimeout(() => { isPaused.current = false }, 2500) }
 
-  // Arrow buttons: jump offset by ~320px
   const scroll = (dir: 'left' | 'right') => {
     isPaused.current = true
     const jump = 320
@@ -95,7 +93,6 @@ export function EraTimeline() {
   }
 
   if (eras.length === 0) return null
-
   const displayEras = [...eras, ...eras]
 
   return (
@@ -115,7 +112,6 @@ export function EraTimeline() {
       </div>
       <div className="relative">
         <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-neon-blue/30 to-transparent z-0" />
-        {/* ★ overflow-hidden + translateX instead of overflow-auto + scrollLeft */}
         <div className="overflow-hidden relative z-10 pb-4"
           onMouseEnter={pause} onMouseLeave={resume}
           onTouchStart={pause} onTouchEnd={resumeDelayed}>

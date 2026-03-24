@@ -5,13 +5,14 @@ import { ShowHero } from '@/components/show/ShowHero'
 import { ShowInfoBar } from '@/components/show/ShowInfoBar'
 import { ShowCard } from '@/components/show/ShowCard'
 
-// CORRECTION : On type params comme une Promise
+// Fallback image for structured data (Google requires image for SportsEvent)
+const FALLBACK_IMAGE = 'https://pinfalldata.com/logo.png'
+
 type Props = {
   params: Promise<{ slug: string }>
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  // CORRECTION : On attend (await) les params
   const params = await props.params
   const show = await getShowBySlug(params.slug)
   
@@ -20,7 +21,6 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const dateStr = new Date(show.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
   const seriesName = show.show_series?.name || ''
 
-  // Collect all wrestler names + aliases for SEO
   const wrestlerNames: string[] = []
   for (const m of (show.matches || [])) {
     for (const p of (m.participants || [])) {
@@ -32,6 +32,9 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const matchCount = show.matches?.length || 0
   const locationStr = show.city ? `Live from ${[show.venue, show.city].filter(Boolean).join(', ')}.` : ''
 
+  // ★ FIX: Always provide an image for OG (fallback to logo)
+  const ogImage = show.banner_url || show.logo_url || FALLBACK_IMAGE
+
   return {
     title: `${show.name} | Pinfall Data`,
     description: `${show.name} results, full match card, and statistics. ${locationStr}${featuredStr}`,
@@ -40,7 +43,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       title: `${show.name} — Full Results & Stats`,
       description: `Complete match card, results, and statistics for ${show.name}.`,
       type: 'article',
-      images: show.banner_url || show.logo_url ? [show.banner_url || show.logo_url] : [],
+      images: [ogImage],
     },
     twitter: { card: 'summary_large_image' },
     alternates: {
@@ -50,7 +53,6 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 }
 
 function generateJsonLd(show: any) {
-  // Collect performers
   const performers: any[] = []
   const performerNames = new Set<string>()
   for (const m of (show.matches || [])) {
@@ -66,7 +68,6 @@ function generateJsonLd(show: any) {
     }
   }
 
-  // Build location — ALWAYS provide one (Google requires it)
   const location = {
     '@type': 'Place' as const,
     name: show.venue || show.city || 'Venue TBD',
@@ -78,7 +79,6 @@ function generateJsonLd(show: any) {
     },
   }
 
-  // Build description
   const matchCount = show.matches?.length || 0
   const locationDesc = show.city ? `at ${[show.venue, show.city].filter(Boolean).join(', ')}` : ''
   const description = show.description_md
@@ -90,7 +90,7 @@ function generateJsonLd(show: any) {
     name: show.name,
     description: description.slice(0, 300),
     startDate: show.date,
-    endDate: show.date, // Same day for wrestling shows
+    endDate: show.date,
     eventStatus: 'https://schema.org/EventScheduled',
     eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
     location,
@@ -101,9 +101,8 @@ function generateJsonLd(show: any) {
     },
     performer: performers.slice(0, 20),
     sport: 'Professional Wrestling',
-    ...(show.banner_url || show.logo_url ? {
-      image: [show.banner_url || show.logo_url],
-    } : {}),
+    // ★ FIX: ALWAYS provide image (Google requires it for SportsEvent)
+    image: [show.banner_url || show.logo_url || FALLBACK_IMAGE],
     ...(show.attendance ? {
       maximumAttendeeCapacity: show.attendance,
     } : {}),
@@ -119,7 +118,6 @@ function generateJsonLd(show: any) {
 }
 
 export default async function ShowPage(props: Props) {
-  // CORRECTION : On attend (await) les params ici aussi
   const params = await props.params
   const show = await getShowBySlug(params.slug)
   

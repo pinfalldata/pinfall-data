@@ -4,13 +4,14 @@ import { getMatchBySlug, getHeadToHead, getWinMethods } from '@/lib/queries'
 import { MatchHero } from '@/components/match/MatchHero'
 import { MatchStatsSection } from '@/components/match/MatchStatsSection'
 
-// 1. CORRECTION : Typage de params sous forme de Promise pour Next.js
+// Fallback image for structured data (Google requires image for SportsEvent)
+const FALLBACK_IMAGE = 'https://pinfalldata.com/logo.png'
+
 type Props = {
   params: Promise<{ slug: string; matchSlug: string }>
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  // 2. CORRECTION : On attend (await) les params avant de les utiliser
   const params = await props.params
   const match = await getMatchBySlug(params.slug, params.matchSlug)
   
@@ -35,6 +36,9 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   const show = (match as any).show || {}
 
+  // ★ FIX: Always provide an image for OG (fallback to logo)
+  const ogImage = match.image_url || show.banner_url || FALLBACK_IMAGE
+
   return {
     title: `${titleParts} — ${showName} | Pinfall Data`,
     description: descParts,
@@ -45,7 +49,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       title: `${vsStr} — ${matchType}${championship ? ` for ${championship}` : ''} | ${showName}`,
       description: descParts,
       type: 'article',
-      ...(match.image_url ? { images: [match.image_url] } : show.banner_url ? { images: [show.banner_url] } : {}),
+      images: [ogImage],
       url: `https://pinfalldata.com/shows/${show.slug}/matches/${match.slug}`,
     },
     twitter: { card: 'summary_large_image' },
@@ -60,7 +64,6 @@ function generateJsonLd(match: any) {
   const names = participants.map((p: any) => p.superstar?.name).filter(Boolean)
   const show = match.show || {}
 
-  // Build performers with URLs
   const performers = participants
     .filter((p: any) => p.superstar?.name)
     .map((p: any) => ({
@@ -69,7 +72,6 @@ function generateJsonLd(match: any) {
       ...(p.superstar.slug ? { url: `https://pinfalldata.com/superstars/${p.superstar.slug}` } : {}),
     }))
 
-  // Location — ALWAYS provide one (Google requires it for SportsEvent)
   const location = {
     '@type': 'Place' as const,
     name: show.venue || show.city || 'Venue TBD',
@@ -81,7 +83,6 @@ function generateJsonLd(match: any) {
     },
   }
 
-  // Description
   const matchType = match.match_type?.name || 'Match'
   const championship = match.championship?.name || ''
   const description = match.summary_md
@@ -104,7 +105,8 @@ function generateJsonLd(match: any) {
     },
     performer: performers.slice(0, 20),
     sport: 'Professional Wrestling',
-    ...(match.image_url ? { image: [match.image_url] } : show.banner_url ? { image: [show.banner_url] } : {}),
+    // ★ FIX: ALWAYS provide image (Google requires it for SportsEvent)
+    image: [match.image_url || show.banner_url || show.logo_url || FALLBACK_IMAGE],
     ...(match.duration_seconds ? { duration: `PT${Math.floor(match.duration_seconds / 60)}M${match.duration_seconds % 60}S` } : {}),
     offers: {
       '@type': 'Offer',
@@ -117,7 +119,6 @@ function generateJsonLd(match: any) {
 }
 
 export default async function MatchPage(props: Props) {
-  // 3. CORRECTION : On attend (await) les params ici aussi
   const params = await props.params
   const match = await getMatchBySlug(params.slug, params.matchSlug)
   

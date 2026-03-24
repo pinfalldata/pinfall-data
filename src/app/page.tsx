@@ -10,7 +10,6 @@ import {
   WweLogosCarousel,
   BirthdayStandalone,
   HomeExtraSections,
-  HomeAfterLegends,
 } from '@/components/home/HomeExtraSections'
 
 export default function HomePage() {
@@ -29,9 +28,9 @@ export default function HomePage() {
         <EraTimeline />
         <div className="neon-line-pink max-w-5xl mx-auto" />
 
-        {/* 4. On This Day + Born Today */}
+        {/* 4. On This Day + Born Today — ★ items-stretch = same height */}
         <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-10">
-          <div className="grid grid-cols-1 sm:grid-cols-[1fr_280px] gap-4 items-start">
+          <div className="grid grid-cols-1 sm:grid-cols-[1fr_280px] gap-4 items-stretch">
             <OnThisDay />
             <BirthdayStandalone />
           </div>
@@ -65,10 +64,8 @@ export default function HomePage() {
             <SocialWidgets mode="compact" />
           </div>
         </section>
-        <div className="neon-line max-w-5xl mx-auto" />
 
-        {/* 10. HOF + Slammy */}
-        <HomeAfterLegends />
+        {/* ★ HOF + Slammy REMOVED from homepage */}
       </div>
     </HomepageDataProvider>
   )
