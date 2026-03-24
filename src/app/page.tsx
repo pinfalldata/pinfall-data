@@ -38,19 +38,19 @@ export default function HomePage() {
         </section>
         <div className="neon-line max-w-5xl mx-auto" />
 
-        {/* 5. Matches + Segments | 6. Belt Carousel | 7. Spotlight Cards */}
+        {/* 5. Matches + Segments | 6. Belt Carousel */}
         <HomeExtraSections />
         <div className="neon-line-pink max-w-5xl mx-auto" />
 
-        {/* 8. Calendrier */}
+        {/* 7. Calendrier */}
         <ShowCalendar />
         <div className="neon-line max-w-5xl mx-auto" />
 
-        {/* 9. WWE Logos */}
+        {/* 8. WWE Logos */}
         <WweLogosCarousel />
         <div className="neon-line-pink max-w-5xl mx-auto" />
 
-        {/* 10. Hall of Legends */}
+        {/* 9. Hall of Legends */}
         <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8">
           <h2 className="font-display text-2xl lg:text-3xl font-bold text-text-white mb-5 text-center">
             <span className="text-neon-pink">Hall</span> of Legends
@@ -67,7 +67,7 @@ export default function HomePage() {
         </section>
         <div className="neon-line max-w-5xl mx-auto" />
 
-        {/* 11. HOF + Slammy */}
+        {/* 10. HOF + Slammy */}
         <HomeAfterLegends />
       </div>
     </HomepageDataProvider>

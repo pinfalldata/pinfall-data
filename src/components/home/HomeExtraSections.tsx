@@ -6,9 +6,7 @@ import Link from 'next/link'
 
 /* ══════════════════════════════════════════════════
    SHARED DATA CONTEXT
-   Single fetch of /api/homepage-data shared by all sections.
-   Avoids the double-call bug where HomeExtraSections + HomeAfterLegends
-   each fetched the same API independently.
+   Single fetch of /api/homepage-data shared by all sections
    ══════════════════════════════════════════════════ */
 const HomepageDataCtx = createContext<any>(null)
 
@@ -28,39 +26,66 @@ function useHomepageData() {
 }
 
 /* ══════════════════════════════════════════════════
-   WWE LOGOS CAROUSEL — auto-scrolling infinite loop
+   INFINITE SCROLL HOOK (CSS translateX — works on mobile)
+   Instead of scrollLeft (fights native scroll on mobile),
+   we use translateX on an inner wrapper. Works everywhere.
+   ══════════════════════════════════════════════════ */
+function useInfiniteScroll(speed: number = 0.5) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const offsetRef = useRef(0)
+  const animRef = useRef<number | null>(null)
+  const isPaused = useRef(false)
+  const halfWidth = useRef(0)
+
+  const measure = useCallback(() => {
+    const el = containerRef.current
+    if (el) halfWidth.current = el.scrollWidth / 2
+  }, [])
+
+  const animate = useCallback(() => {
+    if (!isPaused.current && halfWidth.current > 0) {
+      offsetRef.current += speed
+      if (offsetRef.current >= halfWidth.current) offsetRef.current = 0
+      const el = containerRef.current
+      if (el) el.style.transform = `translateX(-${offsetRef.current}px)`
+    }
+    animRef.current = requestAnimationFrame(animate)
+  }, [speed])
+
+  const start = useCallback(() => {
+    measure()
+    animRef.current = requestAnimationFrame(animate)
+  }, [measure, animate])
+
+  const stop = useCallback(() => {
+    if (animRef.current) cancelAnimationFrame(animRef.current)
+  }, [])
+
+  const pause = useCallback(() => { isPaused.current = true }, [])
+  const resume = useCallback(() => { isPaused.current = false }, [])
+  const resumeDelayed = useCallback((ms = 2000) => {
+    setTimeout(() => { isPaused.current = false }, ms)
+  }, [])
+
+  return { containerRef, start, stop, pause, resume, resumeDelayed, measure }
+}
+
+/* ══════════════════════════════════════════════════
+   WWE LOGOS CAROUSEL — CSS translateX auto-scroll
    ══════════════════════════════════════════════════ */
 export function WweLogosCarousel() {
   const [logos, setLogos] = useState<any[]>([])
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const animRef = useRef<number | null>(null)
-  const isPaused = useRef(false)
+  const { containerRef, start, stop, pause, resume, resumeDelayed } = useInfiniteScroll(0.5)
 
   useEffect(() => {
     fetch('/api/wwe-logos').then(r => r.json()).then(d => setLogos(d.logos || [])).catch(() => {})
   }, [])
 
-  const animate = useCallback(() => {
-    const el = scrollRef.current
-    if (el && !isPaused.current) {
-      el.scrollLeft += 0.5
-      if (el.scrollLeft >= el.scrollWidth / 2) el.scrollLeft = 0
-    }
-    animRef.current = requestAnimationFrame(animate)
-  }, [])
-
   useEffect(() => {
     if (logos.length === 0) return
-    animRef.current = requestAnimationFrame(animate)
-    return () => { if (animRef.current) cancelAnimationFrame(animRef.current) }
-  }, [logos, animate])
-
-  const scroll = (dir: 'left' | 'right') => {
-    if (!scrollRef.current) return
-    isPaused.current = true
-    scrollRef.current.scrollBy({ left: dir === 'left' ? -320 : 320, behavior: 'smooth' })
-    setTimeout(() => { isPaused.current = false }, 3000)
-  }
+    const timer = setTimeout(start, 150)
+    return () => { clearTimeout(timer); stop() }
+  }, [logos, start, stop])
 
   if (logos.length === 0) return null
   const display = [...logos, ...logos]
@@ -71,37 +96,30 @@ export function WweLogosCarousel() {
         <h2 className="font-display text-xl lg:text-2xl font-bold text-text-white">
           <span className="text-neon-blue">WWE</span> Through the Years
         </h2>
-        <div className="flex gap-2">
-          <button onClick={() => scroll('left')} className="w-9 h-9 rounded-full border border-border-subtle/30 flex items-center justify-center text-text-secondary hover:text-neon-blue hover:border-neon-blue/30 transition-all">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-          </button>
-          <button onClick={() => scroll('right')} className="w-9 h-9 rounded-full border border-border-subtle/30 flex items-center justify-center text-text-secondary hover:text-neon-blue hover:border-neon-blue/30 transition-all">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-          </button>
-        </div>
       </div>
-      <div ref={scrollRef} onMouseEnter={() => { isPaused.current = true }} onMouseLeave={() => { isPaused.current = false }}
-        onTouchStart={() => { isPaused.current = true }} onTouchEnd={() => { setTimeout(() => { isPaused.current = false }, 2000) }}
-        className="flex gap-6 overflow-x-auto scrollbar-hide py-2">
-        {display.map((logo, i) => (
-          <div key={`${logo.id}-${i}`} className="shrink-0 flex flex-col items-center gap-2 group cursor-default">
-            <div className="w-32 h-24 sm:w-40 sm:h-28 rounded-xl border border-border-subtle/20 bg-bg-secondary/20 flex items-center justify-center p-4 group-hover:border-neon-blue/30 transition-all">
-              <Image src={logo.image_url} alt={logo.name} width={140} height={100} className="max-w-full max-h-full object-contain" unoptimized />
+      <div className="overflow-hidden"
+        onMouseEnter={pause} onMouseLeave={resume}
+        onTouchStart={pause} onTouchEnd={() => resumeDelayed(2500)}>
+        <div ref={containerRef} className="flex gap-6 will-change-transform" style={{ width: 'max-content' }}>
+          {display.map((logo, i) => (
+            <div key={`${logo.id}-${i}`} className="shrink-0 flex flex-col items-center gap-2 group cursor-default">
+              <div className="w-32 h-24 sm:w-40 sm:h-28 rounded-xl border border-border-subtle/20 bg-bg-secondary/20 flex items-center justify-center p-4 group-hover:border-neon-blue/30 transition-all">
+                <Image src={logo.image_url} alt={logo.name} width={140} height={100} className="max-w-full max-h-full object-contain" unoptimized />
+              </div>
+              <div className="text-center">
+                <span className="text-[10px] text-text-secondary font-mono block">{logo.start_year}–{logo.end_year || 'Now'}</span>
+                {logo.name && <span className="text-[9px] text-text-secondary/60 block truncate max-w-[140px]">{logo.name}</span>}
+              </div>
             </div>
-            <div className="text-center">
-              <span className="text-[10px] text-text-secondary font-mono block">{logo.start_year}–{logo.end_year || 'Now'}</span>
-              {logo.name && <span className="text-[9px] text-text-secondary/60 block truncate max-w-[140px]">{logo.name}</span>}
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   )
 }
 
 /* ══════════════════════════════════════════════════
-   🎂 BORN TODAY — photo, name, birth year, age, arrows
-   Sorted by total_matches desc in the API
+   🎂 BORN TODAY — Bigger photo, full date, multi-nav
    ══════════════════════════════════════════════════ */
 function BirthdayBlock({ birthdays }: { birthdays: any[] }) {
   const [idx, setIdx] = useState(0)
@@ -109,6 +127,11 @@ function BirthdayBlock({ birthdays }: { birthdays: any[] }) {
   const star = birthdays[idx]
   const today = new Date()
   const age = star.birth_year ? today.getFullYear() - star.birth_year : null
+
+  // Full formatted birth date (e.g. "March 24, 1985")
+  const fullBirthDate = star.birth_date
+    ? new Date(star.birth_date + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+    : null
 
   return (
     <div className="rounded-2xl border border-neon-pink/20 bg-gradient-to-br from-neon-pink/5 via-bg-secondary/20 to-transparent overflow-hidden h-full flex flex-col">
@@ -122,36 +145,42 @@ function BirthdayBlock({ birthdays }: { birthdays: any[] }) {
         )}
       </div>
 
-      {/* Main content */}
-      <div className="p-4 flex items-center gap-4 flex-1">
-        <Link href={`/superstars/${star.slug}`} className="shrink-0 group">
-          <div className="w-20 h-20 rounded-xl overflow-hidden border-2 border-neon-pink/20 group-hover:border-neon-pink/50 transition-all">
+      {/* Photo — bigger, centered */}
+      <div className="px-4 pt-3 flex justify-center">
+        <Link href={`/superstars/${star.slug}`} className="group">
+          <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-xl overflow-hidden border-2 border-neon-pink/20 group-hover:border-neon-pink/50 transition-all shadow-lg">
             {star.photo_url ? (
-              <Image src={star.photo_url} alt={star.name} width={80} height={80} className="w-full h-full object-cover" unoptimized />
+              <Image src={star.photo_url} alt={star.name} width={128} height={128} className="w-full h-full object-cover" unoptimized />
             ) : (
               <div className="w-full h-full bg-bg-tertiary/30 flex items-center justify-center">
-                <span className="text-3xl opacity-30">🎂</span>
+                <span className="text-4xl opacity-30">🎂</span>
               </div>
             )}
           </div>
         </Link>
-        <div className="flex-1 min-w-0">
-          <Link href={`/superstars/${star.slug}`} className="text-sm font-bold text-text-white hover:text-neon-pink transition-colors block truncate">
-            {star.name}
-          </Link>
-          {star.birth_year && (
-            <p className="text-xs text-text-secondary mt-1">
-              Born <span className="text-neon-pink font-mono font-bold">{star.birth_year}</span>
-              {age ? <span className="text-text-secondary/60"> · {age} years old</span> : ''}
-            </p>
-          )}
-          {star.total_matches > 0 && (
-            <p className="text-[10px] text-text-secondary/50 mt-0.5">{star.total_matches.toLocaleString()} career matches</p>
-          )}
-        </div>
       </div>
 
-      {/* Navigation arrows */}
+      {/* Info — centered below photo */}
+      <div className="px-4 pt-3 pb-1 text-center flex-1">
+        <Link href={`/superstars/${star.slug}`} className="text-sm font-bold text-text-white hover:text-neon-pink transition-colors inline-block">
+          {star.name}
+        </Link>
+        {fullBirthDate && (
+          <p className="text-xs text-text-secondary mt-1">
+            <span className="text-neon-pink font-mono font-bold">{fullBirthDate}</span>
+          </p>
+        )}
+        {age && (
+          <p className="text-[11px] text-text-secondary/70 mt-0.5">
+            {age} years old
+          </p>
+        )}
+        {star.total_matches > 0 && (
+          <p className="text-[10px] text-text-secondary/50 mt-0.5">{star.total_matches.toLocaleString()} career matches</p>
+        )}
+      </div>
+
+      {/* Navigation arrows — multiple superstars born same day */}
       {birthdays.length > 1 && (
         <div className="px-4 pb-3 flex items-center justify-center gap-2">
           <button onClick={() => setIdx(i => (i - 1 + birthdays.length) % birthdays.length)}
@@ -174,7 +203,7 @@ function BirthdayBlock({ birthdays }: { birthdays: any[] }) {
   )
 }
 
-/** Standalone Birthday — uses shared HomepageData context */
+/** Standalone Birthday — shared context */
 export function BirthdayStandalone() {
   const data = useHomepageData()
   if (!data || !data.birthdays || data.birthdays.length === 0) return <div />
@@ -182,8 +211,63 @@ export function BirthdayStandalone() {
 }
 
 /* ══════════════════════════════════════════════════
-   RECENT MATCHES
+   RECENT MATCHES — with VS between teams
+   Groups participants by team_number, shows "vs" separator
    ══════════════════════════════════════════════════ */
+function ParticipantsVs({ participants }: { participants: any[] }) {
+  if (!participants || participants.length === 0) return null
+
+  // Group by team_number
+  const teams: Record<number, any[]> = {}
+  for (const p of participants) {
+    const tn = p.team_number ?? 0
+    if (!teams[tn]) teams[tn] = []
+    teams[tn].push(p)
+  }
+
+  const teamKeys = Object.keys(teams).sort((a, b) => Number(a) - Number(b))
+
+  // If only 1 team (or no team_number), show flat list
+  if (teamKeys.length <= 1) {
+    return (
+      <div className="flex -space-x-2 shrink-0">
+        {participants.slice(0, 6).map((p: any, i: number) => (
+          <div key={i} className="w-8 h-8 rounded-full overflow-hidden border-2 border-bg-primary">
+            {p.superstar?.photo_url ? (
+              <Image src={p.superstar.photo_url} alt="" width={32} height={32} className="w-full h-full object-cover" unoptimized />
+            ) : (
+              <div className="w-full h-full bg-bg-tertiary" />
+            )}
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex items-center gap-1 shrink-0 flex-wrap">
+      {teamKeys.map((tk, tIdx) => (
+        <div key={tk} className="flex items-center gap-1">
+          {tIdx > 0 && (
+            <span className="text-[9px] font-bold text-neon-blue/70 mx-0.5">vs</span>
+          )}
+          <div className="flex -space-x-1.5">
+            {teams[Number(tk)].slice(0, 3).map((p: any, i: number) => (
+              <div key={i} className="w-7 h-7 rounded-full overflow-hidden border-2 border-bg-primary">
+                {p.superstar?.photo_url ? (
+                  <Image src={p.superstar.photo_url} alt="" width={28} height={28} className="w-full h-full object-cover" unoptimized />
+                ) : (
+                  <div className="w-full h-full bg-bg-tertiary" />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function RecentMatchesBlock({ matches }: { matches: any[] }) {
   if (!matches || matches.length === 0) return null
   return (
@@ -196,20 +280,10 @@ function RecentMatchesBlock({ matches }: { matches: any[] }) {
       <div className="p-4 space-y-2">
         {matches.map((m: any) => {
           const href = m.show?.slug && m.slug ? `/shows/${m.show.slug}/matches/${m.slug}` : '#'
-          const parts = (m.participants || []).slice(0, 6)
           return (
             <Link key={m.id} href={href} className="flex items-center gap-3 p-2.5 rounded-xl bg-bg-tertiary/20 border border-border-subtle/15 hover:border-neon-blue/20 transition-all group">
-              <div className="flex -space-x-2 shrink-0">
-                {parts.map((p: any, i: number) => (
-                  <div key={i} className="w-8 h-8 rounded-full overflow-hidden border-2 border-bg-primary">
-                    {p.superstar?.photo_url ? (
-                      <Image src={p.superstar.photo_url} alt="" width={32} height={32} className="w-full h-full object-cover" unoptimized />
-                    ) : (
-                      <div className="w-full h-full bg-bg-tertiary" />
-                    )}
-                  </div>
-                ))}
-              </div>
+              {/* ★ Participants with VS between teams */}
+              <ParticipantsVs participants={m.participants} />
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-text-white font-medium truncate group-hover:text-neon-blue transition-colors">
                   {m.match_type?.name || 'Match'}
@@ -234,9 +308,7 @@ function RecentMatchesBlock({ matches }: { matches: any[] }) {
         })}
       </div>
       <div className="px-5 pb-4">
-        <Link href="/matches/search" className="text-xs text-neon-blue hover:text-neon-blue/80 font-medium">
-          Browse all matches →
-        </Link>
+        <Link href="/matches/search" className="text-xs text-neon-blue hover:text-neon-blue/80 font-medium">Browse all matches →</Link>
       </div>
     </div>
   )
@@ -290,9 +362,7 @@ function RecentSegmentsBlock({ segments }: { segments: any[] }) {
         })}
       </div>
       <div className="px-5 pb-4">
-        <Link href="/matches/segments" className="text-xs text-neon-pink hover:text-neon-pink/80 font-medium">
-          Browse all segments →
-        </Link>
+        <Link href="/matches/segments" className="text-xs text-neon-pink hover:text-neon-pink/80 font-medium">Browse all segments →</Link>
       </div>
     </div>
   )
@@ -300,44 +370,20 @@ function RecentSegmentsBlock({ segments }: { segments: any[] }) {
 
 /* ══════════════════════════════════════════════════
    🏆 CHAMPIONSHIP BELT CAROUSEL
-   ★ Auto-scroll with requestAnimationFrame
-   scrollLeft += 0.3 — infinite loop via duplicated array
-   Pauses on mouse hover and mobile touch
+   ★ CSS translateX auto-scroll (works on mobile!)
+   ★ Cards 3:2 ratio (~450x300) — wider, taller
+   ★ Shimmer gold animation on hover
    ══════════════════════════════════════════════════ */
 function BeltCarousel({ championships }: { championships: any[] }) {
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const animRef = useRef<number | null>(null)
-  const isPaused = useRef(false)
+  const { containerRef, start, stop, pause, resume, resumeDelayed } = useInfiniteScroll(0.4)
 
-  // Animation loop — runs every frame (~60fps)
-  const animate = useCallback(() => {
-    const el = scrollRef.current
-    if (el && !isPaused.current) {
-      el.scrollLeft += 0.3
-      // When we've scrolled past the first set, jump back to start
-      if (el.scrollLeft >= el.scrollWidth / 2) {
-        el.scrollLeft = 0
-      }
-    }
-    animRef.current = requestAnimationFrame(animate)
-  }, [])
-
-  // Start animation when championships are loaded
   useEffect(() => {
     if (championships.length === 0) return
-    // Small delay to ensure DOM is rendered and scrollWidth is correct
-    const timer = setTimeout(() => {
-      animRef.current = requestAnimationFrame(animate)
-    }, 100)
-    return () => {
-      clearTimeout(timer)
-      if (animRef.current) cancelAnimationFrame(animRef.current)
-    }
-  }, [championships, animate])
+    const timer = setTimeout(start, 150)
+    return () => { clearTimeout(timer); stop() }
+  }, [championships, start, stop])
 
   if (championships.length === 0) return null
-
-  // Duplicate array for seamless infinite scroll
   const display = [...championships, ...championships]
 
   return (
@@ -345,104 +391,61 @@ function BeltCarousel({ championships }: { championships: any[] }) {
       <h2 className="font-display text-lg font-bold text-text-white mb-4 text-center">
         <span className="text-neon-blue">Championship</span> Titles
       </h2>
-      <div
-        ref={scrollRef}
-        onMouseEnter={() => { isPaused.current = true }}
-        onMouseLeave={() => { isPaused.current = false }}
-        onTouchStart={() => { isPaused.current = true }}
-        onTouchEnd={() => { setTimeout(() => { isPaused.current = false }, 2000) }}
-        className="flex gap-6 overflow-x-auto scrollbar-hide py-3"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-      >
-        {display.map((c, i) => (
-          <Link key={`belt-${c.id}-${i}`} href={`/champions/${c.slug}`} className="shrink-0 group" title={c.name}>
-            <div className="w-32 h-16 sm:w-40 sm:h-20 rounded-xl border border-border-subtle/20 bg-bg-secondary/10 flex items-center justify-center px-3 py-2 group-hover:border-neon-blue/40 group-hover:bg-neon-blue/5 transition-all">
-              {c.image_url ? (
-                <Image
-                  src={c.image_url}
-                  alt={c.name}
-                  width={140}
-                  height={70}
-                  className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300"
-                  unoptimized
-                />
-              ) : (
-                <span className="text-2xl opacity-30">🏆</span>
-              )}
-            </div>
-          </Link>
-        ))}
+      <div className="overflow-hidden"
+        onMouseEnter={pause} onMouseLeave={resume}
+        onTouchStart={pause} onTouchEnd={() => resumeDelayed(2500)}>
+        <div ref={containerRef} className="flex gap-5 will-change-transform" style={{ width: 'max-content' }}>
+          {display.map((c, i) => (
+            <Link key={`belt-${c.id}-${i}`} href={`/champions/${c.slug}`} className="shrink-0 group" title={c.name}>
+              {/* ★ 3:2 ratio — matches 450x300 proportions */}
+              <div className="relative w-36 h-24 sm:w-48 sm:h-32 rounded-xl border border-border-subtle/20 bg-bg-secondary/10 flex items-center justify-center px-4 py-3 group-hover:border-neon-blue/40 group-hover:bg-neon-blue/5 transition-all overflow-hidden">
+                {c.image_url ? (
+                  <Image
+                    src={c.image_url}
+                    alt={c.name}
+                    width={180}
+                    height={120}
+                    className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                    unoptimized
+                  />
+                ) : (
+                  <span className="text-3xl opacity-30">🏆</span>
+                )}
+                {/* ★ Gold shimmer sweep on hover */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none overflow-hidden">
+                  <div className="absolute inset-0" style={{
+                    background: 'linear-gradient(105deg, transparent 40%, rgba(199,160,90,0.08) 45%, rgba(199,160,90,0.18) 50%, rgba(199,160,90,0.08) 55%, transparent 60%)',
+                    backgroundSize: '200% 100%',
+                    animation: 'belt-shimmer 1.5s ease-in-out infinite',
+                  }} />
+                </div>
+              </div>
+              <p className="text-[9px] text-text-secondary/60 text-center mt-1.5 truncate max-w-[180px] group-hover:text-neon-blue/60 transition-colors">{c.name}</p>
+            </Link>
+          ))}
+        </div>
       </div>
+      <style jsx>{`
+        @keyframes belt-shimmer {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+      `}</style>
     </section>
   )
 }
 
 /* ══════════════════════════════════════════════════
-   SPOTLIGHT CARDS — arena, object, tag team, stable
-   ★ Reduced card height with aspect-[2/1]
-   ══════════════════════════════════════════════════ */
-function SpotlightCards({ arena, object, tagTeam, stable }: { arena: any; object: any; tagTeam: any; stable: any }) {
-  const items = [
-    arena && { name: arena.name, label: '🏟️ Arena', href: `/arenas/${arena.slug}`, img: arena.image_url, sub: [arena.city, arena.country].filter(Boolean).join(', ') },
-    object && { name: object.name, label: '🪑 Object', href: `/matches/objects/${object.slug}`, img: object.image_url, sub: '' },
-    tagTeam && { name: tagTeam.name, label: '🤝 Tag Team', href: `/tag-teams/teams/${tagTeam.slug}`, img: tagTeam.photo_url, sub: '' },
-    stable && { name: stable.name, label: '🛡️ Stable', href: `/tag-teams/stables/${stable.slug}`, img: stable.photo_url, sub: '' },
-  ].filter(Boolean)
-
-  if (items.length === 0) return null
-
-  return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-      {items.map((item: any, i) => (
-        <Link key={i} href={item.href} className="group rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 overflow-hidden hover:border-neon-blue/30 transition-all">
-          {/* ★ REDUCED: aspect-[2/1] — wider, shorter rectangle */}
-          <div className="relative aspect-[2/1] bg-bg-tertiary/30 overflow-hidden">
-            {item.img ? (
-              <Image
-                src={item.img}
-                alt={item.name}
-                fill
-                className="object-contain group-hover:scale-105 transition-transform duration-500"
-                sizes="(max-width:1024px) 50vw, 25vw"
-                unoptimized
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <span className="text-4xl opacity-15">{item.label?.slice(0, 2)}</span>
-              </div>
-            )}
-            <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/80 via-transparent to-transparent" />
-            <span className="absolute top-2 left-2 text-[8px] px-1.5 py-0.5 rounded bg-bg-primary/70 backdrop-blur-sm border border-border-subtle/30 text-text-secondary font-bold uppercase">
-              {item.label}
-            </span>
-          </div>
-          <div className="p-2.5">
-            <p className="text-xs font-bold text-text-white group-hover:text-neon-blue transition-colors truncate">{item.name}</p>
-            {item.sub && <p className="text-[10px] text-text-secondary mt-0.5 truncate">{item.sub}</p>}
-          </div>
-        </Link>
-      ))}
-    </div>
-  )
-}
-
-/* ══════════════════════════════════════════════════
-   🏛️ HOF + 🏆 SLAMMY — two random cards side by side
-   API returns: hofEntry.year (mapped from induction_year),
-   hofEntry.wing (mapped from class), hofEntry.superstar
-   slammyAward.year, slammyAward.category, slammyAward.winner
+   🏛️ HOF + 🏆 SLAMMY — random cards side by side
    ══════════════════════════════════════════════════ */
 function HofSlammyRow({ hofEntry, slammyAward }: { hofEntry: any; slammyAward: any }) {
   if (!hofEntry && !slammyAward) return null
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      {/* Hall of Fame card */}
       {hofEntry?.superstar && (
-        <Link
-          href={`/superstars/${hofEntry.superstar.slug}`}
-          className="flex items-center gap-4 p-5 rounded-2xl border border-yellow-500/20 bg-gradient-to-r from-yellow-500/5 to-transparent hover:border-yellow-500/30 transition-all group"
-        >
+        <Link href={`/superstars/${hofEntry.superstar.slug}`}
+          className="flex items-center gap-4 p-5 rounded-2xl border border-yellow-500/20 bg-gradient-to-r from-yellow-500/5 to-transparent hover:border-yellow-500/30 transition-all group">
           <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-yellow-500/30 shrink-0">
             {hofEntry.superstar.photo_url ? (
               <Image src={hofEntry.superstar.photo_url} alt="" width={64} height={64} className="w-full h-full object-cover" unoptimized />
@@ -451,25 +454,15 @@ function HofSlammyRow({ hofEntry, slammyAward }: { hofEntry: any; slammyAward: a
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <span className="text-[9px] text-yellow-400 font-bold uppercase tracking-wider block">
-              🏛️ Hall of Fame · {hofEntry.year}
-            </span>
-            <p className="text-base font-bold text-text-white group-hover:text-yellow-400 transition-colors mt-0.5 truncate">
-              {hofEntry.superstar.name}
-            </p>
-            {hofEntry.wing && (
-              <span className="text-[11px] text-text-secondary">{hofEntry.wing}</span>
-            )}
+            <span className="text-[9px] text-yellow-400 font-bold uppercase tracking-wider block">🏛️ Hall of Fame · {hofEntry.year}</span>
+            <p className="text-base font-bold text-text-white group-hover:text-yellow-400 transition-colors mt-0.5 truncate">{hofEntry.superstar.name}</p>
+            {hofEntry.wing && <span className="text-[11px] text-text-secondary">{hofEntry.wing}</span>}
           </div>
         </Link>
       )}
-
-      {/* Slammy Award card */}
       {slammyAward?.winner && (
-        <Link
-          href={`/superstars/${slammyAward.winner.slug}`}
-          className="flex items-center gap-4 p-5 rounded-2xl border border-neon-blue/20 bg-gradient-to-r from-neon-blue/5 to-transparent hover:border-neon-blue/30 transition-all group"
-        >
+        <Link href={`/superstars/${slammyAward.winner.slug}`}
+          className="flex items-center gap-4 p-5 rounded-2xl border border-neon-blue/20 bg-gradient-to-r from-neon-blue/5 to-transparent hover:border-neon-blue/30 transition-all group">
           <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-neon-blue/30 shrink-0">
             {slammyAward.winner.photo_url ? (
               <Image src={slammyAward.winner.photo_url} alt="" width={64} height={64} className="w-full h-full object-cover" unoptimized />
@@ -478,15 +471,9 @@ function HofSlammyRow({ hofEntry, slammyAward }: { hofEntry: any; slammyAward: a
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <span className="text-[9px] text-neon-blue font-bold uppercase tracking-wider block">
-              🏆 Slammy Award · {slammyAward.year}
-            </span>
-            <p className="text-base font-bold text-text-white group-hover:text-neon-blue transition-colors mt-0.5 truncate">
-              {slammyAward.winner.name}
-            </p>
-            {slammyAward.category && (
-              <span className="text-[11px] text-text-secondary">{slammyAward.category}</span>
-            )}
+            <span className="text-[9px] text-neon-blue font-bold uppercase tracking-wider block">🏆 Slammy Award · {slammyAward.year}</span>
+            <p className="text-base font-bold text-text-white group-hover:text-neon-blue transition-colors mt-0.5 truncate">{slammyAward.winner.name}</p>
+            {slammyAward.category && <span className="text-[11px] text-text-secondary">{slammyAward.category}</span>}
           </div>
         </Link>
       )}
@@ -495,9 +482,8 @@ function HofSlammyRow({ hofEntry, slammyAward }: { hofEntry: any; slammyAward: a
 }
 
 /* ══════════════════════════════════════════════════
-   MASTER: Sections 5-6-7
-   (between OnThisDay+BornToday and ShowCalendar)
-   Uses shared HomepageData context — ONE api call
+   MASTER: Sections 5-6 (between OnThisDay and Calendar)
+   ★ REMOVED: Spotlight Cards (arena/object/tag/stable)
    ══════════════════════════════════════════════════ */
 export function HomeExtraSections() {
   const data = useHomepageData()
@@ -505,7 +491,7 @@ export function HomeExtraSections() {
 
   return (
     <>
-      {/* 5. Latest Matches + Latest Segments — 2 colonnes */}
+      {/* 5. Latest Matches + Latest Segments */}
       {(data.recentMatches?.length > 0 || data.recentSegments?.length > 0) && (
         <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -515,21 +501,9 @@ export function HomeExtraSections() {
         </section>
       )}
 
-      {/* 6. Championship Belt Carousel — auto-scroll */}
+      {/* 6. Championship Belt Carousel */}
       {data.championships?.length > 0 && (
         <BeltCarousel championships={data.championships} />
-      )}
-
-      {/* 7. Arena + Object + Tag Team + Stable — spotlight cards */}
-      {(data.arena || data.object || data.tagTeam || data.stable) && (
-        <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-4">
-          <SpotlightCards
-            arena={data.arena}
-            object={data.object}
-            tagTeam={data.tagTeam}
-            stable={data.stable}
-          />
-        </section>
       )}
     </>
   )
@@ -537,7 +511,6 @@ export function HomeExtraSections() {
 
 /* ══════════════════════════════════════════════════
    Section 11: AFTER Hall of Legends — HOF + Slammy
-   Uses shared HomepageData context (no double API call)
    ══════════════════════════════════════════════════ */
 export function HomeAfterLegends() {
   const data = useHomepageData()

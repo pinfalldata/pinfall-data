@@ -17,9 +17,13 @@ interface Era {
 export function EraTimeline() {
   const [eras, setEras] = useState<Era[]>([])
   const [loading, setLoading] = useState(true)
-  const scrollRef = useRef<HTMLDivElement>(null)
+
+  // ★ CSS translateX approach — works on mobile (no scrollLeft conflict)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const offsetRef = useRef(0)
   const animRef = useRef<number | null>(null)
   const isPaused = useRef(false)
+  const halfWidth = useRef(0)
 
   useEffect(() => {
     fetch('/api/eras')
@@ -28,29 +32,50 @@ export function EraTimeline() {
       .catch(() => setLoading(false))
   }, [])
 
+  const measure = useCallback(() => {
+    const el = containerRef.current
+    if (el) halfWidth.current = el.scrollWidth / 2
+  }, [])
+
   const animate = useCallback(() => {
-    const el = scrollRef.current
-    if (el && !isPaused.current) {
-      el.scrollLeft += 0.5
-      if (el.scrollLeft >= el.scrollWidth / 2) el.scrollLeft = 0
+    if (!isPaused.current && halfWidth.current > 0) {
+      offsetRef.current += 0.5
+      if (offsetRef.current >= halfWidth.current) offsetRef.current = 0
+      const el = containerRef.current
+      if (el) el.style.transform = `translateX(-${offsetRef.current}px)`
     }
     animRef.current = requestAnimationFrame(animate)
   }, [])
 
   useEffect(() => {
     if (eras.length === 0) return
-    animRef.current = requestAnimationFrame(animate)
-    return () => { if (animRef.current) cancelAnimationFrame(animRef.current) }
-  }, [eras, animate])
+    const timer = setTimeout(() => {
+      measure()
+      animRef.current = requestAnimationFrame(animate)
+    }, 150)
+    return () => {
+      clearTimeout(timer)
+      if (animRef.current) cancelAnimationFrame(animRef.current)
+    }
+  }, [eras, measure, animate])
 
   const pause = () => { isPaused.current = true }
   const resume = () => { isPaused.current = false }
-  const resumeDelayed = () => { setTimeout(() => { isPaused.current = false }, 2000) }
+  const resumeDelayed = () => { setTimeout(() => { isPaused.current = false }, 2500) }
 
+  // Arrow buttons: jump offset by ~320px
   const scroll = (dir: 'left' | 'right') => {
-    if (!scrollRef.current) return
     isPaused.current = true
-    scrollRef.current.scrollBy({ left: dir === 'left' ? -320 : 320, behavior: 'smooth' })
+    const jump = 320
+    if (dir === 'right') {
+      offsetRef.current += jump
+      if (halfWidth.current > 0 && offsetRef.current >= halfWidth.current) offsetRef.current -= halfWidth.current
+    } else {
+      offsetRef.current -= jump
+      if (offsetRef.current < 0) offsetRef.current = halfWidth.current > 0 ? halfWidth.current + offsetRef.current : 0
+    }
+    const el = containerRef.current
+    if (el) el.style.transform = `translateX(-${offsetRef.current}px)`
     setTimeout(() => { isPaused.current = false }, 3000)
   }
 
@@ -90,36 +115,40 @@ export function EraTimeline() {
       </div>
       <div className="relative">
         <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-neon-blue/30 to-transparent z-0" />
-        <div ref={scrollRef} onMouseEnter={pause} onMouseLeave={resume} onTouchStart={pause} onTouchEnd={resumeDelayed}
-          className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 relative z-10">
-          {displayEras.map((era, i) => (
-            <div key={`${era.id}-${i}`} className="group relative w-72 sm:w-80 shrink-0 rounded-2xl border border-border-subtle/30 bg-bg-secondary/30 overflow-hidden hover:border-neon-blue/30 hover:bg-bg-secondary/50 transition-all duration-300">
-              <div className="relative w-full h-36 bg-bg-tertiary overflow-hidden">
-                {era.image_url ? (
-                  <Image src={era.image_url} alt={era.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-neon-blue/5 to-neon-pink/5">
-                    <span className="text-4xl opacity-30">📜</span>
+        {/* ★ overflow-hidden + translateX instead of overflow-auto + scrollLeft */}
+        <div className="overflow-hidden relative z-10 pb-4"
+          onMouseEnter={pause} onMouseLeave={resume}
+          onTouchStart={pause} onTouchEnd={resumeDelayed}>
+          <div ref={containerRef} className="flex gap-4 will-change-transform" style={{ width: 'max-content' }}>
+            {displayEras.map((era, i) => (
+              <div key={`${era.id}-${i}`} className="group relative w-72 sm:w-80 shrink-0 rounded-2xl border border-border-subtle/30 bg-bg-secondary/30 overflow-hidden hover:border-neon-blue/30 hover:bg-bg-secondary/50 transition-all duration-300">
+                <div className="relative w-full h-36 bg-bg-tertiary overflow-hidden">
+                  {era.image_url ? (
+                    <Image src={era.image_url} alt={era.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-neon-blue/5 to-neon-pink/5">
+                      <span className="text-4xl opacity-30">📜</span>
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/90 via-transparent to-transparent" />
+                  <div className="absolute bottom-3 left-3 flex items-center gap-1.5">
+                    <span className="px-2 py-0.5 rounded-md bg-neon-blue/20 border border-neon-blue/30 text-neon-blue text-xs font-mono font-bold">{era.start_year}</span>
+                    <span className="text-text-secondary text-xs">→</span>
+                    <span className="px-2 py-0.5 rounded-md bg-neon-pink/20 border border-neon-pink/30 text-neon-pink text-xs font-mono font-bold">{era.end_year || 'Now'}</span>
                   </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/90 via-transparent to-transparent" />
-                <div className="absolute bottom-3 left-3 flex items-center gap-1.5">
-                  <span className="px-2 py-0.5 rounded-md bg-neon-blue/20 border border-neon-blue/30 text-neon-blue text-xs font-mono font-bold">{era.start_year}</span>
-                  <span className="text-text-secondary text-xs">→</span>
-                  <span className="px-2 py-0.5 rounded-md bg-neon-pink/20 border border-neon-pink/30 text-neon-pink text-xs font-mono font-bold">{era.end_year || 'Now'}</span>
+                </div>
+                <div className="p-4">
+                  <h3 className="font-display text-base font-bold text-text-white group-hover:text-neon-blue transition-colors">{era.name}</h3>
+                  {era.description_md && (
+                    <p className="text-text-secondary text-xs mt-1.5 line-clamp-2 leading-relaxed">{era.description_md.replace(/[#*_]/g, '').slice(0, 120)}</p>
+                  )}
+                </div>
+                <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full border-2 border-neon-blue bg-bg-primary flex items-center justify-center">
+                  <div className="w-2 h-2 rounded-full bg-neon-blue" />
                 </div>
               </div>
-              <div className="p-4">
-                <h3 className="font-display text-base font-bold text-text-white group-hover:text-neon-blue transition-colors">{era.name}</h3>
-                {era.description_md && (
-                  <p className="text-text-secondary text-xs mt-1.5 line-clamp-2 leading-relaxed">{era.description_md.replace(/[#*_]/g, '').slice(0, 120)}</p>
-                )}
-              </div>
-              <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full border-2 border-neon-blue bg-bg-primary flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-neon-blue" />
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>
