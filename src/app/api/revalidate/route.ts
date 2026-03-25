@@ -99,6 +99,19 @@ export async function POST(request: NextRequest) {
       case 'films':
         refresh('/superstars')
         break;
+      case 'translations':
+        // Translations affect every page — revalidate the entire site
+        refresh('/')
+        refresh('/superstars')
+        refresh('/matches')
+        refresh('/champions')
+        refresh('/history')
+        refresh('/records')
+        refresh('/hall-of-fame')
+        refresh('/tag-teams')
+        refresh('/rivalries')
+        refresh('/omg-moments')
+        break;
       default:
         console.log(`Aucune règle définie pour la table : ${table}`)
     }

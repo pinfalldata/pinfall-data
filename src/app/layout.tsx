@@ -7,6 +7,7 @@ import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import { isRTL } from '@/lib/locales'
 
 const oswald = Oswald({
   subsets: ['latin'],
@@ -95,10 +96,12 @@ export default async function RootLayout({
 }) {
   const locale = await getLocale()
   const messages = await getMessages()
+  const dir = isRTL(locale) ? 'rtl' : 'ltr'
 
   return (
     <html
       lang={locale}
+      dir={dir}
       className={`${oswald.variable} ${sourceSans.variable} ${jetbrainsMono.variable}`}
     >
       <body className="min-h-screen bg-bg-primary text-text-primary font-body antialiased">

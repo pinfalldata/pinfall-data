@@ -11,27 +11,114 @@
     "records": "Records & Statistics",
     "hallOfFame": "Hall of Fame & Awards",
     "bonus": "Bonus",
-    "search": "Search superstars, matches, shows..."
+    "search": "Search superstars, matches, shows...",
+    "all": "All",
+    "dropdown": {
+      "matchSearch": "Match Search",
+      "segmentSearch": "Segment Search",
+      "allShows": "All Shows",
+      "allPLEs": "All PLEs",
+      "matchStipulations": "Match Stipulations",
+      "allArenas": "All Arenas",
+      "objectsUsed": "Objects Used",
+      "wrestlers": "Wrestlers",
+      "managers": "Managers",
+      "commentators": "Commentators",
+      "ringAnnouncers": "Ring Announcers",
+      "referees": "Referees",
+      "interviewers": "Interviewers",
+      "generalManagers": "General Managers",
+      "executives": "Executives",
+      "comparator": "Comparator",
+      "theTitleVault": "The Title Vault",
+      "majorAccolades": "Major Accolades",
+      "byTheNumbers": "By The Numbers",
+      "extremeMoments": "Extreme Moments",
+      "wtfMoments": "WTF Moments",
+      "sexyMoments": "Sexy Moments",
+      "greatestReturns": "Greatest Returns",
+      "greatestBetrayals": "Greatest Betrayals",
+      "mostEmotional": "Most Emotional",
+      "tagTeams": "Tag Teams",
+      "stables": "Stables",
+      "superstarRecords": "Superstar Records",
+      "championshipRecords": "Championship Records",
+      "matchRecords": "Match Records",
+      "tagTeamStable": "Tag Team & Stable",
+      "showEvent": "Show & Event",
+      "arenaRecords": "Arena Records",
+      "historicalMilestones": "Historical Milestones",
+      "hallOfFame": "Hall of Fame",
+      "slammyAwards": "Slammy Awards",
+      "yearEndAwards": "Year-End Awards"
+    }
   },
   "home": {
     "hero": {
-      "title": "The Ultimate WWE Database",
-      "subtitle": "Every superstar. Every match. Every moment. From 1953 to today."
+      "title": "PINFALL DATA",
+      "subtitleDesktop": "The ultimate WWE statistics database.",
+      "subtitleDesktop2": "Every Superstar. Every match. Every era. From 1953 to today.",
+      "subtitleMobile": "The ultimate WWE statistics database.",
+      "subtitleMobile2": "Every Superstar. Every match.",
+      "subtitleMobile3": "Every era. From 1953 to today."
     },
     "stats": {
       "superstars": "Superstars",
       "matches": "Matches",
       "shows": "Shows",
-      "years": "Years of History",
-      "championships": "Championships",
-      "matchTypes": "Match Types"
+      "yearsOfHistory": "Years of History",
+      "hallOfFamers": "Hall of Famers",
+      "titleChanges": "Title Changes",
+      "omgMoments": "OMG Moments",
+      "arenasWorldwide": "Arenas Worldwide",
+      "matchTypes": "Match Types",
+      "championships": "Championships"
     },
     "sections": {
+      "onThisDay": "On This Day",
+      "noEvents": "No notable events found for today.",
+      "wrestlingThroughTheAges": "Wrestling Through the Ages",
+      "showCalendar": "Show Calendar",
+      "hallOfLegends": "Hall of Legends",
+      "championshipTitles": "Championship Titles",
       "matchOfTheDay": "Match of the Day",
       "rivalryOfTheDay": "Rivalry of the Day",
       "quickAccess": "Quick Access",
       "latestResults": "Latest Results",
-      "timeline": "WWE Timeline"
+      "timeline": "WWE Timeline",
+      "wweOfficial": "WWE Official",
+      "browseAllMatches": "Browse all matches →",
+      "browseAllSegments": "Browse all segments →",
+      "bornToday": "Born Today",
+      "noBirthdaysToday": "No birthdays today"
+    },
+    "calendar": {
+      "filterShows": "Filter Shows",
+      "clearAll": "Clear all",
+      "months": {
+        "january": "January",
+        "february": "February",
+        "march": "March",
+        "april": "April",
+        "may": "May",
+        "june": "June",
+        "july": "July",
+        "august": "August",
+        "september": "September",
+        "october": "October",
+        "november": "November",
+        "december": "December"
+      },
+      "days": {
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat",
+        "sun": "Sun"
+      },
+      "more": "+{count} more"
     }
   },
   "superstars": {
@@ -46,8 +133,273 @@
       "alphabetical": "A-Z",
       "debut": "Debut Date",
       "matches": "Most Matches",
-      "titles": "Most Titles"
+      "titles": "Most Titles",
+      "era": "Era",
+      "brand": "Brand",
+      "gender": "Gender",
+      "nationality": "Nationality",
+      "male": "Male",
+      "female": "Female"
+    },
+    "profile": {
+      "biography": "Biography",
+      "statistics": "Statistics",
+      "championships": "Championships",
+      "matches": "Matches",
+      "tagTeams": "Tag Teams",
+      "stables": "Stables",
+      "hallOfFame": "Hall of Fame",
+      "timeline": "Timeline",
+      "gallery": "Gallery",
+      "moves": "Moves & Finishers",
+      "persona": "Persona",
+      "media": "Media",
+      "omgMoments": "OMG Moments",
+      "awards": "Awards",
+      "slammyAwards": "Slammy Awards",
+      "yearEndAwards": "Year-End Awards",
+      "objectsUsed": "Objects Used",
+      "roleData": "Role Data"
+    },
+    "info": {
+      "realName": "Real Name",
+      "birthDate": "Birth Date",
+      "birthPlace": "Birth Place",
+      "height": "Height",
+      "weight": "Weight",
+      "debut": "Debut",
+      "status": "Status",
+      "brand": "Brand",
+      "era": "Era",
+      "signatureMove": "Signature Move",
+      "finisher": "Finisher",
+      "nickname": "Nickname",
+      "trainer": "Trainer",
+      "yearsActive": "Years Active"
     }
+  },
+  "matches": {
+    "title": "Matches & Shows",
+    "search": {
+      "title": "Match Search",
+      "placeholder": "Search by superstar, show, match type...",
+      "filters": "Filters",
+      "results": "Results",
+      "noResults": "No matches found for these criteria.",
+      "clearFilters": "Clear Filters",
+      "year": "Year",
+      "show": "Show",
+      "matchType": "Match Type",
+      "superstar": "Superstar",
+      "brand": "Brand",
+      "rating": "Rating",
+      "titleMatch": "Title Match",
+      "mainEvent": "Main Event"
+    },
+    "detail": {
+      "participants": "Participants",
+      "winner": "Winner",
+      "matchType": "Match Type",
+      "stipulation": "Stipulation",
+      "duration": "Duration",
+      "rating": "Rating",
+      "titleChange": "Title Change",
+      "championship": "Championship",
+      "referee": "Referee",
+      "show": "Show",
+      "date": "Date",
+      "arena": "Arena",
+      "segment": "Segment",
+      "highlights": "Highlights",
+      "relatedMatches": "Related Matches"
+    },
+    "segments": {
+      "title": "Segment Search",
+      "types": "Segment Types"
+    },
+    "shows": {
+      "title": "All Shows",
+      "upcoming": "Upcoming",
+      "past": "Past",
+      "allSeries": "All Show Series"
+    },
+    "ple": {
+      "title": "Premium Live Events",
+      "subtitle": "The biggest events in WWE history"
+    },
+    "stipulations": {
+      "title": "Match Stipulations",
+      "subtitle": "Every match type in WWE history"
+    },
+    "arenas": {
+      "title": "All Arenas",
+      "subtitle": "Every venue that hosted WWE events"
+    },
+    "objects": {
+      "title": "Objects Used",
+      "subtitle": "Every weapon and foreign object used in WWE matches"
+    }
+  },
+  "champions": {
+    "title": "Champions",
+    "currentChampions": "Current Champions",
+    "since": "Since",
+    "reign": "Reign",
+    "day": "day",
+    "days": "days",
+    "defenses": "Defenses",
+    "titleVault": {
+      "title": "The Title Vault",
+      "subtitle": "Every championship in WWE history"
+    },
+    "majorAccolades": {
+      "title": "Major Accolades",
+      "subtitle": "The most prestigious accomplishments"
+    },
+    "byTheNumbers": {
+      "title": "By The Numbers",
+      "subtitle": "Championship statistics and records"
+    },
+    "detail": {
+      "reignHistory": "Reign History",
+      "champion": "Champion",
+      "wonAt": "Won at",
+      "lostAt": "Lost at",
+      "totalReigns": "Total Reigns",
+      "longestReign": "Longest Reign",
+      "shortestReign": "Shortest Reign",
+      "totalDays": "Total Days as Champion",
+      "mostDefenses": "Most Defenses",
+      "firstChampion": "First Champion",
+      "currentChampion": "Current Champion",
+      "vacant": "Vacant",
+      "active": "Active",
+      "retired": "Retired"
+    }
+  },
+  "history": {
+    "title": "WWE History",
+    "subtitle": "A journey through every era of professional wrestling",
+    "era": "Era",
+    "years": "years",
+    "keyEvents": "Key Events",
+    "notableSuperstars": "Notable Superstars",
+    "now": "Now"
+  },
+  "omg": {
+    "title": "OMG Moments",
+    "subtitle": "The most unforgettable moments in WWE history",
+    "extreme": "Extreme Moments",
+    "wtf": "WTF Moments",
+    "sexy": "Sexy Moments",
+    "returns": "Greatest Returns",
+    "betrayals": "Greatest Betrayals",
+    "emotional": "Most Emotional Moments",
+    "watchOnYouTube": "Watch on YouTube",
+    "show": "Show",
+    "year": "Year",
+    "involving": "Involving",
+    "category": "Category"
+  },
+  "tagTeams": {
+    "title": "Tag Teams & Stables",
+    "teams": "Tag Teams",
+    "stables": "Stables",
+    "members": "Members",
+    "activePeriod": "Active Period",
+    "championships": "Championships Won",
+    "matchesCount": "Matches Together",
+    "detail": {
+      "history": "History",
+      "matchHistory": "Match History",
+      "titleHistory": "Title History",
+      "currentMembers": "Current Members",
+      "formerMembers": "Former Members"
+    }
+  },
+  "records": {
+    "title": "Records & Statistics",
+    "subtitle": "The definitive WWE record book",
+    "superstars": "Superstar Records",
+    "championships": "Championship Records",
+    "matches": "Match Records",
+    "tagTeams": "Tag Team & Stable",
+    "shows": "Show & Event",
+    "arenas": "Arena Records",
+    "milestones": "Historical Milestones",
+    "rank": "Rank",
+    "record": "Record",
+    "holder": "Holder",
+    "value": "Value"
+  },
+  "hallOfFame": {
+    "title": "Hall of Fame & Awards",
+    "inductees": {
+      "title": "Hall of Fame Inductees",
+      "subtitle": "The legends immortalized in the WWE Hall of Fame",
+      "inductedIn": "Inducted in",
+      "class": "Class of",
+      "category": "Category"
+    },
+    "slammy": {
+      "title": "Slammy Awards",
+      "subtitle": "WWE's annual awards ceremony",
+      "winner": "Winner",
+      "year": "Year",
+      "award": "Award"
+    },
+    "yearEnd": {
+      "title": "Year-End Awards",
+      "subtitle": "Annual recognition of the best in WWE",
+      "category": "Category",
+      "winner": "Winner",
+      "year": "Year"
+    }
+  },
+  "rivalries": {
+    "title": "Rivalries",
+    "subtitle": "The greatest feuds in WWE history",
+    "participants": "Participants",
+    "period": "Period",
+    "matches": "Matches",
+    "keyMoments": "Key Moments"
+  },
+  "shows": {
+    "detail": {
+      "matchCard": "Match Card",
+      "segments": "Segments",
+      "arena": "Arena",
+      "date": "Date",
+      "attendance": "Attendance",
+      "brand": "Brand",
+      "matchCount": "Matches",
+      "mainEvent": "Main Event",
+      "results": "Results"
+    }
+  },
+  "search": {
+    "placeholder": "Search superstars, shows, championships, arenas...",
+    "recent": "Recent",
+    "searchAcross": "Search across",
+    "categories": {
+      "superstars": "Superstars",
+      "shows": "Shows",
+      "championships": "Championships",
+      "arenas": "Arenas",
+      "matchTypes": "Match Types",
+      "tagTeams": "Tag Teams",
+      "stables": "Stables",
+      "objects": "Objects"
+    },
+    "navigate": "navigate",
+    "select": "select",
+    "close": "close",
+    "results": "{count} result across {categories} category",
+    "resultsPlural": "{count} results across {categories} categories",
+    "noResults": "No results for",
+    "tryDifferent": "Try a different spelling or search term",
+    "tip": "Tip: Press",
+    "tipEnd": "to open search from anywhere"
   },
   "common": {
     "loading": "Loading...",
@@ -63,10 +415,56 @@
     "reign": "Reign",
     "reigns": "Reigns",
     "days": "days",
+    "day": "day",
     "duration": "Duration",
     "rating": "Rating",
     "result": "Result",
-    "winner": "Winner"
+    "winner": "Winner",
+    "loser": "Loser",
+    "draw": "Draw",
+    "noContest": "No Contest",
+    "vs": "vs",
+    "and": "and",
+    "of": "of",
+    "to": "to",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "seeMore": "See more",
+    "seeLess": "See less",
+    "close": "Close",
+    "open": "Open",
+    "yes": "Yes",
+    "no": "No",
+    "date": "Date",
+    "name": "Name",
+    "type": "Type",
+    "count": "Count",
+    "total": "Total",
+    "average": "Average",
+    "min": "Min",
+    "max": "Max",
+    "from": "From",
+    "present": "Present",
+    "now": "Now",
+    "unknown": "Unknown",
+    "none": "None",
+    "notAvailable": "N/A",
+    "match": "Match",
+    "showSingular": "Show",
+    "event": "Event",
+    "superstar": "Superstar",
+    "championship": "Championship",
+    "arena": "Arena",
+    "segment": "Segment",
+    "titleChange": "Title Change",
+    "mainEvent": "Main Event",
+    "darkMatch": "Dark Match",
+    "preshow": "Pre-show",
+    "active": "Active",
+    "inactive": "Inactive",
+    "retired": "Retired",
+    "deceased": "Deceased"
   },
   "footer": {
     "disclaimer": "Pinfall Data is a fan-made project created by a single passionate individual. All multimedia content, images, and YouTube videos are the property of WWE (World Wrestling Entertainment). This site is not affiliated with, endorsed by, or connected to WWE in any way.",
