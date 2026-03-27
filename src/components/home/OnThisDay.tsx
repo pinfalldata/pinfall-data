@@ -55,7 +55,7 @@ export function OnThisDay() {
         <div className="p-5 sm:p-6">
           <h2 className="font-display text-lg font-bold text-neon-blue flex items-center gap-2 mb-4">
             <span className="w-2 h-2 bg-neon-blue rounded-full animate-glow-pulse" />
-            On This Day
+            {t('home.sections.onThisDay')}
           </h2>
           <div className="h-56 sm:h-64 rounded-xl bg-bg-tertiary/30 animate-pulse" />
         </div>
@@ -69,7 +69,7 @@ export function OnThisDay() {
         <div className="p-5 sm:p-6">
           <h2 className="font-display text-lg font-bold text-neon-blue flex items-center gap-2 mb-4">
             <span className="w-2 h-2 bg-neon-blue rounded-full animate-glow-pulse" />
-            On This Day
+            {t('home.sections.onThisDay')}
           </h2>
           <p className="text-text-secondary text-sm">{t('home.sections.noEvents')}</p>
         </div>
@@ -85,7 +85,7 @@ export function OnThisDay() {
       <div className="px-5 sm:px-6 pt-5 sm:pt-6 pb-0 flex items-center justify-between">
         <h2 className="font-display text-lg font-bold text-neon-blue flex items-center gap-2">
           <span className="w-2 h-2 bg-neon-blue rounded-full animate-glow-pulse" />
-          On This Day
+          {t('home.sections.onThisDay')}
         </h2>
         <div className="flex items-center gap-1.5">
           <span className="px-2.5 py-1 rounded-lg bg-neon-blue/10 border border-neon-blue/20 text-neon-blue text-xs font-mono font-bold">

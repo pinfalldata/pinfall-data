@@ -79,7 +79,7 @@
       "noEvents": "आज के लिए कोई उल्लेखनीय घटना नहीं मिली।",
       "wrestlingThroughTheAges": "युगों के माध्यम से रेसलिंग",
       "showCalendar": "शो कैलेंडर",
-      "hallOfLegends": "हॉल ऑफ़ लेजेंड्स",
+      "hallOfLegends": "दिग्गजों का मंदिर",
       "championshipTitles": "चैंपियनशिप टाइटल्स",
       "matchOfTheDay": "आज का मैच",
       "rivalryOfTheDay": "आज की प्रतिद्वंद्विता",
@@ -90,7 +90,10 @@
       "browseAllMatches": "सभी मैच देखें →",
       "browseAllSegments": "सभी सेगमेंट देखें →",
       "bornToday": "आज जन्मदिन",
-      "noBirthdaysToday": "आज कोई जन्मदिन नहीं"
+      "noBirthdaysToday": "आज कोई जन्मदिन नहीं",
+      "latestMatches": "नवीनतम मैच",
+      "latestSegments": "नवीनतम सेगमेंट",
+      "wweLogos": "वर्षों में WWE के लोगो"
     },
     "calendar": {
       "filterShows": "शोज़ फ़िल्टर करें",

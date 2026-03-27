@@ -85,7 +85,7 @@ export function EraTimeline() {
     return (
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-10">
         <h2 className="font-display text-2xl lg:text-3xl font-bold text-text-white mb-6 text-center">
-          <span className="text-neon-blue">Wrestling</span> Through the Ages
+          {t('home.sections.wrestlingThroughTheAges')}
         </h2>
         <div className="flex gap-4 overflow-hidden">
           {Array.from({ length: 5 }).map((_, i) => (
@@ -103,7 +103,7 @@ export function EraTimeline() {
     <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-10">
       <div className="flex items-center justify-between mb-6">
         <h2 className="font-display text-2xl lg:text-3xl font-bold text-text-white">
-          <span className="text-neon-blue">Wrestling</span> Through the Ages
+          {t('home.sections.wrestlingThroughTheAges')}
         </h2>
         <div className="flex gap-2">
           <button onClick={() => scroll('left')} className="w-9 h-9 rounded-full border border-border-subtle/30 flex items-center justify-center text-text-secondary hover:text-neon-blue hover:border-neon-blue/30 transition-all">

@@ -90,7 +90,10 @@
       "browseAllMatches": "Browse all matches →",
       "browseAllSegments": "Browse all segments →",
       "bornToday": "Born Today",
-      "noBirthdaysToday": "No birthdays today"
+      "noBirthdaysToday": "No birthdays today",
+      "latestMatches": "Latest Matches",
+      "latestSegments": "Latest Segments",
+      "wweLogos": "WWE Logos Through the Years"
     },
     "calendar": {
       "filterShows": "Filter Shows",

@@ -90,7 +90,10 @@
       "browseAllMatches": "Tüm maçları gör →",
       "browseAllSegments": "Tüm segmentleri gör →",
       "bornToday": "Bugün Doğanlar",
-      "noBirthdaysToday": "Bugün doğum günü yok"
+      "noBirthdaysToday": "Bugün doğum günü yok",
+      "latestMatches": "Son Maçlar",
+      "latestSegments": "Son Segmentler",
+      "wweLogos": "Yıllar İçinde WWE Logoları"
     },
     "calendar": {
       "filterShows": "Şovları Filtrele",

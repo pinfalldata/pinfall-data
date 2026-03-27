@@ -80,7 +80,7 @@ export function WweLogosCarousel() {
   return (
     <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8">
       <h2 className="font-display text-xl lg:text-2xl font-bold text-text-white mb-5">
-        <span className="text-neon-blue">WWE</span> Through the Years
+        {t('home.sections.wweLogos')}
       </h2>
       <div className="overflow-hidden" onMouseEnter={pause} onMouseLeave={resume}
         onTouchStart={pause} onTouchEnd={() => resumeDelayed(2500)}>
@@ -109,6 +109,7 @@ export function WweLogosCarousel() {
    ★ Full birth date + bigger photo
    ══════════════════════════════════════════════════ */
 function BirthdayBlock({ birthdays }: { birthdays: any[] }) {
+  const t = useTranslations()
   const [idx, setIdx] = useState(0)
   if (!birthdays || birthdays.length === 0) return null
   const star = birthdays[idx]
@@ -123,7 +124,7 @@ function BirthdayBlock({ birthdays }: { birthdays: any[] }) {
       {/* Header */}
       <div className="px-4 pt-4 flex items-center justify-between">
         <h3 className="font-display text-sm font-bold text-neon-pink flex items-center gap-1.5">
-          <span className="text-base">🎂</span> Born Today
+          <span className="text-base">🎂</span> {t('home.sections.bornToday')}
         </h3>
         {birthdays.length > 1 && (
           <span className="text-[10px] text-text-secondary font-mono">{idx + 1}/{birthdays.length}</span>
@@ -240,7 +241,7 @@ function RecentMatchesBlock({ matches }: { matches: any[] }) {
   if (!matches || matches.length === 0) return null
   return (
     <div className="rounded-2xl border border-border-subtle/30 bg-bg-secondary/20 overflow-hidden">
-      <div className="px-5 pt-5"><h3 className="font-display text-base font-bold text-text-white flex items-center gap-2"><span className="text-neon-blue">🤼</span> Latest Matches</h3></div>
+      <div className="px-5 pt-5"><h3 className="font-display text-base font-bold text-text-white flex items-center gap-2"><span className="text-neon-blue">🤼</span> {t('home.sections.latestMatches')}</h3></div>
       <div className="p-4 space-y-2">
         {matches.map((m: any) => {
           const href = m.show?.slug && m.slug ? `/shows/${m.show.slug}/matches/${m.slug}` : '#'
@@ -275,7 +276,7 @@ function RecentSegmentsBlock({ segments }: { segments: any[] }) {
   if (!segments || segments.length === 0) return null
   return (
     <div className="rounded-2xl border border-border-subtle/30 bg-bg-secondary/20 overflow-hidden">
-      <div className="px-5 pt-5"><h3 className="font-display text-base font-bold text-text-white flex items-center gap-2"><span className="text-neon-pink">🎤</span> Latest Segments</h3></div>
+      <div className="px-5 pt-5"><h3 className="font-display text-base font-bold text-text-white flex items-center gap-2"><span className="text-neon-pink">🎤</span> {t('home.sections.latestSegments')}</h3></div>
       <div className="p-4 space-y-2">
         {segments.map((s: any) => {
           const href = s.show?.slug && s.slug ? `/shows/${s.show.slug}/segments/${s.slug}` : '#'
@@ -310,6 +311,7 @@ function RecentSegmentsBlock({ segments }: { segments: any[] }) {
    🏆 BELT CAROUSEL — 3:2 ratio, shimmer, translateX
    ══════════════════════════════════════════════════ */
 function BeltCarousel({ championships }: { championships: any[] }) {
+  const t = useTranslations()
   const { containerRef, start, stop, pause, resume, resumeDelayed } = useInfiniteScroll(0.4)
 
   useEffect(() => {
@@ -324,7 +326,7 @@ function BeltCarousel({ championships }: { championships: any[] }) {
   return (
     <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6">
       <h2 className="font-display text-lg font-bold text-text-white mb-4 text-center">
-        <span className="text-neon-blue">Championship</span> Titles
+        {t('home.sections.championshipTitles')}
       </h2>
       <div className="overflow-hidden" onMouseEnter={pause} onMouseLeave={resume}
         onTouchStart={pause} onTouchEnd={() => resumeDelayed(2500)}>

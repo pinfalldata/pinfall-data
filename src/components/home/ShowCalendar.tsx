@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 
 interface Show {
   id: number
@@ -23,6 +24,7 @@ const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
 export function ShowCalendar() {
+  const t = useTranslations()
   const now = new Date()
   const [year, setYear] = useState(now.getFullYear())
   const [month, setMonth] = useState(now.getMonth() + 1)
@@ -100,7 +102,7 @@ export function ShowCalendar() {
   return (
     <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-10">
       <h2 className="font-display text-2xl lg:text-3xl font-bold text-text-white mb-6 text-center">
-        <span className="text-neon-blue">Show</span> Calendar
+        {t('home.sections.showCalendar')}
       </h2>
 
       {/* Controls */}

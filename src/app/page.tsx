@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server'
 import { HeroRing } from '@/components/home/HeroRing'
 import { HomeStats } from '@/components/home/HomeStats'
 import { EraTimeline } from '@/components/home/EraTimeline'
@@ -12,7 +13,8 @@ import {
   HomeExtraSections,
 } from '@/components/home/HomeExtraSections'
 
-export default function HomePage() {
+export default async function HomePage() {
+  const t = await getTranslations()
   return (
     <HomepageDataProvider>
       <div className="relative">
@@ -52,7 +54,7 @@ export default function HomePage() {
         {/* 9. Hall of Legends */}
         <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8">
           <h2 className="font-display text-2xl lg:text-3xl font-bold text-text-white mb-5 text-center">
-            <span className="text-neon-pink">Hall</span> of Legends
+            {t('home.sections.hallOfLegends')}
           </h2>
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-5">
             <SuperstarGrid />

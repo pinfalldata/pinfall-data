@@ -70,7 +70,7 @@
       "hallOfFamers": "Hall of Famers",
       "titleChanges": "Changements de titre",
       "omgMoments": "Moments OMG",
-      "arenasWorldwide": "Arenas dans le monde",
+      "arenasWorldwide": "Arènes dans le monde",
       "matchTypes": "Types de match",
       "championships": "Championnats"
     },
@@ -79,7 +79,7 @@
       "noEvents": "Aucun événement notable trouvé pour aujourd'hui.",
       "wrestlingThroughTheAges": "Le catch à travers les âges",
       "showCalendar": "Calendrier des shows",
-      "hallOfLegends": "Hall of Legends",
+      "hallOfLegends": "Le Panthéon des légendes",
       "championshipTitles": "Titres de champion",
       "matchOfTheDay": "Match du jour",
       "rivalryOfTheDay": "Rivalité du jour",
@@ -90,7 +90,10 @@
       "browseAllMatches": "Tous les matchs →",
       "browseAllSegments": "Tous les segments →",
       "bornToday": "Nés aujourd'hui",
-      "noBirthdaysToday": "Aucun anniversaire aujourd'hui"
+      "noBirthdaysToday": "Aucun anniversaire aujourd'hui",
+      "latestMatches": "Derniers matchs",
+      "latestSegments": "Derniers segments",
+      "wweLogos": "Les logos WWE à travers les années"
     },
     "calendar": {
       "filterShows": "Filtrer les shows",

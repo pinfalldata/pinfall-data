@@ -79,7 +79,7 @@
       "noEvents": "Nenhum evento notável encontrado para hoje.",
       "wrestlingThroughTheAges": "Luta livre através das eras",
       "showCalendar": "Calendário de shows",
-      "hallOfLegends": "Hall of Legends",
+      "hallOfLegends": "Salão das lendas",
       "championshipTitles": "Títulos de campeonato",
       "matchOfTheDay": "Luta do dia",
       "rivalryOfTheDay": "Rivalidade do dia",
@@ -90,7 +90,10 @@
       "browseAllMatches": "Ver todas as lutas →",
       "browseAllSegments": "Ver todos os segmentos →",
       "bornToday": "Nascidos hoje",
-      "noBirthdaysToday": "Nenhum aniversário hoje"
+      "noBirthdaysToday": "Nenhum aniversário hoje",
+      "latestMatches": "Últimas lutas",
+      "latestSegments": "Últimos segmentos",
+      "wweLogos": "Logos da WWE ao longo dos anos"
     },
     "calendar": {
       "filterShows": "Filtrar shows",

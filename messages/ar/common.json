@@ -90,7 +90,10 @@
       "browseAllMatches": "عرض جميع المباريات ←",
       "browseAllSegments": "عرض جميع المقاطع ←",
       "bornToday": "وُلدوا اليوم",
-      "noBirthdaysToday": "لا توجد أعياد ميلاد اليوم"
+      "noBirthdaysToday": "لا توجد أعياد ميلاد اليوم",
+      "latestMatches": "أحدث المباريات",
+      "latestSegments": "أحدث المقاطع",
+      "wweLogos": "شعارات WWE عبر السنين"
     },
     "calendar": {
       "filterShows": "تصفية العروض",

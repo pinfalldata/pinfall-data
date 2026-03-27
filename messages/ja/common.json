@@ -90,7 +90,10 @@
       "browseAllMatches": "すべての試合を見る →",
       "browseAllSegments": "すべてのセグメントを見る →",
       "bornToday": "今日の誕生日",
-      "noBirthdaysToday": "今日の誕生日はありません"
+      "noBirthdaysToday": "今日の誕生日はありません",
+      "latestMatches": "最新の試合",
+      "latestSegments": "最新のセグメント",
+      "wweLogos": "歴代WWEロゴ"
     },
     "calendar": {
       "filterShows": "ショーをフィルター",

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 
 
@@ -9,6 +10,7 @@ interface Stat {
   label: string
   suffix?: string
   icon: string
+  href: string
 }
 
 export function HomeStats() {
@@ -22,15 +24,15 @@ export function HomeStats() {
       .then(r => r.json())
       .then(data => {
         setStats([
-          { value: data.superstars || 0, label: t('home.stats.superstars'), suffix: '+', icon: '🌟' },
-          { value: data.matches || 0, label: t('home.stats.matches'), suffix: '+', icon: '🥊' },
-          { value: data.shows || 0, label: t('home.stats.shows'), suffix: '+', icon: '🏟️' },
-          { value: data.yearsOfHistory || 70, label: t('home.stats.yearsOfHistory'), suffix: '+', icon: '📜' },
-          { value: data.hallOfFamers || 0, label: t('home.stats.hallOfFamers'), suffix: '+', icon: '🏛️' },
-          { value: data.titleChanges || 0, label: t('home.stats.titleChanges'), suffix: '+', icon: '🏆' },
-          { value: data.omgMoments || 0, label: t('omg.title'), suffix: '+', icon: '💥' },
-          { value: data.arenas || 0, label: t('home.stats.arenasWorldwide'), suffix: '+', icon: '🗺️' },
-          { value: data.matchTypes || 0, label: t('home.stats.matchTypes'), suffix: '+', icon: '⚔️' },
+          { value: data.superstars || 0, label: t('home.stats.superstars'), suffix: '+', icon: '🌟', href: '/superstars' },
+          { value: data.matches || 0, label: t('home.stats.matches'), suffix: '+', icon: '🥊', href: '/matches/search' },
+          { value: data.shows || 0, label: t('home.stats.shows'), suffix: '+', icon: '🏟️', href: '/matches' },
+          { value: data.yearsOfHistory || 70, label: t('home.stats.yearsOfHistory'), suffix: '+', icon: '📜', href: '/history' },
+          { value: data.hallOfFamers || 0, label: t('home.stats.hallOfFamers'), suffix: '+', icon: '🏛️', href: '/hall-of-fame' },
+          { value: data.titleChanges || 0, label: t('home.stats.titleChanges'), suffix: '+', icon: '🏆', href: '/champions' },
+          { value: data.omgMoments || 0, label: t('omg.title'), suffix: '+', icon: '💥', href: '/omg-moments' },
+          { value: data.arenas || 0, label: t('home.stats.arenasWorldwide'), suffix: '+', icon: '🗺️', href: '/matches/arenas' },
+          { value: data.matchTypes || 0, label: t('home.stats.matchTypes'), suffix: '+', icon: '⚔️', href: '/matches/stipulations' },
         ])
         setLoaded(true)
       })
@@ -63,7 +65,7 @@ export function HomeStats() {
 function AnimatedStat({ stat, delay }: { stat: Stat; delay: number }) {
   const [current, setCurrent] = useState(0)
   const [visible, setVisible] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
+  const ref = useRef<HTMLAnchorElement>(null)
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -102,17 +104,16 @@ function AnimatedStat({ stat, delay }: { stat: Stat; delay: number }) {
     : String(current)
 
   return (
-    <div
-      ref={ref}
-      className="group relative flex flex-col items-center justify-center py-4 sm:py-5 px-2 rounded-xl border border-border-subtle/20 bg-bg-secondary/20 hover:bg-bg-secondary/40 hover:border-neon-blue/20 transition-all duration-300"
+    <Link href={stat.href} ref={ref}
+      className="group relative flex flex-col items-center justify-center py-4 sm:py-5 px-2 rounded-xl border border-border-subtle/20 bg-bg-secondary/20 hover:bg-bg-secondary/40 hover:border-neon-blue/20 transition-all duration-300 cursor-pointer"
     >
-      <span className="text-lg sm:text-xl mb-1">{stat.icon}</span>
+      <span className="text-lg sm:text-xl mb-1 group-hover:scale-110 transition-transform duration-300">{stat.icon}</span>
       <span className="font-mono text-lg sm:text-2xl font-bold text-neon-blue tabular-nums">
         {formatted}{stat.suffix}
       </span>
-      <span className="text-[9px] sm:text-[10px] text-text-secondary uppercase tracking-wider mt-0.5 text-center leading-tight">
+      <span className="text-[9px] sm:text-[10px] text-text-secondary uppercase tracking-wider mt-0.5 text-center leading-tight group-hover:text-neon-blue/70 transition-colors">
         {stat.label}
       </span>
-    </div>
+    </Link>
   )
 }
