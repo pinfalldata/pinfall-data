@@ -1,10 +1,14 @@
+'use client'
+
 import {
   formatDate, formatHeight, formatWeight, calculateAge,
   calculateCareerYears, getGenderLabel, getRoleLabels,
 } from '@/lib/utils'
 import { ShareButtons } from '@/components/ui/ShareButtons'
+import { useTranslations } from 'next-intl'
 
 export function ProfileInfoBar({ superstar }: { superstar: any }) {
+  const t = useTranslations()
   const age = calculateAge(superstar.birth_date, superstar.death_date)
   const careerYears = calculateCareerYears(superstar.debut_date, superstar.retirement_date)
 
