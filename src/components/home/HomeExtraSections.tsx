@@ -12,8 +12,6 @@ import { useTranslations } from 'next-intl'
 const HomepageDataCtx = createContext<any>(null)
 
 export function HomepageDataProvider({ children }: { children: React.ReactNode }) {
-  const t = useTranslations()
-
   const [data, setData] = useState<any>(null)
   useEffect(() => {
     fetch('/api/homepage-data')
@@ -64,6 +62,7 @@ function useInfiniteScroll(speed: number = 0.5) {
    WWE LOGOS CAROUSEL
    ══════════════════════════════════════════════════ */
 export function WweLogosCarousel() {
+  const t = useTranslations()
   const [logos, setLogos] = useState<any[]>([])
   const { containerRef, start, stop, pause, resume, resumeDelayed } = useInfiniteScroll(0.5)
 
@@ -237,6 +236,7 @@ function ParticipantsVs({ participants }: { participants: any[] }) {
    RECENT MATCHES — with VS
    ══════════════════════════════════════════════════ */
 function RecentMatchesBlock({ matches }: { matches: any[] }) {
+  const t = useTranslations()
   if (!matches || matches.length === 0) return null
   return (
     <div className="rounded-2xl border border-border-subtle/30 bg-bg-secondary/20 overflow-hidden">
@@ -271,6 +271,7 @@ function RecentMatchesBlock({ matches }: { matches: any[] }) {
    RECENT SEGMENTS
    ══════════════════════════════════════════════════ */
 function RecentSegmentsBlock({ segments }: { segments: any[] }) {
+  const t = useTranslations()
   if (!segments || segments.length === 0) return null
   return (
     <div className="rounded-2xl border border-border-subtle/30 bg-bg-secondary/20 overflow-hidden">

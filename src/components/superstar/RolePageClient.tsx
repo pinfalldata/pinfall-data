@@ -203,6 +203,7 @@ export default function RolePageClient({ config }: { config: RoleConfig }) {
 
 /* ============================================================ PERSON CARD */
 function PCard({p,config,guestsOnly}:{p:Person;config:RoleConfig;guestsOnly:boolean}){
+  const t = useTranslations()
   const roleLabel = (r: string|null) => r ? r.charAt(0).toUpperCase()+r.slice(1).replace(/_/g,' ') : ''
   return(
     <Link href={`/superstars/${p.slug}`} className="group relative rounded-2xl border border-border-subtle/20 bg-bg-secondary/20 overflow-hidden transition-all duration-300 hover:border-neon-blue/20 hover:bg-bg-secondary/30 active:scale-[0.98]">

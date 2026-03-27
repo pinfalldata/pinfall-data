@@ -385,6 +385,7 @@ function IntR({ d }: { d: any }) {
 
 /* ======== GM CARD ======== */
 function GMC({ d }: { d: any }) {
+  const t = useTranslations()
   return <div className="relative rounded-2xl border border-border-subtle/20 bg-gradient-to-br from-bg-secondary/50 via-bg-secondary/20 to-transparent overflow-hidden mb-8">
     <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-neon-blue/70 to-transparent" />
     <div className="p-6 sm:p-10 flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
@@ -411,6 +412,7 @@ function GMC({ d }: { d: any }) {
 
 /* ======== EXEC CARD ======== */
 function ExC({ d }: { d: any }) {
+  const t = useTranslations()
   return <div className="relative rounded-2xl border border-border-subtle/20 bg-gradient-to-br from-bg-secondary/50 via-bg-secondary/20 to-transparent overflow-hidden mb-8">
     <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-yellow-500/60 to-transparent" />
     <div className="p-6 sm:p-10 flex flex-col sm:flex-row items-center gap-6 sm:gap-8">

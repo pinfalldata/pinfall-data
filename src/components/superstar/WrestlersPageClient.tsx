@@ -217,6 +217,7 @@ export default function WrestlersPageClient() {
 
 /* ============================================================ WRESTLER CARD — reduced neon */
 function WCard({w}:{w:Wrestler}){
+  const t = useTranslations()
   return(
     <Link href={`/superstars/${w.slug}`} className="group relative rounded-2xl border border-border-subtle/20 bg-bg-secondary/20 overflow-hidden transition-all duration-300 hover:border-neon-blue/20 hover:bg-bg-secondary/30 active:scale-[0.98]">
       <div className="relative aspect-square bg-bg-tertiary overflow-hidden">

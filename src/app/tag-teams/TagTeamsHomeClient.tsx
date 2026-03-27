@@ -76,6 +76,7 @@ export function TagTeamsHomeClient() {
 }
 
 function TeamCard({ data }: { data: any }) {
+  const t = useTranslations()
   const item = data.data
   const members = (data.members || []).map((m: any) => m.superstar).filter(Boolean)
   const type = data.type

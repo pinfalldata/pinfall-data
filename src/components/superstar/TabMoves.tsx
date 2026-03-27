@@ -31,6 +31,7 @@ export function TabMoves({ superstar }: { superstar: any }) {
 }
 
 function MoveCard({ move, color }: { move: any; color: 'blue' | 'pink' }) {
+  const t = useTranslations()
   const border = color === 'blue' ? 'border-neon-blue/20 hover:border-neon-blue/40' : 'border-neon-pink/20 hover:border-neon-pink/40'
   const nameColor = color === 'blue' ? 'text-neon-blue' : 'text-neon-pink'
   return (

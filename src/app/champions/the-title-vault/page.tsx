@@ -51,6 +51,7 @@ function SSrch({ value, onSel, onClr }: { value: string; onSel: (id: string, n: 
 }
 
 export default function TitleVaultPage() {
+  const t = useTranslations()
   const [championships, setChampionships] = useState<Championship[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'active' | 'retired'>('all')
@@ -202,6 +203,7 @@ export default function TitleVaultPage() {
 }
 
 function ChampCard({ c }: { c: Championship }) {
+  const t = useTranslations()
   return (
     <Link href={`/champions/${c.slug}`} className="group relative rounded-2xl border border-border-subtle/20 bg-bg-secondary/10 overflow-hidden transition-all hover:border-neon-blue/30 hover:shadow-lg hover:shadow-neon-blue/5">
       <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
