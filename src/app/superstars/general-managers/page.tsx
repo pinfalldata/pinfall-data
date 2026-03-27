@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 const config = {
   roleKey: 'general_manager',
-  title: t('nav.dropdown.generalManagers'),
+  title: 'General Managers',
   heroImage: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/001_SD_10112011cm_0003--80905300aa008c0520ef7777f22d1dbd.jpg',
   heroDescription: 'The authority figures who ran the show. General Managers who booked main events, sparked rivalries, and wielded power across Raw, SmackDown, and beyond.',
   statLabel: 'tenure(s)',

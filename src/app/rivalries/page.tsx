@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: t('rivalries.title'),
+  title: 'Rivalries',
   description: 'The greatest feuds in wrestling history',
 }
 

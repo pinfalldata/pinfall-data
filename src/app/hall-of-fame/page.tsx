@@ -2,20 +2,16 @@
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useTranslations } from 'next-intl'
-
 
 const HERO = 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20Hall%20Of%20Fame/001_HOF_04182025BR_39974--583760acde344767169ba5177e7d6106.jpg'
 
 const SECTIONS = [
-  { title: t('nav.dropdown.hallOfFame'), description: 'The immortals of professional wrestling — every inductee in WWE Hall of Fame history.', href: '/hall-of-fame/inductees', icon: '🏛️', accent: 'neon-blue' },
-  { title: t('nav.dropdown.slammyAwards'), description: 'The prestigious Slammy Awards — honoring the best performers, moments, and matches of each year.', href: '/hall-of-fame/slammy-awards', icon: '🏆', accent: 'neon-pink' },
-  { title: t('nav.dropdown.yearEndAwards'), description: 'Annual year-end honors recognizing the top superstars, matches, and storylines.', href: '/hall-of-fame/year-end-awards', icon: '🎖️', accent: 'neon-blue' },
+  { title: 'Hall of Fame', description: 'The immortals of professional wrestling — every inductee in WWE Hall of Fame history.', href: '/hall-of-fame/inductees', icon: '🏛️', accent: 'neon-blue' },
+  { title: 'Slammy Awards', description: 'The prestigious Slammy Awards — honoring the best performers, moments, and matches of each year.', href: '/hall-of-fame/slammy-awards', icon: '🏆', accent: 'neon-pink' },
+  { title: 'Year-End Awards', description: 'Annual year-end honors recognizing the top superstars, matches, and storylines.', href: '/hall-of-fame/year-end-awards', icon: '🎖️', accent: 'neon-blue' },
 ]
 
 export default function HallOfFameMainPage() {
-  const t = useTranslations()
-
   const [data, setData] = useState<any>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
 
@@ -68,8 +64,8 @@ export default function HallOfFameMainPage() {
         {data?.counts && (
           <div className="flex items-center justify-center gap-8 mt-8">
             <div className="text-center"><span className="text-2xl font-display font-bold text-neon-blue">{data.counts.hof}</span><p className="text-[10px] text-text-secondary uppercase tracking-wider">Inductees</p></div>
-            <div className="text-center"><span className="text-2xl font-display font-bold text-neon-blue">{data.counts.slammy}</span><p className="text-[10px] text-text-secondary uppercase tracking-wider">{t('nav.dropdown.slammyAwards')}</p></div>
-            <div className="text-center"><span className="text-2xl font-display font-bold text-neon-blue">{data.counts.yearEnd}</span><p className="text-[10px] text-text-secondary uppercase tracking-wider">{t('nav.dropdown.yearEndAwards')}</p></div>
+            <div className="text-center"><span className="text-2xl font-display font-bold text-neon-blue">{data.counts.slammy}</span><p className="text-[10px] text-text-secondary uppercase tracking-wider">Slammy Awards</p></div>
+            <div className="text-center"><span className="text-2xl font-display font-bold text-neon-blue">{data.counts.yearEnd}</span><p className="text-[10px] text-text-secondary uppercase tracking-wider">Year-End Awards</p></div>
           </div>
         )}
       </section>
@@ -78,7 +74,7 @@ export default function HallOfFameMainPage() {
       {data?.spotlight && data.spotlight.length > 0 && (
         <section className="max-w-[1440px] mx-auto px-4 sm:px-6 pb-12">
           <div className="flex items-center justify-between mb-5">
-            <h2 className="font-display text-xl font-bold text-text-white">Honored <span className="text-neon-blue">{t('home.stats.superstars')}</span></h2>
+            <h2 className="font-display text-xl font-bold text-text-white">Honored <span className="text-neon-blue">Superstars</span></h2>
             <div className="flex items-center gap-2">
               <button onClick={() => scroll(-1)} className="w-8 h-8 rounded-lg border border-border-subtle/30 flex items-center justify-center text-text-secondary hover:text-text-white transition-all">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
@@ -97,7 +93,7 @@ export default function HallOfFameMainPage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/70 to-transparent" />
                   <div className="absolute bottom-1.5 left-1.5 right-1.5">
                     <p className="text-[10px] text-text-white font-bold truncate">{s.name}</p>
-                    <p className="text-[8px] text-neon-blue uppercase">{s.source === 'hof' ? t('nav.dropdown.hallOfFame') : s.source === 'slammy' ? 'Slammy' : 'Year-End'} · {s.year}</p>
+                    <p className="text-[8px] text-neon-blue uppercase">{s.source === 'hof' ? 'Hall of Fame' : s.source === 'slammy' ? 'Slammy' : 'Year-End'} · {s.year}</p>
                   </div>
                 </div>
               </Link>
@@ -109,7 +105,7 @@ export default function HallOfFameMainPage() {
       {/* SEO */}
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8">
         <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/10 p-6 sm:p-8">
-          <h2 className="font-display text-xl font-bold text-text-white mb-3">About <span className="text-neon-blue">{t('hallOfFame.title')}</span></h2>
+          <h2 className="font-display text-xl font-bold text-text-white mb-3">About <span className="text-neon-blue">Hall of Fame & Awards</span></h2>
           <p className="text-text-secondary text-sm leading-relaxed">The complete history of WWE&apos;s most prestigious honors. Browse every Hall of Fame inductee, Slammy Award winner, and year-end honoree — with photos, categories, and induction details.</p>
         </div>
       </section>

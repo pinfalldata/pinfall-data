@@ -3,8 +3,6 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useTranslations } from 'next-intl'
-
 
 interface CurrentChampion {
   id: number; name: string; slug: string; image_url: string | null; status: string
@@ -27,21 +25,21 @@ function formatDate(d: string | null) {
 
 const SUB_PAGES = [
   {
-    title: t('champions.titleVault.title'),
+    title: 'The Title Vault',
     href: '/champions/the-title-vault',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20champions/cena.webp',
     desc: 'Every championship in WWE history — active and retired.',
     icon: '🏆',
   },
   {
-    title: t('champions.majorAccolades.title'),
+    title: 'Major Accolades',
     href: '/champions/major-accolades',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20champions/flair.webp',
     desc: 'Grand Slams, Triple Crowns, and milestone achievements.',
     icon: '🏅',
   },
   {
-    title: t('champions.byTheNumbers.title'),
+    title: 'By The Numbers',
     href: '/champions/by-the-numbers',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20champions/bruno.webp',
     desc: 'Championship statistics, records, and data breakdowns.',
@@ -50,8 +48,6 @@ const SUB_PAGES = [
 ]
 
 export default function ChampionsPage() {
-  const t = useTranslations()
-
   const [champs, setChamps] = useState<CurrentChampion[]>([])
   const [loading, setLoading] = useState(true)
 

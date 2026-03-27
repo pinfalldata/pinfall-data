@@ -5,8 +5,6 @@ import { useParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { StarRating } from '@/components/ui/StarRating'
-import { useTranslations } from 'next-intl'
-
 
 interface MatchType {
   id: number; name: string; slug: string; description: string | null
@@ -59,7 +57,7 @@ const categoryIcons: Record<string, string> = {
 
 const resultLabels: Record<string, string> = {
   pinfall: 'Pinfall', submission: 'Submission', dq: 'Disqualification',
-  count_out: 'Count Out', no_contest: t('common.noContest'), forfeit: 'Forfeit',
+  count_out: 'Count Out', no_contest: 'No Contest', forfeit: 'Forfeit',
   ko: 'Knockout', referee_stoppage: 'Referee Stoppage', escape: 'Escape',
   retrieve: 'Retrieve', last_elimination: 'Last Elimination',
   time_limit_draw: 'Time Limit Draw', other: 'Other',
@@ -100,8 +98,6 @@ const defaultFilters: Filters = {
 }
 
 export default function StipulationDetailPage() {
-  const t = useTranslations()
-
   const params = useParams()
   const slug = params.slug as string
 
@@ -308,7 +304,7 @@ export default function StipulationDetailPage() {
                 )}
                 {stats.titleChangeCount > 0 && (
                   <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-bg-tertiary/50 border border-border-subtle/20">
-                    <span className="text-[10px] text-text-secondary uppercase tracking-wider">{t('home.stats.titleChanges')}</span>
+                    <span className="text-[10px] text-text-secondary uppercase tracking-wider">Title Changes</span>
                     <span className="text-yellow-400 font-bold text-sm">{stats.titleChangeCount} ({stats.titleChangePercentage}%)</span>
                   </div>
                 )}
@@ -360,18 +356,18 @@ export default function StipulationDetailPage() {
         {showFilters && (
           <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-4 sm:p-5 mb-6 animate-fade-in">
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-              <FilterSel label={t('matches.search.year')} value={filters.year} set={v => upd('year', v)}
-                opts={YEARS.map(y => ({ value: String(y), label: String(y) }))} ph={t('common.allYears')} />
+              <FilterSel label="Year" value={filters.year} set={v => upd('year', v)}
+                opts={YEARS.map(y => ({ value: String(y), label: String(y) }))} ph="All years" />
               {filters.year && <FilterSel label="Month" value={filters.month} set={v => upd('month', v)}
-                opts={Array.from({ length: 12 }, (_, i) => ({ value: String(i + 1), label: new Date(2000, i).toLocaleString('en-US', { month: 'long' }) }))} ph={t('common.allMonths')} />}
+                opts={Array.from({ length: 12 }, (_, i) => ({ value: String(i + 1), label: new Date(2000, i).toLocaleString('en-US', { month: 'long' }) }))} ph="All months" />}
               <FilterSel label="Show" value={filters.showSeriesId} set={v => upd('showSeriesId', v)}
-                opts={opts.showSeries.map(s => ({ value: String(s.id), label: s.name }))} ph={t('common.allPromotions')} />
+                opts={opts.showSeries.map(s => ({ value: String(s.id), label: s.name }))} ph="All promotions" />
               <FilterSel label="Min Rating" value={filters.minRating} set={v => upd('minRating', v)}
-                opts={Array.from({ length: 11 }, (_, i) => ({ value: String(i), label: `${i}+/10` }))} ph={t('common.anyRating')} />
+                opts={Array.from({ length: 11 }, (_, i) => ({ value: String(i), label: `${i}+/10` }))} ph="Any rating" />
               <FilterSel label="Finish Type" value={filters.resultType} set={v => upd('resultType', v)}
-                opts={RESULT_TYPES} ph={t('common.anyFinish')} />
+                opts={RESULT_TYPES} ph="Any finish" />
               <FilterSel label="Country" value={filters.country} set={v => upd('country', v)}
-                opts={opts.countries.map(c => ({ value: c, label: c }))} ph={t('common.allCountries')} />
+                opts={opts.countries.map(c => ({ value: c, label: c }))} ph="All countries" />
               <div className="flex flex-col gap-1">
                 <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">City</label>
                 <input type="text" value={filters.city} onChange={e => upd('city', e.target.value)} placeholder="e.g. New York"
@@ -438,11 +434,11 @@ export default function StipulationDetailPage() {
           <>
             {/* Desktop header */}
             <div className="hidden lg:grid lg:grid-cols-[100px_60px_1fr_180px_80px] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-2">
-              <span>{t('shows.detail.date')}</span>
+              <span>Date</span>
               <span>Show</span>
-              <span>{t('matches.detail.participants')}</span>
+              <span>Participants</span>
               <span>Championship</span>
-              <span className="text-center">{t('common.rating')}</span>
+              <span className="text-center">Rating</span>
             </div>
 
             <div className="space-y-0.5">
@@ -541,7 +537,7 @@ export default function StipulationDetailPage() {
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8">
         <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/10 p-6 sm:p-8">
           <h2 className="font-display text-xl font-bold text-text-white mb-3">
-            <span className="text-neon-blue">{matchType?.name || t('matches.search.matchType')}</span> — Complete Match History
+            <span className="text-neon-blue">{matchType?.name || 'Match Type'}</span> — Complete Match History
           </h2>
           <p className="text-text-secondary text-sm leading-relaxed">
             This page lists every {matchType?.name || 'match of this type'} in WWE history, from the first recorded bout

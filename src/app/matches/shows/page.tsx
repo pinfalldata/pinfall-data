@@ -213,6 +213,7 @@ export default function ShowSeriesListPage() {
 
 /* ===== Show Series Card — bigger logos + end year for inactive ===== */
 function ShowSeriesCard({ series }: { series: ShowSeries }) {
+  const t = useTranslations()
   const startYear = formatYear(series.first_episode_date)
   const endYear = series.end_year || (series.last_show_date ? formatYear(series.last_show_date) : null)
   const yearStr = startYear

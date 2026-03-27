@@ -3,8 +3,6 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useTranslations } from 'next-intl'
-
 
 const HERO = 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20Stats%20&%20Records/gettyimages-2147580012-2048x2048-processed_lightpdf.com__2026-03-21_17_29_20.889618.jpg.png'
 
@@ -19,8 +17,6 @@ const TABS = [
 ]
 
 export default function SuperstarRecordsPage() {
-  const t = useTranslations()
-
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState('mostMatches')
@@ -76,7 +72,7 @@ export default function SuperstarRecordsPage() {
         )}
       </section>
 
-      <SeoBlock title={t('records.superstars')} text="The most comprehensive WWE superstar record book ever compiled. Every stat is computed from our database of 100,000+ matches spanning 70+ years of professional wrestling history." />
+      <SeoBlock title="Superstar Records" text="The most comprehensive WWE superstar record book ever compiled. Every stat is computed from our database of 100,000+ matches spanning 70+ years of professional wrestling history." />
     </div>
   )
 }
@@ -132,10 +128,10 @@ function Podium({ items, tab }: { items: any[]; tab: string }) {
 
 function getValueLabel(tab: string): string {
   const m: Record<string, string> = {
-    mostMatches: t('home.stats.matches'), mostWins: t('common.wins'), bestWinRate: t('common.winRate'),
-    mostReigns: t('common.reigns'), mostChampionshipDays: 'Days', mostFiveStar: '5★ Matches', longestCareer: 'Years',
+    mostMatches: 'Matches', mostWins: 'Wins', bestWinRate: 'Win Rate',
+    mostReigns: 'Reigns', mostChampionshipDays: 'Days', mostFiveStar: '5★ Matches', longestCareer: 'Years',
   }
-  return m[tab] || t('records.value')
+  return m[tab] || 'Value'
 }
 
 function formatValue(item: any, tab: string): string {

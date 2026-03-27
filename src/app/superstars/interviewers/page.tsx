@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 const config = {
   roleKey: 'interviewer',
-  title: t('nav.dropdown.interviewers'),
+  title: 'Interviewers',
   heroImage: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/interview.jpg',
   heroDescription: 'The personalities who captured the emotion, the drama, and the stories behind every rivalry. WWE interviewers who brought backstage to life.',
   statLabel: 'interviews',

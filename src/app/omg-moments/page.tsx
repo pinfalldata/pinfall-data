@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 const CATEGORIES = [
   {
     key: 'extreme',
-    label: t('omg.extreme'),
+    label: 'Extreme Moments',
     href: '/omg-moments/extreme-moments',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20OMG%20Moments/makind.webp',
     description: 'Death-defying stunts, insane bumps, and the most brutal spots ever.',
@@ -26,7 +26,7 @@ const CATEGORIES = [
   },
   {
     key: 'wtf',
-    label: t('omg.wtf'),
+    label: 'WTF Moments',
     href: '/omg-moments/wtf-moments',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20OMG%20Moments/bliss.webp',
     description: 'The most bizarre, unexplainable, and jaw-dropping WTF moments.',
@@ -34,7 +34,7 @@ const CATEGORIES = [
   },
   {
     key: 'sexy',
-    label: t('omg.sexy'),
+    label: 'Sexy Moments',
     href: '/omg-moments/sexy-moments',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20OMG%20Moments/cargil.webp',
     description: 'The hottest, most provocative moments that set the screen on fire.',
@@ -42,7 +42,7 @@ const CATEGORIES = [
   },
   {
     key: 'return',
-    label: t('omg.returns'),
+    label: 'Greatest Returns',
     href: '/omg-moments/greatest-returns',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20OMG%20Moments/punk.webp',
     description: 'When legends come back and the arena erupts — the greatest returns ever.',
@@ -50,7 +50,7 @@ const CATEGORIES = [
   },
   {
     key: 'betrayal',
-    label: t('omg.betrayals'),
+    label: 'Greatest Betrayals',
     href: '/omg-moments/greatest-betrayals',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20OMG%20Moments/randy.webp',
     description: 'Backstabs, heel turns, and the most devastating betrayals in history.',
@@ -58,7 +58,7 @@ const CATEGORIES = [
   },
   {
     key: 'emotional',
-    label: t('omg.emotional'),
+    label: 'Most Emotional Moments',
     href: '/omg-moments/most-emotional-moments',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20OMG%20Moments/bianca.webp',
     description: 'Tears, ovations, retirements, and tributes that moved the world.',

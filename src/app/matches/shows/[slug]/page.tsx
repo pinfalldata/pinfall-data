@@ -6,8 +6,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ShareButtons } from '@/components/ui/ShareButtons'
 import { OMGBadge } from '@/components/ui/OMGBadge'
-import { useTranslations } from 'next-intl'
-
 
 interface Series {
   id: number; name: string; slug: string; short_name: string | null
@@ -54,7 +52,7 @@ function formatDuration(s: number) {
 
 const resultLabels: Record<string, string> = {
   pinfall: 'Pinfall', submission: 'Submission', dq: 'Disqualification',
-  count_out: 'Count Out', no_contest: t('common.noContest'), forfeit: 'Forfeit',
+  count_out: 'Count Out', no_contest: 'No Contest', forfeit: 'Forfeit',
   ko: 'Knockout', referee_stoppage: 'Referee Stoppage', escape: 'Escape',
   retrieve: 'Retrieve', last_elimination: 'Last Elimination',
   time_limit_draw: 'Time Limit Draw', other: 'Other',
@@ -70,14 +68,12 @@ const showTypeLabels: Record<string, string> = {
 }
 
 const tabLabels: Record<TabKey, string> = {
-  episodes: 'Episodes', superstars: t('home.stats.superstars'), referees: t('nav.dropdown.referees'),
-  commentators: t('nav.dropdown.commentators'), announcers: t('nav.dropdown.ringAnnouncers'),
-  interviewers: t('nav.dropdown.interviewers'), stats: 'Stats',
+  episodes: 'Episodes', superstars: 'Superstars', referees: 'Referees',
+  commentators: 'Commentators', announcers: 'Ring Announcers',
+  interviewers: 'Interviewers', stats: 'Stats',
 }
 
 export default function ShowSeriesDetailPage() {
-  const t = useTranslations()
-
   const params = useParams()
   const slug = params.slug as string
 
@@ -344,7 +340,7 @@ export default function ShowSeriesDetailPage() {
               {series.is_active && (
                 <div className="flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-emerald-400 font-medium text-xs">{t('common.active')}</span>
+                  <span className="text-emerald-400 font-medium text-xs">Active</span>
                 </div>
               )}
             </div>
@@ -399,7 +395,7 @@ export default function ShowSeriesDetailPage() {
           <div className="mb-6 rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-4">
             <div className="flex items-center gap-2 mb-3">
               <svg className="w-4 h-4 text-neon-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
-              <span className="text-xs font-bold text-neon-blue uppercase tracking-wider">{t('matches.search.filters')}</span>
+              <span className="text-xs font-bold text-neon-blue uppercase tracking-wider">Filters</span>
               {(filterYear || filterMonth || filterShowType || filterArenaId || filterState || filterCity || filterCountry) && (
                 <button
                   onClick={() => { setFilterYear(''); setFilterMonth(''); setFilterShowType(''); setFilterArenaId(''); setFilterState(''); setFilterCity(''); setFilterCountry('') }}
@@ -433,7 +429,7 @@ export default function ShowSeriesDetailPage() {
               {/* Arena */}
               <select value={filterArenaId} onChange={e => setFilterArenaId(e.target.value)}
                 className="text-xs bg-bg-tertiary/50 border border-border-subtle/30 rounded-lg px-3 py-2 text-text-white focus:border-neon-blue/50 focus:outline-none transition-colors">
-                <option value="">{t('matches.arenas.title')}</option>
+                <option value="">All Arenas</option>
                 {filterOptions.arenas.map(a => <option key={a.id} value={String(a.id)}>{a.name}</option>)}
               </select>
               {/* Country */}
@@ -483,7 +479,7 @@ export default function ShowSeriesDetailPage() {
           ) : episodes.length > 0 ? (
             <>
               <div className="hidden lg:grid lg:grid-cols-[120px_1fr_100px_1fr_160px_100px] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-2">
-                <span>{t('shows.detail.date')}</span><span>Show</span><span>Type</span><span>Venue</span><span>Location</span><span className="text-right">{t('shows.detail.attendance')}</span>
+                <span>Date</span><span>Show</span><span>Type</span><span>Venue</span><span>Location</span><span className="text-right">Attendance</span>
               </div>
               <div className="space-y-1">
                 {episodes.map(ep => (
@@ -616,7 +612,7 @@ export default function ShowSeriesDetailPage() {
       {/* ===== STATS TAB ===== */}
       {activeTab === 'stats' && (
         <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8">
-          <h2 className="font-display text-lg font-bold text-text-white mb-6">{t('superstars.profile.statistics')}</h2>
+          <h2 className="font-display text-lg font-bold text-text-white mb-6">Statistics</h2>
           {statsLoading || !stats ? (
             <div className="space-y-4">
               {Array.from({ length: 4 }).map((_, i) => <div key={i} className="h-20 rounded-2xl bg-bg-secondary/30 animate-pulse" />)}
@@ -627,10 +623,10 @@ export default function ShowSeriesDetailPage() {
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
                 {[
                   { label: 'Total Shows', value: stats.totalShows.toLocaleString(), color: 'text-neon-blue' },
-                  { label: t('common.totalMatches'), value: stats.totalMatches.toLocaleString(), color: 'text-text-white' },
+                  { label: 'Total Matches', value: stats.totalMatches.toLocaleString(), color: 'text-text-white' },
                   { label: 'Avg Rating', value: stats.avgRating ? `${stats.avgRating}★` : '—', color: 'text-yellow-400' },
                   { label: 'Avg Duration', value: stats.avgDuration ? formatDuration(stats.avgDuration) : '—', color: 'text-text-white' },
-                  { label: t('home.stats.titleChanges'), value: stats.totalTitleChanges.toLocaleString(), color: 'text-yellow-400' },
+                  { label: 'Title Changes', value: stats.totalTitleChanges.toLocaleString(), color: 'text-yellow-400' },
                   { label: 'Title Change %', value: `${stats.titleChangePercentage}%`, color: 'text-text-white' },
                 ].map((s, i) => (
                   <div key={i} className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-4 text-center">
