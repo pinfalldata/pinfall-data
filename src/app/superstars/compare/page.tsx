@@ -2,6 +2,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+
 
 const HERO = 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/whatistheexcel-2-e1455555433890_2026-03-22_10_41_26.754419.jpg.png'
 const COLORS = ['#c7a05a', '#3b82f6', '#ef4444', '#22c55e']
@@ -19,26 +21,28 @@ interface ComparedStar {
 }
 
 const STAT_ROWS: { key: string; label: string; format?: (v: any) => string; higher?: boolean }[] = [
-  { key: 'total_matches', label: 'Total Matches', higher: true },
-  { key: 'wins', label: 'Wins', higher: true },
-  { key: 'losses', label: 'Losses', higher: false },
-  { key: 'draws', label: 'Draws' },
-  { key: 'win_rate', label: 'Win Rate', format: v => `${v}%`, higher: true },
+  { key: 'total_matches', label: t('common.totalMatches'), higher: true },
+  { key: 'wins', label: t('common.wins'), higher: true },
+  { key: 'losses', label: t('common.losses'), higher: false },
+  { key: 'draws', label: t('common.draws') },
+  { key: 'win_rate', label: t('common.winRate'), format: v => `${v}%`, higher: true },
   { key: 'title_reigns', label: 'Championship Reigns', higher: true },
   { key: 'championship_days', label: 'Days as Champion', format: v => v?.toLocaleString(), higher: true },
   { key: 'career_years', label: 'Career Length', format: v => v ? `${v} yrs` : '—', higher: true },
-  { key: 'height_cm', label: 'Height', format: v => v ? `${v} cm` : '—', higher: true },
-  { key: 'weight_kg', label: 'Weight', format: v => v ? `${v} kg` : '—', higher: true },
+  { key: 'height_cm', label: t('superstars.info.height'), format: v => v ? `${v} cm` : '—', higher: true },
+  { key: 'weight_kg', label: t('superstars.info.weight'), format: v => v ? `${v} kg` : '—', higher: true },
   { key: 'age', label: 'Age', format: v => v ? `${v}` : '—' },
-  { key: 'omg_moments', label: 'OMG Moments', higher: true },
-  { key: 'segments', label: 'Segments', higher: true },
-  { key: 'tag_teams', label: 'Tag Teams', higher: true },
-  { key: 'hall_of_fame', label: 'Hall of Fame', higher: true },
-  { key: 'slammy_awards', label: 'Slammy Awards', higher: true },
-  { key: 'year_end_awards', label: 'Year-End Awards', higher: true },
+  { key: 'omg_moments', label: t('omg.title'), higher: true },
+  { key: 'segments', label: t('shows.detail.segments'), higher: true },
+  { key: 'tag_teams', label: t('tagTeams.teams'), higher: true },
+  { key: 'hall_of_fame', label: t('nav.dropdown.hallOfFame'), higher: true },
+  { key: 'slammy_awards', label: t('nav.dropdown.slammyAwards'), higher: true },
+  { key: 'year_end_awards', label: t('nav.dropdown.yearEndAwards'), higher: true },
 ]
 
 export default function ComparePage() {
+  const t = useTranslations()
+
   const [selected, setSelected] = useState<SuperstarResult[]>([])
   const [compared, setCompared] = useState<ComparedStar[]>([])
   const [loading, setLoading] = useState(false)
@@ -152,7 +156,7 @@ export default function ComparePage() {
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">
           <Link href="/superstars" className="text-[10px] text-text-secondary uppercase tracking-widest mb-2 hover:text-neon-blue transition-colors">← Superstars</Link>
-          <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-white text-center tracking-tight mb-2">Superstar <span className="text-neon-blue">Comparator</span></h1>
+          <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-white text-center tracking-tight mb-2">Superstar <span className="text-neon-blue">{t('nav.dropdown.comparator')}</span></h1>
           <p className="text-text-secondary text-sm sm:text-base text-center max-w-2xl">Select 2 to 4 superstars and compare their careers side by side.</p>
         </div>
       </section>

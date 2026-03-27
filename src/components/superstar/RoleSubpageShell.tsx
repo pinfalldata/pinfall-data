@@ -2,6 +2,8 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+
 
 interface RoleSubpageShellProps {
   title: string
@@ -12,6 +14,8 @@ interface RoleSubpageShellProps {
 }
 
 export default function RoleSubpageShell({ title, roleKey, description, imageUrl, accentColor = '#c7a05a' }: RoleSubpageShellProps) {
+  const t = useTranslations()
+
   return (
     <div className="min-h-screen bg-bg-primary">
 
@@ -23,7 +27,7 @@ export default function RoleSubpageShell({ title, roleKey, description, imageUrl
         <div className="relative max-w-[1440px] mx-auto px-4 sm:px-6 pt-10 pb-8 sm:pt-14 sm:pb-10 lg:pt-16 lg:pb-12">
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-xs text-text-secondary mb-6">
-            <Link href="/superstars" className="hover:text-neon-blue transition-colors">Superstars</Link>
+            <Link href="/superstars" className="hover:text-neon-blue transition-colors">{t('home.stats.superstars')}</Link>
             <span className="text-border-subtle">/</span>
             <span style={{ color: accentColor }}>{title}</span>
           </nav>

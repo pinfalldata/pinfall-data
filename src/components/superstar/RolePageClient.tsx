@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+
 
 /* ============================================================ TYPES */
 interface Person {
@@ -42,6 +44,8 @@ const defaultFilters: Filters = {
 
 /* ============================================================ MAIN */
 export default function RolePageClient({ config }: { config: RoleConfig }) {
+  const t = useTranslations()
+
   const [items, setItems] = useState<Person[]>([])
   const [total, setTotal] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
@@ -99,7 +103,7 @@ export default function RolePageClient({ config }: { config: RoleConfig }) {
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60"/>
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">
           <nav className="hidden sm:flex items-center gap-2 text-xs text-text-secondary mb-3">
-            <Link href="/superstars" className="hover:text-neon-blue transition-colors">Superstars</Link>
+            <Link href="/superstars" className="hover:text-neon-blue transition-colors">{t('home.stats.superstars')}</Link>
             <span className="text-border-subtle">/</span>
             <span className="text-neon-blue">{config.title}</span>
           </nav>
@@ -140,7 +144,7 @@ export default function RolePageClient({ config }: { config: RoleConfig }) {
           <div className="flex items-center gap-2 flex-wrap">
             <p className="text-text-secondary text-sm">{loading&&!init?'Searching…':`${total.toLocaleString()} result${total!==1?'s':''}`}</p>
             <div className="flex items-center gap-1 ml-2">
-              <button onClick={()=>{setSortBy('name');setPage(1)}} className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all ${sortBy==='name'?'bg-neon-blue/15 border border-neon-blue/30 text-neon-blue':'border border-border-subtle/20 text-text-secondary hover:text-text-white'}`}>A-Z</button>
+              <button onClick={()=>{setSortBy('name');setPage(1)}} className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all ${sortBy==='name'?'bg-neon-blue/15 border border-neon-blue/30 text-neon-blue':'border border-border-subtle/20 text-text-secondary hover:text-text-white'}`}>{t('superstars.filters.alphabetical')}</button>
               {config.statSortLabel && (
                 <button onClick={()=>{setSortBy('stat');setPage(1)}} className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all ${sortBy==='stat'?'bg-neon-blue/15 border border-neon-blue/30 text-neon-blue':'border border-border-subtle/20 text-text-secondary hover:text-text-white'}`}>
                   {config.statSortLabel}
@@ -151,7 +155,7 @@ export default function RolePageClient({ config }: { config: RoleConfig }) {
           <button onClick={()=>setShowFilters(!showFilters)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all ${showFilters?'bg-neon-blue/10 border-neon-blue/30 text-neon-blue':'bg-bg-secondary/50 border-border-subtle/30 text-text-secondary hover:text-text-white'}`}>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
-            {showFilters?'Hide':'Filters'}{fCount>0&&<span className="w-5 h-5 rounded-full bg-neon-blue text-[10px] text-black font-bold flex items-center justify-center">{fCount}</span>}
+            {showFilters?'Hide':t('matches.search.filters')}{fCount>0&&<span className="w-5 h-5 rounded-full bg-neon-blue text-[10px] text-black font-bold flex items-center justify-center">{fCount}</span>}
           </button>
         </div>
 
@@ -159,11 +163,11 @@ export default function RolePageClient({ config }: { config: RoleConfig }) {
         {showFilters&&(
           <div className="mt-4 p-4 sm:p-5 rounded-2xl border border-border-subtle/30 bg-bg-secondary/30 backdrop-blur-sm animate-fade-in">
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-              <Sel label="Era" value={filters.eraId} set={v=>upd('eraId',v)} opts={opts.eras.map(e=>({value:String(e.id),label:e.name}))} ph="All eras"/>
-              <Sel label="Status" value={filters.status} set={v=>upd('status',v)} opts={[{value:'active',label:'Active'},{value:'retired',label:'Retired'},{value:'deceased',label:'Deceased'}]} ph="All"/>
-              <Sel label="Gender" value={filters.gender} set={v=>upd('gender',v)} opts={[{value:'male',label:'Men'},{value:'female',label:'Women'}]} ph="All"/>
-              <Sel label="Country" value={filters.country} set={v=>{upd('country',v);upd('city','')}} opts={opts.countries.map(c=>({value:c,label:c}))} ph="All countries"/>
-              {filters.country&&opts.cities.length>0&&<Sel label="City" value={filters.city} set={v=>upd('city',v)} opts={opts.cities.map(c=>({value:c,label:c}))} ph="All cities"/>}
+              <Sel label=t('superstars.info.era') value={filters.eraId} set={v=>upd('eraId',v)} opts={opts.eras.map(e=>({value:String(e.id),label:e.name}))} ph="All eras"/>
+              <Sel label=t('superstars.info.status') value={filters.status} set={v=>upd('status',v)} opts={[{value:'active',label:t('common.active')},{value:'retired',label:t('common.retired')},{value:'deceased',label:t('common.deceased')}]} ph=t('common.all')/>
+              <Sel label="Gender" value={filters.gender} set={v=>upd('gender',v)} opts={[{value:'male',label:t('common.men')},{value:'female',label:t('common.women')}]} ph=t('common.all')/>
+              <Sel label="Country" value={filters.country} set={v=>{upd('country',v);upd('city','')}} opts={opts.countries.map(c=>({value:c,label:c}))} ph=t('common.allCountries')/>
+              {filters.country&&opts.cities.length>0&&<Sel label="City" value={filters.city} set={v=>upd('city',v)} opts={opts.cities.map(c=>({value:c,label:c}))} ph=t('common.allCities')/>}
               <Sel label="Birth Year" value={filters.birthYear} set={v=>upd('birthYear',v)} opts={YEARS_BIRTH.map(y=>({value:String(y),label:String(y)}))} ph="Any"/>
               <Sel label="Debut Year" value={filters.debutYear} set={v=>upd('debutYear',v)} opts={YEARS_DEBUT.map(y=>({value:String(y),label:String(y)}))} ph="Any"/>
             </div>
@@ -179,7 +183,7 @@ export default function RolePageClient({ config }: { config: RoleConfig }) {
         {/* ===== GRID ===== */}
         <div className="mt-6">
           {init?<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">{Array.from({length:20}).map((_,i)=><div key={i} className="rounded-2xl bg-bg-secondary/30 animate-pulse aspect-[3/4]"/>)}</div>
-          :items.length===0?<div className="text-center py-20"><p className="text-text-secondary text-lg mb-2">No results found</p>{hasF&&<button onClick={reset} className="text-sm text-neon-blue hover:underline">Clear all filters</button>}</div>
+          :items.length===0?<div className="text-center py-20"><p className="text-text-secondary text-lg mb-2">{t('common.noResults')}</p>{hasF&&<button onClick={reset} className="text-sm text-neon-blue hover:underline">Clear all filters</button>}</div>
           :<><div className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 transition-opacity duration-200 ${loading&&!init?'opacity-50':'opacity-100'}`}>
             {items.map(p=><PCard key={p.id} p={p} config={config} guestsOnly={guestsOnly}/>)}
           </div>{totalPages>1&&<Pag page={page} tp={totalPages} total={total} go={goP}/>}</>}
@@ -208,7 +212,7 @@ function PCard({p,config,guestsOnly}:{p:Person;config:RoleConfig;guestsOnly:bool
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/90 via-bg-primary/20 to-transparent"/>
         <div className="absolute top-2 left-2 flex flex-col gap-1">
           {p.is_hall_of_fame&&<span className="text-[9px] px-1.5 py-0.5 rounded-md bg-yellow-500/20 border border-yellow-500/30 text-yellow-400 font-bold backdrop-blur-sm">HOF</span>}
-          {p.status==='retired'&&<span className="text-[9px] px-1.5 py-0.5 rounded-md bg-text-secondary/20 border border-text-secondary/20 text-text-secondary font-medium backdrop-blur-sm">Retired</span>}
+          {p.status==='retired'&&<span className="text-[9px] px-1.5 py-0.5 rounded-md bg-text-secondary/20 border border-text-secondary/20 text-text-secondary font-medium backdrop-blur-sm">{t('common.retired')}</span>}
           {p.status==='deceased'&&<span className="text-[9px] px-1.5 py-0.5 rounded-md bg-red-500/20 border border-red-500/20 text-red-400 font-medium backdrop-blur-sm">Legend</span>}
         </div>
         {guestsOnly && p.role && (

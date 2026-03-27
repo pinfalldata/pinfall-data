@@ -4,8 +4,12 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { getStatusColor, getStatusLabel, getRoleLabels } from '@/lib/utils'
 import { AwardTrophies } from './AwardTrophies'
+import { useTranslations } from 'next-intl'
+
 
 export function ProfileHero({ superstar }: { superstar: any }) {
+  const t = useTranslations()
+
   const [imageError, setImageError] = useState(false)
 
   const primaryNickname = superstar.nicknames?.find((n: any) => n.is_primary)?.nickname
@@ -145,7 +149,7 @@ export function ProfileHero({ superstar }: { superstar: any }) {
               <div className="flex flex-col items-end gap-2">
                 {primaryEra && (
                   <div className="flex items-center gap-2 px-4 py-2 rounded-xl border border-neon-blue/20 bg-neon-blue/5">
-                    <span className="text-neon-blue text-sm font-medium">{primaryEra.eras?.name || 'Era'}</span>
+                    <span className="text-neon-blue text-sm font-medium">{primaryEra.eras?.name || t('superstars.info.era')}</span>
                   </div>
                 )}
               </div>

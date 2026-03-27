@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+
 
 const HERO = 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20Stats%20&%20Records/wwesiege_2026-03-21_16_54_30.597250.png.png'
 
@@ -12,6 +14,8 @@ const TABS = [
 ]
 
 export default function MilestonesPage() {
+  const t = useTranslations()
+
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState('eras')
@@ -47,13 +51,13 @@ export default function MilestonesPage() {
                       <span className="text-lg">🏛️</span>
                       <div>
                         <h3 className="font-display text-sm font-bold text-text-white">{era.name}</h3>
-                        <p className="text-[10px] text-text-secondary">{era.start_year} — {era.end_year || 'Present'}</p>
+                        <p className="text-[10px] text-text-secondary">{era.start_year} — {era.end_year || t('common.present')}</p>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
-                      <StatBox label="Matches" value={era.total_matches.toLocaleString()} />
-                      <StatBox label="Shows" value={era.total_shows.toLocaleString()} />
-                      <StatBox label="Title Changes" value={era.total_title_changes.toLocaleString()} />
+                      <StatBox label=t('home.stats.matches') value={era.total_matches.toLocaleString()} />
+                      <StatBox label=t('home.stats.shows') value={era.total_shows.toLocaleString()} />
+                      <StatBox label=t('home.stats.titleChanges') value={era.total_title_changes.toLocaleString()} />
                       <StatBox label="Avg Rating" value={era.avg_rating ? `${era.avg_rating}★` : '—'} />
                     </div>
                     {era.total_attendance > 0 && (
@@ -75,9 +79,9 @@ export default function MilestonesPage() {
                     <div key={d.decade} className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-5 text-center hover:border-neon-blue/20 transition-all">
                       <h3 className="font-display text-xl font-bold text-neon-blue mb-3">{d.decade}</h3>
                       <div className="space-y-2">
-                        <div><p className="text-xl font-bold text-text-white">{d.matches.toLocaleString()}</p><p className="text-[10px] text-text-secondary uppercase">Matches</p></div>
-                        <div><p className="text-lg font-bold text-text-white">{d.shows.toLocaleString()}</p><p className="text-[10px] text-text-secondary uppercase">Shows</p></div>
-                        {d.attendance > 0 && <div><p className="text-lg font-bold text-text-white">{d.attendance.toLocaleString()}</p><p className="text-[10px] text-text-secondary uppercase">Attendance</p></div>}
+                        <div><p className="text-xl font-bold text-text-white">{d.matches.toLocaleString()}</p><p className="text-[10px] text-text-secondary uppercase">{t('home.stats.matches')}</p></div>
+                        <div><p className="text-lg font-bold text-text-white">{d.shows.toLocaleString()}</p><p className="text-[10px] text-text-secondary uppercase">{t('home.stats.shows')}</p></div>
+                        {d.attendance > 0 && <div><p className="text-lg font-bold text-text-white">{d.attendance.toLocaleString()}</p><p className="text-[10px] text-text-secondary uppercase">{t('shows.detail.attendance')}</p></div>}
                       </div>
                     </div>
                   ))}
@@ -136,7 +140,7 @@ export default function MilestonesPage() {
 
                 {/* Full year table */}
                 <div className="hidden lg:grid lg:grid-cols-[80px_1fr_120px_120px_100px] gap-3 px-4 pb-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20">
-                  <span>Year</span><span>Matches</span><span>Title Changes</span><span>Avg Rating</span><span className="text-right">Bar</span>
+                  <span>{t('matches.search.year')}</span><span>{t('home.stats.matches')}</span><span>{t('home.stats.titleChanges')}</span><span>Avg Rating</span><span className="text-right">Bar</span>
                 </div>
                 <div className="space-y-0.5 mt-1 max-h-[600px] overflow-y-auto">
                   {[...data.matchesPerYear].reverse().map((y: any) => {
@@ -160,7 +164,7 @@ export default function MilestonesPage() {
           </>
         )}
       </section>
-      <SeoBlock t="Historical Milestones" p="The complete statistical history of WWE, decade by decade, era by era. Track the growth of professional wrestling from the 1950s to today through matches, shows, attendance, and championship data." />
+      <SeoBlock t=t('records.milestones') p="The complete statistical history of WWE, decade by decade, era by era. Track the growth of professional wrestling from the 1950s to today through matches, shows, attendance, and championship data." />
     </div>
   )
 }

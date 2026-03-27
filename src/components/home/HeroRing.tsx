@@ -1,8 +1,12 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { useTranslations } from 'next-intl'
+
 
 export function HeroRing() {
+  const t = useTranslations()
+
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -231,11 +235,11 @@ export function HeroRing() {
             <span className="text-neon-pink">DATA</span>
           </h1>
           <p className="text-sm sm:text-base md:text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
-          <span className="block sm:hidden">The ultimate WWE statistics database.</span>
-          <span className="block sm:hidden">Every Superstar. Every match.</span>
-          <span className="block sm:hidden">Every era. From 1953 to today.</span>
-          <span className="hidden sm:block">The ultimate WWE statistics database.</span>
-          <span className="hidden sm:block">Every Superstar. Every match. Every era. From 1953 to today.</span>
+          <span className="block sm:hidden">{t('home.hero.subtitleDesktop')}</span>
+          <span className="block sm:hidden">{t('home.hero.subtitleMobile2')}</span>
+          <span className="block sm:hidden">{t('home.hero.subtitleMobile3')}</span>
+          <span className="hidden sm:block">{t('home.hero.subtitleDesktop')}</span>
+          <span className="hidden sm:block">{t('home.hero.subtitleDesktop2')}</span>
         </p>        
 </div>
       </div>

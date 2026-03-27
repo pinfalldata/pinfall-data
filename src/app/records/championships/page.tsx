@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+
 
 const HERO = 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20Stats%20&%20Records/GkFq_JhWIAAesrf__1__2026-03-21_16_54_31.720281.jpg.png'
 const TABS = [
@@ -16,6 +18,8 @@ const TABS = [
 ]
 
 export default function ChampionshipRecordsPage() {
+  const t = useTranslations()
+
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState('longestReign')
@@ -42,7 +46,7 @@ export default function ChampionshipRecordsPage() {
         {loading ? <Skel /> : list.length === 0 ? <Empty /> : (
           <div className="mt-6">
             <div className="hidden lg:grid lg:grid-cols-[50px_1fr_1fr_200px] gap-3 px-4 pb-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20">
-              <span>#</span><span>Superstar</span><span>Championship</span><span className="text-right">Record</span>
+              <span>#</span><span>Superstar</span><span>Championship</span><span className="text-right">{t('records.record')}</span>
             </div>
             <div className="space-y-0.5 mt-1">
               {list.map((item: any, i: number) => (
@@ -72,7 +76,7 @@ export default function ChampionshipRecordsPage() {
           </div>
         )}
       </section>
-      <SeoBlock t="Championship Records" p="Complete WWE championship record book. Every title reign analyzed — longest, shortest, most reigns, youngest and oldest champions. Data from 70+ years of championship history." />
+      <SeoBlock t=t('records.championships') p="Complete WWE championship record book. Every title reign analyzed — longest, shortest, most reigns, youngest and oldest champions. Data from 70+ years of championship history." />
     </div>
   )
 }

@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
+import { useTranslations } from 'next-intl'
+
 
 /* ============================================================
    TYPES
@@ -57,6 +59,8 @@ function getLabel(year: number) { return year === 1952 ? 'Pre-1953' : String(yea
    MAIN COMPONENT
    ============================================================ */
 export default function HistoryPageClient() {
+  const t = useTranslations()
+
   const [years, setYears] = useState<HistoryYear[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedYear, setSelectedYear] = useState<number | null>(null)
@@ -120,7 +124,7 @@ export default function HistoryPageClient() {
       <section className="relative w-full h-[280px] sm:h-[380px] lg:h-[460px] overflow-hidden">
         <Image
           src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20History%20En%20tete/image__15__2026-03-16_22_26_56.926494.jpg.png"
-          alt="WWE History"
+          alt=t('history.title')
           fill priority sizes="100vw" quality={100} unoptimized
           className="object-cover object-center"
         />
@@ -303,9 +307,9 @@ export default function HistoryPageClient() {
                             {getLabel(yearDetail.year.year)} in Numbers
                           </h3>
                           <div className="flex flex-wrap items-center gap-8 sm:gap-12">
-                            {yearDetail.stats.shows > 0 && <div><span className="block text-3xl sm:text-4xl font-bold text-text-white font-display">{yearDetail.stats.shows.toLocaleString()}</span><span className="text-xs text-text-secondary">Shows</span></div>}
-                            {yearDetail.stats.matches > 0 && <div><span className="block text-3xl sm:text-4xl font-bold text-text-white font-display">{yearDetail.stats.matches.toLocaleString()}</span><span className="text-xs text-text-secondary">Matches</span></div>}
-                            {yearDetail.stats.titleChanges > 0 && <div><span className="block text-3xl sm:text-4xl font-bold text-neon-blue font-display">{yearDetail.stats.titleChanges}</span><span className="text-xs text-text-secondary">Title Changes</span></div>}
+                            {yearDetail.stats.shows > 0 && <div><span className="block text-3xl sm:text-4xl font-bold text-text-white font-display">{yearDetail.stats.shows.toLocaleString()}</span><span className="text-xs text-text-secondary">{t('home.stats.shows')}</span></div>}
+                            {yearDetail.stats.matches > 0 && <div><span className="block text-3xl sm:text-4xl font-bold text-text-white font-display">{yearDetail.stats.matches.toLocaleString()}</span><span className="text-xs text-text-secondary">{t('home.stats.matches')}</span></div>}
+                            {yearDetail.stats.titleChanges > 0 && <div><span className="block text-3xl sm:text-4xl font-bold text-neon-blue font-display">{yearDetail.stats.titleChanges}</span><span className="text-xs text-text-secondary">{t('home.stats.titleChanges')}</span></div>}
                           </div>
                         </div>
                       </Reveal>
@@ -456,7 +460,7 @@ export default function HistoryPageClient() {
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8">
         <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/10 p-6 sm:p-8">
           <h2 className="font-display text-xl font-bold text-text-white mb-3">
-            The Complete <span className="text-neon-blue">WWE History</span> Timeline
+            The Complete <span className="text-neon-blue">{t('history.title')}</span> Timeline
           </h2>
           <p className="text-text-secondary text-sm leading-relaxed">
             Explore over 70 years of professional wrestling history — from the Capitol Wrestling Corporation in 1953

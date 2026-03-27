@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 const config = {
   roleKey: 'referee',
-  title: 'Referees',
+  title: t('nav.dropdown.referees'),
   heroImage: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/robinson.jpg',
   heroDescription: 'The keepers of the rules inside the squared circle. Referees who counted pinfalls, called submissions, and sometimes became part of the biggest storylines.',
   statLabel: 'matches refereed',

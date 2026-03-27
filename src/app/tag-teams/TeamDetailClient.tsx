@@ -6,6 +6,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ShareButtons } from '@/components/ui/ShareButtons'
 import { StarRating } from '@/components/ui/StarRating'
+import { useTranslations } from 'next-intl'
+
 
 type TabKey = 'matches' | 'stats'
 interface Props { type: 'tag_team' | 'stable' }
@@ -34,6 +36,8 @@ function buildTeams(participants: any[]): { team_number: number; is_winner: bool
 }
 
 export default function TeamDetailClient({ type }: Props) {
+  const t = useTranslations()
+
   const params = useParams()
   const slug = params?.slug as string
 
@@ -104,7 +108,7 @@ export default function TeamDetailClient({ type }: Props) {
 
         <div className="relative max-w-[1440px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
           <nav className="flex items-center gap-2 text-xs text-text-secondary mb-6">
-            <Link href="/tag-teams" className="hover:text-neon-blue transition-colors">Tag Teams & Stables</Link>
+            <Link href="/tag-teams" className="hover:text-neon-blue transition-colors">{t('tagTeams.title')}</Link>
             <span>/</span>
             <Link href={type === 'tag_team' ? '/tag-teams/teams' : '/tag-teams/stables'} className="hover:text-neon-blue transition-colors">{label}s</Link>
             <span>/</span>
@@ -122,7 +126,7 @@ export default function TeamDetailClient({ type }: Props) {
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-neon-blue/15 border border-neon-blue/30 text-neon-blue font-bold uppercase tracking-wider">{label}</span>
                 {entity.is_active ? (
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-bold">Active</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-bold">{t('common.active')}</span>
                 ) : (
                   <span className="text-[10px] px-2 py-0.5 rounded-full bg-red-500/15 border border-red-500/30 text-red-400 font-bold">Disbanded</span>
                 )}
@@ -134,14 +138,14 @@ export default function TeamDetailClient({ type }: Props) {
                 {entity.formed_date && <div><span className="text-[10px] text-text-secondary uppercase tracking-wider block">Formed</span><span className="text-text-white font-medium">{fmt(entity.formed_date)}</span></div>}
                 {entity.split_date && <div><span className="text-[10px] text-text-secondary uppercase tracking-wider block">Split</span><span className="text-text-white font-medium">{fmt(entity.split_date)}</span></div>}
                 {stats && <div><span className="text-[10px] text-text-secondary uppercase tracking-wider block">Matches Together</span><span className="text-neon-blue font-bold text-lg">{stats.totalMatches}</span></div>}
-                {stats && stats.totalMatches > 0 && <div><span className="text-[10px] text-text-secondary uppercase tracking-wider block">Win Rate</span><span className="text-neon-blue font-bold text-lg">{stats.winRate}%</span></div>}
+                {stats && stats.totalMatches > 0 && <div><span className="text-[10px] text-text-secondary uppercase tracking-wider block">{t('common.winRate')}</span><span className="text-neon-blue font-bold text-lg">{stats.winRate}%</span></div>}
               </div>
 
               {entity.description_md && <p className="text-text-secondary text-sm leading-relaxed mb-5">{entity.description_md}</p>}
 
               {/* Members */}
               <div className="mb-4">
-                <p className="text-[10px] text-text-secondary uppercase tracking-wider mb-2">Members</p>
+                <p className="text-[10px] text-text-secondary uppercase tracking-wider mb-2">{t('tagTeams.members')}</p>
                 <div className="flex flex-wrap gap-3">
                   {memberSuperstars.map((s: any) => (
                     <Link key={s.id} href={`/superstars/${s.slug}`} className="flex items-center gap-2 px-3 py-2 rounded-xl bg-bg-secondary/30 border border-border-subtle/20 hover:border-neon-blue/30 transition-all group">
@@ -173,7 +177,7 @@ export default function TeamDetailClient({ type }: Props) {
                             <span className="text-xs text-neon-blue font-bold">{r.championship?.name}</span>
                           )}
                           <p className="text-[10px] text-text-secondary">
-                            {r.won_date ? fmt(r.won_date) : '?'} — {r.lost_date ? fmt(r.lost_date) : 'Present'}
+                            {r.won_date ? fmt(r.won_date) : '?'} — {r.lost_date ? fmt(r.lost_date) : t('common.present')}
                             {r.days_held ? ` · ${r.days_held} days` : ''}
                             {r.reign_number ? ` · Reign #${r.reign_number}` : ''}
                           </p>
@@ -211,7 +215,7 @@ export default function TeamDetailClient({ type }: Props) {
             <>
               {/* Desktop header */}
               <div className="hidden lg:grid lg:grid-cols-[90px_minmax(120px,1.2fr)_130px_minmax(250px,3fr)_100px_55px] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider border-b border-border-subtle/20 mb-1">
-                <span>Date</span><span>Show</span><span>Type</span><span>Participants</span><span>Title</span><span className="text-center">Rating</span>
+                <span>{t('shows.detail.date')}</span><span>Show</span><span>Type</span><span>{t('matches.detail.participants')}</span><span>Title</span><span className="text-center">{t('common.rating')}</span>
               </div>
 
               {matches.map(m => (
@@ -246,11 +250,11 @@ export default function TeamDetailClient({ type }: Props) {
         <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             {[
-              { label: 'Total Matches', value: stats.totalMatches, color: 'text-text-white' },
-              { label: 'Wins', value: stats.wins, color: 'text-emerald-400' },
-              { label: 'Losses', value: stats.losses, color: 'text-red-400' },
-              { label: 'Draws', value: stats.draws, color: 'text-neon-blue' },
-              { label: 'Win Rate', value: `${stats.winRate}%`, color: 'text-neon-blue' },
+              { label: t('common.totalMatches'), value: stats.totalMatches, color: 'text-text-white' },
+              { label: t('common.wins'), value: stats.wins, color: 'text-emerald-400' },
+              { label: t('common.losses'), value: stats.losses, color: 'text-red-400' },
+              { label: t('common.draws'), value: stats.draws, color: 'text-neon-blue' },
+              { label: t('common.winRate'), value: `${stats.winRate}%`, color: 'text-neon-blue' },
             ].map(s => (
               <div key={s.label} className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-4 sm:p-5 text-center">
                 <span className={`block text-2xl sm:text-3xl font-bold font-display ${s.color}`}>{s.value}</span>

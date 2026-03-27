@@ -5,6 +5,8 @@ import { useParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ShareButtons } from '@/components/ui/ShareButtons'
+import { useTranslations } from 'next-intl'
+
 
 function fmt(d: string | null) { if (!d) return '—'; return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) }
 function fmtDur(s: number) { const m = Math.floor(s / 60); const sec = s % 60; return `${m}:${sec.toString().padStart(2, '0')}` }
@@ -42,12 +44,14 @@ const showTypeLabels: Record<string, string> = {
   ppv: 'PPV / PLE', weekly: 'TV Show', special: 'Special', tournament: 'Tournament', other: 'Other', house_show: 'House Show',
 }
 const resultLabels: Record<string, string> = {
-  pinfall: 'Pinfall', submission: 'Submission', dq: 'Disqualification', count_out: 'Count Out', no_contest: 'No Contest', forfeit: 'Forfeit', ko: 'Knockout', referee_stoppage: 'Referee Stoppage', escape: 'Escape', retrieve: 'Retrieve', last_elimination: 'Last Elimination', time_limit_draw: 'Time Limit Draw', other: 'Other',
+  pinfall: 'Pinfall', submission: 'Submission', dq: 'Disqualification', count_out: 'Count Out', no_contest: t('common.noContest'), forfeit: 'Forfeit', ko: 'Knockout', referee_stoppage: 'Referee Stoppage', escape: 'Escape', retrieve: 'Retrieve', last_elimination: 'Last Elimination', time_limit_draw: 'Time Limit Draw', other: 'Other',
 }
 
 type TabKey = 'shows' | 'superstars' | 'stats'
 
 export default function ArenaDetailPage() {
+  const t = useTranslations()
+
   const params = useParams()
   const slug = params.slug as string
 
@@ -134,7 +138,7 @@ export default function ArenaDetailPage() {
         {arena?.image_url && (
           <Image
             src={arena.image_url}
-            alt={displayName || 'Arena'}
+            alt={displayName || t('shows.detail.arena')}
             fill
             priority
             sizes="100vw"
@@ -149,9 +153,9 @@ export default function ArenaDetailPage() {
 
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">
           <nav className="hidden sm:flex items-center gap-2 text-xs text-text-secondary mb-3">
-            <Link href="/matches" className="hover:text-neon-blue transition-colors">Matches</Link>
+            <Link href="/matches" className="hover:text-neon-blue transition-colors">{t('home.stats.matches')}</Link>
             <span className="text-border-subtle">/</span>
-            <span className="text-neon-blue">Arena</span>
+            <span className="text-neon-blue">{t('shows.detail.arena')}</span>
           </nav>
           <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-text-white text-center tracking-tight mb-2">
             {displayName || <span className="bg-bg-secondary/50 rounded w-60 h-10 inline-block animate-pulse" />}
@@ -256,7 +260,7 @@ export default function ArenaDetailPage() {
             <>
               {/* Desktop header */}
               <div className="hidden lg:grid lg:grid-cols-[100px_minmax(80px,0.5fr)_minmax(200px,2fr)_100px_120px] gap-4 px-4 pb-2 text-[9px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
-                <span>Date</span><span>Type</span><span>Event</span><span>Attendance</span><span>{arenaNames.length > 1 ? 'Venue Name' : 'Show'}</span>
+                <span>{t('shows.detail.date')}</span><span>Type</span><span>Event</span><span>{t('shows.detail.attendance')}</span><span>{arenaNames.length > 1 ? 'Venue Name' : 'Show'}</span>
               </div>
 
               <div className="space-y-0.5">
@@ -341,7 +345,7 @@ export default function ArenaDetailPage() {
       {/* ===== STATS TAB ===== */}
       {tab === 'stats' && (
         <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8">
-          <h2 className="font-display text-lg font-bold text-text-white mb-6">Statistics</h2>
+          <h2 className="font-display text-lg font-bold text-text-white mb-6">{t('superstars.profile.statistics')}</h2>
           {statsLoading || !stats ? (
             <div className="space-y-4">{Array.from({ length: 4 }).map((_, i) => <div key={i} className="h-20 rounded-2xl bg-bg-secondary/30 animate-pulse" />)}</div>
           ) : (
@@ -350,11 +354,11 @@ export default function ArenaDetailPage() {
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
                 {[
                   { l: 'Total Events', v: stats.totalShows, c: 'text-neon-blue' },
-                  { l: 'Total Matches', v: stats.totalMatches, c: 'text-text-white' },
+                  { l: t('common.totalMatches'), v: stats.totalMatches, c: 'text-text-white' },
                   { l: 'Total Attendance', v: stats.totalAttendance?.toLocaleString(), c: 'text-neon-blue' },
                   { l: 'Avg Attendance', v: stats.avgAttendance?.toLocaleString(), c: 'text-text-white' },
                   { l: 'Avg Rating', v: stats.avgRating ? `${stats.avgRating}★` : '—', c: 'text-yellow-400' },
-                  { l: 'Title Changes', v: stats.titleChanges, c: 'text-neon-blue' },
+                  { l: t('home.stats.titleChanges'), v: stats.titleChanges, c: 'text-neon-blue' },
                 ].map((s, i) => (
                   <div key={i} className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-4 text-center">
                     <span className="block text-[10px] text-text-secondary uppercase tracking-wider mb-1">{s.l}</span>
@@ -428,7 +432,7 @@ export default function ArenaDetailPage() {
       {/* Share */}
       {arena && (
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 pb-4">
-          <ShareButtons title={`${displayName || "Arena"} — WWE Arena History | Pinfall Data`} />
+          <ShareButtons title={`${displayName || t('shows.detail.arena')} — WWE Arena History | Pinfall Data`} />
         </div>
       )}
 
@@ -436,7 +440,7 @@ export default function ArenaDetailPage() {
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8">
         <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/10 p-6 sm:p-8">
           <h2 className="font-display text-xl font-bold text-text-white mb-3">
-            <span className="text-neon-blue">{displayName || 'Arena'}</span> — Complete WWE Event History
+            <span className="text-neon-blue">{displayName || t('shows.detail.arena')}</span> — Complete WWE Event History
           </h2>
           <p className="text-text-secondary text-sm leading-relaxed">
             Full history of every WWE event held at {displayName || 'this arena'}

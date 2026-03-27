@@ -2,10 +2,14 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+
 
 const HERO = 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20Hall%20Of%20Fame/wwe-slammy-awards-2037751.webp'
 
 export default function SlammyAwardsPage() {
+  const t = useTranslations()
+
   const [items, setItems] = useState<any[]>([])
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
@@ -58,11 +62,11 @@ export default function SlammyAwardsPage() {
       <section ref={ref} className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6">
         <div className="p-4 sm:p-5 rounded-2xl border border-border-subtle/30 bg-bg-secondary/30 backdrop-blur-sm mb-6">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            <Sel label="Year" value={filterYear} set={setFilterYear} opts={years.map(y => ({ value: String(y), label: String(y) }))} ph="All years" />
-            <Sel label="Category" value={filterCat} set={setFilterCat} opts={categories.map(c => ({ value: c, label: c }))} ph="All categories" />
+            <Sel label=t('matches.search.year') value={filterYear} set={setFilterYear} opts={years.map(y => ({ value: String(y), label: String(y) }))} ph=t('common.allYears') />
+            <Sel label=t('hallOfFame.inductees.category') value={filterCat} set={setFilterCat} opts={categories.map(c => ({ value: c, label: c }))} ph="All categories" />
             <Sel label="Sort" value={sort} set={setSort} opts={[{ value: 'newest', label: 'Newest' }, { value: 'oldest', label: 'Oldest' }, { value: 'alpha', label: 'A → Z' }]} ph="" />
             <div className="flex flex-col gap-1 col-span-2 sm:col-span-1 lg:col-span-2">
-              <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">Search</label>
+              <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">{t('common.search')}</label>
               <input type="text" value={search} onChange={e => handleSearch(e.target.value)} placeholder="Search winner or category…"
                 className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-border-subtle/40 text-sm text-text-white placeholder:text-text-secondary/50 focus:outline-none focus:border-neon-blue/50" />
             </div>
@@ -87,7 +91,7 @@ export default function SlammyAwardsPage() {
 
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8">
         <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/10 p-6 sm:p-8">
-          <h2 className="font-display text-xl font-bold text-text-white mb-3">About the <span className="text-neon-blue">Slammy Awards</span></h2>
+          <h2 className="font-display text-xl font-bold text-text-white mb-3">About the <span className="text-neon-blue">{t('nav.dropdown.slammyAwards')}</span></h2>
           <p className="text-text-secondary text-sm leading-relaxed">The Slammy Awards are WWE&apos;s annual awards ceremony honoring the best performers, matches, and moments of each year. Browse every winner from the first ceremony to the most recent, filterable by year and category.</p>
         </div>
       </section>

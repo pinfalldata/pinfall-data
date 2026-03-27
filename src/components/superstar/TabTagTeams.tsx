@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+
 
 function fmtDate(d: string | null) {
   if (!d) return '—'
@@ -10,6 +12,8 @@ function fmtDate(d: string | null) {
 }
 
 export default function TabTagTeams({ superstar }: { superstar: any }) {
+  const t = useTranslations()
+
   const [items, setItems] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -69,7 +73,7 @@ export default function TabTagTeams({ superstar }: { superstar: any }) {
             {/* Active/Disbanded badge */}
             <div className="absolute top-2 right-2">
               {team.is_active ? (
-                <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-bold">Active</span>
+                <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-bold">{t('common.active')}</span>
               ) : (
                 <span className="text-[9px] px-2 py-0.5 rounded-full bg-red-500/15 border border-red-500/30 text-red-400 font-bold">Disbanded</span>
               )}

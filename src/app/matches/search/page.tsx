@@ -5,6 +5,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { StarRating } from '@/components/ui/StarRating'
 import { formatDateShort, isBattleRoyalType } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
+
 
 /* ============================================================
    TYPES
@@ -66,7 +68,7 @@ const RESULT_TYPES = [
   {value:'ko',label:'Knockout'},{value:'referee_stoppage',label:'Referee Stoppage'},
   {value:'escape',label:'Escape'},{value:'retrieve',label:'Retrieve'},
   {value:'last_elimination',label:'Last Elimination'},{value:'forfeit',label:'Forfeit'},
-  {value:'no_contest',label:'No Contest'},{value:'time_limit_draw',label:'Time Limit Draw'},
+  {value:'no_contest',label:t('common.noContest')},{value:'time_limit_draw',label:'Time Limit Draw'},
   {value:'other',label:'Other'},
 ]
 
@@ -74,6 +76,8 @@ const RESULT_TYPES = [
    MAIN PAGE
    ============================================================ */
 export default function MatchSearchPage() {
+  const t = useTranslations()
+
   const [matches, setMatches] = useState<MatchData[]>([])
   const [total, setTotal] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
@@ -155,7 +159,7 @@ export default function MatchSearchPage() {
           <button onClick={()=>setShowF(!showF)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all ${showF?'bg-neon-blue/10 border-neon-blue/30 text-neon-blue':'bg-bg-secondary/50 border-border-subtle/30 text-text-secondary hover:text-text-white'}`}>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
-            {showF ? 'Hide Filters' : 'Show Filters'}
+            {showF ? t('matches.search.hideFilters') : t('matches.search.filters')}
             {fCount>0 && <span className="w-5 h-5 rounded-full bg-neon-blue text-[10px] text-black font-bold flex items-center justify-center">{fCount}</span>}
           </button>
         </div>
@@ -164,18 +168,18 @@ export default function MatchSearchPage() {
         {showF && (
           <div className="mb-6 p-4 sm:p-5 rounded-2xl border border-border-subtle/30 bg-bg-secondary/30 backdrop-blur-sm animate-fade-in">
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-              <Sel label="Year" value={filters.year} set={v=>upd('year',v)} opts={YEARS.map(y=>({value:String(y),label:String(y)}))} ph="All years"/>
+              <Sel label=t('matches.search.year') value={filters.year} set={v=>upd('year',v)} opts={YEARS.map(y=>({value:String(y),label:String(y)}))} ph=t('common.allYears')/>
               {filters.year && <Sel label="Month" value={filters.month} set={v=>upd('month',v)}
-                opts={Array.from({length:12},(_,i)=>({value:String(i+1),label:new Date(2000,i).toLocaleString('en-US',{month:'long'})}))} ph="All months"/>}
+                opts={Array.from({length:12},(_,i)=>({value:String(i+1),label:new Date(2000,i).toLocaleString('en-US',{month:'long'})}))} ph=t('common.allMonths')/>}
               <Sel label="Promotion" value={filters.showSeriesId} set={v=>upd('showSeriesId',v)}
-                opts={opts.showSeries.map(s=>({value:String(s.id),label:s.name}))} ph="All promotions"/>
-              <Sel label="Match Type" value={filters.matchTypeId} set={v=>upd('matchTypeId',v)}
-                opts={opts.matchTypes.map(t=>({value:String(t.id),label:t.name}))} ph="All types"/>
+                opts={opts.showSeries.map(s=>({value:String(s.id),label:s.name}))} ph=t('common.allPromotions')/>
+              <Sel label=t('matches.search.matchType') value={filters.matchTypeId} set={v=>upd('matchTypeId',v)}
+                opts={opts.matchTypes.map(t=>({value:String(t.id),label:t.name}))} ph=t('common.allTypes')/>
               <Sel label="Min. Rating" value={filters.minRating} set={v=>upd('minRating',v)}
-                opts={Array.from({length:11},(_,i)=>({value:String(i),label:`${i}+/10`}))} ph="Any rating"/>
-              <Sel label="Finish Type" value={filters.resultType} set={v=>upd('resultType',v)} opts={RESULT_TYPES} ph="Any finish"/>
+                opts={Array.from({length:11},(_,i)=>({value:String(i),label:`${i}+/10`}))} ph=t('common.anyRating')/>
+              <Sel label="Finish Type" value={filters.resultType} set={v=>upd('resultType',v)} opts={RESULT_TYPES} ph=t('common.anyFinish')/>
               <Sel label="Country" value={filters.country} set={v=>upd('country',v)}
-                opts={opts.countries.map(c=>({value:c,label:c}))} ph="All countries"/>
+                opts={opts.countries.map(c=>({value:c,label:c}))} ph=t('common.allCountries')/>
               <div className="flex flex-col gap-1">
                 <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">City</label>
                 <input type="text" value={filters.city} onChange={e=>upd('city',e.target.value)} placeholder="e.g. New York"
@@ -233,7 +237,7 @@ export default function MatchSearchPage() {
         ) : matches.length===0 ? (
           <div className="text-center py-20">
             <svg className="w-16 h-16 mx-auto text-text-secondary/20 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            <p className="text-text-secondary text-lg mb-2">No matches found</p>
+            <p className="text-text-secondary text-lg mb-2">{t('matches.search.noResults')}</p>
             <p className="text-text-secondary/60 text-sm mb-4">Try adjusting your filters</p>
             {hasF && <button onClick={reset} className="text-sm text-neon-blue hover:underline">Clear all filters</button>}
           </div>
@@ -241,7 +245,7 @@ export default function MatchSearchPage() {
           <>
             {/* Desktop header */}
             <div className="hidden lg:grid lg:grid-cols-[90px_minmax(120px,1.2fr)_130px_minmax(250px,3fr)_100px_55px] gap-3 px-4 pb-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20">
-              <span>Date</span><span>Show</span><span>Type</span><span>Participants</span><span>Title</span><span className="text-center">Rating</span>
+              <span>{t('shows.detail.date')}</span><span>Show</span><span>Type</span><span>{t('matches.detail.participants')}</span><span>Title</span><span className="text-center">{t('common.rating')}</span>
             </div>
             <div className={`space-y-0.5 mt-0.5 transition-opacity duration-200 ${loading&&!init?'opacity-50':'opacity-100'}`}>
               {matches.map(m=><MRow key={m.id} m={m}/>)}

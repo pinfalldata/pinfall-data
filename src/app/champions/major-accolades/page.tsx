@@ -3,10 +3,14 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+
 
 function formatDate(d: string | null) { if (!d) return '—'; return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) }
 
 export default function MajorAccoladesPage() {
+  const t = useTranslations()
+
   const [tournaments, setTournaments] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState<number | null>(null)
@@ -18,12 +22,12 @@ export default function MajorAccoladesPage() {
   return (
     <div className="relative min-h-screen">
       <section className="relative w-full h-[220px] sm:h-[300px] lg:h-[380px] xl:h-[420px] overflow-hidden">
-        <Image src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20champions/IMG_20221213_102348-01.webp" alt="Major Accolades" fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-center" />
+        <Image src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20champions/IMG_20221213_102348-01.webp" alt=t('champions.majorAccolades.title') fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-center" />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/50 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-bg-primary/30 via-transparent to-bg-primary/30" />
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">
-          <nav className="hidden sm:flex items-center gap-2 text-xs text-text-secondary mb-3"><Link href="/champions" className="hover:text-neon-blue transition-colors">Champions</Link><span className="text-border-subtle">/</span><span className="text-neon-blue">Major Accolades</span></nav>
+          <nav className="hidden sm:flex items-center gap-2 text-xs text-text-secondary mb-3"><Link href="/champions" className="hover:text-neon-blue transition-colors">Champions</Link><span className="text-border-subtle">/</span><span className="text-neon-blue">{t('champions.majorAccolades.title')}</span></nav>
           <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-white text-center tracking-tight mb-2">Major <span className="text-neon-blue">Accolades</span></h1>
           <p className="text-text-secondary text-sm sm:text-base lg:text-lg text-center max-w-2xl">Grand Slams, Triple Crowns, milestone achievements, and tournament victories.</p>
         </div>
@@ -45,7 +49,7 @@ export default function MajorAccoladesPage() {
           <>
             {/* Desktop header */}
             <div className="hidden lg:grid lg:grid-cols-[100px_minmax(180px,1.5fr)_minmax(180px,1.5fr)_minmax(160px,1.2fr)_50px] gap-4 px-5 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-2">
-              <span>Date</span><span>Tournament</span><span>Show</span><span>Winner</span><span></span>
+              <span>{t('shows.detail.date')}</span><span>Tournament</span><span>Show</span><span>{t('common.winner')}</span><span></span>
             </div>
 
             <div className="space-y-1">

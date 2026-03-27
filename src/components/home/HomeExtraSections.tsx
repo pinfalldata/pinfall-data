@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef, useCallback, createContext, useContext } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+
 
 /* ══════════════════════════════════════════════════
    SHARED DATA CONTEXT — single API call
@@ -10,6 +12,8 @@ import Link from 'next/link'
 const HomepageDataCtx = createContext<any>(null)
 
 export function HomepageDataProvider({ children }: { children: React.ReactNode }) {
+  const t = useTranslations()
+
   const [data, setData] = useState<any>(null)
   useEffect(() => {
     fetch('/api/homepage-data')
@@ -88,7 +92,7 @@ export function WweLogosCarousel() {
                 <Image src={logo.image_url} alt={logo.name} width={140} height={100} className="max-w-full max-h-full object-contain" unoptimized />
               </div>
               <div className="text-center">
-                <span className="text-[10px] text-text-secondary font-mono block">{logo.start_year}–{logo.end_year || 'Now'}</span>
+                <span className="text-[10px] text-text-secondary font-mono block">{logo.start_year}–{logo.end_year || t('common.now')}</span>
                 {logo.name && <span className="text-[9px] text-text-secondary/60 block truncate max-w-[140px]">{logo.name}</span>}
               </div>
             </div>
@@ -258,7 +262,7 @@ function RecentMatchesBlock({ matches }: { matches: any[] }) {
           )
         })}
       </div>
-      <div className="px-5 pb-4"><Link href="/matches/search" className="text-xs text-neon-blue hover:text-neon-blue/80 font-medium">Browse all matches →</Link></div>
+      <div className="px-5 pb-4"><Link href="/matches/search" className="text-xs text-neon-blue hover:text-neon-blue/80 font-medium">{t('home.sections.browseAllMatches')}</Link></div>
     </div>
   )
 }
@@ -296,7 +300,7 @@ function RecentSegmentsBlock({ segments }: { segments: any[] }) {
           )
         })}
       </div>
-      <div className="px-5 pb-4"><Link href="/matches/segments" className="text-xs text-neon-pink hover:text-neon-pink/80 font-medium">Browse all segments →</Link></div>
+      <div className="px-5 pb-4"><Link href="/matches/segments" className="text-xs text-neon-pink hover:text-neon-pink/80 font-medium">{t('home.sections.browseAllSegments')}</Link></div>
     </div>
   )
 }

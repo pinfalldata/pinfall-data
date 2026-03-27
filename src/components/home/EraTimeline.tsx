@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
+
 
 interface Era {
   id: number
@@ -15,6 +17,8 @@ interface Era {
 }
 
 export function EraTimeline() {
+  const t = useTranslations()
+
   const [eras, setEras] = useState<Era[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -130,7 +134,7 @@ export function EraTimeline() {
                   <div className="absolute bottom-3 left-3 flex items-center gap-1.5">
                     <span className="px-2 py-0.5 rounded-md bg-neon-blue/20 border border-neon-blue/30 text-neon-blue text-xs font-mono font-bold">{era.start_year}</span>
                     <span className="text-text-secondary text-xs">→</span>
-                    <span className="px-2 py-0.5 rounded-md bg-neon-pink/20 border border-neon-pink/30 text-neon-pink text-xs font-mono font-bold">{era.end_year || 'Now'}</span>
+                    <span className="px-2 py-0.5 rounded-md bg-neon-pink/20 border border-neon-pink/30 text-neon-pink text-xs font-mono font-bold">{era.end_year || t('common.now')}</span>
                   </div>
                 </div>
                 <div className="p-4">

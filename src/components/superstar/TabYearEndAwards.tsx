@@ -2,10 +2,14 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+
 
 const TROPHY_IMG = 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20Hall%20Of%20Fame/year%20end%20awards.webp'
 
 export default function TabYearEndAwards({ superstar }: { superstar: any }) {
+  const t = useTranslations()
+
   const [items, setItems] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -23,7 +27,7 @@ export default function TabYearEndAwards({ superstar }: { superstar: any }) {
     <div className="max-w-3xl mx-auto">
       <div className="flex items-center gap-4 mb-6">
         <div className="relative w-16 h-16 sm:w-20 sm:h-20 shrink-0"><Image src={TROPHY_IMG} alt="Year-End Award" fill className="object-contain drop-shadow-[0_0_15px_rgba(199,160,90,0.3)]" sizes="80px" unoptimized /></div>
-        <div><h2 className="font-display text-xl sm:text-2xl font-bold text-text-white">Year-End Awards</h2><p className="text-sm text-text-secondary">{items.length} award{items.length !== 1 ? 's' : ''} won</p></div>
+        <div><h2 className="font-display text-xl sm:text-2xl font-bold text-text-white">{t('nav.dropdown.yearEndAwards')}</h2><p className="text-sm text-text-secondary">{items.length} award{items.length !== 1 ? 's' : ''} won</p></div>
       </div>
       <div className="space-y-3">
         {items.map((item: any) => (

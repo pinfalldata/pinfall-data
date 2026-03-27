@@ -6,6 +6,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { StarRating } from '@/components/ui/StarRating'
 import { ShareButtons } from '@/components/ui/ShareButtons'
+import { useTranslations } from 'next-intl'
+
 
 function fmt(d: string | null) { if (!d) return '—'; return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) }
 function daySince(d: string | null) { if (!d) return 0; return Math.floor((Date.now() - new Date(d + 'T00:00:00').getTime()) / 86400000) }
@@ -14,6 +16,8 @@ type Tab = 'history' | 'stats'
 type Sort = 'date' | 'longest' | 'shortest'
 
 export default function ChampionshipDetailPage() {
+  const t = useTranslations()
+
   const { slug } = useParams() as { slug: string }
   const [champ, setChamp] = useState<any>(null)
   const [reigns, setReigns] = useState<any[]>([])
@@ -76,10 +80,10 @@ export default function ChampionshipDetailPage() {
 
       {/* INFO BAR */}
       {champ && <section className="bg-bg-secondary/30 border-y border-border-subtle/20"><div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-4"><div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm">
-        <div className="text-center"><span className="block text-[10px] text-text-secondary uppercase tracking-wider">Status</span><span className={`font-bold ${champ.status === 'active' ? 'text-emerald-400' : 'text-red-400'}`}>{champ.status === 'active' ? '🟢 Active' : '🔴 Retired'}</span></div>
+        <div className="text-center"><span className="block text-[10px] text-text-secondary uppercase tracking-wider">{t('superstars.info.status')}</span><span className={`font-bold ${champ.status === 'active' ? 'text-emerald-400' : 'text-red-400'}`}>{champ.status === 'active' ? '🟢 Active' : '🔴 Retired'}</span></div>
         {champ.introduced_date && <div className="text-center"><span className="block text-[10px] text-text-secondary uppercase tracking-wider">Introduced</span><span className="text-text-white font-semibold">{fmt(champ.introduced_date)}</span></div>}
-        {champ.retired_date && <div className="text-center"><span className="block text-[10px] text-text-secondary uppercase tracking-wider">Retired</span><span className="text-text-white font-semibold">{fmt(champ.retired_date)}</span></div>}
-        <div className="text-center"><span className="block text-[10px] text-text-secondary uppercase tracking-wider">Total Reigns</span><span className="text-neon-blue font-bold text-lg">{total}</span></div>
+        {champ.retired_date && <div className="text-center"><span className="block text-[10px] text-text-secondary uppercase tracking-wider">{t('common.retired')}</span><span className="text-text-white font-semibold">{fmt(champ.retired_date)}</span></div>}
+        <div className="text-center"><span className="block text-[10px] text-text-secondary uppercase tracking-wider">{t('champions.detail.totalReigns')}</span><span className="text-neon-blue font-bold text-lg">{total}</span></div>
       </div></div></section>}
 
       {champ?.description_md && <section className="max-w-[1440px] mx-auto px-4 sm:px-6 pt-6"><p className="text-text-secondary text-sm leading-relaxed max-w-3xl mx-auto text-center">{champ.description_md}</p></section>}
@@ -147,7 +151,7 @@ export default function ChampionshipDetailPage() {
               {/* Expanded defenses */}
               {isO && r.defenses?.length > 0 && <div className="bg-bg-secondary/20 border-t border-border-subtle/10 px-4 sm:px-6 py-4 animate-fade-in">
                 <p className="text-[10px] text-neon-blue uppercase tracking-wider font-bold mb-3">Title Matches During Reign</p>
-                <div className="hidden lg:grid lg:grid-cols-[95px_130px_minmax(200px,2.5fr)_80px_60px] gap-3 px-3 py-1 text-[9px] text-text-secondary uppercase font-medium border-b border-border-subtle/10 mb-1"><span>Date</span><span>Match Type</span><span>Participants</span><span>Status</span><span>Rating</span></div>
+                <div className="hidden lg:grid lg:grid-cols-[95px_130px_minmax(200px,2.5fr)_80px_60px] gap-3 px-3 py-1 text-[9px] text-text-secondary uppercase font-medium border-b border-border-subtle/10 mb-1"><span>{t('shows.detail.date')}</span><span>{t('matches.search.matchType')}</span><span>{t('matches.detail.participants')}</span><span>{t('superstars.info.status')}</span><span>{t('common.rating')}</span></div>
                 <div className="space-y-0.5">{r.defenses.map((m: any) => <Link key={m.id} href={`/shows/${m.show?.slug}/matches/${m.slug}`} className="group block hover:bg-bg-secondary/30 rounded-lg transition-all">
                   <div className="hidden lg:grid lg:grid-cols-[95px_130px_minmax(200px,2.5fr)_80px_60px] gap-3 items-center px-3 py-2.5">
                     <span className="text-[11px] text-text-secondary font-mono">{fmt(m.date)}</span>
@@ -170,7 +174,7 @@ export default function ChampionshipDetailPage() {
         {sLoad || !stats ? <div className="space-y-4">{Array.from({ length: 4 }).map((_, i) => <div key={i} className="h-20 rounded-2xl bg-bg-secondary/30 animate-pulse" />)}</div>
         : <div className="space-y-8">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-            {[{ l:'Total Reigns', v:stats.totalReigns },{ l:'Title Changes', v:stats.titleChanges },{ l:'Unique Champions', v:stats.uniqueChampions },{ l:'Avg Reign', v:`${stats.avgReignDays}d` },{ l:'Median', v:`${stats.medianReignDays || 0}d` },{ l:'Total Days', v:(stats.totalDaysDefended||0).toLocaleString() },{ l:'Title Matches', v:stats.totalTitleMatches },{ l:'Change Rate', v:`${stats.titleChangePercentage}%` },{ l:'Avg Rating', v:stats.avgRating||'—' },{ l:'Vacated', v:`${stats.vacatedCount||0}x` }].map((s,i) => <div key={i} className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-4 text-center"><span className="block text-[10px] text-text-secondary uppercase tracking-wider mb-1">{s.l}</span><span className="block text-xl font-bold font-display text-neon-blue">{s.v}</span></div>)}
+            {[{ l:t('champions.detail.totalReigns'), v:stats.totalReigns },{ l:t('home.stats.titleChanges'), v:stats.titleChanges },{ l:t('champions.detail.uniqueChampions'), v:stats.uniqueChampions },{ l:t('champions.detail.avgReign'), v:`${stats.avgReignDays}d` },{ l:'Median', v:`${stats.medianReignDays || 0}d` },{ l:'Total Days', v:(stats.totalDaysDefended||0).toLocaleString() },{ l:t('champions.detail.titleMatches'), v:stats.totalTitleMatches },{ l:'Change Rate', v:`${stats.titleChangePercentage}%` },{ l:'Avg Rating', v:stats.avgRating||'—' },{ l:'Vacated', v:`${stats.vacatedCount||0}x` }].map((s,i) => <div key={i} className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-4 text-center"><span className="block text-[10px] text-text-secondary uppercase tracking-wider mb-1">{s.l}</span><span className="block text-xl font-bold font-display text-neon-blue">{s.v}</span></div>)}
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-4 text-center"><span className="block text-[10px] text-text-secondary uppercase mb-1">1+ Year</span><span className="block text-xl font-bold text-emerald-400">{stats.reignsOver365||0}</span></div>
@@ -179,10 +183,10 @@ export default function ChampionshipDetailPage() {
             <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-4 text-center"><span className="block text-[10px] text-text-secondary uppercase mb-1">&lt; 1 Day</span><span className="block text-xl font-bold text-red-400">{stats.reignsUnder1||0}</span></div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {stats.longestReign && <RecCard t="Longest Reign" s={stats.longestReign.superstar} superstars={stats.longestReign.superstars} v={`${stats.longestReign.days?.toLocaleString()} days`} sub={`${fmt(stats.longestReign.won_date)} — ${fmt(stats.longestReign.lost_date)}`} c="neon-blue" />}
-            {stats.shortestReign && <RecCard t="Shortest Reign" s={stats.shortestReign.superstar} superstars={stats.shortestReign.superstars} v={`${stats.shortestReign.days?.toLocaleString()} days`} sub={`${fmt(stats.shortestReign.won_date)} — ${fmt(stats.shortestReign.lost_date)}`} c="neon-pink" />}
-            {stats.firstChamp && <RecCard t="First Champion" s={stats.firstChamp.superstar} superstars={stats.firstChamp.superstars} v={fmt(stats.firstChamp.won_date)} c="neon-blue" />}
-            {stats.currentChamp && <RecCard t="Current Champion" s={stats.currentChamp.superstar} superstars={stats.currentChamp.superstars} v={`${stats.currentChamp.days?.toLocaleString()} days`} sub={`Since ${fmt(stats.currentChamp.won_date)}`} c="emerald" />}
+            {stats.longestReign && <RecCard t=t('champions.detail.longestReign') s={stats.longestReign.superstar} superstars={stats.longestReign.superstars} v={`${stats.longestReign.days?.toLocaleString()} days`} sub={`${fmt(stats.longestReign.won_date)} — ${fmt(stats.longestReign.lost_date)}`} c="neon-blue" />}
+            {stats.shortestReign && <RecCard t=t('champions.detail.shortestReign') s={stats.shortestReign.superstar} superstars={stats.shortestReign.superstars} v={`${stats.shortestReign.days?.toLocaleString()} days`} sub={`${fmt(stats.shortestReign.won_date)} — ${fmt(stats.shortestReign.lost_date)}`} c="neon-pink" />}
+            {stats.firstChamp && <RecCard t=t('champions.detail.firstChampion') s={stats.firstChamp.superstar} superstars={stats.firstChamp.superstars} v={fmt(stats.firstChamp.won_date)} c="neon-blue" />}
+            {stats.currentChamp && <RecCard t=t('champions.detail.currentChampion') s={stats.currentChamp.superstar} superstars={stats.currentChamp.superstars} v={`${stats.currentChamp.days?.toLocaleString()} days`} sub={`Since ${fmt(stats.currentChamp.won_date)}`} c="emerald" />}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {stats.mostReigns?.length > 0 && <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-6"><h3 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">Most Reigns</h3><div className="space-y-3">{stats.mostReigns.map((m: any, i: number) => <RR key={i} i={i} s={m.superstar} superstars={m.superstars} v={`${m.count}x`} />)}</div></div>}

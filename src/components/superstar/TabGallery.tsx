@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+
 
 interface MediaItem {
   id: string; source: 'match' | 'segment' | 'superstar'
@@ -51,6 +53,8 @@ function getThumbnail(item: MediaItem): string | null {
 }
 
 export default function TabGallery({ superstar }: { superstar: any }) {
+  const t = useTranslations()
+
   const [items, setItems] = useState<MediaItem[]>([])
   const [superstarMedia, setSuperstarMedia] = useState<MediaItem[]>([])
   const [total, setTotal] = useState(0)
@@ -120,7 +124,7 @@ export default function TabGallery({ superstar }: { superstar: any }) {
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-2 mb-6">
         <div className="flex items-center rounded-xl border border-border-subtle/30 overflow-hidden">
-          {[{ k: '', l: 'All' }, { k: 'video', l: '🎬 Videos' }, { k: 'image', l: '📸 Photos' }].map(o => (
+          {[{ k: '', l: t('common.all') }, { k: 'video', l: '🎬 Videos' }, { k: 'image', l: '📸 Photos' }].map(o => (
             <button key={o.k} onClick={() => applyFilter('mediaType', o.k)}
               className={`px-3 py-2 text-xs font-medium transition-all ${filters.mediaType === o.k ? 'bg-neon-blue/15 text-neon-blue' : 'text-text-secondary hover:text-text-white hover:bg-bg-secondary/30'}`}
             >{o.l}</button>
@@ -129,7 +133,7 @@ export default function TabGallery({ superstar }: { superstar: any }) {
         {filterOpts.years.length > 0 && (
           <select value={filters.year} onChange={e => applyFilter('year', e.target.value)}
             className="px-3 py-2 rounded-xl bg-bg-secondary/30 border border-border-subtle/30 text-xs text-text-white cursor-pointer focus:outline-none focus:border-neon-blue/40">
-            <option value="">All years</option>
+            <option value="">{t('common.allYears')}</option>
             {filterOpts.years.map(y => <option key={y} value={y}>{y}</option>)}
           </select>
         )}

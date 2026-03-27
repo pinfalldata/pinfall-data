@@ -4,10 +4,14 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { StarRating } from '@/components/ui/StarRating'
+import { useTranslations } from 'next-intl'
+
 
 function formatDate(d: string | null) { if (!d) return '—'; return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) }
 
 export default function TabChampionships({ superstar }: { superstar: any }) {
+  const t = useTranslations()
+
   const [data, setData] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [totalReigns, setTotalReigns] = useState(0)
@@ -217,9 +221,9 @@ export default function TabChampionships({ superstar }: { superstar: any }) {
                       {/* Expanded defenses */}
                       {isOpen && r.defenses?.length > 0 && (
                         <div className="bg-bg-secondary/20 border-t border-border-subtle/10 px-4 sm:px-6 py-4 animate-fade-in">
-                          <p className="text-[10px] text-neon-blue uppercase tracking-wider font-bold mb-3">Title Matches</p>
+                          <p className="text-[10px] text-neon-blue uppercase tracking-wider font-bold mb-3">{t('champions.detail.titleMatches')}</p>
                           <div className="hidden lg:grid lg:grid-cols-[95px_130px_minmax(200px,2.5fr)_80px_60px] gap-3 px-3 py-1 text-[9px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/10 mb-1">
-                            <span>Date</span><span>Match Type</span><span>Participants</span><span>Status</span><span>Rating</span>
+                            <span>{t('shows.detail.date')}</span><span>{t('matches.search.matchType')}</span><span>{t('matches.detail.participants')}</span><span>{t('superstars.info.status')}</span><span>{t('common.rating')}</span>
                           </div>
                           <div className="space-y-0.5">
                             {r.defenses.map((m: any) => (

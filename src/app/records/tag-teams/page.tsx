@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+
 
 const HERO = 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20Stats%20&%20Records/Jeri-Show_2026-03-21_16_54_31.480723.jpg.png'
 const TABS = [
@@ -12,6 +14,8 @@ const TABS = [
 ]
 
 export default function TagTeamRecordsPage() {
+  const t = useTranslations()
+
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState('mostMatchesTogether')
@@ -78,7 +82,7 @@ export default function TagTeamRecordsPage() {
                       <span key={m.id}>{mi > 0 && <span className="text-neon-blue mx-0.5">&</span>}{m.name}</span>
                     ))}
                     {isStable && <span>{item.members?.slice(0, 3).map((m: any) => m.name).join(', ')}{(item.members?.length || 0) > 3 ? ` +${item.members.length - 3}` : ''}</span>}
-                    {item.is_active && <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/25 text-emerald-400 font-bold ml-1">Active</span>}
+                    {item.is_active && <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/25 text-emerald-400 font-bold ml-1">{t('common.active')}</span>}
                   </div>
                 </div>
 

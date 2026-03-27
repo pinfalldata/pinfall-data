@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { useTranslations } from 'next-intl'
+
 
 interface Stat {
   value: number
@@ -10,6 +12,8 @@ interface Stat {
 }
 
 export function HomeStats() {
+  const t = useTranslations()
+
   const [stats, setStats] = useState<Stat[]>([])
   const [loaded, setLoaded] = useState(false)
 
@@ -18,15 +22,15 @@ export function HomeStats() {
       .then(r => r.json())
       .then(data => {
         setStats([
-          { value: data.superstars || 0, label: 'Superstars', suffix: '+', icon: '🌟' },
-          { value: data.matches || 0, label: 'Matches', suffix: '+', icon: '🥊' },
-          { value: data.shows || 0, label: 'Shows', suffix: '+', icon: '🏟️' },
-          { value: data.yearsOfHistory || 70, label: 'Years of History', suffix: '+', icon: '📜' },
-          { value: data.hallOfFamers || 0, label: 'Hall of Famers', suffix: '+', icon: '🏛️' },
-          { value: data.titleChanges || 0, label: 'Title Changes', suffix: '+', icon: '🏆' },
-          { value: data.omgMoments || 0, label: 'OMG Moments', suffix: '+', icon: '💥' },
-          { value: data.arenas || 0, label: 'Arenas Worldwide', suffix: '+', icon: '🗺️' },
-          { value: data.matchTypes || 0, label: 'Match Types', suffix: '+', icon: '⚔️' },
+          { value: data.superstars || 0, label: t('home.stats.superstars'), suffix: '+', icon: '🌟' },
+          { value: data.matches || 0, label: t('home.stats.matches'), suffix: '+', icon: '🥊' },
+          { value: data.shows || 0, label: t('home.stats.shows'), suffix: '+', icon: '🏟️' },
+          { value: data.yearsOfHistory || 70, label: t('home.stats.yearsOfHistory'), suffix: '+', icon: '📜' },
+          { value: data.hallOfFamers || 0, label: t('home.stats.hallOfFamers'), suffix: '+', icon: '🏛️' },
+          { value: data.titleChanges || 0, label: t('home.stats.titleChanges'), suffix: '+', icon: '🏆' },
+          { value: data.omgMoments || 0, label: t('omg.title'), suffix: '+', icon: '💥' },
+          { value: data.arenas || 0, label: t('home.stats.arenasWorldwide'), suffix: '+', icon: '🗺️' },
+          { value: data.matchTypes || 0, label: t('home.stats.matchTypes'), suffix: '+', icon: '⚔️' },
         ])
         setLoaded(true)
       })

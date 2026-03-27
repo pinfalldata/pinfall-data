@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+
 
 function formatDate(d: string | null) { if (!d) return '—'; return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) }
 
@@ -30,6 +32,8 @@ function RankRow({ i, superstar, stat, statLabel }: { i: number; superstar: any;
 }
 
 export default function ByTheNumbersPage() {
+  const t = useTranslations()
+
   const [stats, setStats] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
@@ -47,12 +51,12 @@ export default function ByTheNumbersPage() {
   return (
     <div className="relative min-h-screen">
       <section className="relative w-full h-[220px] sm:h-[300px] lg:h-[380px] xl:h-[420px] overflow-hidden">
-        <Image src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20champions/WWE-New-titles-1_2026-03-11_13_28_40.220684.jpg.png" alt="By The Numbers" fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-center" />
+        <Image src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20champions/WWE-New-titles-1_2026-03-11_13_28_40.220684.jpg.png" alt=t('champions.byTheNumbers.title') fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-center" />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/50 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-bg-primary/30 via-transparent to-bg-primary/30" />
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">
-          <nav className="hidden sm:flex items-center gap-2 text-xs text-text-secondary mb-3"><Link href="/champions" className="hover:text-neon-blue transition-colors">Champions</Link><span className="text-border-subtle">/</span><span className="text-neon-blue">By The Numbers</span></nav>
+          <nav className="hidden sm:flex items-center gap-2 text-xs text-text-secondary mb-3"><Link href="/champions" className="hover:text-neon-blue transition-colors">Champions</Link><span className="text-border-subtle">/</span><span className="text-neon-blue">{t('champions.byTheNumbers.title')}</span></nav>
           <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-white text-center tracking-tight mb-2">By The <span className="text-neon-blue">Numbers</span></h1>
           <p className="text-text-secondary text-sm sm:text-base lg:text-lg text-center max-w-2xl">Global championship statistics, records, and data breakdowns.</p>
         </div>
@@ -70,11 +74,11 @@ export default function ByTheNumbersPage() {
               <div className="w-1 h-6 rounded-full bg-neon-blue" />Global Overview
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-              <StatCard label="Championships" value={o.totalChampionships} sub={`${o.activeChampionships} active / ${o.retiredChampionships} retired`} />
-              <StatCard label="Total Reigns" value={o.totalReigns} />
-              <StatCard label="Unique Champions" value={o.uniqueChampions} />
-              <StatCard label="Avg Reign" value={`${o.avgReignDays}d`} />
-              <StatCard label="Title Matches" value={o.totalTitleMatches} sub={`${o.totalTitleChanges} title changes`} />
+              <StatCard label=t('common.championships') value={o.totalChampionships} sub={`${o.activeChampionships} active / ${o.retiredChampionships} retired`} />
+              <StatCard label=t('champions.detail.totalReigns') value={o.totalReigns} />
+              <StatCard label=t('champions.detail.uniqueChampions') value={o.uniqueChampions} />
+              <StatCard label=t('champions.detail.avgReign') value={`${o.avgReignDays}d`} />
+              <StatCard label=t('champions.detail.titleMatches') value={o.totalTitleMatches} sub={`${o.totalTitleChanges} title changes`} />
             </div>
           </section>
 
@@ -85,20 +89,20 @@ export default function ByTheNumbersPage() {
               <div className="rounded-2xl border border-neon-blue/20 bg-gradient-to-br from-neon-blue/5 to-transparent p-6">
                 <h3 className="font-display text-lg font-bold text-neon-blue mb-4 flex items-center gap-2">👔 Men&apos;s Division</h3>
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="text-center"><span className="block text-2xl font-bold text-text-white font-display">{m.reigns.toLocaleString()}</span><span className="text-[10px] text-text-secondary uppercase">Reigns</span></div>
+                  <div className="text-center"><span className="block text-2xl font-bold text-text-white font-display">{m.reigns.toLocaleString()}</span><span className="text-[10px] text-text-secondary uppercase">{t('common.reigns')}</span></div>
                   <div className="text-center"><span className="block text-2xl font-bold text-text-white font-display">{m.uniqueChampions}</span><span className="text-[10px] text-text-secondary uppercase">Champions</span></div>
                   <div className="text-center"><span className="block text-2xl font-bold text-text-white font-display">{m.totalDays.toLocaleString()}</span><span className="text-[10px] text-text-secondary uppercase">Total Days</span></div>
-                  <div className="text-center"><span className="block text-2xl font-bold text-text-white font-display">{m.avgDays}d</span><span className="text-[10px] text-text-secondary uppercase">Avg Reign</span></div>
+                  <div className="text-center"><span className="block text-2xl font-bold text-text-white font-display">{m.avgDays}d</span><span className="text-[10px] text-text-secondary uppercase">{t('champions.detail.avgReign')}</span></div>
                 </div>
               </div>
               {/* Women */}
               <div className="rounded-2xl border border-neon-pink/20 bg-gradient-to-br from-neon-pink/5 to-transparent p-6">
                 <h3 className="font-display text-lg font-bold text-neon-pink mb-4 flex items-center gap-2">👑 Women&apos;s Division</h3>
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="text-center"><span className="block text-2xl font-bold text-text-white font-display">{f.reigns.toLocaleString()}</span><span className="text-[10px] text-text-secondary uppercase">Reigns</span></div>
+                  <div className="text-center"><span className="block text-2xl font-bold text-text-white font-display">{f.reigns.toLocaleString()}</span><span className="text-[10px] text-text-secondary uppercase">{t('common.reigns')}</span></div>
                   <div className="text-center"><span className="block text-2xl font-bold text-text-white font-display">{f.uniqueChampions}</span><span className="text-[10px] text-text-secondary uppercase">Champions</span></div>
                   <div className="text-center"><span className="block text-2xl font-bold text-text-white font-display">{f.totalDays.toLocaleString()}</span><span className="text-[10px] text-text-secondary uppercase">Total Days</span></div>
-                  <div className="text-center"><span className="block text-2xl font-bold text-text-white font-display">{f.avgDays}d</span><span className="text-[10px] text-text-secondary uppercase">Avg Reign</span></div>
+                  <div className="text-center"><span className="block text-2xl font-bold text-text-white font-display">{f.avgDays}d</span><span className="text-[10px] text-text-secondary uppercase">{t('champions.detail.avgReign')}</span></div>
                 </div>
                 {rank.mostDecoratedFemale?.length > 0 && (
                   <div className="mt-4 pt-4 border-t border-neon-pink/10 space-y-2">
@@ -124,7 +128,7 @@ export default function ByTheNumbersPage() {
                   <div className="text-center"><span className="block text-2xl font-bold text-text-white font-display">{tag.reigns}</span><span className="text-[10px] text-text-secondary uppercase">Team Reigns</span></div>
                   <div className="text-center"><span className="block text-2xl font-bold text-text-white font-display">{tag.uniqueTeams}</span><span className="text-[10px] text-text-secondary uppercase">Unique Teams</span></div>
                   <div className="text-center"><span className="block text-2xl font-bold text-text-white font-display">{tag.totalDays.toLocaleString()}</span><span className="text-[10px] text-text-secondary uppercase">Total Days</span></div>
-                  <div className="text-center"><span className="block text-2xl font-bold text-text-white font-display">{tag.avgDays}d</span><span className="text-[10px] text-text-secondary uppercase">Avg Reign</span></div>
+                  <div className="text-center"><span className="block text-2xl font-bold text-text-white font-display">{tag.avgDays}d</span><span className="text-[10px] text-text-secondary uppercase">{t('champions.detail.avgReign')}</span></div>
                 </div>
 
                 {/* Longest tag team reign */}

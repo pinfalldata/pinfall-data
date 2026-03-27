@@ -2,16 +2,20 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
+
 
 const RESULT_LABELS: Record<string, string> = {
   pinfall: 'Pinfall', submission: 'Submission', dq: 'Disqualification', count_out: 'Count Out',
-  no_contest: 'No Contest', forfeit: 'Forfeit', ko: 'Knockout', referee_stoppage: 'Ref Stoppage',
+  no_contest: t('common.noContest'), forfeit: 'Forfeit', ko: 'Knockout', referee_stoppage: 'Ref Stoppage',
   escape: 'Escape', retrieve: 'Retrieve', last_elimination: 'Last Elimination', time_limit_draw: 'Time Limit Draw', other: 'Other',
 }
 
 function fmtDur(s: number) { const m = Math.floor(s / 60); const sec = s % 60; return `${m}:${sec.toString().padStart(2, '0')}` }
 
 export default function TabStatistics({ superstar }: { superstar: any }) {
+  const t = useTranslations()
+
   const [stats, setStats] = useState<any>(null)
   const [years, setYears] = useState<string[]>([])
   const [year, setYear] = useState('')
@@ -52,7 +56,7 @@ export default function TabStatistics({ superstar }: { superstar: any }) {
           <span className="text-xs text-text-secondary">Period:</span>
           <select value={year} onChange={e => changeYear(e.target.value)}
             className="px-3 py-2 rounded-xl bg-bg-secondary/30 border border-border-subtle/30 text-xs text-text-white cursor-pointer focus:outline-none focus:border-neon-blue/40">
-            <option value="">All-time career</option>
+            <option value="">{t('superstars.filters.allTime')}</option>
             {years.map(y => <option key={y} value={y}>{y}</option>)}
           </select>
           {year && <button onClick={() => changeYear('')} className="text-xs text-red-400 hover:text-red-300">Reset</button>}
@@ -62,11 +66,11 @@ export default function TabStatistics({ superstar }: { superstar: any }) {
       {/* Key stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
         {[
-          { l: 'Matches', v: s.totalMatches, c: 'text-neon-blue' },
-          { l: 'Wins', v: s.wins, c: 'text-emerald-400' },
-          { l: 'Losses', v: s.losses, c: 'text-red-400' },
-          { l: 'Draws', v: s.draws, c: 'text-yellow-400' },
-          { l: 'Win Rate', v: `${s.winRate}%`, c: s.winRate >= 60 ? 'text-emerald-400' : s.winRate >= 40 ? 'text-yellow-400' : 'text-red-400' },
+          { l: t('home.stats.matches'), v: s.totalMatches, c: 'text-neon-blue' },
+          { l: t('common.wins'), v: s.wins, c: 'text-emerald-400' },
+          { l: t('common.losses'), v: s.losses, c: 'text-red-400' },
+          { l: t('common.draws'), v: s.draws, c: 'text-yellow-400' },
+          { l: t('common.winRate'), v: `${s.winRate}%`, c: s.winRate >= 60 ? 'text-emerald-400' : s.winRate >= 40 ? 'text-yellow-400' : 'text-red-400' },
           { l: 'Avg Duration', v: s.avgDuration > 0 ? fmtDur(s.avgDuration) : '—', c: 'text-text-white' },
           { l: 'Avg Rating', v: s.avgRating ? `${s.avgRating}★` : '—', c: 'text-yellow-400' },
         ].map((item, i) => (
@@ -93,7 +97,7 @@ export default function TabStatistics({ superstar }: { superstar: any }) {
         )}
         {s.titleMatches > 0 && (
           <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/5 p-3 text-center">
-            <span className="block text-[9px] text-text-secondary uppercase mb-1">Title Matches</span>
+            <span className="block text-[9px] text-text-secondary uppercase mb-1">{t('champions.detail.titleMatches')}</span>
             <span className="block text-xl font-bold text-yellow-400">{s.titleMatches}</span>
           </div>
         )}
@@ -127,7 +131,7 @@ export default function TabStatistics({ superstar }: { superstar: any }) {
         {/* Match Types */}
         {s.matchTypes?.length > 0 && (
           <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/10 p-5">
-            <h4 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">Match Types</h4>
+            <h4 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">{t('home.stats.matchTypes')}</h4>
             <div className="space-y-2.5">
               {s.matchTypes.map((mt: any, i: number) => {
                 const max = s.matchTypes[0].count

@@ -3,6 +3,8 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+
 
 interface Championship { id: number; name: string; slug: string; image_url: string | null; status: string; introduced_date: string | null; retired_date: string | null; brand: string | null; sort_order: number; description_md: string | null; current_holder: any | null; current_reign_start: string | null }
 interface Era { id: number; name: string; slug: string; start_year: number; end_year: number | null }
@@ -16,7 +18,9 @@ function SSrch({ value, onSel, onClr }: { value: string; onSel: (id: string, n: 
   const [open, setOpen] = useState(false)
   const db = useRef<NodeJS.Timeout>()
   const cRef = useRef<HTMLDivElement>(null)
-  useEffect(() => { const h = (e: MouseEvent) => { if (cRef.current && !cRef.current.contains(e.target as Node)) setOpen(false) }; document.addEventListener('mousedown', h); return () => document.removeEventListener('mousedown', h) }, [])
+  useEffect(() => { const h = (e: MouseEvent) => {
+  const t = useTranslations()
+ if (cRef.current && !cRef.current.contains(e.target as Node)) setOpen(false) }; document.addEventListener('mousedown', h); return () => document.removeEventListener('mousedown', h) }, [])
   const search = (v: string) => {
     setQ(v); if (v.length < 2) { setRes([]); setOpen(false); return }
     clearTimeout(db.current)
@@ -111,12 +115,12 @@ export default function TitleVaultPage() {
   return (
     <div className="relative min-h-screen">
       <section className="relative w-full h-[220px] sm:h-[300px] lg:h-[380px] xl:h-[420px] overflow-hidden">
-        <Image src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20champions/qffuupl2lpdd1.jpeg" alt="The Title Vault" fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-center" />
+        <Image src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20champions/qffuupl2lpdd1.jpeg" alt=t('champions.titleVault.title') fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-center" />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/50 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-bg-primary/30 via-transparent to-bg-primary/30" />
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">
-          <nav className="hidden sm:flex items-center gap-2 text-xs text-text-secondary mb-3"><Link href="/champions" className="hover:text-neon-blue transition-colors">Champions</Link><span className="text-border-subtle">/</span><span className="text-neon-blue">The Title Vault</span></nav>
+          <nav className="hidden sm:flex items-center gap-2 text-xs text-text-secondary mb-3"><Link href="/champions" className="hover:text-neon-blue transition-colors">Champions</Link><span className="text-border-subtle">/</span><span className="text-neon-blue">{t('champions.titleVault.title')}</span></nav>
           <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-white text-center tracking-tight mb-2">The <span className="text-neon-blue">Title Vault</span></h1>
           <p className="text-text-secondary text-sm sm:text-base lg:text-lg text-center max-w-2xl">Every championship in WWE history — past and present.</p>
         </div>
@@ -138,14 +142,14 @@ export default function TitleVaultPage() {
             <select value={selectedEra} onChange={e => setSelectedEra(e.target.value)}
               className="bg-bg-tertiary border border-border-subtle/30 rounded-xl px-4 py-2.5 text-xs text-text-white focus:border-neon-blue/50 focus:outline-none transition-colors appearance-none cursor-pointer min-w-[140px]"
               style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 8px center', backgroundRepeat: 'no-repeat', backgroundSize: '16px', paddingRight: '32px' }}>
-              <option value="">All Eras</option>
+              <option value="">{t('common.allEras')}</option>
               {eras.map(era => <option key={era.id} value={String(era.id)}>{era.name}</option>)}
             </select>
             {/* Gender filter */}
             <select value={gender} onChange={e => setGender(e.target.value)}
               className="bg-bg-tertiary border border-border-subtle/30 rounded-xl px-4 py-2.5 text-xs text-text-white focus:border-neon-blue/50 focus:outline-none transition-colors appearance-none cursor-pointer min-w-[120px]"
               style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 8px center', backgroundRepeat: 'no-repeat', backgroundSize: '16px', paddingRight: '32px' }}>
-              <option value="">All Genders</option>
+              <option value="">{t('common.allGenders')}</option>
               <option value="male">Men&apos;s Titles</option>
               <option value="female">Women&apos;s Titles</option>
             </select>
@@ -153,7 +157,7 @@ export default function TitleVaultPage() {
             <div className="flex items-center gap-1">
               {(['all', 'active', 'retired'] as const).map(f => (
                 <button key={f} onClick={() => setFilter(f)} className={`px-4 py-2 rounded-xl text-xs font-medium border transition-all ${filter === f ? 'bg-neon-blue/15 border-neon-blue/30 text-neon-blue' : 'bg-bg-secondary/30 border-border-subtle/20 text-text-secondary hover:text-text-white'}`}>
-                  {f === 'all' ? 'All' : f === 'active' ? '🟢 Active' : '🔴 Retired'}
+                  {f === 'all' ? t('common.all') : f === 'active' ? '🟢 Active' : '🔴 Retired'}
                 </button>
               ))}
             </div>
@@ -203,7 +207,7 @@ function ChampCard({ c }: { c: Championship }) {
       <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
       <div className="relative h-36 flex items-center justify-center bg-gradient-to-b from-bg-tertiary/40 to-transparent p-4">
         {c.image_url ? <Image src={c.image_url} alt={c.name} width={280} height={180} className="max-h-full w-auto object-contain group-hover:scale-105 transition-transform duration-300" /> : <span className="text-4xl opacity-20">🏆</span>}
-        {c.status === 'active' && <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /><span className="text-[9px] text-emerald-400 font-bold uppercase tracking-wider">Active</span></div>}
+        {c.status === 'active' && <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /><span className="text-[9px] text-emerald-400 font-bold uppercase tracking-wider">{t('common.active')}</span></div>}
       </div>
       <div className="p-4">
         <h3 className="font-display text-sm font-bold text-text-white group-hover:text-neon-blue transition-colors">{c.name}</h3>

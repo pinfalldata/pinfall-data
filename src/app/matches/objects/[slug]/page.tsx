@@ -3,10 +3,14 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
+
 
 function fmtDate(d: string) { return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) }
 
 export default function ObjectDetailPage() {
+  const t = useTranslations()
+
   const params = useParams()
   const slug = params.slug as string
   const [data, setData] = useState<any>(null)
@@ -46,9 +50,9 @@ export default function ObjectDetailPage() {
             {obj.description && <p className="text-text-secondary text-sm sm:text-base leading-relaxed mb-4">{obj.description}</p>}
             <div className="flex flex-wrap gap-4">
               <div className="px-4 py-3 rounded-xl border border-border-subtle/20 bg-bg-secondary/15 text-center"><p className="text-2xl font-display font-bold text-neon-blue">{data.total_uses}</p><p className="text-[10px] text-text-secondary uppercase tracking-wider">Total Uses</p></div>
-              <div className="px-4 py-3 rounded-xl border border-border-subtle/20 bg-bg-secondary/15 text-center"><p className="text-2xl font-display font-bold text-neon-blue">{matches.filter((u: any) => u.match).length}</p><p className="text-[10px] text-text-secondary uppercase tracking-wider">Matches</p></div>
-              <div className="px-4 py-3 rounded-xl border border-border-subtle/20 bg-bg-secondary/15 text-center"><p className="text-2xl font-display font-bold text-neon-blue">{matches.filter((u: any) => u.segment && !u.match).length}</p><p className="text-[10px] text-text-secondary uppercase tracking-wider">Segments</p></div>
-              <div className="px-4 py-3 rounded-xl border border-border-subtle/20 bg-bg-secondary/15 text-center"><p className="text-2xl font-display font-bold text-neon-blue">{superstars.length}</p><p className="text-[10px] text-text-secondary uppercase tracking-wider">Superstars</p></div>
+              <div className="px-4 py-3 rounded-xl border border-border-subtle/20 bg-bg-secondary/15 text-center"><p className="text-2xl font-display font-bold text-neon-blue">{matches.filter((u: any) => u.match).length}</p><p className="text-[10px] text-text-secondary uppercase tracking-wider">{t('home.stats.matches')}</p></div>
+              <div className="px-4 py-3 rounded-xl border border-border-subtle/20 bg-bg-secondary/15 text-center"><p className="text-2xl font-display font-bold text-neon-blue">{matches.filter((u: any) => u.segment && !u.match).length}</p><p className="text-[10px] text-text-secondary uppercase tracking-wider">{t('shows.detail.segments')}</p></div>
+              <div className="px-4 py-3 rounded-xl border border-border-subtle/20 bg-bg-secondary/15 text-center"><p className="text-2xl font-display font-bold text-neon-blue">{superstars.length}</p><p className="text-[10px] text-text-secondary uppercase tracking-wider">{t('home.stats.superstars')}</p></div>
             </div>
           </div>
         </div>

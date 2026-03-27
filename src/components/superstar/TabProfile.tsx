@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { formatDate, formatDateShort, formatDuration, getRatingColor, getSegmentCategoryIcon } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
+
 
 export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabChange?: (tabId: string) => void }) {
   const [preview, setPreview] = useState<any>(null)
@@ -20,7 +22,7 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
       {/* ═══════ LEFT COLUMN: Bio + Records + Ring Names + Activity ═══════ */}
       <div className="lg:col-span-2 space-y-6">
         {superstar.bio_md && (
-          <Card title="Biography">
+          <Card title=t('superstars.profile.biography')>
             <p className="text-text-primary leading-relaxed whitespace-pre-line">{superstar.bio_md}</p>
           </Card>
         )}
@@ -34,7 +36,7 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
                 <div key={a.id} className="flex items-center justify-between py-2 border-b border-border-subtle/20 last:border-b-0">
                   <span className="text-text-white font-medium">{a.alias}</span>
                   <span className="text-text-secondary text-sm">
-                    {formatDateShort(a.start_date)} → {a.end_date ? formatDateShort(a.end_date) : 'Present'}
+                    {formatDateShort(a.start_date)} → {a.end_date ? formatDateShort(a.end_date) : t('common.present')}
                   </span>
                 </div>
               ))}
@@ -119,7 +121,7 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
                     <span className={`w-2 h-2 rounded-full ${cb.reason === 'injury' ? 'bg-status-danger' : cb.reason === 'other_promotion' ? 'bg-status-warning' : 'bg-text-secondary'}`} />
                     <span className="text-text-white text-sm font-medium capitalize">{cb.reason.replace('_', ' ')}{cb.other_promotion && ` — ${cb.other_promotion}`}</span>
                   </div>
-                  <p className="text-text-secondary text-xs">{formatDateShort(cb.start_date)} → {cb.end_date ? formatDateShort(cb.end_date) : 'Present'}</p>
+                  <p className="text-text-secondary text-xs">{formatDateShort(cb.start_date)} → {cb.end_date ? formatDateShort(cb.end_date) : t('common.present')}</p>
                   {cb.description && <p className="text-text-secondary text-sm mt-2">{cb.description}</p>}
                 </div>
               ))}
@@ -162,12 +164,12 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
         {preview?.statsPreview && (
           <PreviewWidget title="📊 Quick Stats" onSeeMore={() => onTabChange?.('statistics')} icon="📊">
             <div className="grid grid-cols-2 gap-2">
-              <StatMini label="Win Rate" value={`${preview.statsPreview.winRate}%`} accent />
-              <StatMini label="Total Matches" value={preview.statsPreview.total_matches} />
-              <StatMini label="Wins" value={preview.statsPreview.win_count} color="text-green-400" />
-              <StatMini label="Losses" value={preview.statsPreview.loss_count} color="text-red-400" />
+              <StatMini label=t('common.winRate') value={`${preview.statsPreview.winRate}%`} accent />
+              <StatMini label=t('common.totalMatches') value={preview.statsPreview.total_matches} />
+              <StatMini label=t('common.wins') value={preview.statsPreview.win_count} color="text-green-400" />
+              <StatMini label=t('common.losses') value={preview.statsPreview.loss_count} color="text-red-400" />
               {preview.statsPreview.total_reigns > 0 && <StatMini label="Title Reigns" value={preview.statsPreview.total_reigns} accent />}
-              {preview.statsPreview.draw_count > 0 && <StatMini label="Draws" value={preview.statsPreview.draw_count} />}
+              {preview.statsPreview.draw_count > 0 && <StatMini label=t('common.draws') value={preview.statsPreview.draw_count} />}
             </div>
           </PreviewWidget>
         )}
@@ -274,7 +276,7 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
                   {f.related?.slug ? (
                     <Link href={`/superstars/${f.related.slug}`} className="text-neon-blue text-sm hover:underline">{f.related.name}</Link>
                   ) : (
-                    <span className="text-text-white text-sm">{f.related?.name || 'Unknown'}</span>
+                    <span className="text-text-white text-sm">{f.related?.name || t('common.unknown')}</span>
                   )}
                 </div>
               ))}
@@ -290,7 +292,7 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
                   {t.trainer?.slug ? (
                     <Link href={`/superstars/${t.trainer.slug}`} className="text-neon-blue text-sm hover:underline">{t.trainer.name}</Link>
                   ) : (
-                    <span className="text-text-white text-sm">{t.trainer_name || 'Unknown'}</span>
+                    <span className="text-text-white text-sm">{t.trainer_name || t('common.unknown')}</span>
                   )}
                 </div>
               ))}
@@ -304,7 +306,7 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
               {superstar.roles.map((r: any) => (
                 <div key={r.id} className="flex items-center justify-between py-1.5 border-b border-border-subtle/20 last:border-b-0">
                   <span className={`capitalize text-sm ${r.is_primary ? 'text-neon-blue font-medium' : 'text-text-white'}`}>{r.role.replace('_', ' ')}</span>
-                  {r.start_year && <span className="text-text-secondary text-xs">{r.start_year} — {r.end_year || 'Present'}</span>}
+                  {r.start_year && <span className="text-text-secondary text-xs">{r.start_year} — {r.end_year || t('common.present')}</span>}
                 </div>
               ))}
             </div>
@@ -367,7 +369,7 @@ function MatchPreviewRow({ match, superstarId, primaryRole }: { match: any; supe
 }
 
 /* ═══════════════════════════════════════════════════════ */
-/* PREVIEW WIDGET — Glass card with "See more" link        */
+/* PREVIEW WIDGET — Glass card with t('common.seeMore') link        */
 /* ═══════════════════════════════════════════════════════ */
 function PreviewWidget({ title, onSeeMore, icon, children }: { title: string; onSeeMore: () => void; icon: string; children: React.ReactNode }) {
   return (

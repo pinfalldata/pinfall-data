@@ -19,6 +19,8 @@ import TabObjectsUsed from './TabObjectsUsed'
 import TabPersona from './TabPersona'
 import TabGallery from './TabGallery'
 import TabStatistics from './TabStatistics'
+import { useTranslations } from 'next-intl'
+
 
 interface RoleCounts {
   segments: number; managed: number; commentated: number; matchCommentated: number
@@ -30,6 +32,8 @@ interface RoleCounts {
 }
 
 export function ProfileTabs({ superstar }: { superstar: any }) {
+  const t = useTranslations()
+
   const [activeTab, setActiveTab] = useState('profile')
   const [roleCounts, setRoleCounts] = useState<RoleCounts | null>(null)
   const [showLeftArrow, setShowLeftArrow] = useState(false)
@@ -62,7 +66,7 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
 
   const scroll = (dir: number) => { scrollRef.current?.scrollBy({ left: dir * 200, behavior: 'smooth' }) }
 
-  // ★ FIX: Tab change handler passed to TabProfile for "See more" buttons
+  // ★ FIX: Tab change handler passed to TabProfile for t('common.seeMore') buttons
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId)
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -73,16 +77,16 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
 
   const tabs = [
     { id: 'profile', label: 'Profile', show: true },
-    { id: 'matches', label: 'Matches', show: hasMatches, count: superstar.total_matches },
+    { id: 'matches', label: t('home.stats.matches'), show: hasMatches, count: superstar.total_matches },
     { id: 'statistics', label: '📊 Statistics', show: hasMatches },
-    { id: 'segments', label: 'Segments', show: (rc?.segments || 0) > 0, count: rc?.segments },
+    { id: 'segments', label: t('shows.detail.segments'), show: (rc?.segments || 0) > 0, count: rc?.segments },
     { id: 'gallery', label: '📸 Gallery', show: (rc?.gallery || 0) > 0, count: rc?.gallery },
-    { id: 'timeline', label: 'Timeline', show: superstar.timeline?.length > 0 },
+    { id: 'timeline', label: t('superstars.profile.timeline'), show: superstar.timeline?.length > 0 },
     { id: 'persona', label: '🎭 Persona', show: personaTotal > 0 },
     { id: 'omgMoments', label: '⚡ OMG Moments', show: (rc?.omgMoments || 0) > 0, count: rc?.omgMoments },
-    { id: 'championships', label: 'Championships', show: (rc?.championships || superstar.total_reigns || 0) > 0, count: rc?.championships || superstar.total_reigns },
-    { id: 'tagTeams', label: 'Tag Teams', show: (rc?.tagTeams || 0) > 0, count: rc?.tagTeams },
-    { id: 'stables', label: 'Stables', show: (rc?.stables || 0) > 0, count: rc?.stables },
+    { id: 'championships', label: t('common.championships'), show: (rc?.championships || superstar.total_reigns || 0) > 0, count: rc?.championships || superstar.total_reigns },
+    { id: 'tagTeams', label: t('tagTeams.teams'), show: (rc?.tagTeams || 0) > 0, count: rc?.tagTeams },
+    { id: 'stables', label: t('tagTeams.stables'), show: (rc?.stables || 0) > 0, count: rc?.stables },
     { id: 'moves', label: 'Moves', show: isWrestler && superstar.finishers?.length > 0 },
     { id: 'hallOfFame', label: '🏛️ Hall of Fame', show: (rc?.hallOfFame || 0) > 0 },
     { id: 'slammyAwards', label: '🏆 Slammy Awards', show: (rc?.slammyAwards || 0) > 0, count: rc?.slammyAwards },
@@ -92,7 +96,7 @@ export function ProfileTabs({ superstar }: { superstar: any }) {
     { id: 'guestRefereed', label: 'Guest Referee', show: (rc?.guestRefereed || 0) > 0, count: rc?.guestRefereed },
     { id: 'media', label: 'Books & Films', show: hasBooksOrFilms },
     { id: 'objectsUsed', label: '🪑 Objects Used', show: (rc?.objectsUsed || 0) > 0, count: rc?.objectsUsed },
-    { id: 'refereed', label: 'Referee', show: (rc?.refereed || 0) > 0, count: rc?.refereed },
+    { id: 'refereed', label: t('matches.detail.referee'), show: (rc?.refereed || 0) > 0, count: rc?.refereed },
     { id: 'ringAnnounced', label: 'Ring Announcer', show: (rc?.ringAnnounced || 0) > 0, count: rc?.ringAnnounced },
     { id: 'execTenures', label: 'Executive', show: (rc?.execTenures || 0) > 0, count: rc?.execTenures },
     { id: 'interviewed', label: 'Interviewer', show: (rc?.interviewed || 0) > 0, count: rc?.interviewed },

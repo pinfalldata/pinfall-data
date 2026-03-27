@@ -3,10 +3,14 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+
 
 function fmt(d: string | null) { if (!d) return ''; return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) }
 
 export function TagTeamsHomeClient() {
+  const t = useTranslations()
+
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(false)
   const [revealed, setRevealed] = useState(false)
@@ -91,7 +95,7 @@ function TeamCard({ data }: { data: any }) {
         <div className="flex-1 p-5 sm:p-6 flex flex-col justify-center">
           <div className="flex items-center gap-2 mb-2">
             <span className="text-[10px] px-2 py-0.5 rounded-full bg-neon-blue/15 border border-neon-blue/30 text-neon-blue font-bold uppercase tracking-wider">{label}</span>
-            {item.is_active && <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-bold">Active</span>}
+            {item.is_active && <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-bold">{t('common.active')}</span>}
           </div>
           <h3 className="font-display text-xl sm:text-2xl font-bold text-text-white group-hover:text-neon-blue transition-colors mb-3">{item.name}</h3>
           {item.description_md && <p className="text-xs text-text-secondary line-clamp-2 mb-4 leading-relaxed">{item.description_md}</p>}

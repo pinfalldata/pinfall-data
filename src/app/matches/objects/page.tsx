@@ -2,10 +2,14 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+
 
 const HERO = 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page/resultats-wwe-tlc-couverture-en-direct_2026-03-22_10_41_26.529402.jpg.png'
 
 export default function ObjectsListPage() {
+  const t = useTranslations()
+
   const [objects, setObjects] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -77,7 +81,7 @@ export default function ObjectsListPage() {
 
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8">
         <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/10 p-6 sm:p-8">
-          <h2 className="font-display text-xl font-bold text-text-white mb-3">About <span className="text-neon-blue">Objects Used</span></h2>
+          <h2 className="font-display text-xl font-bold text-text-white mb-3">About <span className="text-neon-blue">{t('matches.objects.title')}</span></h2>
           <p className="text-text-secondary text-sm leading-relaxed">A complete database of every foreign object used in WWE matches. From steel chairs to announce tables, every weapon is tracked with usage stats and full match history.</p>
         </div>
       </section>

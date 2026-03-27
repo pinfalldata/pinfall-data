@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { CountryFlag } from '@/components/ui/CountryFlag'
+import { useTranslations } from 'next-intl'
+
 
 const ComposableMap = dynamic(() => import('react-simple-maps').then(m => m.ComposableMap), { ssr: false })
 const Geographies = dynamic(() => import('react-simple-maps').then(m => m.Geographies), { ssr: false })
@@ -21,6 +23,8 @@ const NAME_TO_GEO: Record<string, string> = {
 }
 
 export default function ShowsWorldMap() {
+  const t = useTranslations()
+
   const [countries, setCountries] = useState<CountryData[]>([])
   const [loading, setLoading] = useState(true)
   const [tooltip, setTooltip] = useState<{ name: string; count: number; x: number; y: number } | null>(null)
@@ -108,9 +112,9 @@ export default function ShowsWorldMap() {
             </div>
           )}
           <div className="absolute bottom-2 right-2 flex items-center gap-1 text-[9px] text-text-secondary bg-bg-primary/80 px-2 py-1 rounded-md backdrop-blur-sm">
-            <span>Fewer</span>
+            <span>{t('common.fewer')}</span>
             <div className="flex gap-0.5">{['#2d2213', '#5a4520', '#8b6d2e', '#c7a05a'].map(c => <div key={c} className="w-3 h-2 rounded-sm" style={{ background: c }} />)}</div>
-            <span>More</span>
+            <span>{t('common.more')}</span>
           </div>
         </div>
       )}

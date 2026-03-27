@@ -139,7 +139,8 @@
       "gender": "Gender",
       "nationality": "Nationality",
       "male": "Male",
-      "female": "Female"
+      "female": "Female",
+      "allTime": "All-time career"
     },
     "profile": {
       "biography": "Biography",
@@ -194,7 +195,8 @@
       "brand": "Brand",
       "rating": "Rating",
       "titleMatch": "Title Match",
-      "mainEvent": "Main Event"
+      "mainEvent": "Main Event",
+      "hideFilters": "Hide Filters"
     },
     "detail": {
       "participants": "Participants",
@@ -274,7 +276,10 @@
       "currentChampion": "Current Champion",
       "vacant": "Vacant",
       "active": "Active",
-      "retired": "Retired"
+      "retired": "Retired",
+      "avgReign": "Avg Reign",
+      "titleMatches": "Title Matches",
+      "uniqueChampions": "Unique Champions"
     }
   },
   "history": {
@@ -464,7 +469,24 @@
     "active": "Active",
     "inactive": "Inactive",
     "retired": "Retired",
-    "deceased": "Deceased"
+    "deceased": "Deceased",
+    "all": "All",
+    "allCities": "All cities",
+    "allCountries": "All countries",
+    "allEras": "All Eras",
+    "allGenders": "All Genders",
+    "allMonths": "All months",
+    "allPromotions": "All promotions",
+    "allStates": "All states",
+    "allTypes": "All types",
+    "allYears": "All years",
+    "anyFinish": "Any finish",
+    "anyRating": "Any rating",
+    "fewer": "Fewer",
+    "men": "Men",
+    "more": "More",
+    "search": "Search",
+    "women": "Women"
   },
   "footer": {
     "disclaimer": "Pinfall Data is a fan-made project created by a single passionate individual. All multimedia content, images, and YouTube videos are the property of WWE (World Wrestling Entertainment). This site is not affiliated with, endorsed by, or connected to WWE in any way.",

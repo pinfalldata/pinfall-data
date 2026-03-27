@@ -2,7 +2,40 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { useLocale } from 'next-intl'
-import { locales, localeNames, localeFlags, type Locale } from '@/lib/locales'
+import { locales, localeNames, type Locale } from '@/lib/locales'
+
+/**
+ * Flag images via Twemoji CDN — renders identically on all OS/browsers.
+ * Maps each locale to its country code for the flag emoji SVG.
+ */
+const FLAG_CODES: Record<Locale, string> = {
+  en: '1f1ec-1f1e7', // 🇬🇧
+  fr: '1f1eb-1f1f7', // 🇫🇷
+  es: '1f1ea-1f1f8', // 🇪🇸
+  de: '1f1e9-1f1ea', // 🇩🇪
+  pt: '1f1e7-1f1f7', // 🇧🇷
+  hi: '1f1ee-1f1f3', // 🇮🇳
+  ar: '1f1f8-1f1e6', // 🇸🇦
+  ja: '1f1ef-1f1f5', // 🇯🇵
+  it: '1f1ee-1f1f9', // 🇮🇹
+  pl: '1f1f5-1f1f1', // 🇵🇱
+  tr: '1f1f9-1f1f7', // 🇹🇷
+}
+
+function FlagImg({ locale, size = 20 }: { locale: Locale; size?: number }) {
+  const code = FLAG_CODES[locale]
+  return (
+    <img
+      src={`https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/${code}.svg`}
+      alt={localeNames[locale]}
+      width={size}
+      height={size}
+      className="inline-block shrink-0"
+      style={{ width: size, height: size }}
+      loading="lazy"
+    />
+  )
+}
 
 export function LanguageSwitcher() {
   const currentLocale = useLocale() as Locale
@@ -47,7 +80,6 @@ export function LanguageSwitcher() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ locale }),
       })
-      // Hard refresh to load new translations
       window.location.reload()
     } catch {
       setSwitching(false)
@@ -73,31 +105,7 @@ export function LanguageSwitcher() {
           <div className="w-5 h-5 border-2 border-neon-blue/30 border-t-neon-blue rounded-full animate-spin" />
         ) : (
           <>
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.8}
-                d="M12 21a9 9 0 100-18 9 9 0 000 18z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.8}
-                d="M3.6 9h16.8M3.6 15h16.8"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.8}
-                d="M12 3a15.3 15.3 0 014 9 15.3 15.3 0 01-4 9 15.3 15.3 0 01-4-9 15.3 15.3 0 014-9z"
-              />
-            </svg>
+            <FlagImg locale={currentLocale} size={20} />
             <span className="hidden sm:block text-[11px] font-mono uppercase tracking-wide">
               {currentLocale}
             </span>
@@ -132,7 +140,7 @@ export function LanguageSwitcher() {
                       : 'text-text-secondary hover:text-neon-blue hover:bg-neon-blue/5'
                   }`}
                 >
-                  <span className="text-base leading-none">{localeFlags[locale]}</span>
+                  <FlagImg locale={locale} size={18} />
                   <span className="flex-1 text-left font-medium">{localeNames[locale]}</span>
                   {isActive && (
                     <svg

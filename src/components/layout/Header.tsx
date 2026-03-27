@@ -13,68 +13,69 @@ interface NavItem {
   children?: { label: string; href: string; icon: string }[]
 }
 
-const NAV_ITEMS: NavItem[] = [
+export function Header() {
+  const t = useTranslations()
+
+  const NAV_ITEMS: NavItem[] = [
   { key: 'home', href: '/' },
   {
     key: 'matches',
     href: '/matches',
     children: [
-      { label: 'Match Search', href: '/matches/search', icon: '🔍' },
-      { label: 'Segment Search', href: '/matches/segments', icon: '🎤' },
-      { label: 'All Shows', href: '/matches/shows', icon: '📺' },
-      { label: 'All PLEs', href: '/matches/ple', icon: '🏟️' },
-      { label: 'Match Stipulations', href: '/matches/stipulations', icon: '⚔️' },
-      { label: 'All Arenas', href: '/matches/arenas', icon: '🏛️' },
-      { label: 'Objects Used', href: '/matches/objects', icon: '🪑' },
+      { label: t('matches.search.title'), href: '/matches/search', icon: '🔍' },
+      { label: t('matches.segments.title'), href: '/matches/segments', icon: '🎤' },
+      { label: t('matches.shows.title'), href: '/matches/shows', icon: '📺' },
+      { label: t('nav.dropdown.allPLEs'), href: '/matches/ple', icon: '🏟️' },
+      { label: t('matches.stipulations.title'), href: '/matches/stipulations', icon: '⚔️' },
+      { label: t('matches.arenas.title'), href: '/matches/arenas', icon: '🏛️' },
+      { label: t('matches.objects.title'), href: '/matches/objects', icon: '🪑' },
     ],
   },
   { key: 'superstars', href: '/superstars', children: [
-    { label: 'Wrestlers', href: '/superstars/wrestlers', icon: '💪' },
-    { label: 'Managers', href: '/superstars/managers', icon: '🎩' },
-    { label: 'Commentators', href: '/superstars/commentators', icon: '🎙️' },
-    { label: 'Ring Announcers', href: '/superstars/ring-announcers', icon: '📢' },
-    { label: 'Referees', href: '/superstars/referees', icon: '🦓' },
-    { label: 'Interviewers', href: '/superstars/interviewers', icon: '🎤' },
-    { label: 'General Managers', href: '/superstars/general-managers', icon: '👔' },
-    { label: 'Executives', href: '/superstars/executives', icon: '🏛️' },
-    { label: 'Comparator', href: '/superstars/compare', icon: '⚖️' },
+    { label: t('nav.dropdown.wrestlers'), href: '/superstars/wrestlers', icon: '💪' },
+    { label: t('nav.dropdown.managers'), href: '/superstars/managers', icon: '🎩' },
+    { label: t('nav.dropdown.commentators'), href: '/superstars/commentators', icon: '🎙️' },
+    { label: t('nav.dropdown.ringAnnouncers'), href: '/superstars/ring-announcers', icon: '📢' },
+    { label: t('nav.dropdown.referees'), href: '/superstars/referees', icon: '🦓' },
+    { label: t('nav.dropdown.interviewers'), href: '/superstars/interviewers', icon: '🎤' },
+    { label: t('nav.dropdown.generalManagers'), href: '/superstars/general-managers', icon: '👔' },
+    { label: t('nav.dropdown.executives'), href: '/superstars/executives', icon: '🏛️' },
+    { label: t('nav.dropdown.comparator'), href: '/superstars/compare', icon: '⚖️' },
   ]},
   { key: 'champions', href: '/champions', children: [
-    { label: 'The Title Vault', href: '/champions/the-title-vault', icon: '🏆' },
-    { label: 'Major Accolades', href: '/champions/major-accolades', icon: '🌟' },
-    { label: 'By The Numbers', href: '/champions/by-the-numbers', icon: '📊' },
+    { label: t('champions.titleVault.title'), href: '/champions/the-title-vault', icon: '🏆' },
+    { label: t('champions.majorAccolades.title'), href: '/champions/major-accolades', icon: '🌟' },
+    { label: t('champions.byTheNumbers.title'), href: '/champions/by-the-numbers', icon: '📊' },
   ]},
   { key: 'history', href: '/history' },
   { key: 'omg', href: '/omg-moments', children: [
-    { label: 'Extreme Moments', href: '/omg-moments/extreme-moments', icon: '🔥' },
-    { label: 'WTF Moments', href: '/omg-moments/wtf-moments', icon: '🤯' },
-    { label: 'Sexy Moments', href: '/omg-moments/sexy-moments', icon: '💋' },
-    { label: 'Greatest Returns', href: '/omg-moments/greatest-returns', icon: '🔙' },
-    { label: 'Greatest Betrayals', href: '/omg-moments/greatest-betrayals', icon: '🗡️' },
-    { label: 'Most Emotional', href: '/omg-moments/most-emotional-moments', icon: '😢' },
+    { label: t('omg.extreme'), href: '/omg-moments/extreme-moments', icon: '🔥' },
+    { label: t('omg.wtf'), href: '/omg-moments/wtf-moments', icon: '🤯' },
+    { label: t('omg.sexy'), href: '/omg-moments/sexy-moments', icon: '💋' },
+    { label: t('omg.returns'), href: '/omg-moments/greatest-returns', icon: '🔙' },
+    { label: t('omg.betrayals'), href: '/omg-moments/greatest-betrayals', icon: '🗡️' },
+    { label: t('omg.emotional'), href: '/omg-moments/most-emotional-moments', icon: '😢' },
   ]},
   { key: 'tagTeams', href: '/tag-teams', children: [
-    { label: 'Tag Teams', href: '/tag-teams/teams', icon: '👥' },
-    { label: 'Stables', href: '/tag-teams/stables', icon: '⚔️' },
+    { label: t('tagTeams.teams'), href: '/tag-teams/teams', icon: '👥' },
+    { label: t('tagTeams.stables'), href: '/tag-teams/stables', icon: '⚔️' },
   ]},
   { key: 'records', href: '/records', children: [
-    { label: 'Superstar Records', href: '/records/superstars', icon: '🏆' },
-    { label: 'Championship Records', href: '/records/championships', icon: '🎖️' },
-    { label: 'Match Records', href: '/records/matches', icon: '💥' },
-    { label: 'Tag Team & Stable', href: '/records/tag-teams', icon: '👥' },
-    { label: 'Show & Event', href: '/records/shows', icon: '📺' },
-    { label: 'Arena Records', href: '/records/arenas', icon: '🏟️' },
-    { label: 'Historical Milestones', href: '/records/milestones', icon: '📊' },
+    { label: t('records.superstars'), href: '/records/superstars', icon: '🏆' },
+    { label: t('records.championships'), href: '/records/championships', icon: '🎖️' },
+    { label: t('records.matches'), href: '/records/matches', icon: '💥' },
+    { label: t('nav.dropdown.tagTeamStable'), href: '/records/tag-teams', icon: '👥' },
+    { label: t('nav.dropdown.showEvent'), href: '/records/shows', icon: '📺' },
+    { label: t('records.arenas'), href: '/records/arenas', icon: '🏟️' },
+    { label: t('records.milestones'), href: '/records/milestones', icon: '📊' },
   ]},
   { key: 'hallOfFame', href: '/hall-of-fame', children: [
-    { label: 'Hall of Fame', href: '/hall-of-fame/inductees', icon: '🏛️' },
-    { label: 'Slammy Awards', href: '/hall-of-fame/slammy-awards', icon: '🏆' },
-    { label: 'Year-End Awards', href: '/hall-of-fame/year-end-awards', icon: '🎖️' },
+    { label: t('nav.dropdown.hallOfFame'), href: '/hall-of-fame/inductees', icon: '🏛️' },
+    { label: t('nav.dropdown.slammyAwards'), href: '/hall-of-fame/slammy-awards', icon: '🏆' },
+    { label: t('nav.dropdown.yearEndAwards'), href: '/hall-of-fame/year-end-awards', icon: '🎖️' },
   ]},
 ]
 
-export function Header() {
-  const t = useTranslations('nav')
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
@@ -162,7 +163,7 @@ export function Header() {
                       openDropdown === item.key ? 'text-neon-blue' : ''
                     }`}
                   >
-                    {t(item.key)}
+                    {t(`nav.${item.key}`)}
                     {item.children && (
                       <svg className={`w-3 h-3 transition-transform duration-200 ${openDropdown === item.key ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -202,7 +203,7 @@ export function Header() {
               <button
                 onClick={() => setIsSearchOpen(true)}
                 className="search-btn-champ p-2 transition-all duration-200 flex items-center gap-2"
-                aria-label="Search"
+                aria-label=t('common.search')
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -251,7 +252,7 @@ export function Header() {
                       onClick={() => setMobileExpanded(mobileExpanded === item.key ? null : item.key)}
                       className="w-full flex items-center justify-between py-3 text-lg font-body text-text-secondary hover:text-neon-blue transition-colors border-b border-border-subtle/50"
                     >
-                      <span>{t(item.key)}</span>
+                      <span>{t(`nav.${item.key}`)}</span>
                       <svg className={`w-4 h-4 transition-transform ${mobileExpanded === item.key ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
@@ -263,7 +264,7 @@ export function Header() {
                           onClick={() => setIsMobileMenuOpen(false)}
                           className="block py-2 text-sm text-text-secondary hover:text-neon-blue transition-colors"
                         >
-                          All {t(item.key)}
+                          All {t(`nav.${item.key}`)}
                         </Link>
                         {item.children.map((child) => (
                           <Link
@@ -285,7 +286,7 @@ export function Header() {
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="block py-3 text-lg font-body text-text-secondary hover:text-neon-blue transition-colors border-b border-border-subtle/50"
                   >
-                    {t(item.key)}
+                    {t(`nav.${item.key}`)}
                   </Link>
                 )}
               </div>

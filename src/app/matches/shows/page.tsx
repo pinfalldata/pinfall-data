@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+
 
 interface ShowSeries {
   id: number
@@ -27,6 +29,8 @@ function formatYear(d: string | null) {
 }
 
 export default function ShowSeriesListPage() {
+  const t = useTranslations()
+
   const [shows, setShows] = useState<ShowSeries[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -81,7 +85,7 @@ export default function ShowSeriesListPage() {
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">
           <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-white text-center tracking-tight mb-2">
-            WWE <span className="text-neon-blue">Shows</span>
+            WWE <span className="text-neon-blue">{t('home.stats.shows')}</span>
           </h1>
           <p className="text-text-secondary text-sm sm:text-base lg:text-lg text-center max-w-2xl">
             Browse every WWE show series — from weekly programming to Premium Live Events.
@@ -115,7 +119,7 @@ export default function ShowSeriesListPage() {
                     : 'bg-bg-secondary/30 border-border-subtle/20 text-text-secondary hover:text-text-white hover:border-border-subtle/40'
                 }`}
               >
-                {f === 'all' ? 'All' : f === 'active' ? '🟢 Active' : 'Inactive'}
+                {f === 'all' ? t('common.all') : f === 'active' ? '🟢 Active' : 'Inactive'}
               </button>
             ))}
           </div>
@@ -212,7 +216,7 @@ function ShowSeriesCard({ series }: { series: ShowSeries }) {
   const startYear = formatYear(series.first_episode_date)
   const endYear = series.end_year || (series.last_show_date ? formatYear(series.last_show_date) : null)
   const yearStr = startYear
-    ? `${startYear}–${series.is_active ? 'Present' : (endYear || '')}`
+    ? `${startYear}–${series.is_active ? t('common.present') : (endYear || '')}`
     : ''
 
   return (
@@ -242,7 +246,7 @@ function ShowSeriesCard({ series }: { series: ShowSeries }) {
         {series.is_active && (
           <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[9px] text-emerald-400 font-bold uppercase tracking-wider">Active</span>
+            <span className="text-[9px] text-emerald-400 font-bold uppercase tracking-wider">{t('common.active')}</span>
           </div>
         )}
 

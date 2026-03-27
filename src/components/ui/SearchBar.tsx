@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
+
 
 interface SearchResult {
   name: string
@@ -42,6 +44,8 @@ function HighlightMatch({ text, query }: { text: string; query: string }) {
 }
 
 export function SearchBar({ onClose }: SearchBarProps) {
+  const t = useTranslations()
+
   const router = useRouter()
   const [query, setQuery] = useState('')
   const [categories, setCategories] = useState<SearchCategory[]>([])
@@ -168,7 +172,7 @@ export function SearchBar({ onClose }: SearchBarProps) {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Search superstars, shows, championships, arenas..."
+              placeholder={t('search.placeholder')}
               className="flex-1 bg-transparent py-4 text-text-white placeholder:text-text-secondary/50 outline-none font-body text-base sm:text-lg"
               autoComplete="off"
               spellCheck={false}
@@ -192,7 +196,7 @@ export function SearchBar({ onClose }: SearchBarProps) {
               <div className="p-5">
                 {recentSearches.length > 0 && (
                   <div className="mb-4">
-                    <p className="text-[10px] text-text-secondary uppercase tracking-wider font-bold mb-2">Recent</p>
+                    <p className="text-[10px] text-text-secondary uppercase tracking-wider font-bold mb-2">{t('search.recent')}</p>
                     <div className="space-y-1">
                       {recentSearches.map((r, i) => (
                         <button
@@ -210,16 +214,16 @@ export function SearchBar({ onClose }: SearchBarProps) {
                   </div>
                 )}
                 <div className="space-y-2">
-                  <p className="text-[10px] text-text-secondary uppercase tracking-wider font-bold">Search across</p>
+                  <p className="text-[10px] text-text-secondary uppercase tracking-wider font-bold">{t('search.searchAcross')}</p>
                   <div className="flex flex-wrap gap-2">
                     {[
-                      { icon: '💪', label: 'Superstars' },
-                      { icon: '📺', label: 'Shows' },
-                      { icon: '🏆', label: 'Championships' },
+                      { icon: '💪', label: t('home.stats.superstars') },
+                      { icon: '📺', label: t('home.stats.shows') },
+                      { icon: '🏆', label: t('common.championships') },
                       { icon: '🏟️', label: 'Arenas' },
-                      { icon: '⚔️', label: 'Match Types' },
-                      { icon: '🤝', label: 'Tag Teams' },
-                      { icon: '🛡️', label: 'Stables' },
+                      { icon: '⚔️', label: t('home.stats.matchTypes') },
+                      { icon: '🤝', label: t('tagTeams.teams') },
+                      { icon: '🛡️', label: t('tagTeams.stables') },
                       { icon: '🪑', label: 'Objects' },
                     ].map(cat => (
                       <span key={cat.label} className="text-[11px] px-2.5 py-1 rounded-lg bg-bg-secondary/40 border border-border-subtle/20 text-text-secondary">
@@ -306,7 +310,7 @@ export function SearchBar({ onClose }: SearchBarProps) {
               <div className="p-8 text-center">
                 <span className="text-4xl block mb-3 opacity-30">🔍</span>
                 <p className="text-sm text-text-secondary">No results for "<span className="text-text-white font-medium">{query}</span>"</p>
-                <p className="text-[11px] text-text-secondary/50 mt-1">Try a different spelling or search term</p>
+                <p className="text-[11px] text-text-secondary/50 mt-1">{t('search.tryDifferent')}</p>
               </div>
             )}
 

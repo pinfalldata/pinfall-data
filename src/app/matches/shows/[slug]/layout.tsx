@@ -22,7 +22,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   }
 
   const firstYear = series.first_episode_date ? new Date(series.first_episode_date).getFullYear() : null
-  const yearStr = firstYear ? ` (${firstYear}–${series.is_active ? 'Present' : ''})` : ''
+  const yearStr = firstYear ? ` (${firstYear}–${series.is_active ? t('common.present') : ''})` : ''
 
   const title = `${series.name}${yearStr} — Complete Episode Guide | Pinfall Data`
   const description = series.description

@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
+
 
 interface ShareButtonsProps {
   url?: string
@@ -19,6 +21,8 @@ const SOCIALS = [
 ]
 
 export function ShareButtons({ url, title = 'Check this out on Pinfall Data', className = '' }: ShareButtonsProps) {
+  const t = useTranslations()
+
   const [copied, setCopied] = useState(false)
   const shareUrl = url || (typeof window !== 'undefined' ? window.location.href : '')
 
@@ -28,7 +32,7 @@ export function ShareButtons({ url, title = 'Check this out on Pinfall Data', cl
 
   return (
     <div className={`flex items-center justify-center gap-1.5 flex-wrap ${className}`}>
-      <span className="text-[9px] text-text-secondary/40 uppercase tracking-wider mr-0.5 shrink-0">Share</span>
+      <span className="text-[9px] text-text-secondary/40 uppercase tracking-wider mr-0.5 shrink-0">{t('common.share')}</span>
       {SOCIALS.map(s => (
         <a key={s.name} href={s.getUrl(shareUrl, title)} target="_blank" rel="noopener noreferrer" title={`Share on ${s.name}`}
           className={`w-7 h-7 rounded-lg border border-border-subtle/15 bg-bg-tertiary/20 flex items-center justify-center text-text-secondary/40 transition-all duration-200 ${s.color}`}>

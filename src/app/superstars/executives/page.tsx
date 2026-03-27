@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 const config = {
   roleKey: 'executive',
-  title: 'Executives',
+  title: t('nav.dropdown.executives'),
   heroImage: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/wwe-ceo-vince-mcmahon-signing-a-check-q4vjshx6iuvk0s17_2026-03-09_12_22_48.088624.jpg%20(1).png',
   heroDescription: 'The power players behind the curtain. Executives who made the business decisions, shaped creative direction, and built the global empire of professional wrestling.',
   statLabel: 'position(s)',
@@ -26,7 +26,7 @@ const config = {
 export default function ExecutivesPage() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'Executives', url: 'https://pinfalldata.com/superstars/executives' }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context': 'https://schema.org', '@type': 'CollectionPage', name: t('nav.dropdown.executives'), url: 'https://pinfalldata.com/superstars/executives' }) }} />
       <RolePageClient config={config} />
     </>
   )

@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+
 
 interface Arena {
   id: number; name: string; slug: string; city: string | null
@@ -23,6 +25,8 @@ const SORT_OPTIONS = [
 ]
 
 export default function AllArenasPage() {
+  const t = useTranslations()
+
   const [arenas, setArenas] = useState<Arena[]>([])
   const [total, setTotal] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
@@ -100,7 +104,7 @@ export default function AllArenasPage() {
               <select value={year} onChange={e => { setYear(e.target.value); if (!e.target.value) setMonth('') }}
                 className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-border-subtle/40 text-sm text-text-white focus:outline-none focus:border-neon-blue/50 transition-colors appearance-none cursor-pointer"
                 style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 8px center', backgroundRepeat: 'no-repeat', backgroundSize: '16px', paddingRight: '32px' }}>
-                <option value="">All years</option>
+                <option value="">{t('common.allYears')}</option>
                 {filterOpts.years.map(y => <option key={y} value={y}>{y}</option>)}
               </select>
             </div>
@@ -110,7 +114,7 @@ export default function AllArenasPage() {
               <select value={month} onChange={e => setMonth(e.target.value)} disabled={!year}
                 className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-border-subtle/40 text-sm text-text-white focus:outline-none focus:border-neon-blue/50 transition-colors appearance-none cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                 style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 8px center', backgroundRepeat: 'no-repeat', backgroundSize: '16px', paddingRight: '32px' }}>
-                <option value="">All months</option>
+                <option value="">{t('common.allMonths')}</option>
                 {Array.from({ length: 12 }, (_, i) => (
                   <option key={i + 1} value={String(i + 1)}>{new Date(2000, i).toLocaleString('en-US', { month: 'long' })}</option>
                 ))}
@@ -122,7 +126,7 @@ export default function AllArenasPage() {
               <select value={country} onChange={e => { setCountry(e.target.value); setState(''); setCity('') }}
                 className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-border-subtle/40 text-sm text-text-white focus:outline-none focus:border-neon-blue/50 transition-colors appearance-none cursor-pointer"
                 style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 8px center', backgroundRepeat: 'no-repeat', backgroundSize: '16px', paddingRight: '32px' }}>
-                <option value="">All countries</option>
+                <option value="">{t('common.allCountries')}</option>
                 {filterOpts.countries.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
@@ -132,7 +136,7 @@ export default function AllArenasPage() {
               <select value={state} onChange={e => { setState(e.target.value); setCity('') }}
                 className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-border-subtle/40 text-sm text-text-white focus:outline-none focus:border-neon-blue/50 transition-colors appearance-none cursor-pointer"
                 style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 8px center', backgroundRepeat: 'no-repeat', backgroundSize: '16px', paddingRight: '32px' }}>
-                <option value="">All states</option>
+                <option value="">{t('common.allStates')}</option>
                 {filterOpts.states.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
             </div>
@@ -142,7 +146,7 @@ export default function AllArenasPage() {
               <select value={city} onChange={e => setCity(e.target.value)}
                 className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-border-subtle/40 text-sm text-text-white focus:outline-none focus:border-neon-blue/50 transition-colors appearance-none cursor-pointer"
                 style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 8px center', backgroundRepeat: 'no-repeat', backgroundSize: '16px', paddingRight: '32px' }}>
-                <option value="">All cities</option>
+                <option value="">{t('common.allCities')}</option>
                 {filterOpts.cities.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>

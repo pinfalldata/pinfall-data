@@ -4,8 +4,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { StarRating } from '@/components/ui/StarRating'
 import { formatDate, formatTime, formatNumber, formatCompactNumber } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
+
 
 export function ShowInfoBar({ show }: { show: any }) {
+  const t = useTranslations()
+
   const color = show.primary_color || '#c7a05a'
   const epNum = show.episodeNumber || show.episode_number
   const seriesName = show.show_series?.short_name || show.show_series?.name || ''
@@ -17,10 +21,10 @@ export function ShowInfoBar({ show }: { show: any }) {
 
   // Build info cells — only include non-null ones
   const infoCells: { label: string; value: string; icon: string }[] = []
-  infoCells.push({ label: 'Date', icon: '📅', value: formatDate(show.date) })
+  infoCells.push({ label: t('shows.detail.date'), icon: '📅', value: formatDate(show.date) })
   if (epNum) infoCells.push({ label: 'Episode', icon: '📺', value: `${seriesName} #${epNum}` })
   if (show.start_time) infoCells.push({ label: 'Start Time', icon: '🕐', value: formatTime(show.start_time) })
-  if (show.attendance) infoCells.push({ label: 'Attendance', icon: '🏟️', value: formatNumber(show.attendance) })
+  if (show.attendance) infoCells.push({ label: t('shows.detail.attendance'), icon: '🏟️', value: formatNumber(show.attendance) })
   if (show.tv_audience) infoCells.push({ label: 'TV Audience', icon: '📡', value: formatCompactNumber(show.tv_audience) })
   if (show.averageAge) infoCells.push({ label: 'Avg. Wrestler Age', icon: '👤', value: `${show.averageAge} years` })
 

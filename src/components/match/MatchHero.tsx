@@ -8,6 +8,8 @@ import { ShareButtons } from '@/components/ui/ShareButtons'
 import { TitleChangeFireworks } from '@/components/match/TitleChangeFireworks'
 import { OMGBadge } from '@/components/ui/OMGBadge'
 import {
+import { useTranslations } from 'next-intl'
+
   formatDate, formatDuration, formatHeight, formatWeight, formatNumber,
   formatCompactNumber, formatTime,
   getRatingColor, getRatingBgColor, getResultLabel, getWinRate,
@@ -16,6 +18,8 @@ import {
 } from '@/lib/utils'
 
 export function MatchHero({ match }: { match: any }) {
+  const t = useTranslations()
+
   const show = match.show
   const color = show?.primary_color || '#c7a05a'
   const colorStyle = getShowColorStyle(color) as React.CSSProperties
@@ -278,7 +282,7 @@ export function MatchHero({ match }: { match: any }) {
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <h3 className="font-display text-sm font-bold uppercase tracking-wider text-center mb-4 flex items-center justify-center gap-2">
             <span className="text-red-400">🪑</span>
-            <span className="text-text-white">Objects Used</span>
+            <span className="text-text-white">{t('matches.objects.title')}</span>
           </h3>
           <div className="flex flex-wrap gap-4 justify-center">
             {match.objects.map((o: any) => (
@@ -320,7 +324,7 @@ export function MatchHero({ match }: { match: any }) {
                     {r.superstar?.name || r.referee_name}
                   </Link>
                 ) : (
-                  <span className="text-sm text-text-white">{r.referee_name || 'Unknown'}</span>
+                  <span className="text-sm text-text-white">{r.referee_name || t('common.unknown')}</span>
                 )}
                 {r.is_special_referee && (
                   <span className="text-[10px] px-1.5 py-0.5 bg-neon-blue/20 text-neon-blue border border-neon-blue/30 rounded-full font-bold">

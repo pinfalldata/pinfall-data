@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 const config = {
   roleKey: 'commentator',
-  title: 'Commentators',
+  title: t('nav.dropdown.commentators'),
   heroImage: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/commenta.jpeg',
   heroDescription: 'The voices that brought every match to life — from legendary play-by-play to color commentary across every era of WWE.',
   statLabel: 'shows commented',

@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+
 
 /* ============================================================ TYPES */
 interface Wrestler {
@@ -36,6 +38,8 @@ const YEARS_DEBUT = Array.from({length: NOW_YEAR-1950+1},(_,i)=>NOW_YEAR-i)
 
 /* ============================================================ MAIN */
 export default function WrestlersPageClient() {
+  const t = useTranslations()
+
   const [wrestlers, setWrestlers] = useState<Wrestler[]>([])
   const [total, setTotal] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
@@ -106,9 +110,9 @@ export default function WrestlersPageClient() {
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60"/>
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">
           <nav className="hidden sm:flex items-center gap-2 text-xs text-text-secondary mb-3">
-            <Link href="/superstars" className="hover:text-neon-blue transition-colors">Superstars</Link>
+            <Link href="/superstars" className="hover:text-neon-blue transition-colors">{t('home.stats.superstars')}</Link>
             <span className="text-border-subtle">/</span>
-            <span className="text-neon-blue">Wrestlers</span>
+            <span className="text-neon-blue">{t('nav.dropdown.wrestlers')}</span>
           </nav>
           <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-white text-center tracking-tight mb-2">
             <span className="text-neon-blue">WWE</span> Wrestlers
@@ -135,7 +139,7 @@ export default function WrestlersPageClient() {
             <p className="text-text-secondary text-sm">{loading&&!init?'Searching…':`${total.toLocaleString()} wrestler${total!==1?'s':''}`}</p>
             {/* Sort buttons */}
             <div className="flex items-center gap-1 ml-2">
-              {[{k:'name',l:'A-Z'},{k:'matches',l:'Most Matches'},{k:'wins',l:'Most Wins'},{k:'losses',l:'Most Losses'}].map(s=>(
+              {[{k:'name',l:t('superstars.filters.alphabetical')},{k:'matches',l:t('superstars.filters.matches')},{k:'wins',l:'Most Wins'},{k:'losses',l:'Most Losses'}].map(s=>(
                 <button key={s.k} onClick={()=>{setSortBy(s.k);setPage(1)}}
                   className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all ${sortBy===s.k?'bg-neon-blue/15 border border-neon-blue/30 text-neon-blue':'border border-border-subtle/20 text-text-secondary hover:text-text-white'}`}>
                   {s.l}
@@ -146,7 +150,7 @@ export default function WrestlersPageClient() {
           <button onClick={()=>setShowFilters(!showFilters)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all ${showFilters?'bg-neon-blue/10 border-neon-blue/30 text-neon-blue':'bg-bg-secondary/50 border-border-subtle/30 text-text-secondary hover:text-text-white'}`}>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
-            {showFilters?'Hide':'Filters'}{fCount>0&&<span className="w-5 h-5 rounded-full bg-neon-blue text-[10px] text-black font-bold flex items-center justify-center">{fCount}</span>}
+            {showFilters?'Hide':t('matches.search.filters')}{fCount>0&&<span className="w-5 h-5 rounded-full bg-neon-blue text-[10px] text-black font-bold flex items-center justify-center">{fCount}</span>}
           </button>
         </div>
 
@@ -154,13 +158,13 @@ export default function WrestlersPageClient() {
         {showFilters&&(
           <div className="mt-4 p-4 sm:p-5 rounded-2xl border border-border-subtle/30 bg-bg-secondary/30 backdrop-blur-sm animate-fade-in">
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-              <Sel label="Era" value={filters.eraId} set={v=>upd('eraId',v)} opts={opts.eras.map(e=>({value:String(e.id),label:e.name}))} ph="All eras"/>
-              <Sel label="Status" value={filters.status} set={v=>{upd('status',v);if(v!=='active')upd('brand','')}} opts={[{value:'active',label:'Active'},{value:'retired',label:'Retired'},{value:'deceased',label:'Deceased'}]} ph="All"/>
-              {filters.status==='active'&&opts.brands.length>0&&<Sel label="Brand" value={filters.brand} set={v=>upd('brand',v)} opts={opts.brands.map(b=>({value:b,label:b}))} ph="All brands"/>}
-              <Sel label="Gender" value={filters.gender} set={v=>{upd('gender',v);if(v==='female')upd('weightClass','')}} opts={[{value:'male',label:'Men'},{value:'female',label:'Women'}]} ph="All"/>
+              <Sel label=t('superstars.info.era') value={filters.eraId} set={v=>upd('eraId',v)} opts={opts.eras.map(e=>({value:String(e.id),label:e.name}))} ph="All eras"/>
+              <Sel label=t('superstars.info.status') value={filters.status} set={v=>{upd('status',v);if(v!=='active')upd('brand','')}} opts={[{value:'active',label:t('common.active')},{value:'retired',label:t('common.retired')},{value:'deceased',label:t('common.deceased')}]} ph=t('common.all')/>
+              {filters.status==='active'&&opts.brands.length>0&&<Sel label=t('superstars.info.brand') value={filters.brand} set={v=>upd('brand',v)} opts={opts.brands.map(b=>({value:b,label:b}))} ph="All brands"/>}
+              <Sel label="Gender" value={filters.gender} set={v=>{upd('gender',v);if(v==='female')upd('weightClass','')}} opts={[{value:'male',label:t('common.men')},{value:'female',label:t('common.women')}]} ph=t('common.all')/>
               {filters.gender!=='female'&&<Sel label="Weight Class" value={filters.weightClass} set={v=>upd('weightClass',v)} opts={[{value:'cruiserweight',label:'Cruiserweight (≤205 lbs)'},{value:'heavyweight',label:'Heavyweight (>205 lbs)'},{value:'super_heavyweight',label:'Super Heavyweight (≥300 lbs)'}]} ph="All weights"/>}
-              <Sel label="Country" value={filters.country} set={v=>{upd('country',v);upd('city','')}} opts={opts.countries.map(c=>({value:c,label:c}))} ph="All countries"/>
-              {filters.country&&opts.cities.length>0&&<Sel label="City" value={filters.city} set={v=>upd('city',v)} opts={opts.cities.map(c=>({value:c,label:c}))} ph="All cities"/>}
+              <Sel label="Country" value={filters.country} set={v=>{upd('country',v);upd('city','')}} opts={opts.countries.map(c=>({value:c,label:c}))} ph=t('common.allCountries')/>
+              {filters.country&&opts.cities.length>0&&<Sel label="City" value={filters.city} set={v=>upd('city',v)} opts={opts.cities.map(c=>({value:c,label:c}))} ph=t('common.allCities')/>}
               <Sel label="Championship held" value={filters.championshipId} set={v=>upd('championshipId',v)} opts={opts.championships.map(c=>({value:String(c.id),label:c.name}))} ph="Any"/>
               <Sel label="Birth Year" value={filters.birthYear} set={v=>upd('birthYear',v)} opts={YEARS_BIRTH.map(y=>({value:String(y),label:String(y)}))} ph="Any year"/>
               <Sel label="Debut Year" value={filters.debutYear} set={v=>upd('debutYear',v)} opts={YEARS_DEBUT.map(y=>({value:String(y),label:String(y)}))} ph="Any year"/>
@@ -221,7 +225,7 @@ function WCard({w}:{w:Wrestler}){
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/90 via-bg-primary/20 to-transparent"/>
         <div className="absolute top-2 left-2 flex flex-col gap-1">
           {w.is_hall_of_fame&&<span className="text-[9px] px-1.5 py-0.5 rounded-md bg-yellow-500/20 border border-yellow-500/30 text-yellow-400 font-bold backdrop-blur-sm">HOF</span>}
-          {w.status==='retired'&&<span className="text-[9px] px-1.5 py-0.5 rounded-md bg-text-secondary/20 border border-text-secondary/20 text-text-secondary font-medium backdrop-blur-sm">Retired</span>}
+          {w.status==='retired'&&<span className="text-[9px] px-1.5 py-0.5 rounded-md bg-text-secondary/20 border border-text-secondary/20 text-text-secondary font-medium backdrop-blur-sm">{t('common.retired')}</span>}
           {w.status==='deceased'&&<span className="text-[9px] px-1.5 py-0.5 rounded-md bg-red-500/20 border border-red-500/20 text-red-400 font-medium backdrop-blur-sm">Legend</span>}
         </div>
         {w.current_brand&&w.status==='active'&&<span className="absolute top-2 right-2 text-[9px] px-1.5 py-0.5 rounded-md bg-neon-blue/20 border border-neon-blue/30 text-neon-blue font-medium backdrop-blur-sm">{w.current_brand}</span>}

@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+
 
 const HERO = 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20Stats%20&%20Records/EZxXlPqXYAESmVQ_2026-03-21_16_54_31.604686.jpg.png'
 const TABS = [
@@ -17,6 +19,8 @@ function fmtDur(s: number) { const h = Math.floor(s / 3600); const m = Math.floo
 function fmtDate(d: string) { return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) }
 
 export default function MatchRecordsPage() {
+  const t = useTranslations()
+
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState('highestRated')
@@ -97,7 +101,7 @@ export default function MatchRecordsPage() {
           </div>
         )}
       </section>
-      <SeoBlock t="Match Records" p="Every WWE match record computed from 100,000+ matches. Highest rated all-time, longest and shortest bouts, youngest and oldest competitors to ever step in a WWE ring." />
+      <SeoBlock t=t('records.matches') p="Every WWE match record computed from 100,000+ matches. Highest rated all-time, longest and shortest bouts, youngest and oldest competitors to ever step in a WWE ring." />
     </div>
   )
 }

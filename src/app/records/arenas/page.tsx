@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { CountryFlag } from '@/components/ui/CountryFlag'
+import { useTranslations } from 'next-intl'
+
 
 const HERO = 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20Stats%20&%20Records/CR5KOQDYQZBD3A5F7AA7T43EPI_2026-03-21_16_54_31.002354.jpg.png'
 const TABS = [
@@ -14,6 +16,8 @@ const TABS = [
 ]
 
 export default function ArenaRecordsPage() {
+  const t = useTranslations()
+
   const [data, setData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState('mostEvents')
@@ -32,7 +36,7 @@ export default function ArenaRecordsPage() {
 
   return (
     <div className="relative">
-      <Hero img={HERO} t1="Arena" t2="Records" sub="The legendary venues that have shaped WWE history — from MSG to stadiums worldwide." />
+      <Hero img={HERO} t1=t('shows.detail.arena') t2="Records" sub="The legendary venues that have shaped WWE history — from MSG to stadiums worldwide." />
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6">
         <TabBar tabs={TABS} active={tab} set={setTab} />
         {loading ? <Skel /> : list.length === 0 ? <Empty /> : (
@@ -80,7 +84,7 @@ export default function ArenaRecordsPage() {
           </div>
         )}
       </section>
-      <SeoBlock t="Arena Records" p="Every WWE venue record. Most events hosted, highest single-event attendance, longest-running arenas, and the top venues in each country — all from our complete show database." />
+      <SeoBlock t=t('records.arenas') p="Every WWE venue record. Most events hosted, highest single-event attendance, longest-running arenas, and the top venues in each country — all from our complete show database." />
     </div>
   )
 }

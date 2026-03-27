@@ -13,8 +13,8 @@ export function ProfileInfoBar({ superstar }: { superstar: any }) {
 
   // Build info cells — only show cells that have data
   const topRow = [
-    { label: 'Height', value: formatHeight(superstar.height_cm) },
-    { label: 'Weight', value: formatWeight(superstar.weight_kg) },
+    { label: t('superstars.info.height'), value: formatHeight(superstar.height_cm) },
+    { label: t('superstars.info.weight'), value: formatWeight(superstar.weight_kg) },
     { label: 'Born', value: formatDate(superstar.birth_date) },
     superstar.death_date ? { label: 'Died', value: formatDate(superstar.death_date) } : null,
     { label: 'Age', value: age !== null ? `${age} years${superstar.death_date ? ' (at death)' : ''}` : '' },
@@ -27,9 +27,9 @@ export function ProfileInfoBar({ superstar }: { superstar: any }) {
     { label: 'Billed From', value: superstar.billed_from || '' },
     { label: 'WWE Debut', value: formatDate(superstar.debut_date) },
     superstar.retirement_date
-      ? { label: 'Retired', value: formatDate(superstar.retirement_date) }
+      ? { label: t('common.retired'), value: formatDate(superstar.retirement_date) }
       : careerYears !== null ? { label: 'Career', value: `${careerYears} years` } : null,
-    superstar.is_hall_of_fame ? { label: 'Hall of Fame', value: 'Inducted ★' } : null,
+    superstar.is_hall_of_fame ? { label: t('nav.dropdown.hallOfFame'), value: 'Inducted ★' } : null,
   ].filter(cell => cell && cell.value) as { label: string; value: string }[]
 
   // Grid columns adapt to number of cells
@@ -72,7 +72,7 @@ export function ProfileInfoBar({ superstar }: { superstar: any }) {
               <div key={cell.label} className="relative px-4 py-3.5 text-center border-b border-border-subtle/20 sm:border-b-0 sm:border-r sm:border-border-subtle/20 last:border-r-0">
                 <p className="text-text-secondary text-[10px] sm:text-xs uppercase tracking-widest mb-0.5">{cell.label}</p>
                 <p className="text-text-white text-xs sm:text-sm font-body truncate">
-                  {cell.label === 'Hall of Fame' ? (
+                  {cell.label === t('nav.dropdown.hallOfFame') ? (
                     <span className="text-neon-pink">{cell.value}</span>
                   ) : cell.value}
                 </p>

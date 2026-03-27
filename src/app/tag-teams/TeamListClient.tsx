@@ -3,10 +3,14 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+
 
 interface Props { type: 'tag_team' | 'stable'; title: string; subtitle: string; heroImage: string }
 
 export default function TeamListClient({ type, title, subtitle, heroImage }: Props) {
+  const t = useTranslations()
+
   const [items, setItems] = useState<any[]>([])
   const [allItems, setAllItems] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -103,7 +107,7 @@ export default function TeamListClient({ type, title, subtitle, heroImage }: Pro
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">
           <nav className="hidden sm:flex items-center gap-2 text-xs text-text-secondary mb-3">
-            <Link href="/tag-teams" className="hover:text-neon-blue transition-colors">Tag Teams & Stables</Link>
+            <Link href="/tag-teams" className="hover:text-neon-blue transition-colors">{t('tagTeams.title')}</Link>
             <span className="text-border-subtle">/</span>
             <span className="text-neon-blue">{title}</span>
           </nav>
@@ -154,7 +158,7 @@ export default function TeamListClient({ type, title, subtitle, heroImage }: Pro
             <select value={filterYear} onChange={e => setFilterYear(e.target.value)}
               className="bg-bg-tertiary border border-border-subtle/30 rounded-xl px-3 py-2.5 text-xs text-text-white focus:border-neon-blue/50 focus:outline-none sm:w-32 appearance-none"
               style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 8px center', backgroundRepeat: 'no-repeat', backgroundSize: '16px', paddingRight: '32px' }}>
-              <option value="">All years</option>
+              <option value="">{t('common.allYears')}</option>
               {years.map(y => <option key={y} value={String(y)}>{y}</option>)}
             </select>
           )}
@@ -164,7 +168,7 @@ export default function TeamListClient({ type, title, subtitle, heroImage }: Pro
             {['', 'true', 'false'].map(v => (
               <button key={v} onClick={() => setActiveFilter(v)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${activeFilter === v ? 'bg-neon-blue/15 border-neon-blue/30 text-neon-blue' : 'bg-bg-secondary/30 border-border-subtle/20 text-text-secondary hover:text-text-white'}`}>
-                {v === '' ? 'All' : v === 'true' ? '🟢 Active' : '⚪ Inactive'}
+                {v === '' ? t('common.all') : v === 'true' ? '🟢 Active' : '⚪ Inactive'}
               </button>
             ))}
           </div>
@@ -175,7 +179,7 @@ export default function TeamListClient({ type, title, subtitle, heroImage }: Pro
             </button>
           )}
         </div>
-        <p className="text-text-secondary text-xs mt-3">{loading ? 'Loading...' : `${items.length} ${type === 'tag_team' ? 'tag team' : 'stable'}${items.length !== 1 ? 's' : ''}`}</p>
+        <p className="text-text-secondary text-xs mt-3">{loading ? t('common.loading') : `${items.length} ${type === 'tag_team' ? 'tag team' : 'stable'}${items.length !== 1 ? 's' : ''}`}</p>
       </section>
 
       {/* GRID */}

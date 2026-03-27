@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
+
 
 interface OnThisDayEvent {
   id: number
@@ -15,6 +17,8 @@ interface OnThisDayEvent {
 }
 
 export function OnThisDay() {
+  const t = useTranslations()
+
   const [events, setEvents] = useState<OnThisDayEvent[]>([])
   const [loading, setLoading] = useState(true)
   const [current, setCurrent] = useState(0)
@@ -67,7 +71,7 @@ export function OnThisDay() {
             <span className="w-2 h-2 bg-neon-blue rounded-full animate-glow-pulse" />
             On This Day
           </h2>
-          <p className="text-text-secondary text-sm">No notable events found for today.</p>
+          <p className="text-text-secondary text-sm">{t('home.sections.noEvents')}</p>
         </div>
       </div>
     )

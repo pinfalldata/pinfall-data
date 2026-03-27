@@ -5,6 +5,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { StarRating } from '@/components/ui/StarRating'
 import { formatDateShort } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
+
 
 const PER = 50
 const NOW_Y = new Date().getFullYear()
@@ -14,6 +16,8 @@ const segI: Record<string, string> = { in_ring_segment:'🎤',backstage:'🚪',i
 const SCATS = Object.keys(segI)
 
 export default function TabRoleData({ superstar, tab }: { superstar: any; tab: string }) {
+  const t = useTranslations()
+
   const [items, setItems] = useState<any[]>([])
   const [total, setTotal] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
@@ -51,17 +55,17 @@ export default function TabRoleData({ superstar, tab }: { superstar: any; tab: s
             <p className="text-text-secondary text-sm">{loading ? 'Loading…' : `${total.toLocaleString()} result${total !== 1 ? 's' : ''}`}</p>
             <button onClick={() => setShowF(!showF)} className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all ${showF ? 'bg-neon-blue/10 border-neon-blue/30 text-neon-blue' : 'bg-bg-secondary/50 border-border-subtle/30 text-text-secondary hover:text-text-white'}`}>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
-              {showF ? 'Hide Filters' : 'Filters'}{fC > 0 && <span className="w-5 h-5 rounded-full bg-neon-blue text-[10px] text-black font-bold flex items-center justify-center">{fC}</span>}
+              {showF ? t('matches.search.hideFilters') : t('matches.search.filters')}{fC > 0 && <span className="w-5 h-5 rounded-full bg-neon-blue text-[10px] text-black font-bold flex items-center justify-center">{fC}</span>}
             </button>
           </div>
           {showF && (
             <div className="mb-5 p-4 rounded-2xl border border-border-subtle/30 bg-bg-secondary/30 backdrop-blur-sm animate-fade-in">
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-                <FS l="Year" v={year} s={v => { setYear(v); setMonth(''); setPage(1) }} o={YEARS.map(y => ({ v: String(y), l: String(y) }))} p="All years" />
-                {year && <FS l="Month" v={month} s={v => { setMonth(v); setPage(1) }} o={MONTHS.map(m => ({ v: m.value, l: m.label }))} p="All months" />}
-                {fOpts?.showSeries && <FS l="Promotion" v={ssId} s={v => { setSsId(v); setPage(1) }} o={(fOpts.showSeries || []).map((s: any) => ({ v: String(s.id), l: s.name }))} p="All promotions" />}
-                {tab === 'segments' && <FS l="Category" v={cat} s={v => { setCat(v); setPage(1) }} o={SCATS.map(c => ({ v: c, l: `${segI[c]} ${c.replace(/_/g, ' ')}` }))} p="All" />}
-                {tab === 'managed' && <FS l="Result" v={result} s={v => { setResult(v); setPage(1) }} o={[{ v: 'win', l: 'Win' }, { v: 'loss', l: 'Loss' }, { v: 'draw', l: 'Draw' }]} p="All" />}
+                <FS l=t('matches.search.year') v={year} s={v => { setYear(v); setMonth(''); setPage(1) }} o={YEARS.map(y => ({ v: String(y), l: String(y) }))} p=t('common.allYears') />
+                {year && <FS l="Month" v={month} s={v => { setMonth(v); setPage(1) }} o={MONTHS.map(m => ({ v: m.value, l: m.label }))} p=t('common.allMonths') />}
+                {fOpts?.showSeries && <FS l="Promotion" v={ssId} s={v => { setSsId(v); setPage(1) }} o={(fOpts.showSeries || []).map((s: any) => ({ v: String(s.id), l: s.name }))} p=t('common.allPromotions') />}
+                {tab === 'segments' && <FS l=t('hallOfFame.inductees.category') v={cat} s={v => { setCat(v); setPage(1) }} o={SCATS.map(c => ({ v: c, l: `${segI[c]} ${c.replace(/_/g, ' ')}` }))} p=t('common.all') />}
+                {tab === 'managed' && <FS l=t('common.result') v={result} s={v => { setResult(v); setPage(1) }} o={[{ v: 'win', l: 'Win' }, { v: 'loss', l: 'Loss' }, { v: 'draw', l: 'Draw' }]} p=t('common.all') />}
               </div>
               {hasF && <div className="flex justify-end mt-3 pt-2 border-t border-border-subtle/20"><button onClick={() => { setYear(''); setMonth(''); setSsId(''); setCat(''); setResult(''); setPage(1) }} className="text-xs text-neon-pink hover:text-neon-pink/80 flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>Clear</button></div>}
             </div>
@@ -78,37 +82,37 @@ export default function TabRoleData({ superstar, tab }: { superstar: any; tab: s
           <div className={`transition-opacity ${loading ? 'opacity-50' : ''}`}>
             {tab === 'managed' && (
               <div className="hidden lg:grid lg:grid-cols-[100px_minmax(120px,1fr)_140px_minmax(180px,2fr)_minmax(160px,1.5fr)_60px_60px] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
-                <span>Date</span><span>Show</span><span>Match Type</span><span>Managed For</span><span>Opponents</span><span>Result</span><span>Rating</span>
+                <span>{t('shows.detail.date')}</span><span>Show</span><span>{t('matches.search.matchType')}</span><span>Managed For</span><span>Opponents</span><span>{t('common.result')}</span><span>{t('common.rating')}</span>
               </div>
             )}
             {tab === 'segments' && (
               <div className="hidden lg:grid lg:grid-cols-[100px_minmax(120px,1fr)_40px_minmax(200px,2.5fr)_minmax(140px,1.5fr)] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
-                <span>Date</span><span>Show</span><span></span><span>Segment</span><span>Participants</span>
+                <span>{t('shows.detail.date')}</span><span>Show</span><span></span><span>Segment</span><span>{t('matches.detail.participants')}</span>
               </div>
             )}
             {tab === 'commentated' && (
               <div className="hidden lg:grid lg:grid-cols-[100px_minmax(200px,2fr)_minmax(200px,2fr)] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
-                <span>Date</span><span>Show</span><span>Co-Commentators</span>
+                <span>{t('shows.detail.date')}</span><span>Show</span><span>Co-Commentators</span>
               </div>
             )}
             {tab === 'matchCommentated' && (
               <div className="hidden lg:grid lg:grid-cols-[100px_minmax(120px,1fr)_140px_minmax(200px,2.5fr)_minmax(100px,1fr)] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
-                <span>Date</span><span>Show</span><span>Match Type</span><span>Match</span><span>Commentators</span>
+                <span>{t('shows.detail.date')}</span><span>Show</span><span>{t('matches.search.matchType')}</span><span>Match</span><span>{t('nav.dropdown.commentators')}</span>
               </div>
             )}
             {tab === 'ringAnnounced' && (
               <div className="hidden lg:grid lg:grid-cols-[100px_1fr] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
-                <span>Date</span><span>Show</span>
+                <span>{t('shows.detail.date')}</span><span>Show</span>
               </div>
             )}
             {(tab === 'refereed' || tab === 'guestRefereed') && (
               <div className="hidden lg:grid lg:grid-cols-[100px_minmax(120px,1fr)_140px_minmax(200px,2.5fr)_60px] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
-                <span>Date</span><span>Show</span><span>Match Type</span><span>Match</span><span>Rating</span>
+                <span>{t('shows.detail.date')}</span><span>Show</span><span>{t('matches.search.matchType')}</span><span>Match</span><span>{t('common.rating')}</span>
               </div>
             )}
             {tab === 'interviewed' && (
               <div className="hidden lg:grid lg:grid-cols-[100px_minmax(120px,1fr)_minmax(200px,2.5fr)_minmax(160px,1.5fr)] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
-                <span>Date</span><span>Show</span><span>Segment</span><span>Participants</span>
+                <span>{t('shows.detail.date')}</span><span>Show</span><span>Segment</span><span>{t('matches.detail.participants')}</span>
               </div>
             )}
 
@@ -395,7 +399,7 @@ function GMC({ d }: { d: any }) {
           {d.brand_name && <span className="text-sm px-3 py-1 rounded-full bg-neon-blue/10 border border-neon-blue/20 text-neon-blue font-medium">{d.brand_name}</span>}
         </div>
         <div className="flex items-center gap-3 justify-center sm:justify-start">
-          <span className="text-base text-text-secondary font-mono">{d.start_date}</span><span className="text-neon-blue text-lg">→</span><span className="text-base text-text-secondary font-mono">{d.end_date || 'Present'}</span>
+          <span className="text-base text-text-secondary font-mono">{d.start_date}</span><span className="text-neon-blue text-lg">→</span><span className="text-base text-text-secondary font-mono">{d.end_date || t('common.present')}</span>
           <span className="text-neon-blue text-base font-bold">({fD(d.start_date, d.end_date)})</span>
         </div>
         {d.description && <p className="text-base text-text-secondary/80 mt-5 leading-relaxed max-w-2xl">{d.description}</p>}
@@ -414,7 +418,7 @@ function ExC({ d }: { d: any }) {
       <div className="flex-1 min-w-0 text-center sm:text-left">
         <h3 className="font-display text-2xl sm:text-4xl font-bold text-text-white mb-3">{d.title || 'Executive'}</h3>
         <div className="flex items-center gap-3 justify-center sm:justify-start">
-          <span className="text-base text-text-secondary font-mono">{d.start_date}</span><span className="text-yellow-400 text-lg">→</span><span className="text-base text-text-secondary font-mono">{d.end_date || 'Present'}</span>
+          <span className="text-base text-text-secondary font-mono">{d.start_date}</span><span className="text-yellow-400 text-lg">→</span><span className="text-base text-text-secondary font-mono">{d.end_date || t('common.present')}</span>
           <span className="text-yellow-400 text-base font-bold">({fD(d.start_date, d.end_date)})</span>
         </div>
         {d.description && <p className="text-base text-text-secondary/80 mt-5 leading-relaxed max-w-2xl">{d.description}</p>}

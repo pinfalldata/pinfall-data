@@ -5,6 +5,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { StarRating } from '@/components/ui/StarRating'
 import { formatDateShort, getResultLabel, isBattleRoyalType } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
+
 
 // ============================================================
 // TYPES
@@ -80,7 +82,7 @@ const RESULT_TYPE_OPTIONS = [
   { value: 'retrieve', label: 'Retrieve' },
   { value: 'last_elimination', label: 'Last Elimination' },
   { value: 'forfeit', label: 'Forfeit' },
-  { value: 'no_contest', label: 'No Contest' },
+  { value: 'no_contest', label: t('common.noContest') },
   { value: 'time_limit_draw', label: 'Time Limit Draw' },
   { value: 'other', label: 'Other' },
 ]
@@ -89,6 +91,8 @@ const RESULT_TYPE_OPTIONS = [
 // MAIN COMPONENT
 // ============================================================
 export function TabMatches({ superstar }: { superstar: any }) {
+  const t = useTranslations()
+
   const [matches, setMatches] = useState<MatchData[]>([])
   const [total, setTotal] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
@@ -197,7 +201,7 @@ export function TabMatches({ superstar }: { superstar: any }) {
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
           </svg>
-          {showFilters ? 'Hide Filters' : 'Show Filters'}
+          {showFilters ? t('matches.search.hideFilters') : t('matches.search.filters')}
           {activeFilterCount > 0 && (
             <span className="w-5 h-5 rounded-full bg-neon-blue text-[10px] text-black font-bold flex items-center justify-center">
               {activeFilterCount}
@@ -215,11 +219,11 @@ export function TabMatches({ superstar }: { superstar: any }) {
 
             {/* Year */}
             <FilterSelect
-              label="Year"
+              label=t('matches.search.year')
               value={filters.year}
               onChange={(v) => updateFilter('year', v)}
               options={YEARS.map(y => ({ value: String(y), label: String(y) }))}
-              placeholder="All years"
+              placeholder={t('common.allYears')}
             />
 
             {/* Month — only if year selected */}
@@ -232,7 +236,7 @@ export function TabMatches({ superstar }: { superstar: any }) {
                   value: String(i + 1),
                   label: new Date(2000, i).toLocaleString('en-US', { month: 'long' }),
                 }))}
-                placeholder="All months"
+                placeholder={t('common.allMonths')}
               />
             )}
 
@@ -245,19 +249,19 @@ export function TabMatches({ superstar }: { superstar: any }) {
                 value: String(s.id),
                 label: s.name,
               }))}
-              placeholder="All promotions"
+              placeholder={t('common.allPromotions')}
             />
 
             {/* Match Type — sorted by most used */}
             <FilterSelect
-              label="Match Type"
+              label=t('matches.search.matchType')
               value={filters.matchTypeId}
               onChange={(v) => updateFilter('matchTypeId', v)}
               options={filterOptions.matchTypes.map(t => ({
                 value: String(t.id),
                 label: t.name,
               }))}
-              placeholder="All types"
+              placeholder={t('common.allTypes')}
             />
 
             {/* Min Rating — 0 to 10 */}
@@ -269,17 +273,17 @@ export function TabMatches({ superstar }: { superstar: any }) {
                 value: String(i),
                 label: `${i}+/10`,
               }))}
-              placeholder="Any rating"
+              placeholder={t('common.anyRating')}
             />
 
             {/* Result */}
             <FilterSelect
-              label="Result"
+              label=t('common.result')
               value={filters.result}
               onChange={(v) => updateFilter('result', v)}
               options={[
-                { value: 'win', label: 'Wins' },
-                { value: 'loss', label: 'Losses' },
+                { value: 'win', label: t('common.wins') },
+                { value: 'loss', label: t('common.losses') },
                 { value: 'draw', label: 'Draws / No Contest' },
               ]}
               placeholder="All results"
@@ -291,7 +295,7 @@ export function TabMatches({ superstar }: { superstar: any }) {
               value={filters.resultType}
               onChange={(v) => updateFilter('resultType', v)}
               options={RESULT_TYPE_OPTIONS}
-              placeholder="Any finish"
+              placeholder={t('common.anyFinish')}
             />
 
             {/* Country */}
@@ -415,7 +419,7 @@ export function TabMatches({ superstar }: { superstar: any }) {
         </div>
       ) : matches.length === 0 ? (
         <div className="text-center py-16">
-          <p className="text-text-secondary text-lg">No matches found</p>
+          <p className="text-text-secondary text-lg">{t('matches.search.noResults')}</p>
           {hasActiveFilters && (
             <button onClick={resetFilters} className="mt-3 text-sm text-neon-blue hover:underline">
               Clear filters
@@ -426,13 +430,13 @@ export function TabMatches({ superstar }: { superstar: any }) {
         <>
           {/* Desktop table header */}
           <div className="hidden lg:grid lg:grid-cols-[95px_minmax(140px,1.2fr)_150px_minmax(200px,2.5fr)_110px_55px_56px] gap-3 px-4 pb-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20">
-            <span>Date</span>
+            <span>{t('shows.detail.date')}</span>
             <span>Show</span>
             <span>Type</span>
             <span>Match</span>
             <span>Title</span>
-            <span className="text-center">Rating</span>
-            <span className="text-center">Result</span>
+            <span className="text-center">{t('common.rating')}</span>
+            <span className="text-center">{t('common.result')}</span>
           </div>
 
           {/* Loading overlay */}

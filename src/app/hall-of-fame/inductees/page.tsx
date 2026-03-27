@@ -2,6 +2,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+
 
 const HERO = 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20Hall%20Of%20Fame/216_WM39_04022023RC_42848--11c292c2be35a5ca5d00f8ad298b804d.jpg'
 
@@ -10,6 +12,8 @@ const GOLD = '#d4af37'
 const ROYAL_BLUE = '#1a3a7a'
 
 export default function HallOfFamePage() {
+  const t = useTranslations()
+
   const [items, setItems] = useState<any[]>([])
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
@@ -64,7 +68,7 @@ export default function HallOfFamePage() {
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">
           <Link href="/hall-of-fame" className="text-[10px] uppercase tracking-widest mb-2 transition-colors hover:opacity-80" style={{ color: GOLD }}>← Hall of Fame & Awards</Link>
           <h1 className="font-display text-3xl sm:text-4xl lg:text-6xl font-bold text-text-white text-center tracking-tight mb-2">
-            WWE <span style={{ color: GOLD }}>Hall of Fame</span>
+            WWE <span style={{ color: GOLD }}>{t('nav.dropdown.hallOfFame')}</span>
           </h1>
           <p className="text-sm sm:text-base text-center max-w-2xl" style={{ color: '#b0b8c8' }}>
             The immortals of professional wrestling — every inductee who earned their place among the legends.
@@ -77,9 +81,9 @@ export default function HallOfFamePage() {
         <div className="p-4 sm:p-5 rounded-2xl border bg-bg-secondary/30 backdrop-blur-sm" style={{ borderColor: `${GOLD}20` }}>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] uppercase tracking-wider font-medium" style={{ color: GOLD }}>Year</label>
+              <label className="text-[10px] uppercase tracking-wider font-medium" style={{ color: GOLD }}>{t('matches.search.year')}</label>
               <select value={filterYear} onChange={e => setFilterYear(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-border-subtle/40 text-sm text-text-white focus:outline-none transition-colors" style={{ ['--tw-ring-color' as any]: `${GOLD}50` }}>
-                <option value="">All years</option>
+                <option value="">{t('common.allYears')}</option>
                 {years.map(y => <option key={y} value={y}>{y}</option>)}
               </select>
             </div>
@@ -99,7 +103,7 @@ export default function HallOfFamePage() {
               </select>
             </div>
             <div className="flex flex-col gap-1 col-span-2 sm:col-span-1 lg:col-span-2">
-              <label className="text-[10px] uppercase tracking-wider font-medium" style={{ color: GOLD }}>Search</label>
+              <label className="text-[10px] uppercase tracking-wider font-medium" style={{ color: GOLD }}>{t('common.search')}</label>
               <input type="text" value={search} onChange={e => handleSearch(e.target.value)} placeholder="Search inductee…"
                 className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-border-subtle/40 text-sm text-text-white placeholder:text-text-secondary/50 focus:outline-none transition-colors" />
             </div>

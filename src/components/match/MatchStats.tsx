@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { getWinRate } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
+
 
 // ============================================================
 // DONUT CHART — Win method percentages (pure SVG, no deps)
@@ -71,6 +73,8 @@ const METHOD_COLORS: Record<string, string> = {
 }
 
 export function WinMethodsChart({ winMethods, color }: { winMethods: any[]; color: string }) {
+  const t = useTranslations()
+
   if (!winMethods || winMethods.length === 0) return null
 
   const chartData = winMethods.map(m => ({
@@ -154,7 +158,7 @@ export function HeadToHeadSection({ h2h, superstar1, superstar2, color }: {
 
       {/* Bars */}
       <div className="space-y-3">
-        <HeadToHeadBar label="Wins" value1={h2h.wins_superstar1} value2={h2h.wins_superstar2} name1={superstar1.name} name2={superstar2.name} color1={c1} color2={c2} />
+        <HeadToHeadBar label=t('common.wins') value1={h2h.wins_superstar1} value2={h2h.wins_superstar2} name1={superstar1.name} name2={superstar2.name} color1={c1} color2={c2} />
         {superstar1.total_matches > 0 && superstar2.total_matches > 0 && (
           <HeadToHeadBar
             label="Win Rate (Overall)"
@@ -205,9 +209,9 @@ export function SuperstarQuickStats({ superstar, winMethods, color }: {
   return (
     <div className="glass rounded-xl p-4 border border-border-subtle/20">
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-        <StatCell label="Record" value={`${s.win_count}W - ${s.loss_count}L - ${s.draw_count}D`} />
-        <StatCell label="Win Rate" value={s.total_matches ? getWinRate(s.win_count, s.total_matches) : '—'} highlight color={color} />
-        <StatCell label="Total Matches" value={s.total_matches?.toString() || '0'} />
+        <StatCell label=t('records.record') value={`${s.win_count}W - ${s.loss_count}L - ${s.draw_count}D`} />
+        <StatCell label=t('common.winRate') value={s.total_matches ? getWinRate(s.win_count, s.total_matches) : '—'} highlight color={color} />
+        <StatCell label=t('common.totalMatches') value={s.total_matches?.toString() || '0'} />
         <StatCell label="Nationality" value={s.nationalities?.[0] || s.birth_country || '—'} />
       </div>
       {methodStats.length > 0 && (
@@ -244,7 +248,7 @@ function formatMethodLabel(method: string): string {
     pinfall: 'Pinfall', submission: 'Submission', dq: 'DQ',
     count_out: 'Count Out', ko: 'KO', referee_stoppage: 'Ref Stop',
     escape: 'Escape', last_elimination: 'Elimination',
-    forfeit: 'Forfeit', retrieve: 'Retrieve', no_contest: 'No Contest', other: 'Other',
+    forfeit: 'Forfeit', retrieve: 'Retrieve', no_contest: t('common.noContest'), other: 'Other',
   }
   return labels[method] || method
 }

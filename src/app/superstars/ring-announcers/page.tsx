@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 const config = {
   roleKey: 'ring_announcer',
-  title: 'Ring Announcers',
+  title: t('nav.dropdown.ringAnnouncers'),
   heroImage: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/garcia.jpeg',
   heroDescription: 'The voices that set the stage for every match — ring announcers who introduced superstars with gravitas and became iconic figures in their own right.',
   statLabel: 'shows announced',

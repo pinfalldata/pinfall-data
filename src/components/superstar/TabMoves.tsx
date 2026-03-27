@@ -40,7 +40,7 @@ function MoveCard({ move, color }: { move: any; color: 'blue' | 'pink' }) {
         {move.is_current && <span className="text-[10px] text-status-success uppercase tracking-wider bg-status-success/10 px-1.5 py-0.5 rounded">Current</span>}
       </div>
       {move.description && <p className="text-text-secondary text-sm mb-2">{move.description}</p>}
-      {(move.year_started || move.year_stopped) && <p className="text-text-secondary text-xs">{move.year_started || '?'} — {move.year_stopped || 'Present'}</p>}
+      {(move.year_started || move.year_stopped) && <p className="text-text-secondary text-xs">{move.year_started || '?'} — {move.year_stopped || t('common.present')}</p>}
     </div>
   )
 }

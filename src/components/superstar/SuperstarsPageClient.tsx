@@ -4,6 +4,8 @@ import { useState, useCallback } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import SuperstarsWorldMap from './SuperstarsWorldMap'
+import { useTranslations } from 'next-intl'
+
 
 /* ============================================================
    ROLE CATEGORIES
@@ -11,7 +13,7 @@ import SuperstarsWorldMap from './SuperstarsWorldMap'
 const CATEGORIES = [
   {
     key: 'wrestler',
-    label: 'Wrestlers',
+    label: t('nav.dropdown.wrestlers'),
     href: '/superstars/wrestlers',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/wrestler.webp',
     description: 'In-ring competitors across every era',
@@ -19,7 +21,7 @@ const CATEGORIES = [
   },
   {
     key: 'manager',
-    label: 'Managers',
+    label: t('nav.dropdown.managers'),
     href: '/superstars/managers',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/manager.webp',
     description: 'The masterminds behind the superstars',
@@ -27,7 +29,7 @@ const CATEGORIES = [
   },
   {
     key: 'commentator',
-    label: 'Commentators',
+    label: t('nav.dropdown.commentators'),
     href: '/superstars/commentators',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/commentator.webp',
     description: 'The voices of WWE programming',
@@ -35,7 +37,7 @@ const CATEGORIES = [
   },
   {
     key: 'ring_announcer',
-    label: 'Ring Announcers',
+    label: t('nav.dropdown.ringAnnouncers'),
     href: '/superstars/ring-announcers',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/Ring%20Announcer.webp',
     description: 'Introducing the competitors to the world',
@@ -43,7 +45,7 @@ const CATEGORIES = [
   },
   {
     key: 'referee',
-    label: 'Referees',
+    label: t('nav.dropdown.referees'),
     href: '/superstars/referees',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/referee.webp',
     description: 'Keepers of the rules inside the ring',
@@ -51,7 +53,7 @@ const CATEGORIES = [
   },
   {
     key: 'interviewer',
-    label: 'Interviewers',
+    label: t('nav.dropdown.interviewers'),
     href: '/superstars/interviewers',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/Interviewer.webp',
     description: 'Getting the stories behind the action',
@@ -59,7 +61,7 @@ const CATEGORIES = [
   },
   {
     key: 'general_manager',
-    label: 'General Managers',
+    label: t('nav.dropdown.generalManagers'),
     href: '/superstars/general-managers',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/general%20manager.webp',
     description: 'The authority figures running the show',
@@ -67,7 +69,7 @@ const CATEGORIES = [
   },
   {
     key: 'executive',
-    label: 'Executives',
+    label: t('nav.dropdown.executives'),
     href: '/superstars/executives',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/Executives.webp',
     description: 'The power players behind the curtain',
@@ -98,6 +100,8 @@ interface RandomSuperstar {
    MAIN COMPONENT
    ============================================================ */
 export default function SuperstarsPageClient() {
+  const t = useTranslations()
+
   const [randomStar, setRandomStar] = useState<RandomSuperstar | null>(null)
   const [loadingStar, setLoadingStar] = useState(false)
   const [hasLoaded, setHasLoaded] = useState(false)
@@ -332,19 +336,19 @@ export default function SuperstarsPageClient() {
                       {randomStar.win_count != null && (
                         <div className="text-center">
                           <span className="block text-lg font-bold text-emerald-400 font-mono">{randomStar.win_count}</span>
-                          <span className="text-[9px] uppercase tracking-wider text-text-secondary">Wins</span>
+                          <span className="text-[9px] uppercase tracking-wider text-text-secondary">{t('common.wins')}</span>
                         </div>
                       )}
                       {randomStar.loss_count != null && (
                         <div className="text-center">
                           <span className="block text-lg font-bold text-red-400 font-mono">{randomStar.loss_count}</span>
-                          <span className="text-[9px] uppercase tracking-wider text-text-secondary">Losses</span>
+                          <span className="text-[9px] uppercase tracking-wider text-text-secondary">{t('common.losses')}</span>
                         </div>
                       )}
                       {(randomStar.total_reigns ?? 0) > 0 && (
                         <div className="text-center">
                           <span className="block text-lg font-bold text-neon-blue font-mono">{randomStar.total_reigns}</span>
-                          <span className="text-[9px] uppercase tracking-wider text-text-secondary">Reigns</span>
+                          <span className="text-[9px] uppercase tracking-wider text-text-secondary">{t('common.reigns')}</span>
                         </div>
                       )}
                     </div>
