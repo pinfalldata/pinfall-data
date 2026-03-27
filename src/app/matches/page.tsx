@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 
 const SECTIONS = [
   {
-    title: t('matches.search.title'),
+    title: 'Match Search',
     description: 'Search through 100,000+ matches by Superstar, show, date, rating, or championship.',
     href: '/matches/search',
     icon: (
@@ -43,7 +43,7 @@ const SECTIONS = [
     accent: 'neon-blue',
   },
   {
-    title: t('matches.segments.title'),
+    title: 'Segment Search',
     description: 'Browse every WWE segment — promos, backstage confrontations, ceremonies, and more.',
     href: '/matches/segments',
     icon: (
@@ -54,7 +54,7 @@ const SECTIONS = [
     accent: 'neon-pink',
   },
   {
-    title: t('matches.shows.title'),
+    title: 'All Shows',
     description: 'Browse every weekly and special show — Raw, SmackDown, NXT, and more.',
     href: '/matches/shows',
     icon: (
@@ -76,7 +76,7 @@ const SECTIONS = [
     accent: 'neon-pink',
   },
   {
-    title: t('matches.stipulations.title'),
+    title: 'Match Stipulations',
     description: 'Steel Cage, Hell in a Cell, TLC, Royal Rumble — explore every match type.',
     href: '/matches/stipulations',
     icon: (
@@ -87,7 +87,7 @@ const SECTIONS = [
     accent: 'neon-blue',
   },
   {
-    title: t('matches.arenas.title'),
+    title: 'All Arenas',
     description: 'Every venue in WWE history — from MSG to stadiums worldwide. Full name history & stats.',
     href: '/matches/arenas',
     icon: (
@@ -98,7 +98,7 @@ const SECTIONS = [
     accent: 'neon-pink',
   },
   {
-    title: t('matches.objects.title'),
+    title: 'Objects Used',
     description: 'Chairs, tables, ladders, kendo sticks — every foreign object used in WWE matches.',
     href: '/matches/objects',
     icon: (
@@ -131,7 +131,7 @@ export default function MatchesPage() {
 
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-8 sm:pb-10 lg:pb-12 px-4">
           <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-white text-center tracking-tight mb-2">
-            <span className="text-neon-blue">{t('home.stats.matches')}</span> & Shows
+            <span className="text-neon-blue">Matches</span> & Shows
           </h1>
           <p className="text-text-secondary text-sm sm:text-base lg:text-lg text-center max-w-2xl">
             The complete database of every WWE match ever recorded — from the first championship bout to last night&apos;s main event.

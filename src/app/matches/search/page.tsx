@@ -168,18 +168,18 @@ export default function MatchSearchPage() {
         {showF && (
           <div className="mb-6 p-4 sm:p-5 rounded-2xl border border-border-subtle/30 bg-bg-secondary/30 backdrop-blur-sm animate-fade-in">
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-              <Sel label=t('matches.search.year') value={filters.year} set={v=>upd('year',v)} opts={YEARS.map(y=>({value:String(y),label:String(y)}))} ph=t('common.allYears')/>
+              <Sel label={t('matches.search.year')} value={filters.year} set={v=>upd('year',v)} opts={YEARS.map(y=>({value:String(y),label:String(y)}))} ph={t('common.allYears')}/>
               {filters.year && <Sel label="Month" value={filters.month} set={v=>upd('month',v)}
-                opts={Array.from({length:12},(_,i)=>({value:String(i+1),label:new Date(2000,i).toLocaleString('en-US',{month:'long'})}))} ph=t('common.allMonths')/>}
+                opts={Array.from({length:12},(_,i)=>({value:String(i+1),label:new Date(2000,i).toLocaleString('en-US',{month:'long'})}))} ph={t('common.allMonths')}/>}
               <Sel label="Promotion" value={filters.showSeriesId} set={v=>upd('showSeriesId',v)}
-                opts={opts.showSeries.map(s=>({value:String(s.id),label:s.name}))} ph=t('common.allPromotions')/>
-              <Sel label=t('matches.search.matchType') value={filters.matchTypeId} set={v=>upd('matchTypeId',v)}
-                opts={opts.matchTypes.map(t=>({value:String(t.id),label:t.name}))} ph=t('common.allTypes')/>
+                opts={opts.showSeries.map(s=>({value:String(s.id),label:s.name}))} ph={t('common.allPromotions')}/>
+              <Sel label={t('matches.search.matchType')} value={filters.matchTypeId} set={v=>upd('matchTypeId',v)}
+                opts={opts.matchTypes.map(t=>({value:String(t.id),label:t.name}))} ph={t('common.allTypes')}/>
               <Sel label="Min. Rating" value={filters.minRating} set={v=>upd('minRating',v)}
-                opts={Array.from({length:11},(_,i)=>({value:String(i),label:`${i}+/10`}))} ph=t('common.anyRating')/>
-              <Sel label="Finish Type" value={filters.resultType} set={v=>upd('resultType',v)} opts={RESULT_TYPES} ph=t('common.anyFinish')/>
+                opts={Array.from({length:11},(_,i)=>({value:String(i),label:`${i}+/10`}))} ph={t('common.anyRating')}/>
+              <Sel label="Finish Type" value={filters.resultType} set={v=>upd('resultType',v)} opts={RESULT_TYPES} ph={t('common.anyFinish')}/>
               <Sel label="Country" value={filters.country} set={v=>upd('country',v)}
-                opts={opts.countries.map(c=>({value:c,label:c}))} ph=t('common.allCountries')/>
+                opts={opts.countries.map(c=>({value:c,label:c}))} ph={t('common.allCountries')}/>
               <div className="flex flex-col gap-1">
                 <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">City</label>
                 <input type="text" value={filters.city} onChange={e=>upd('city',e.target.value)} placeholder="e.g. New York"

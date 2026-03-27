@@ -76,7 +76,7 @@ export default function ChampionshipRecordsPage() {
           </div>
         )}
       </section>
-      <SeoBlock t=t('records.championships') p="Complete WWE championship record book. Every title reign analyzed — longest, shortest, most reigns, youngest and oldest champions. Data from 70+ years of championship history." />
+      <SeoBlock t={t('records.championships')} p="Complete WWE championship record book. Every title reign analyzed — longest, shortest, most reigns, youngest and oldest champions. Data from 70+ years of championship history." />
     </div>
   )
 }

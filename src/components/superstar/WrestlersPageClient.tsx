@@ -158,13 +158,13 @@ export default function WrestlersPageClient() {
         {showFilters&&(
           <div className="mt-4 p-4 sm:p-5 rounded-2xl border border-border-subtle/30 bg-bg-secondary/30 backdrop-blur-sm animate-fade-in">
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-              <Sel label=t('superstars.info.era') value={filters.eraId} set={v=>upd('eraId',v)} opts={opts.eras.map(e=>({value:String(e.id),label:e.name}))} ph="All eras"/>
-              <Sel label=t('superstars.info.status') value={filters.status} set={v=>{upd('status',v);if(v!=='active')upd('brand','')}} opts={[{value:'active',label:t('common.active')},{value:'retired',label:t('common.retired')},{value:'deceased',label:t('common.deceased')}]} ph=t('common.all')/>
-              {filters.status==='active'&&opts.brands.length>0&&<Sel label=t('superstars.info.brand') value={filters.brand} set={v=>upd('brand',v)} opts={opts.brands.map(b=>({value:b,label:b}))} ph="All brands"/>}
-              <Sel label="Gender" value={filters.gender} set={v=>{upd('gender',v);if(v==='female')upd('weightClass','')}} opts={[{value:'male',label:t('common.men')},{value:'female',label:t('common.women')}]} ph=t('common.all')/>
+              <Sel label={t('superstars.info.era')} value={filters.eraId} set={v=>upd('eraId',v)} opts={opts.eras.map(e=>({value:String(e.id),label:e.name}))} ph="All eras"/>
+              <Sel label={t('superstars.info.status')} value={filters.status} set={v=>{upd('status',v);if(v!=='active')upd('brand','')}} opts={[{value:'active',label:t('common.active')},{value:'retired',label:t('common.retired')},{value:'deceased',label:t('common.deceased')}]} ph={t('common.all')}/>
+              {filters.status==='active'&&opts.brands.length>0&&<Sel label={t('superstars.info.brand')} value={filters.brand} set={v=>upd('brand',v)} opts={opts.brands.map(b=>({value:b,label:b}))} ph="All brands"/>}
+              <Sel label="Gender" value={filters.gender} set={v=>{upd('gender',v);if(v==='female')upd('weightClass','')}} opts={[{value:'male',label:t('common.men')},{value:'female',label:t('common.women')}]} ph={t('common.all')}/>
               {filters.gender!=='female'&&<Sel label="Weight Class" value={filters.weightClass} set={v=>upd('weightClass',v)} opts={[{value:'cruiserweight',label:'Cruiserweight (≤205 lbs)'},{value:'heavyweight',label:'Heavyweight (>205 lbs)'},{value:'super_heavyweight',label:'Super Heavyweight (≥300 lbs)'}]} ph="All weights"/>}
-              <Sel label="Country" value={filters.country} set={v=>{upd('country',v);upd('city','')}} opts={opts.countries.map(c=>({value:c,label:c}))} ph=t('common.allCountries')/>
-              {filters.country&&opts.cities.length>0&&<Sel label="City" value={filters.city} set={v=>upd('city',v)} opts={opts.cities.map(c=>({value:c,label:c}))} ph=t('common.allCities')/>}
+              <Sel label="Country" value={filters.country} set={v=>{upd('country',v);upd('city','')}} opts={opts.countries.map(c=>({value:c,label:c}))} ph={t('common.allCountries')}/>
+              {filters.country&&opts.cities.length>0&&<Sel label="City" value={filters.city} set={v=>upd('city',v)} opts={opts.cities.map(c=>({value:c,label:c}))} ph={t('common.allCities')}/>}
               <Sel label="Championship held" value={filters.championshipId} set={v=>upd('championshipId',v)} opts={opts.championships.map(c=>({value:String(c.id),label:c.name}))} ph="Any"/>
               <Sel label="Birth Year" value={filters.birthYear} set={v=>upd('birthYear',v)} opts={YEARS_BIRTH.map(y=>({value:String(y),label:String(y)}))} ph="Any year"/>
               <Sel label="Debut Year" value={filters.debutYear} set={v=>upd('debutYear',v)} opts={YEARS_DEBUT.map(y=>({value:String(y),label:String(y)}))} ph="Any year"/>

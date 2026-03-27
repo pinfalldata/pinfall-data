@@ -163,11 +163,11 @@ export default function RolePageClient({ config }: { config: RoleConfig }) {
         {showFilters&&(
           <div className="mt-4 p-4 sm:p-5 rounded-2xl border border-border-subtle/30 bg-bg-secondary/30 backdrop-blur-sm animate-fade-in">
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-              <Sel label=t('superstars.info.era') value={filters.eraId} set={v=>upd('eraId',v)} opts={opts.eras.map(e=>({value:String(e.id),label:e.name}))} ph="All eras"/>
-              <Sel label=t('superstars.info.status') value={filters.status} set={v=>upd('status',v)} opts={[{value:'active',label:t('common.active')},{value:'retired',label:t('common.retired')},{value:'deceased',label:t('common.deceased')}]} ph=t('common.all')/>
-              <Sel label="Gender" value={filters.gender} set={v=>upd('gender',v)} opts={[{value:'male',label:t('common.men')},{value:'female',label:t('common.women')}]} ph=t('common.all')/>
-              <Sel label="Country" value={filters.country} set={v=>{upd('country',v);upd('city','')}} opts={opts.countries.map(c=>({value:c,label:c}))} ph=t('common.allCountries')/>
-              {filters.country&&opts.cities.length>0&&<Sel label="City" value={filters.city} set={v=>upd('city',v)} opts={opts.cities.map(c=>({value:c,label:c}))} ph=t('common.allCities')/>}
+              <Sel label={t('superstars.info.era')} value={filters.eraId} set={v=>upd('eraId',v)} opts={opts.eras.map(e=>({value:String(e.id),label:e.name}))} ph="All eras"/>
+              <Sel label={t('superstars.info.status')} value={filters.status} set={v=>upd('status',v)} opts={[{value:'active',label:t('common.active')},{value:'retired',label:t('common.retired')},{value:'deceased',label:t('common.deceased')}]} ph={t('common.all')}/>
+              <Sel label="Gender" value={filters.gender} set={v=>upd('gender',v)} opts={[{value:'male',label:t('common.men')},{value:'female',label:t('common.women')}]} ph={t('common.all')}/>
+              <Sel label="Country" value={filters.country} set={v=>{upd('country',v);upd('city','')}} opts={opts.countries.map(c=>({value:c,label:c}))} ph={t('common.allCountries')}/>
+              {filters.country&&opts.cities.length>0&&<Sel label="City" value={filters.city} set={v=>upd('city',v)} opts={opts.cities.map(c=>({value:c,label:c}))} ph={t('common.allCities')}/>}
               <Sel label="Birth Year" value={filters.birthYear} set={v=>upd('birthYear',v)} opts={YEARS_BIRTH.map(y=>({value:String(y),label:String(y)}))} ph="Any"/>
               <Sel label="Debut Year" value={filters.debutYear} set={v=>upd('debutYear',v)} opts={YEARS_DEBUT.map(y=>({value:String(y),label:String(y)}))} ph="Any"/>
             </div>

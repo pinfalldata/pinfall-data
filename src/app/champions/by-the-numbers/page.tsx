@@ -51,7 +51,7 @@ export default function ByTheNumbersPage() {
   return (
     <div className="relative min-h-screen">
       <section className="relative w-full h-[220px] sm:h-[300px] lg:h-[380px] xl:h-[420px] overflow-hidden">
-        <Image src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20champions/WWE-New-titles-1_2026-03-11_13_28_40.220684.jpg.png" alt=t('champions.byTheNumbers.title') fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-center" />
+        <Image src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20champions/WWE-New-titles-1_2026-03-11_13_28_40.220684.jpg.png" alt={t('champions.byTheNumbers.title')} fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-center" />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/50 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-bg-primary/30 via-transparent to-bg-primary/30" />
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
@@ -74,11 +74,11 @@ export default function ByTheNumbersPage() {
               <div className="w-1 h-6 rounded-full bg-neon-blue" />Global Overview
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-              <StatCard label=t('common.championships') value={o.totalChampionships} sub={`${o.activeChampionships} active / ${o.retiredChampionships} retired`} />
-              <StatCard label=t('champions.detail.totalReigns') value={o.totalReigns} />
-              <StatCard label=t('champions.detail.uniqueChampions') value={o.uniqueChampions} />
-              <StatCard label=t('champions.detail.avgReign') value={`${o.avgReignDays}d`} />
-              <StatCard label=t('champions.detail.titleMatches') value={o.totalTitleMatches} sub={`${o.totalTitleChanges} title changes`} />
+              <StatCard label={t('common.championships')} value={o.totalChampionships} sub={`${o.activeChampionships} active / ${o.retiredChampionships} retired`} />
+              <StatCard label={t('champions.detail.totalReigns')} value={o.totalReigns} />
+              <StatCard label={t('champions.detail.uniqueChampions')} value={o.uniqueChampions} />
+              <StatCard label={t('champions.detail.avgReign')} value={`${o.avgReignDays}d`} />
+              <StatCard label={t('champions.detail.titleMatches')} value={o.totalTitleMatches} sub={`${o.totalTitleChanges} title changes`} />
             </div>
           </section>
 

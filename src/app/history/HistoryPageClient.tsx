@@ -124,7 +124,7 @@ export default function HistoryPageClient() {
       <section className="relative w-full h-[280px] sm:h-[380px] lg:h-[460px] overflow-hidden">
         <Image
           src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20History%20En%20tete/image__15__2026-03-16_22_26_56.926494.jpg.png"
-          alt=t('history.title')
+          alt={t('history.title')}
           fill priority sizes="100vw" quality={100} unoptimized
           className="object-cover object-center"
         />

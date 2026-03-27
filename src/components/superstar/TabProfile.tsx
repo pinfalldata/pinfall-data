@@ -8,6 +8,7 @@ import { useTranslations } from 'next-intl'
 
 
 export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabChange?: (tabId: string) => void }) {
+  const t = useTranslations()
   const [preview, setPreview] = useState<any>(null)
 
   useEffect(() => {
@@ -22,7 +23,7 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
       {/* ═══════ LEFT COLUMN: Bio + Records + Ring Names + Activity ═══════ */}
       <div className="lg:col-span-2 space-y-6">
         {superstar.bio_md && (
-          <Card title=t('superstars.profile.biography')>
+          <Card title={t('superstars.profile.biography')}>
             <p className="text-text-primary leading-relaxed whitespace-pre-line">{superstar.bio_md}</p>
           </Card>
         )}
@@ -164,12 +165,12 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
         {preview?.statsPreview && (
           <PreviewWidget title="📊 Quick Stats" onSeeMore={() => onTabChange?.('statistics')} icon="📊">
             <div className="grid grid-cols-2 gap-2">
-              <StatMini label=t('common.winRate') value={`${preview.statsPreview.winRate}%`} accent />
-              <StatMini label=t('common.totalMatches') value={preview.statsPreview.total_matches} />
-              <StatMini label=t('common.wins') value={preview.statsPreview.win_count} color="text-green-400" />
-              <StatMini label=t('common.losses') value={preview.statsPreview.loss_count} color="text-red-400" />
+              <StatMini label={t('common.winRate')} value={`${preview.statsPreview.winRate}%`} accent />
+              <StatMini label={t('common.totalMatches')} value={preview.statsPreview.total_matches} />
+              <StatMini label={t('common.wins')} value={preview.statsPreview.win_count} color="text-green-400" />
+              <StatMini label={t('common.losses')} value={preview.statsPreview.loss_count} color="text-red-400" />
               {preview.statsPreview.total_reigns > 0 && <StatMini label="Title Reigns" value={preview.statsPreview.total_reigns} accent />}
-              {preview.statsPreview.draw_count > 0 && <StatMini label=t('common.draws') value={preview.statsPreview.draw_count} />}
+              {preview.statsPreview.draw_count > 0 && <StatMini label={t('common.draws')} value={preview.statsPreview.draw_count} />}
             </div>
           </PreviewWidget>
         )}

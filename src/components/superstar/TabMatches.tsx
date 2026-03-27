@@ -219,7 +219,7 @@ export function TabMatches({ superstar }: { superstar: any }) {
 
             {/* Year */}
             <FilterSelect
-              label=t('matches.search.year')
+              label={t('matches.search.year')}
               value={filters.year}
               onChange={(v) => updateFilter('year', v)}
               options={YEARS.map(y => ({ value: String(y), label: String(y) }))}
@@ -254,7 +254,7 @@ export function TabMatches({ superstar }: { superstar: any }) {
 
             {/* Match Type — sorted by most used */}
             <FilterSelect
-              label=t('matches.search.matchType')
+              label={t('matches.search.matchType')}
               value={filters.matchTypeId}
               onChange={(v) => updateFilter('matchTypeId', v)}
               options={filterOptions.matchTypes.map(t => ({
@@ -278,7 +278,7 @@ export function TabMatches({ superstar }: { superstar: any }) {
 
             {/* Result */}
             <FilterSelect
-              label=t('common.result')
+              label={t('common.result')}
               value={filters.result}
               onChange={(v) => updateFilter('result', v)}
               options={[

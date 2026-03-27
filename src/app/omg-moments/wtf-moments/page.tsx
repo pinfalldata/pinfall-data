@@ -11,5 +11,5 @@ export const metadata: Metadata = {
 }
 
 export default function WTFMomentsPage() {
-  return <OMGCategoryClient category="wtf" title=t('omg.wtf') subtitle="The most bizarre, unexplainable, and jaw-dropping WTF moments in WWE history." heroImage="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20OMG%20Moments/nexus_2026-03-20_19_59_13.334172.jpg.png" icon="🤯" />
+  return <OMGCategoryClient category="wtf" title="WTF Moments" subtitle="The most bizarre, unexplainable, and jaw-dropping WTF moments in WWE history." heroImage="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20OMG%20Moments/nexus_2026-03-20_19_59_13.334172.jpg.png" icon="🤯" />
 }

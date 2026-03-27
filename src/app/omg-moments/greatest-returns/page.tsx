@@ -11,5 +11,5 @@ export const metadata: Metadata = {
 }
 
 export default function GreatestReturnsPage() {
-  return <OMGCategoryClient category="return" title=t('omg.returns') subtitle="When legends come back and the arena erupts — the greatest returns in WWE history." heroImage="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20OMG%20Moments/john-cena-royal-rumble-2008-cropped_2026-03-20_19_59_13.116122.jpg.png" icon="🔙" />
+  return <OMGCategoryClient category="return" title="Greatest Returns" subtitle="When legends come back and the arena erupts — the greatest returns in WWE history." heroImage="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20OMG%20Moments/john-cena-royal-rumble-2008-cropped_2026-03-20_19_59_13.116122.jpg.png" icon="🔙" />
 }

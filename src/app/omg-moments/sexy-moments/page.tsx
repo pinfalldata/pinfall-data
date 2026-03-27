@@ -11,5 +11,5 @@ export const metadata: Metadata = {
 }
 
 export default function SexyMomentsPage() {
-  return <OMGCategoryClient category="sexy" title=t('omg.sexy') subtitle="The hottest, most provocative moments that set the screen on fire." heroImage="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20OMG%20Moments/liv-morgan-absence-wwe-tournage-film_2026-03-20_19_59_13.493456.jpg.png" icon="💋" />
+  return <OMGCategoryClient category="sexy" title="Sexy Moments" subtitle="The hottest, most provocative moments that set the screen on fire." heroImage="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20OMG%20Moments/liv-morgan-absence-wwe-tournage-film_2026-03-20_19_59_13.493456.jpg.png" icon="💋" />
 }

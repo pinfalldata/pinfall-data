@@ -11,5 +11,5 @@ export const metadata: Metadata = {
 }
 
 export default function MostEmotionalMomentsPage() {
-  return <OMGCategoryClient category="emotional" title=t('omg.emotional') subtitle="Tears, ovations, retirements, and tributes that moved the world." heroImage="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20OMG%20Moments/ric-flair-hall-of-fame_2026-03-20_20_04_09.125374.jpg.png" icon="😢" />
+  return <OMGCategoryClient category="emotional" title="Most Emotional Moments" subtitle="Tears, ovations, retirements, and tributes that moved the world." heroImage="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20OMG%20Moments/ric-flair-hall-of-fame_2026-03-20_20_04_09.125374.jpg.png" icon="😢" />
 }

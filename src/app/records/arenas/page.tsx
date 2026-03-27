@@ -36,7 +36,7 @@ export default function ArenaRecordsPage() {
 
   return (
     <div className="relative">
-      <Hero img={HERO} t1=t('shows.detail.arena') t2="Records" sub="The legendary venues that have shaped WWE history — from MSG to stadiums worldwide." />
+      <Hero img={HERO} t1={t('shows.detail.arena')} t2="Records" sub="The legendary venues that have shaped WWE history — from MSG to stadiums worldwide." />
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6">
         <TabBar tabs={TABS} active={tab} set={setTab} />
         {loading ? <Skel /> : list.length === 0 ? <Empty /> : (
@@ -84,7 +84,7 @@ export default function ArenaRecordsPage() {
           </div>
         )}
       </section>
-      <SeoBlock t=t('records.arenas') p="Every WWE venue record. Most events hosted, highest single-event attendance, longest-running arenas, and the top venues in each country — all from our complete show database." />
+      <SeoBlock t={t('records.arenas')} p="Every WWE venue record. Most events hosted, highest single-event attendance, longest-running arenas, and the top venues in each country — all from our complete show database." />
     </div>
   )
 }

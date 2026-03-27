@@ -61,11 +61,11 @@ export default function TabRoleData({ superstar, tab }: { superstar: any; tab: s
           {showF && (
             <div className="mb-5 p-4 rounded-2xl border border-border-subtle/30 bg-bg-secondary/30 backdrop-blur-sm animate-fade-in">
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-                <FS l=t('matches.search.year') v={year} s={v => { setYear(v); setMonth(''); setPage(1) }} o={YEARS.map(y => ({ v: String(y), l: String(y) }))} p=t('common.allYears') />
-                {year && <FS l="Month" v={month} s={v => { setMonth(v); setPage(1) }} o={MONTHS.map(m => ({ v: m.value, l: m.label }))} p=t('common.allMonths') />}
-                {fOpts?.showSeries && <FS l="Promotion" v={ssId} s={v => { setSsId(v); setPage(1) }} o={(fOpts.showSeries || []).map((s: any) => ({ v: String(s.id), l: s.name }))} p=t('common.allPromotions') />}
-                {tab === 'segments' && <FS l=t('hallOfFame.inductees.category') v={cat} s={v => { setCat(v); setPage(1) }} o={SCATS.map(c => ({ v: c, l: `${segI[c]} ${c.replace(/_/g, ' ')}` }))} p=t('common.all') />}
-                {tab === 'managed' && <FS l=t('common.result') v={result} s={v => { setResult(v); setPage(1) }} o={[{ v: 'win', l: 'Win' }, { v: 'loss', l: 'Loss' }, { v: 'draw', l: 'Draw' }]} p=t('common.all') />}
+                <FS l={t('matches.search.year')} v={year} s={v => { setYear(v); setMonth(''); setPage(1) }} o={YEARS.map(y => ({ v: String(y), l: String(y) }))} p={t('common.allYears')} />
+                {year && <FS l="Month" v={month} s={v => { setMonth(v); setPage(1) }} o={MONTHS.map(m => ({ v: m.value, l: m.label }))} p={t('common.allMonths')} />}
+                {fOpts?.showSeries && <FS l="Promotion" v={ssId} s={v => { setSsId(v); setPage(1) }} o={(fOpts.showSeries || []).map((s: any) => ({ v: String(s.id), l: s.name }))} p={t('common.allPromotions')} />}
+                {tab === 'segments' && <FS l={t('hallOfFame.inductees.category')} v={cat} s={v => { setCat(v); setPage(1) }} o={SCATS.map(c => ({ v: c, l: `${segI[c]} ${c.replace(/_/g, ' ')}` }))} p={t('common.all')} />}
+                {tab === 'managed' && <FS l={t('common.result')} v={result} s={v => { setResult(v); setPage(1) }} o={[{ v: 'win', l: 'Win' }, { v: 'loss', l: 'Loss' }, { v: 'draw', l: 'Draw' }]} p={t('common.all')} />}
               </div>
               {hasF && <div className="flex justify-end mt-3 pt-2 border-t border-border-subtle/20"><button onClick={() => { setYear(''); setMonth(''); setSsId(''); setCat(''); setResult(''); setPage(1) }} className="text-xs text-neon-pink hover:text-neon-pink/80 flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>Clear</button></div>}
             </div>

@@ -101,7 +101,7 @@ export default function MatchRecordsPage() {
           </div>
         )}
       </section>
-      <SeoBlock t=t('records.matches') p="Every WWE match record computed from 100,000+ matches. Highest rated all-time, longest and shortest bouts, youngest and oldest competitors to ever step in a WWE ring." />
+      <SeoBlock t={t('records.matches')} p="Every WWE match record computed from 100,000+ matches. Highest rated all-time, longest and shortest bouts, youngest and oldest competitors to ever step in a WWE ring." />
     </div>
   )
 }

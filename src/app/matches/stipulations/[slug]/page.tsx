@@ -360,18 +360,18 @@ export default function StipulationDetailPage() {
         {showFilters && (
           <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-4 sm:p-5 mb-6 animate-fade-in">
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-              <FilterSel label=t('matches.search.year') value={filters.year} set={v => upd('year', v)}
-                opts={YEARS.map(y => ({ value: String(y), label: String(y) }))} ph=t('common.allYears') />
+              <FilterSel label={t('matches.search.year')} value={filters.year} set={v => upd('year', v)}
+                opts={YEARS.map(y => ({ value: String(y), label: String(y) }))} ph={t('common.allYears')} />
               {filters.year && <FilterSel label="Month" value={filters.month} set={v => upd('month', v)}
-                opts={Array.from({ length: 12 }, (_, i) => ({ value: String(i + 1), label: new Date(2000, i).toLocaleString('en-US', { month: 'long' }) }))} ph=t('common.allMonths') />}
+                opts={Array.from({ length: 12 }, (_, i) => ({ value: String(i + 1), label: new Date(2000, i).toLocaleString('en-US', { month: 'long' }) }))} ph={t('common.allMonths')} />}
               <FilterSel label="Show" value={filters.showSeriesId} set={v => upd('showSeriesId', v)}
-                opts={opts.showSeries.map(s => ({ value: String(s.id), label: s.name }))} ph=t('common.allPromotions') />
+                opts={opts.showSeries.map(s => ({ value: String(s.id), label: s.name }))} ph={t('common.allPromotions')} />
               <FilterSel label="Min Rating" value={filters.minRating} set={v => upd('minRating', v)}
-                opts={Array.from({ length: 11 }, (_, i) => ({ value: String(i), label: `${i}+/10` }))} ph=t('common.anyRating') />
+                opts={Array.from({ length: 11 }, (_, i) => ({ value: String(i), label: `${i}+/10` }))} ph={t('common.anyRating')} />
               <FilterSel label="Finish Type" value={filters.resultType} set={v => upd('resultType', v)}
-                opts={RESULT_TYPES} ph=t('common.anyFinish') />
+                opts={RESULT_TYPES} ph={t('common.anyFinish')} />
               <FilterSel label="Country" value={filters.country} set={v => upd('country', v)}
-                opts={opts.countries.map(c => ({ value: c, label: c }))} ph=t('common.allCountries') />
+                opts={opts.countries.map(c => ({ value: c, label: c }))} ph={t('common.allCountries')} />
               <div className="flex flex-col gap-1">
                 <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">City</label>
                 <input type="text" value={filters.city} onChange={e => upd('city', e.target.value)} placeholder="e.g. New York"

@@ -13,14 +13,14 @@ export const metadata: Metadata = {
 
 const CATEGORIES = [
   {
-    label: t('tagTeams.teams'),
+    label: 'Tag Teams',
     href: '/tag-teams/teams',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20Tag%20Teams/edge%20cri.webp',
     description: 'Duos who ruled the tag division — from legendary partnerships to dominant combinations.',
     icon: '👥',
   },
   {
-    label: t('tagTeams.stables'),
+    label: 'Stables',
     href: '/tag-teams/stables',
     image: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20Tag%20Teams/evolution.webp',
     description: 'The most powerful factions and groups — armies that changed the landscape of wrestling.',
@@ -55,7 +55,7 @@ export default function TagTeamsPage() {
           <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
           <div className="absolute inset-0 flex flex-col items-center justify-end pb-8 sm:pb-10 lg:pb-12 px-4">
             <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-white text-center tracking-tight mb-2">
-              Tag Teams & <span className="text-neon-blue">{t('tagTeams.stables')}</span>
+              Tag Teams & <span className="text-neon-blue">Stables</span>
             </h1>
             <p className="text-text-secondary text-sm sm:text-base lg:text-lg text-center max-w-2xl">
               Every partnership and faction that shaped 70+ years of WWE history.

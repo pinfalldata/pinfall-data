@@ -62,8 +62,8 @@ export default function SlammyAwardsPage() {
       <section ref={ref} className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6">
         <div className="p-4 sm:p-5 rounded-2xl border border-border-subtle/30 bg-bg-secondary/30 backdrop-blur-sm mb-6">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            <Sel label=t('matches.search.year') value={filterYear} set={setFilterYear} opts={years.map(y => ({ value: String(y), label: String(y) }))} ph=t('common.allYears') />
-            <Sel label=t('hallOfFame.inductees.category') value={filterCat} set={setFilterCat} opts={categories.map(c => ({ value: c, label: c }))} ph="All categories" />
+            <Sel label={t('matches.search.year')} value={filterYear} set={setFilterYear} opts={years.map(y => ({ value: String(y), label: String(y) }))} ph={t('common.allYears')} />
+            <Sel label={t('hallOfFame.inductees.category')} value={filterCat} set={setFilterCat} opts={categories.map(c => ({ value: c, label: c }))} ph="All categories" />
             <Sel label="Sort" value={sort} set={setSort} opts={[{ value: 'newest', label: 'Newest' }, { value: 'oldest', label: 'Oldest' }, { value: 'alpha', label: 'A → Z' }]} ph="" />
             <div className="flex flex-col gap-1 col-span-2 sm:col-span-1 lg:col-span-2">
               <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">{t('common.search')}</label>

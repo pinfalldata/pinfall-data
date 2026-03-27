@@ -76,7 +76,7 @@ export default function SuperstarRecordsPage() {
         )}
       </section>
 
-      <SeoBlock title=t('records.superstars') text="The most comprehensive WWE superstar record book ever compiled. Every stat is computed from our database of 100,000+ matches spanning 70+ years of professional wrestling history." />
+      <SeoBlock title={t('records.superstars')} text="The most comprehensive WWE superstar record book ever compiled. Every stat is computed from our database of 100,000+ matches spanning 70+ years of professional wrestling history." />
     </div>
   )
 }

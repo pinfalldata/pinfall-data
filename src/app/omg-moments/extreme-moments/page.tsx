@@ -11,5 +11,5 @@ export const metadata: Metadata = {
 }
 
 export default function ExtremeMomentsPage() {
-  return <OMGCategoryClient category="extreme" title=t('omg.extreme') subtitle="Death-defying stunts, insane bumps, and the most brutal spots in WWE history." heroImage="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20OMG%20Moments/23_KOTR_06281998_0100_2026-03-18_19_03_23.525476.jpg.png" icon="🔥" />
+  return <OMGCategoryClient category="extreme" title="Extreme Moments" subtitle="Death-defying stunts, insane bumps, and the most brutal spots in WWE history." heroImage="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20OMG%20Moments/23_KOTR_06281998_0100_2026-03-18_19_03_23.525476.jpg.png" icon="🔥" />
 }

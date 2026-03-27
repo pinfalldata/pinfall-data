@@ -55,9 +55,9 @@ export default function MilestonesPage() {
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
-                      <StatBox label=t('home.stats.matches') value={era.total_matches.toLocaleString()} />
-                      <StatBox label=t('home.stats.shows') value={era.total_shows.toLocaleString()} />
-                      <StatBox label=t('home.stats.titleChanges') value={era.total_title_changes.toLocaleString()} />
+                      <StatBox label={t('home.stats.matches')} value={era.total_matches.toLocaleString()} />
+                      <StatBox label={t('home.stats.shows')} value={era.total_shows.toLocaleString()} />
+                      <StatBox label={t('home.stats.titleChanges')} value={era.total_title_changes.toLocaleString()} />
                       <StatBox label="Avg Rating" value={era.avg_rating ? `${era.avg_rating}★` : '—'} />
                     </div>
                     {era.total_attendance > 0 && (
@@ -164,7 +164,7 @@ export default function MilestonesPage() {
           </>
         )}
       </section>
-      <SeoBlock t=t('records.milestones') p="The complete statistical history of WWE, decade by decade, era by era. Track the growth of professional wrestling from the 1950s to today through matches, shows, attendance, and championship data." />
+      <SeoBlock t={t('records.milestones')} p="The complete statistical history of WWE, decade by decade, era by era. Track the growth of professional wrestling from the 1950s to today through matches, shows, attendance, and championship data." />
     </div>
   )
 }
