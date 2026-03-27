@@ -7,9 +7,8 @@ import { MediaCarousel } from '@/components/ui/MediaCarousel'
 import { ShareButtons } from '@/components/ui/ShareButtons'
 import { TitleChangeFireworks } from '@/components/match/TitleChangeFireworks'
 import { OMGBadge } from '@/components/ui/OMGBadge'
-import {
 import { useTranslations } from 'next-intl'
-
+import {
   formatDate, formatDuration, formatHeight, formatWeight, formatNumber,
   formatCompactNumber, formatTime,
   getRatingColor, getRatingBgColor, getResultLabel, getWinRate,
