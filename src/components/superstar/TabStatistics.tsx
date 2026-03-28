@@ -51,10 +51,10 @@ export default function TabStatistics({ superstar }: { superstar: any }) {
       {/* Year filter */}
       {years.length > 0 && (
         <div className="flex items-center gap-3">
-          <span className="text-xs text-text-secondary">Period:</span>
+          <span className="text-xs text-text-secondary">{t('superstars.stats.period')}</span>
           <select value={year} onChange={e => changeYear(e.target.value)}
             className="px-3 py-2 rounded-xl bg-bg-secondary/30 border border-border-subtle/30 text-xs text-text-white cursor-pointer focus:outline-none focus:border-neon-blue/40">
-            <option value="">All-time career</option>
+            <option value="">{t('superstars.stats.allTime')}</option>
             {years.map(y => <option key={y} value={y}>{y}</option>)}
           </select>
           {year && <button onClick={() => changeYear('')} className="text-xs text-red-400 hover:text-red-300">Reset</button>}
@@ -83,13 +83,13 @@ export default function TabStatistics({ superstar }: { superstar: any }) {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {s.longestWinStreak > 0 && (
           <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3 text-center">
-            <span className="block text-[9px] text-text-secondary uppercase mb-1">Longest Win Streak</span>
+            <span className="block text-[9px] text-text-secondary uppercase mb-1">{t('superstars.stats.longestWinStreak')}</span>
             <span className="block text-xl font-bold text-emerald-400">{s.longestWinStreak}</span>
           </div>
         )}
         {s.longestLossStreak > 0 && (
           <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-3 text-center">
-            <span className="block text-[9px] text-text-secondary uppercase mb-1">Longest Loss Streak</span>
+            <span className="block text-[9px] text-text-secondary uppercase mb-1">{t('superstars.stats.longestLossStreak')}</span>
             <span className="block text-xl font-bold text-red-400">{s.longestLossStreak}</span>
           </div>
         )}

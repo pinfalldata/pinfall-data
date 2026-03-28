@@ -169,7 +169,7 @@
       "draftHistory": "Historique des drafts",
       "eras": "Ères",
       "quickStats": "📊 Stats rapides",
-      "signatureMoves": "💥 Prises de signature",
+      "signatureMoves": "💥 Prises signatures",
       "familyInWWE": "Famille à la WWE",
       "trainedBy": "Entraîné par",
       "roles": "Rôles",
@@ -234,12 +234,20 @@
       "recordByYear": "Bilan par année",
       "matchesByShow": "Matchs par show",
       "titleMatches": "Matchs de championnat",
-      "careerStats": "Statistiques de carrière"
+      "careerStats": "Statistiques de carrière",
+      "period": "Période :",
+      "allTime": "Toute la carrière",
+      "longestWinStreak": "Plus longue série de victoires",
+      "longestLossStreak": "Plus longue série de défaites"
     },
     "champs": {
       "totalDays": "Jours totaux",
       "wonAt": "Remporté à",
-      "lostAt": "Perdu à"
+      "lostAt": "Perdu à",
+      "reigns": "Règnes",
+      "reign": "Règne",
+      "title": "Titre",
+      "titles": "Titres"
     },
     "moves": {
       "finishingMoves": "Finishing Moves",
@@ -252,7 +260,21 @@
       "opponent": "Adversaire",
       "teammate": "Partenaire",
       "result": "Résultat",
-      "match": "Match"
+      "match": "Match",
+      "matchHistory": "Historique des matchs",
+      "champOnly": "Matchs de championnat uniquement",
+      "titleChangeOnly": "Changements de titre uniquement"
+    },
+    "hof": {
+      "inductedIn": "Intronisé en",
+      "inductedBy": "Intronisé par",
+      "browseAll": "← Voir tous les intronisés",
+      "inductionSpeech": "🎬 Discours d'intronisation"
+    },
+    "media": {
+      "filmsTV": "Films & Séries",
+      "books": "Livres",
+      "noData": "Aucune donnée."
     }
   },
   "matches": {
@@ -362,7 +384,7 @@
       "subtitle": "Steel Cage, Hell in a Cell, TLC, Royal Rumble — explorez chaque type de match.",
       "searchPlaceholder": "Rechercher des stipulations...",
       "heroTitle": "Stipulations de match",
-      "heroSubtitle": "Chaque type de match de l'histoire de la WWE — du combat classique aux stipulations les plus brutales.",
+      "heroSubtitle": "Steel Cage, Hell in a Cell, TLC, Royal Rumble — explorez chaque type de match.",
       "heroPrefix": "Stipulations de",
       "heroHighlight": "match"
     },
@@ -396,7 +418,9 @@
       "subtitle": "La base de données complète de chaque match WWE jamais enregistré — du premier combat de championnat au main event d'hier soir.",
       "showsWorld": "Shows à travers le monde",
       "showsWorldSub": "Découvrez où les événements WWE ont eu lieu à travers le globe.",
-      "aboutTitle": "À propos de la base de données des matchs WWE"
+      "aboutTitle": "À propos de la base de données des matchs WWE",
+      "heroPrefix": "Matchs",
+      "heroHighlight": "& Shows"
     }
   },
   "champions": {
@@ -648,7 +672,8 @@
     "searchSuperstar": "Rechercher superstar…",
     "searchOpponent": "Rechercher adversaire…",
     "searchTeammate": "Rechercher partenaire…",
-    "allCategories": "Toutes les catégories"
+    "allCategories": "Toutes les catégories",
+    "anyResult": "Tous les résultats"
   },
   "footer": {
     "disclaimer": "Pinfall Data est un projet créé par un seul passionné. Tout le contenu multimédia, les images et les vidéos YouTube sont la propriété de la WWE (World Wrestling Entertainment). Ce site n'est ni affilié, ni approuvé, ni lié à la WWE de quelque manière que ce soit.",

@@ -41,7 +41,7 @@ export default function TabChampionships({ superstar }: { superstar: any }) {
         <div className="w-px h-10 bg-border-subtle/30 hidden sm:block" />
         <div className="text-center">
           <span className="block text-2xl sm:text-3xl font-bold text-text-white font-display">{totalReigns}</span>
-          <span className="text-[10px] text-text-secondary uppercase tracking-wider">Reign{totalReigns !== 1 ? 's' : ''}</span>
+          <span className="text-[10px] text-text-secondary uppercase tracking-wider">{totalReigns !== 1 ? t('superstars.champs.reigns') : t('superstars.champs.reign')}</span>
         </div>
         <div className="w-px h-10 bg-border-subtle/30 hidden sm:block" />
         <div className="text-center">

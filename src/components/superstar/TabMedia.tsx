@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 
 // Film profile links — order: TMDB, IMDb (center), Rotten Tomatoes
 const FILM_SITES = [
@@ -26,6 +27,7 @@ const FILM_SITES = [
 ]
 
 export function TabMedia({ superstar }: { superstar: any }) {
+  const t = useTranslations()
   const hasBooks = superstar.books?.length > 0
 
   // Films: one row per superstar with imdb_link, tmdb_link, rotten_tomatoes_link
@@ -38,7 +40,7 @@ export function TabMedia({ superstar }: { superstar: any }) {
     : []
 
   if (!hasBooks && !hasFilmLinks) {
-    return <p className="text-center py-12 text-text-secondary">No data yet.</p>
+    return <p className="text-center py-12 text-text-secondary">{t('superstars.media.noData')}</p>
   }
 
   return (
@@ -49,7 +51,7 @@ export function TabMedia({ superstar }: { superstar: any }) {
       {activeFilmSites.length > 0 && (
         <section>
           <h3 className="font-display text-lg font-bold text-neon-pink mb-5 flex items-center gap-2">
-            <span className="w-1.5 h-5 bg-neon-pink rounded-full" />Films & TV
+            <span className="w-1.5 h-5 bg-neon-pink rounded-full" />{t('superstars.media.filmsTV')}
           </h3>
           <div
             className="grid gap-3 sm:gap-4"
@@ -91,7 +93,7 @@ export function TabMedia({ superstar }: { superstar: any }) {
       {hasBooks && (
         <section>
           <h3 className="font-display text-lg font-bold text-neon-pink mb-5 flex items-center gap-2">
-            <span className="w-1.5 h-5 bg-neon-pink rounded-full" />Books
+            <span className="w-1.5 h-5 bg-neon-pink rounded-full" />{t('superstars.media.books')}
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {superstar.books.map((b: any) => (

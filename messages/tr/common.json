@@ -234,12 +234,20 @@
       "recordByYear": "Yıllık Rekor",
       "matchesByShow": "Şova Göre Maçlar",
       "titleMatches": "Kemer Maçları",
-      "careerStats": "Kariyer İstatistikleri"
+      "careerStats": "Kariyer İstatistikleri",
+      "period": "Dönem:",
+      "allTime": "Tüm kariyer",
+      "longestWinStreak": "En Uzun Galibiyet Serisi",
+      "longestLossStreak": "En Uzun Mağlubiyet Serisi"
     },
     "champs": {
       "totalDays": "Toplam Gün",
       "wonAt": "Kazanıldığı Yer",
-      "lostAt": "Kaybedildiği Yer"
+      "lostAt": "Kaybedildiği Yer",
+      "reigns": "Hükümler",
+      "reign": "Hüküm",
+      "title": "Kemer",
+      "titles": "Kemerler"
     },
     "moves": {
       "finishingMoves": "Finishing Moves",
@@ -252,7 +260,21 @@
       "opponent": "Rakip",
       "teammate": "Takım Arkadaşı",
       "result": "Sonuç",
-      "match": "Maç"
+      "match": "Maç",
+      "matchHistory": "Maç Geçmişi",
+      "champOnly": "Sadece kemer maçları",
+      "titleChangeOnly": "Sadece kemer değişimleri"
+    },
+    "hof": {
+      "inductedIn": "Kabul edildi",
+      "inductedBy": "Tarafından kabul edildi",
+      "browseAll": "← Tüm üyeleri gör",
+      "inductionSpeech": "🎬 Kabul Konuşması"
+    },
+    "media": {
+      "filmsTV": "Film & Dizi",
+      "books": "Kitaplar",
+      "noData": "Henüz veri yok."
     }
   },
   "matches": {
@@ -396,7 +418,9 @@
       "subtitle": "Şimdiye kadar kaydedilmiş her WWE maçının eksiksiz veritabanı.",
       "showsWorld": "Dünya Genelinde Şovlar",
       "showsWorldSub": "WWE etkinliklerinin dünyada nerede yapıldığını keşfedin.",
-      "aboutTitle": "WWE Maç Veritabanı Hakkında"
+      "aboutTitle": "WWE Maç Veritabanı Hakkında",
+      "heroPrefix": "Maçlar",
+      "heroHighlight": "& Şovlar"
     }
   },
   "champions": {
@@ -648,7 +672,8 @@
     "searchSuperstar": "Superstar ara…",
     "searchOpponent": "Rakip ara…",
     "searchTeammate": "Takım arkadaşı ara…",
-    "allCategories": "Tüm kategoriler"
+    "allCategories": "Tüm kategoriler",
+    "anyResult": "Herhangi bir sonuç"
   },
   "footer": {
     "disclaimer": "Pinfall Data, tutkulu bir birey tarafından oluşturulmuş hayran yapımı bir projedir. Tüm multimedya içerikleri, görseller ve YouTube videoları WWE'nin (World Wrestling Entertainment) mülkiyetindedir. Bu site hiçbir şekilde WWE ile bağlantılı, onaylanmış veya ilişkili değildir.",

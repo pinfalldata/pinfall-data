@@ -181,7 +181,7 @@ export function TabMatches({ superstar }: { superstar: any }) {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-5">
         <div>
           <h3 className="font-display text-lg font-bold text-text-white uppercase tracking-wider">
-            Match History
+            {t('superstars.matches.matchHistory')}
           </h3>
           <p className="text-text-secondary text-sm mt-0.5">
             {loading && !initialLoad ? 'Searching...' : `${total} match${total !== 1 ? 'es' : ''} found`}
@@ -284,7 +284,7 @@ export function TabMatches({ superstar }: { superstar: any }) {
                 { value: 'loss', label: 'Losses' },
                 { value: 'draw', label: 'Draws / No Contest' },
               ]}
-              placeholder="All results"
+              placeholder={t('common.anyResult')}
             />
 
             {/* Result Type (how) */}
@@ -298,24 +298,24 @@ export function TabMatches({ superstar }: { superstar: any }) {
 
             {/* Country */}
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">Country</label>
+              <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">{t('matches.search.country')}</label>
               <input
                 type="text"
                 value={filters.country}
                 onChange={(e) => updateFilter('country', e.target.value)}
-                placeholder="e.g. United States"
+                placeholder={t('matches.search.country')}
                 className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-border-subtle/40 text-sm text-text-white placeholder:text-text-secondary/50 focus:outline-none focus:border-neon-blue/50 transition-colors"
               />
             </div>
 
             {/* City */}
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">City</label>
+              <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">{t('matches.search.city')}</label>
               <input
                 type="text"
                 value={filters.city}
                 onChange={(e) => updateFilter('city', e.target.value)}
-                placeholder="e.g. New York"
+                placeholder={t('matches.search.city')}
                 className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-border-subtle/40 text-sm text-text-white placeholder:text-text-secondary/50 focus:outline-none focus:border-neon-blue/50 transition-colors"
               />
             </div>
@@ -368,7 +368,7 @@ export function TabMatches({ superstar }: { superstar: any }) {
                   />
                 </div>
                 <span className="text-xs text-text-secondary group-hover:text-text-white transition-colors">
-                  🏆 Championship matches only
+                  🏆 {t('superstars.matches.champOnly')}
                 </span>
               </label>
 
@@ -386,7 +386,7 @@ export function TabMatches({ superstar }: { superstar: any }) {
                   />
                 </div>
                 <span className="text-xs text-text-secondary group-hover:text-text-white transition-colors">
-                  🔄 Title changes only
+                  🔄 {t('superstars.matches.titleChangeOnly')}
                 </span>
               </label>
             </div>

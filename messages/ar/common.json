@@ -234,12 +234,20 @@
       "recordByYear": "السجل حسب السنة",
       "matchesByShow": "المباريات حسب العرض",
       "titleMatches": "مباريات اللقب",
-      "careerStats": "إحصائيات المسيرة"
+      "careerStats": "إحصائيات المسيرة",
+      "period": "الفترة:",
+      "allTime": "المسيرة كاملة",
+      "longestWinStreak": "أطول سلسلة انتصارات",
+      "longestLossStreak": "أطول سلسلة خسائر"
     },
     "champs": {
       "totalDays": "إجمالي الأيام",
       "wonAt": "فاز في",
-      "lostAt": "خسر في"
+      "lostAt": "خسر في",
+      "reigns": "حقب",
+      "reign": "حقبة",
+      "title": "لقب",
+      "titles": "ألقاب"
     },
     "moves": {
       "finishingMoves": "Finishing Moves",
@@ -252,7 +260,21 @@
       "opponent": "الخصم",
       "teammate": "الزميل",
       "result": "النتيجة",
-      "match": "مباراة"
+      "match": "مباراة",
+      "matchHistory": "سجل المباريات",
+      "champOnly": "مباريات البطولة فقط",
+      "titleChangeOnly": "تغييرات اللقب فقط"
+    },
+    "hof": {
+      "inductedIn": "أُدخل في",
+      "inductedBy": "أدخله",
+      "browseAll": "← تصفح جميع الأعضاء",
+      "inductionSpeech": "🎬 خطاب الإدخال"
+    },
+    "media": {
+      "filmsTV": "أفلام و تلفزيون",
+      "books": "كتب",
+      "noData": "لا توجد بيانات."
     }
   },
   "matches": {
@@ -396,7 +418,9 @@
       "subtitle": "قاعدة البيانات الكاملة لكل مباراة WWE على الإطلاق.",
       "showsWorld": "عروض حول العالم",
       "showsWorldSub": "اكتشف أين أقيمت أحداث WWE حول العالم.",
-      "aboutTitle": "حول قاعدة بيانات مباريات WWE"
+      "aboutTitle": "حول قاعدة بيانات مباريات WWE",
+      "heroPrefix": "المباريات",
+      "heroHighlight": "والعروض"
     }
   },
   "champions": {
@@ -648,7 +672,8 @@
     "searchSuperstar": "البحث عن سوبرستار…",
     "searchOpponent": "البحث عن خصم…",
     "searchTeammate": "البحث عن زميل…",
-    "allCategories": "جميع الفئات"
+    "allCategories": "جميع الفئات",
+    "anyResult": "أي نتيجة"
   },
   "footer": {
     "disclaimer": "Pinfall Data مشروع مُعد من قِبل مشجع شغوف. جميع المحتويات المتعددة الوسائط والصور ومقاطع فيديو يوتيوب هي ملك لـ WWE (World Wrestling Entertainment). هذا الموقع غير تابع لـ WWE أو مدعوم أو مرتبط بها بأي شكل.",

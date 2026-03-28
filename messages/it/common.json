@@ -234,12 +234,20 @@
       "recordByYear": "Record per anno",
       "matchesByShow": "Match per show",
       "titleMatches": "Match titolati",
-      "careerStats": "Statistiche di carriera"
+      "careerStats": "Statistiche di carriera",
+      "period": "Periodo:",
+      "allTime": "Tutta la carriera",
+      "longestWinStreak": "Striscia di vittorie più lunga",
+      "longestLossStreak": "Striscia di sconfitte più lunga"
     },
     "champs": {
       "totalDays": "Giorni totali",
       "wonAt": "Vinto a",
-      "lostAt": "Perso a"
+      "lostAt": "Perso a",
+      "reigns": "Regni",
+      "reign": "Regno",
+      "title": "Titolo",
+      "titles": "Titoli"
     },
     "moves": {
       "finishingMoves": "Finishing Moves",
@@ -252,7 +260,21 @@
       "opponent": "Avversario",
       "teammate": "Compagno",
       "result": "Risultato",
-      "match": "Match"
+      "match": "Match",
+      "matchHistory": "Storico match",
+      "champOnly": "Solo match titolati",
+      "titleChangeOnly": "Solo cambi di titolo"
+    },
+    "hof": {
+      "inductedIn": "Introdotto nel",
+      "inductedBy": "Introdotto da",
+      "browseAll": "← Sfoglia tutti gli introdotti",
+      "inductionSpeech": "🎬 Discorso di introduzione"
+    },
+    "media": {
+      "filmsTV": "Film & TV",
+      "books": "Libri",
+      "noData": "Nessun dato."
     }
   },
   "matches": {
@@ -396,7 +418,9 @@
       "subtitle": "Il database completo di ogni match WWE mai registrato.",
       "showsWorld": "Show nel mondo",
       "showsWorldSub": "Scopri dove si sono svolti gli eventi WWE nel mondo.",
-      "aboutTitle": "Informazioni sul database dei match WWE"
+      "aboutTitle": "Informazioni sul database dei match WWE",
+      "heroPrefix": "Match",
+      "heroHighlight": "& Show"
     }
   },
   "champions": {
@@ -648,7 +672,8 @@
     "searchSuperstar": "Cerca superstar…",
     "searchOpponent": "Cerca avversario…",
     "searchTeammate": "Cerca compagno…",
-    "allCategories": "Tutte le categorie"
+    "allCategories": "Tutte le categorie",
+    "anyResult": "Qualsiasi risultato"
   },
   "footer": {
     "disclaimer": "Pinfall Data è un progetto creato da un singolo appassionato. Tutti i contenuti multimediali, le immagini e i video di YouTube sono proprietà della WWE (World Wrestling Entertainment). Questo sito non è affiliato, approvato o collegato alla WWE in alcun modo.",

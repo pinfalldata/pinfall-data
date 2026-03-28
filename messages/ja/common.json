@@ -234,12 +234,20 @@
       "recordByYear": "年別成績",
       "matchesByShow": "ショー別試合",
       "titleMatches": "タイトルマッチ",
-      "careerStats": "キャリア統計"
+      "careerStats": "キャリア統計",
+      "period": "期間：",
+      "allTime": "通算キャリア",
+      "longestWinStreak": "最長連勝記録",
+      "longestLossStreak": "最長連敗記録"
     },
     "champs": {
       "totalDays": "合計日数",
       "wonAt": "獲得場所",
-      "lostAt": "喪失場所"
+      "lostAt": "喪失場所",
+      "reigns": "防衛",
+      "reign": "防衛",
+      "title": "タイトル",
+      "titles": "タイトル"
     },
     "moves": {
       "finishingMoves": "フィニッシュ技",
@@ -252,7 +260,21 @@
       "opponent": "対戦相手",
       "teammate": "パートナー",
       "result": "結果",
-      "match": "試合"
+      "match": "試合",
+      "matchHistory": "試合履歴",
+      "champOnly": "タイトルマッチのみ",
+      "titleChangeOnly": "タイトル変更のみ"
+    },
+    "hof": {
+      "inductedIn": "殿堂入り",
+      "inductedBy": "推薦者",
+      "browseAll": "← 全メンバーを見る",
+      "inductionSpeech": "🎬 殿堂入りスピーチ"
+    },
+    "media": {
+      "filmsTV": "映画＆TV",
+      "books": "書籍",
+      "noData": "データなし。"
     }
   },
   "matches": {
@@ -396,7 +418,9 @@
       "subtitle": "これまでに記録されたすべてのWWE試合の完全データベース。",
       "showsWorld": "世界中のショー",
       "showsWorldSub": "WWEイベントが世界のどこで開催されたかを発見。",
-      "aboutTitle": "WWEマッチデータベースについて"
+      "aboutTitle": "WWEマッチデータベースについて",
+      "heroPrefix": "試合",
+      "heroHighlight": "＆ショー"
     }
   },
   "champions": {
@@ -648,7 +672,8 @@
     "searchSuperstar": "スーパースター検索…",
     "searchOpponent": "対戦相手検索…",
     "searchTeammate": "パートナー検索…",
-    "allCategories": "すべてのカテゴリ"
+    "allCategories": "すべてのカテゴリ",
+    "anyResult": "すべての結果"
   },
   "footer": {
     "disclaimer": "Pinfall Dataは一人の情熱的なファンが作成したプロジェクトです。すべてのマルチメディアコンテンツ、画像、YouTube動画はWWE（World Wrestling Entertainment）の所有物です。このサイトはWWEとの提携、承認、関連は一切ありません。",

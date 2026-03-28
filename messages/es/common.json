@@ -169,7 +169,7 @@
       "draftHistory": "Historial de drafts",
       "eras": "Eras",
       "quickStats": "📊 Estadísticas rápidas",
-      "signatureMoves": "💥 Movimientos de firma",
+      "signatureMoves": "💥 Movimientos firma",
       "familyInWWE": "Familia en WWE",
       "trainedBy": "Entrenado por",
       "roles": "Roles",
@@ -234,12 +234,20 @@
       "recordByYear": "Récord por año",
       "matchesByShow": "Luchas por show",
       "titleMatches": "Luchas por el título",
-      "careerStats": "Estadísticas de carrera"
+      "careerStats": "Estadísticas de carrera",
+      "period": "Período:",
+      "allTime": "Toda la carrera",
+      "longestWinStreak": "Racha de victorias más larga",
+      "longestLossStreak": "Racha de derrotas más larga"
     },
     "champs": {
       "totalDays": "Días totales",
       "wonAt": "Ganado en",
-      "lostAt": "Perdido en"
+      "lostAt": "Perdido en",
+      "reigns": "Reinados",
+      "reign": "Reinado",
+      "title": "Título",
+      "titles": "Títulos"
     },
     "moves": {
       "finishingMoves": "Finishing Moves",
@@ -252,7 +260,21 @@
       "opponent": "Oponente",
       "teammate": "Compañero",
       "result": "Resultado",
-      "match": "Lucha"
+      "match": "Lucha",
+      "matchHistory": "Historial de luchas",
+      "champOnly": "Solo luchas por el título",
+      "titleChangeOnly": "Solo cambios de título"
+    },
+    "hof": {
+      "inductedIn": "Ingresado en",
+      "inductedBy": "Ingresado por",
+      "browseAll": "← Ver todos los ingresados",
+      "inductionSpeech": "🎬 Discurso de ingreso"
+    },
+    "media": {
+      "filmsTV": "Películas & TV",
+      "books": "Libros",
+      "noData": "Sin datos."
     }
   },
   "matches": {
@@ -396,7 +418,9 @@
       "subtitle": "La base de datos completa de cada lucha WWE jamás registrada.",
       "showsWorld": "Shows alrededor del mundo",
       "showsWorldSub": "Descubre dónde se han celebrado eventos WWE en todo el mundo.",
-      "aboutTitle": "Sobre la base de datos de luchas WWE"
+      "aboutTitle": "Sobre la base de datos de luchas WWE",
+      "heroPrefix": "Luchas",
+      "heroHighlight": "& Shows"
     }
   },
   "champions": {
@@ -648,7 +672,8 @@
     "searchSuperstar": "Buscar superstar…",
     "searchOpponent": "Buscar oponente…",
     "searchTeammate": "Buscar compañero…",
-    "allCategories": "Todas las categorías"
+    "allCategories": "Todas las categorías",
+    "anyResult": "Cualquier resultado"
   },
   "footer": {
     "disclaimer": "Pinfall Data es un proyecto hecho por un apasionado. Todo el contenido multimedia, imágenes y videos de YouTube son propiedad de la WWE (World Wrestling Entertainment). Este sitio no está afiliado, respaldado ni conectado con la WWE de ninguna manera.",

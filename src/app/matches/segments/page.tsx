@@ -190,8 +190,8 @@ export default function SegmentSearchPage() {
               <Sel label={t('matches.search.country')} value={filters.country} set={v => upd('country', v)}
                 opts={opts.countries.map(c => ({ value: c, label: c }))} ph={t('common.allCountries')} />
               <div className="flex flex-col gap-1">
-                <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">City</label>
-                <input type="text" value={filters.city} onChange={e => upd('city', e.target.value)} placeholder="e.g. New York"
+                <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">{t('matches.search.city')}</label>
+                <input type="text" value={filters.city} onChange={e => upd('city', e.target.value)} placeholder={t('matches.search.city')}
                   className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-border-subtle/40 text-sm text-text-white placeholder:text-text-secondary/50 focus:outline-none focus:border-neon-blue/50 transition-colors" />
               </div>
               <SSrch label={t('common.superstar')} ph={t('common.searchSuperstar')} value={filters.superstarName}
