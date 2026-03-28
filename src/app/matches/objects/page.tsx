@@ -39,7 +39,7 @@ export default function ObjectsListPage() {
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-6">
         {/* Search */}
         <div className="mb-6 max-w-md">
-          <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search objects…"
+          <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder={t('matches.objects.searchPlaceholder')}
             className="w-full px-4 py-2.5 rounded-xl bg-bg-secondary/30 border border-border-subtle/30 text-sm text-text-white placeholder:text-text-secondary/50 focus:outline-none focus:border-neon-blue/50" />
         </div>
 

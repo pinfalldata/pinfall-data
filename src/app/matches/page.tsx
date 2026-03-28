@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -30,10 +31,13 @@ export const metadata: Metadata = {
   },
 }
 
-const SECTIONS = [
+export default async function MatchesPage() {
+  const t = await getTranslations()
+
+  const SECTIONS = [
   {
-    title: 'Match Search',
-    description: 'Search through 100,000+ matches by Superstar, show, date, rating, or championship.',
+    title: t('matches.search.title'),
+    description: t('matches.search.subtitle'),
     href: '/matches/search',
     icon: (
       <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -43,8 +47,8 @@ const SECTIONS = [
     accent: 'neon-blue',
   },
   {
-    title: 'Segment Search',
-    description: 'Browse every WWE segment — promos, backstage confrontations, ceremonies, and more.',
+    title: t('matches.segments.title'),
+    description: t('matches.segments.subtitle'),
     href: '/matches/segments',
     icon: (
       <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -54,8 +58,8 @@ const SECTIONS = [
     accent: 'neon-pink',
   },
   {
-    title: 'All Shows',
-    description: 'Browse every weekly and special show — Raw, SmackDown, NXT, and more.',
+    title: t('matches.shows.title'),
+    description: t('matches.shows.subtitle'),
     href: '/matches/shows',
     icon: (
       <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -65,8 +69,8 @@ const SECTIONS = [
     accent: 'neon-blue',
   },
   {
-    title: 'All PLEs',
-    description: 'WrestleMania, Royal Rumble, SummerSlam — every Premium Live Event in history.',
+    title: t('matches.ple.title'),
+    description: t('matches.ple.subtitle'),
     href: '/matches/ple',
     icon: (
       <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -76,8 +80,8 @@ const SECTIONS = [
     accent: 'neon-pink',
   },
   {
-    title: 'Match Stipulations',
-    description: 'Steel Cage, Hell in a Cell, TLC, Royal Rumble — explore every match type.',
+    title: t('matches.stipulations.title'),
+    description: t('matches.stipulations.subtitle'),
     href: '/matches/stipulations',
     icon: (
       <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,8 +91,8 @@ const SECTIONS = [
     accent: 'neon-blue',
   },
   {
-    title: 'All Arenas',
-    description: 'Every venue in WWE history — from MSG to stadiums worldwide. Full name history & stats.',
+    title: t('matches.arenas.title'),
+    description: t('matches.arenas.subtitle'),
     href: '/matches/arenas',
     icon: (
       <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -98,8 +102,8 @@ const SECTIONS = [
     accent: 'neon-pink',
   },
   {
-    title: 'Objects Used',
-    description: 'Chairs, tables, ladders, kendo sticks — every foreign object used in WWE matches.',
+    title: t('matches.objects.title'),
+    description: t('matches.objects.subtitle'),
     href: '/matches/objects',
     icon: (
       <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -110,7 +114,6 @@ const SECTIONS = [
   },
 ]
 
-export default function MatchesPage() {
   return (
     <div className="relative">
       {/* ===== HERO IMAGE ===== */}
@@ -131,10 +134,10 @@ export default function MatchesPage() {
 
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-8 sm:pb-10 lg:pb-12 px-4">
           <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-white text-center tracking-tight mb-2">
-            <span className="text-neon-blue">Matches</span> & Shows
+            {t('matches.hub.title')}
           </h1>
           <p className="text-text-secondary text-sm sm:text-base lg:text-lg text-center max-w-2xl">
-            The complete database of every WWE match ever recorded — from the first championship bout to last night&apos;s main event.
+            {t('matches.hub.subtitle')}
           </p>
         </div>
       </section>
@@ -194,10 +197,10 @@ export default function MatchesPage() {
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-10 sm:py-14">
         <div className="text-center mb-6 sm:mb-8">
           <h2 className="font-display text-2xl sm:text-3xl font-bold text-text-white mb-2">
-            Shows <span className="text-neon-blue">Around the World</span>
+            {t('matches.hub.showsWorld')}
           </h2>
           <p className="text-text-secondary text-sm sm:text-base max-w-lg mx-auto">
-            Discover where WWE events have taken place across the globe.
+            {t('matches.hub.showsWorldSub')}
           </p>
         </div>
         <div className="max-w-3xl mx-auto rounded-2xl border border-border-subtle/30 bg-bg-secondary/20 backdrop-blur-sm p-5 sm:p-6">
@@ -209,7 +212,7 @@ export default function MatchesPage() {
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-10">
         <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/10 p-6 sm:p-8">
           <h2 className="font-display text-xl font-bold text-text-white mb-3">
-            About the <span className="text-neon-blue">WWE Match Database</span>
+            {t('matches.hub.aboutTitle')}
           </h2>
           <p className="text-text-secondary text-sm leading-relaxed mb-3">
             Pinfall Data&apos;s match database covers over 70 years of World Wrestling Entertainment history, from the earliest

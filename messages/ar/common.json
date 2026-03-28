@@ -77,7 +77,7 @@
     "sections": {
       "onThisDay": "في مثل هذا اليوم",
       "noEvents": "لم يتم العثور على أحداث بارزة لهذا اليوم.",
-      "wrestlingThroughTheAges": "المصارعة عبر العصور",
+      "wrestlingThroughTheAges": "WWE عبر العصور",
       "showCalendar": "تقويم العروض",
       "hallOfLegends": "قاعة الأساطير",
       "championshipTitles": "ألقاب البطولة",
@@ -199,7 +199,35 @@
       "rating": "التقييم",
       "titleMatch": "مباراة على اللقب",
       "mainEvent": "المباراة الرئيسية",
-      "hideFilters": "إخفاء التصفيات"
+      "hideFilters": "إخفاء التصفيات",
+      "subtitle": "ابحث في كل مباراة WWE بأقوى الفلاتر المتاحة.",
+      "searching": "جارٍ البحث…",
+      "matchesFound": "مباريات وُجدت",
+      "matchFound": "مباراة وُجدت",
+      "showFilters": "إظهار التصفيات",
+      "clearAll": "مسح جميع التصفيات",
+      "noMatchesFound": "لم يتم العثور على مباريات",
+      "tryAdjusting": "حاول تعديل التصفيات",
+      "aboutTitle": "حول محرك بحث المباريات",
+      "month": "الشهر",
+      "promotion": "العرض",
+      "minRating": "أدنى تقييم",
+      "finishType": "نوع النهاية",
+      "country": "البلد",
+      "city": "المدينة",
+      "opponent": "الخصم",
+      "teammate": "الزميل",
+      "championship": "البطولة",
+      "champOnly": "مباريات البطولة فقط",
+      "titleChangeOnly": "تغييرات اللقب فقط",
+      "date": "التاريخ",
+      "type": "النوع",
+      "participants": "المشاركون",
+      "titleCol": "اللقب",
+      "ratingCol": "التقييم",
+      "searchSuperstar": "البحث عن سوبرستار…",
+      "searchOpponent": "البحث عن خصم…",
+      "searchTeammate": "البحث عن زميل…"
     },
     "detail": {
       "participants": "المشاركون",
@@ -220,29 +248,47 @@
     },
     "segments": {
       "title": "بحث المقاطع",
-      "types": "أنواع المقاطع"
+      "types": "أنواع المقاطع",
+      "subtitle": "تصفح كل مقطع WWE.",
+      "segmentsFound": "مقاطع وُجدت",
+      "segmentFound": "مقطع وُجد",
+      "segmentCategory": "فئة المقطع",
+      "secondSuperstar": "السوبرستار الثاني",
+      "noSegments": "لم يتم العثور على مقاطع"
     },
     "shows": {
       "title": "جميع العروض",
       "upcoming": "القادمة",
       "past": "السابقة",
-      "allSeries": "جميع سلاسل العروض"
+      "allSeries": "جميع سلاسل العروض",
+      "subtitle": "تصفح جميع العروض الأسبوعية والخاصة.",
+      "searchPlaceholder": "البحث عن سلسلة عروض...",
+      "inactive": "غير نشط"
     },
     "ple": {
       "title": "الأحداث الكبرى المباشرة",
-      "subtitle": "أكبر الأحداث في تاريخ WWE"
+      "subtitle": "WrestleMania, Royal Rumble, SummerSlam — كل حدث كبير مباشر في التاريخ."
     },
     "stipulations": {
       "title": "أنواع المباريات",
-      "subtitle": "كل نوع مباراة في تاريخ WWE"
+      "subtitle": "Steel Cage, Hell in a Cell, TLC — اكتشف كل نوع مباراة.",
+      "searchPlaceholder": "البحث عن أنواع المباريات..."
     },
     "arenas": {
       "title": "جميع الساحات",
-      "subtitle": "كل مكان استضاف أحداث WWE"
+      "subtitle": "كل مكان في تاريخ WWE."
     },
     "objects": {
       "title": "الأدوات المستخدمة",
-      "subtitle": "كل سلاح وأداة استُخدمت في مباريات WWE"
+      "subtitle": "الكراسي والطاولات والسلالم — كل أداة استُخدمت في مباريات WWE.",
+      "searchPlaceholder": "البحث عن الأدوات…"
+    },
+    "hub": {
+      "title": "المباريات والعروض",
+      "subtitle": "قاعدة البيانات الكاملة لكل مباراة WWE على الإطلاق.",
+      "showsWorld": "عروض حول العالم",
+      "showsWorldSub": "اكتشف أين أقيمت أحداث WWE حول العالم.",
+      "aboutTitle": "حول قاعدة بيانات مباريات WWE"
     }
   },
   "champions": {
@@ -489,7 +535,12 @@
     "men": "رجال",
     "more": "المزيد",
     "search": "بحث",
-    "women": "نساء"
+    "women": "نساء",
+    "allChampionships": "جميع البطولات",
+    "searchSuperstar": "البحث عن سوبرستار…",
+    "searchOpponent": "البحث عن خصم…",
+    "searchTeammate": "البحث عن زميل…",
+    "allCategories": "جميع الفئات"
   },
   "footer": {
     "disclaimer": "Pinfall Data مشروع مُعد من قِبل مشجع شغوف. جميع المحتويات المتعددة الوسائط والصور ومقاطع فيديو يوتيوب هي ملك لـ WWE (World Wrestling Entertainment). هذا الموقع غير تابع لـ WWE أو مدعوم أو مرتبط بها بأي شكل.",

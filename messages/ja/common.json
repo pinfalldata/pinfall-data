@@ -77,7 +77,7 @@
     "sections": {
       "onThisDay": "この日の出来事",
       "noEvents": "今日の注目すべきイベントは見つかりませんでした。",
-      "wrestlingThroughTheAges": "時代を超えたレスリング",
+      "wrestlingThroughTheAges": "時代を超えたWWE",
       "showCalendar": "ショー・カレンダー",
       "hallOfLegends": "レジェンドの殿堂",
       "championshipTitles": "チャンピオンシップ・タイトル",
@@ -199,7 +199,35 @@
       "rating": "評価",
       "titleMatch": "タイトルマッチ",
       "mainEvent": "メインイベント",
-      "hideFilters": "フィルターを非表示"
+      "hideFilters": "フィルター非表示",
+      "subtitle": "最も強力なフィルターですべてのWWE試合を検索。",
+      "searching": "検索中…",
+      "matchesFound": "件の試合が見つかりました",
+      "matchFound": "件の試合が見つかりました",
+      "showFilters": "フィルター表示",
+      "clearAll": "すべてのフィルターをクリア",
+      "noMatchesFound": "試合が見つかりません",
+      "tryAdjusting": "フィルターを調整してください",
+      "aboutTitle": "マッチ検索エンジンについて",
+      "month": "月",
+      "promotion": "団体",
+      "minRating": "最低評価",
+      "finishType": "決着タイプ",
+      "country": "国",
+      "city": "都市",
+      "opponent": "対戦相手",
+      "teammate": "パートナー",
+      "championship": "チャンピオンシップ",
+      "champOnly": "タイトルマッチのみ",
+      "titleChangeOnly": "タイトル変更のみ",
+      "date": "日付",
+      "type": "タイプ",
+      "participants": "参加者",
+      "titleCol": "タイトル",
+      "ratingCol": "評価",
+      "searchSuperstar": "スーパースター検索…",
+      "searchOpponent": "対戦相手検索…",
+      "searchTeammate": "パートナー検索…"
     },
     "detail": {
       "participants": "参加者",
@@ -220,29 +248,47 @@
     },
     "segments": {
       "title": "セグメント検索",
-      "types": "セグメントタイプ"
+      "types": "セグメントタイプ",
+      "subtitle": "すべてのWWEセグメントを閲覧。",
+      "segmentsFound": "件のセグメントが見つかりました",
+      "segmentFound": "件のセグメントが見つかりました",
+      "segmentCategory": "セグメントカテゴリ",
+      "secondSuperstar": "2人目のスーパースター",
+      "noSegments": "セグメントが見つかりません"
     },
     "shows": {
       "title": "すべてのショー",
       "upcoming": "今後のショー",
       "past": "過去のショー",
-      "allSeries": "すべてのショーシリーズ"
+      "allSeries": "すべてのショーシリーズ",
+      "subtitle": "すべての週間・特別ショーを閲覧。",
+      "searchPlaceholder": "ショーシリーズを検索...",
+      "inactive": "非活動"
     },
     "ple": {
       "title": "プレミアム・ライブ・イベント",
-      "subtitle": "WWE史上最大のイベント"
+      "subtitle": "WrestleMania, Royal Rumble, SummerSlam — 歴史上すべてのPLE。"
     },
     "stipulations": {
       "title": "試合のスティピュレーション",
-      "subtitle": "WWE史上すべての試合タイプ"
+      "subtitle": "Steel Cage, Hell in a Cell, TLC — すべての試合タイプ。",
+      "searchPlaceholder": "スティピュレーション検索..."
     },
     "arenas": {
       "title": "すべてのアリーナ",
-      "subtitle": "WWEイベントを開催したすべての会場"
+      "subtitle": "WWE史上すべてのアリーナ。"
     },
     "objects": {
       "title": "使用されたオブジェクト",
-      "subtitle": "WWE試合で使用されたすべての凶器とオブジェクト"
+      "subtitle": "椅子、テーブル、ラダー — WWE試合で使われたすべてのオブジェクト。",
+      "searchPlaceholder": "オブジェクト検索…"
+    },
+    "hub": {
+      "title": "試合＆ショー",
+      "subtitle": "これまでに記録されたすべてのWWE試合の完全データベース。",
+      "showsWorld": "世界中のショー",
+      "showsWorldSub": "WWEイベントが世界のどこで開催されたかを発見。",
+      "aboutTitle": "WWEマッチデータベースについて"
     }
   },
   "champions": {
@@ -489,7 +535,12 @@
     "men": "男性",
     "more": "もっと",
     "search": "検索",
-    "women": "女性"
+    "women": "女性",
+    "allChampionships": "すべてのチャンピオンシップ",
+    "searchSuperstar": "スーパースター検索…",
+    "searchOpponent": "対戦相手検索…",
+    "searchTeammate": "パートナー検索…",
+    "allCategories": "すべてのカテゴリ"
   },
   "footer": {
     "disclaimer": "Pinfall Dataは一人の情熱的なファンが作成したプロジェクトです。すべてのマルチメディアコンテンツ、画像、YouTube動画はWWE（World Wrestling Entertainment）の所有物です。このサイトはWWEとの提携、承認、関連は一切ありません。",

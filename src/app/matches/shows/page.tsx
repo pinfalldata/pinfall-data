@@ -102,7 +102,7 @@ export default function ShowSeriesListPage() {
             </svg>
             <input
               type="text"
-              placeholder="Search show series..."
+              placeholder={t('matches.shows.searchPlaceholder')}
               value={search}
               onChange={e => setSearch(e.target.value)}
               className="w-full bg-bg-tertiary border border-border-subtle/30 rounded-xl pl-10 pr-4 py-2.5 text-xs text-text-white placeholder-text-secondary focus:border-neon-blue/50 focus:outline-none transition-colors"
@@ -119,7 +119,7 @@ export default function ShowSeriesListPage() {
                     : 'bg-bg-secondary/30 border-border-subtle/20 text-text-secondary hover:text-text-white hover:border-border-subtle/40'
                 }`}
               >
-                {f === 'all' ? t('common.all') : f === 'active' ? '🟢 Active' : 'Inactive'}
+                {f === 'all' ? t('common.all') : f === 'active' ? t('common.active') : t('matches.shows.inactive')}
               </button>
             ))}
           </div>

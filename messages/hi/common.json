@@ -77,7 +77,7 @@
     "sections": {
       "onThisDay": "आज के दिन",
       "noEvents": "आज के लिए कोई उल्लेखनीय घटना नहीं मिली।",
-      "wrestlingThroughTheAges": "युगों के माध्यम से रेसलिंग",
+      "wrestlingThroughTheAges": "युगों के माध्यम से WWE",
       "showCalendar": "शो कैलेंडर",
       "hallOfLegends": "दिग्गजों का मंदिर",
       "championshipTitles": "चैंपियनशिप टाइटल्स",
@@ -199,7 +199,35 @@
       "rating": "रेटिंग",
       "titleMatch": "टाइटल मैच",
       "mainEvent": "मेन इवेंट",
-      "hideFilters": "फ़िल्टर छुपाएँ"
+      "hideFilters": "फ़िल्टर छुपाएँ",
+      "subtitle": "सबसे शक्तिशाली फ़िल्टर के साथ हर WWE मैच खोजें।",
+      "searching": "खोज रहे हैं…",
+      "matchesFound": "मैच मिले",
+      "matchFound": "मैच मिला",
+      "showFilters": "फ़िल्टर दिखाएँ",
+      "clearAll": "सभी फ़िल्टर साफ़ करें",
+      "noMatchesFound": "कोई मैच नहीं मिला",
+      "tryAdjusting": "अपने फ़िल्टर समायोजित करें",
+      "aboutTitle": "मैच सर्च इंजन के बारे में",
+      "month": "महीना",
+      "promotion": "प्रमोशन",
+      "minRating": "न्यूनतम रेटिंग",
+      "finishType": "फ़िनिश प्रकार",
+      "country": "देश",
+      "city": "शहर",
+      "opponent": "प्रतिद्वंद्वी",
+      "teammate": "साथी",
+      "championship": "चैंपियनशिप",
+      "champOnly": "केवल चैंपियनशिप मैच",
+      "titleChangeOnly": "केवल टाइटल चेंज",
+      "date": "तारीख",
+      "type": "प्रकार",
+      "participants": "प्रतिभागी",
+      "titleCol": "टाइटल",
+      "ratingCol": "रेटिंग",
+      "searchSuperstar": "सुपरस्टार खोजें…",
+      "searchOpponent": "प्रतिद्वंद्वी खोजें…",
+      "searchTeammate": "साथी खोजें…"
     },
     "detail": {
       "participants": "प्रतिभागी",
@@ -220,29 +248,47 @@
     },
     "segments": {
       "title": "सेगमेंट खोज",
-      "types": "सेगमेंट टाइप्स"
+      "types": "सेगमेंट टाइप्स",
+      "subtitle": "हर WWE सेगमेंट ब्राउज़ करें।",
+      "segmentsFound": "सेगमेंट मिले",
+      "segmentFound": "सेगमेंट मिला",
+      "segmentCategory": "सेगमेंट श्रेणी",
+      "secondSuperstar": "दूसरा सुपरस्टार",
+      "noSegments": "कोई सेगमेंट नहीं मिला"
     },
     "shows": {
       "title": "सभी शोज़",
       "upcoming": "आगामी",
       "past": "बीते हुए",
-      "allSeries": "सभी शो सीरीज़"
+      "allSeries": "सभी शो सीरीज़",
+      "subtitle": "सभी साप्ताहिक और विशेष शोज़ ब्राउज़ करें।",
+      "searchPlaceholder": "शो सीरीज़ खोजें...",
+      "inactive": "निष्क्रिय"
     },
     "ple": {
       "title": "प्रीमियम लाइव इवेंट्स",
-      "subtitle": "WWE इतिहास के सबसे बड़े इवेंट्स"
+      "subtitle": "WrestleMania, Royal Rumble, SummerSlam — इतिहास का हर Premium Live Event।"
     },
     "stipulations": {
       "title": "मैच स्टिपुलेशन",
-      "subtitle": "WWE इतिहास का हर मैच टाइप"
+      "subtitle": "Steel Cage, Hell in a Cell, TLC — हर मैच प्रकार खोजें।",
+      "searchPlaceholder": "स्टिपुलेशन खोजें..."
     },
     "arenas": {
       "title": "सभी एरीनाज़",
-      "subtitle": "WWE इवेंट्स आयोजित करने वाले हर स्थान"
+      "subtitle": "WWE इतिहास का हर स्थान।"
     },
     "objects": {
       "title": "इस्तेमाल किए गए ऑब्जेक्ट्स",
-      "subtitle": "WWE मैचों में इस्तेमाल किए गए हर हथियार और ऑब्जेक्ट"
+      "subtitle": "कुर्सियाँ, टेबल, सीढ़ियाँ — WWE मैचों में इस्तेमाल हर वस्तु।",
+      "searchPlaceholder": "ऑब्जेक्ट खोजें…"
+    },
+    "hub": {
+      "title": "मैच और शोज़",
+      "subtitle": "हर WWE मैच का संपूर्ण डेटाबेस।",
+      "showsWorld": "दुनिया भर में शोज़",
+      "showsWorldSub": "जानें कि WWE इवेंट्स दुनिया में कहाँ हुए।",
+      "aboutTitle": "WWE मैच डेटाबेस के बारे में"
     }
   },
   "champions": {
@@ -489,7 +535,12 @@
     "men": "पुरुष",
     "more": "अधिक",
     "search": "खोजें",
-    "women": "महिला"
+    "women": "महिला",
+    "allChampionships": "सभी चैंपियनशिप",
+    "searchSuperstar": "सुपरस्टार खोजें…",
+    "searchOpponent": "प्रतिद्वंद्वी खोजें…",
+    "searchTeammate": "साथी खोजें…",
+    "allCategories": "सभी श्रेणियाँ"
   },
   "footer": {
     "disclaimer": "Pinfall Data एक प्रशंसक द्वारा बनाई गई परियोजना है। सभी मल्टीमीडिया सामग्री, चित्र और YouTube वीडियो WWE (World Wrestling Entertainment) की संपत्ति हैं। यह साइट किसी भी तरह से WWE से संबद्ध, समर्थित या जुड़ी हुई नहीं है।",

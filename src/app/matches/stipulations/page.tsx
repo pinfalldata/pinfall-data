@@ -100,7 +100,7 @@ export default function StipulationsListPage() {
             </svg>
             <input
               type="text"
-              placeholder="Search stipulations..."
+              placeholder={t('matches.stipulations.searchPlaceholder')}
               value={search}
               onChange={e => setSearch(e.target.value)}
               className="w-full bg-bg-tertiary border border-border-subtle/30 rounded-xl pl-10 pr-4 py-2.5 text-xs text-text-white placeholder-text-secondary focus:border-neon-blue/50 focus:outline-none transition-colors"

@@ -77,7 +77,7 @@
     "sections": {
       "onThisDay": "Bugün Tarihte",
       "noEvents": "Bugün için kayda değer bir etkinlik bulunamadı.",
-      "wrestlingThroughTheAges": "Çağlar Boyunca Güreş",
+      "wrestlingThroughTheAges": "Çağlar Boyunca WWE",
       "showCalendar": "Şov Takvimi",
       "hallOfLegends": "Efsaneler Galerisi",
       "championshipTitles": "Şampiyonluk Kemerleri",
@@ -199,7 +199,35 @@
       "rating": "Puan",
       "titleMatch": "Kemer Maçı",
       "mainEvent": "Ana Kart",
-      "hideFilters": "Filtreleri Gizle"
+      "hideFilters": "Filtreleri Gizle",
+      "subtitle": "En güçlü filtrelerle her WWE maçını arayın.",
+      "searching": "Aranıyor…",
+      "matchesFound": "maç bulundu",
+      "matchFound": "maç bulundu",
+      "showFilters": "Filtreleri Göster",
+      "clearAll": "Tüm filtreleri temizle",
+      "noMatchesFound": "Maç bulunamadı",
+      "tryAdjusting": "Filtrelerinizi ayarlamayı deneyin",
+      "aboutTitle": "Maç Arama Motoru Hakkında",
+      "month": "Ay",
+      "promotion": "Organizasyon",
+      "minRating": "Min. Puan",
+      "finishType": "Bitiş Türü",
+      "country": "Ülke",
+      "city": "Şehir",
+      "opponent": "Rakip",
+      "teammate": "Takım Arkadaşı",
+      "championship": "Şampiyonluk",
+      "champOnly": "Sadece kemer maçları",
+      "titleChangeOnly": "Sadece kemer değişimleri",
+      "date": "Tarih",
+      "type": "Tür",
+      "participants": "Katılımcılar",
+      "titleCol": "Kemer",
+      "ratingCol": "Puan",
+      "searchSuperstar": "Superstar ara…",
+      "searchOpponent": "Rakip ara…",
+      "searchTeammate": "Takım arkadaşı ara…"
     },
     "detail": {
       "participants": "Katılımcılar",
@@ -220,29 +248,47 @@
     },
     "segments": {
       "title": "Segment Arama",
-      "types": "Segment Türleri"
+      "types": "Segment Türleri",
+      "subtitle": "Her WWE segmentini keşfedin.",
+      "segmentsFound": "segment bulundu",
+      "segmentFound": "segment bulundu",
+      "segmentCategory": "Segment Kategorisi",
+      "secondSuperstar": "2. Superstar",
+      "noSegments": "Segment bulunamadı"
     },
     "shows": {
       "title": "Tüm Şovlar",
       "upcoming": "Yaklaşan",
       "past": "Geçmiş",
-      "allSeries": "Tüm Şov Serileri"
+      "allSeries": "Tüm Şov Serileri",
+      "subtitle": "Tüm haftalık ve özel şovları keşfedin.",
+      "searchPlaceholder": "Şov serisi ara...",
+      "inactive": "Pasif"
     },
     "ple": {
       "title": "Premium Live Events",
-      "subtitle": "WWE tarihinin en büyük etkinlikleri"
+      "subtitle": "WrestleMania, Royal Rumble, SummerSlam — tarihteki her PLE."
     },
     "stipulations": {
       "title": "Maç Şartları",
-      "subtitle": "WWE tarihindeki her maç türü"
+      "subtitle": "Steel Cage, Hell in a Cell, TLC — her maç türünü keşfedin.",
+      "searchPlaceholder": "Stipülasyon ara..."
     },
     "arenas": {
       "title": "Tüm Arenalar",
-      "subtitle": "WWE etkinliklerine ev sahipliği yapan her mekan"
+      "subtitle": "WWE tarihindeki her mekan."
     },
     "objects": {
       "title": "Kullanılan Objeler",
-      "subtitle": "WWE maçlarında kullanılan her silah ve obje"
+      "subtitle": "Sandalyeler, masalar, merdivenler — WWE maçlarında kullanılan her obje.",
+      "searchPlaceholder": "Obje ara…"
+    },
+    "hub": {
+      "title": "Maçlar & Şovlar",
+      "subtitle": "Şimdiye kadar kaydedilmiş her WWE maçının eksiksiz veritabanı.",
+      "showsWorld": "Dünya Genelinde Şovlar",
+      "showsWorldSub": "WWE etkinliklerinin dünyada nerede yapıldığını keşfedin.",
+      "aboutTitle": "WWE Maç Veritabanı Hakkında"
     }
   },
   "champions": {
@@ -489,7 +535,12 @@
     "men": "Erkekler",
     "more": "Daha fazla",
     "search": "Ara",
-    "women": "Kadınlar"
+    "women": "Kadınlar",
+    "allChampionships": "Tüm şampiyonluklar",
+    "searchSuperstar": "Superstar ara…",
+    "searchOpponent": "Rakip ara…",
+    "searchTeammate": "Takım arkadaşı ara…",
+    "allCategories": "Tüm kategoriler"
   },
   "footer": {
     "disclaimer": "Pinfall Data, tutkulu bir birey tarafından oluşturulmuş hayran yapımı bir projedir. Tüm multimedya içerikleri, görseller ve YouTube videoları WWE'nin (World Wrestling Entertainment) mülkiyetindedir. Bu site hiçbir şekilde WWE ile bağlantılı, onaylanmış veya ilişkili değildir.",

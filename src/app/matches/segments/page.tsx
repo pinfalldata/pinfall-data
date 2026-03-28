@@ -163,7 +163,7 @@ export default function SegmentSearchPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-5">
           <p className="text-text-secondary text-sm">
-            {loading && !init ? 'Searching…' : `${total.toLocaleString()} segment${total !== 1 ? 's' : ''} found`}
+            {loading && !init ? t('matches.search.searching') : `${total.toLocaleString()} ${total !== 1 ? t('matches.segments.segmentsFound') : t('matches.segments.segmentFound')}`}
           </p>
           <button onClick={() => setShowF(!showF)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all ${showF ? 'bg-neon-blue/10 border-neon-blue/30 text-neon-blue' : 'bg-bg-secondary/50 border-border-subtle/30 text-text-secondary hover:text-text-white'}`}>
@@ -178,27 +178,27 @@ export default function SegmentSearchPage() {
           <div className="mb-6 p-4 sm:p-5 rounded-2xl border border-border-subtle/30 bg-bg-secondary/30 backdrop-blur-sm animate-fade-in">
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
               <Sel label={t('matches.search.year')} value={filters.year} set={v => upd('year', v)} opts={YEARS.map(y => ({ value: String(y), label: String(y) }))} ph={t('common.allYears')} />
-              {filters.year && <Sel label="Month" value={filters.month} set={v => upd('month', v)}
+              {filters.year && <Sel label={t('matches.search.month')} value={filters.month} set={v => upd('month', v)}
                 opts={Array.from({ length: 12 }, (_, i) => ({ value: String(i + 1), label: new Date(2000, i).toLocaleString('en-US', { month: 'long' }) }))} ph={t('common.allMonths')} />}
-              <Sel label="Promotion" value={filters.showSeriesId} set={v => upd('showSeriesId', v)}
+              <Sel label={t('matches.search.promotion')} value={filters.showSeriesId} set={v => upd('showSeriesId', v)}
                 opts={opts.showSeries.map(s => ({ value: String(s.id), label: s.name }))} ph={t('common.allPromotions')} />
-              <Sel label="Segment Category" value={filters.category} set={v => upd('category', v)}
+              <Sel label={t('matches.segments.segmentCategory')} value={filters.category} set={v => upd('category', v)}
                 opts={opts.segmentCategories.map(c => ({
                   value: c.value,
                   label: `${CAT_LABELS[c.value]?.icon || '📋'} ${CAT_LABELS[c.value]?.label || c.value} (${c.count})`
-                }))} ph="All categories" />
-              <Sel label="Country" value={filters.country} set={v => upd('country', v)}
+                }))} ph={t('common.allCategories')} />
+              <Sel label={t('matches.search.country')} value={filters.country} set={v => upd('country', v)}
                 opts={opts.countries.map(c => ({ value: c, label: c }))} ph={t('common.allCountries')} />
               <div className="flex flex-col gap-1">
                 <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">City</label>
                 <input type="text" value={filters.city} onChange={e => upd('city', e.target.value)} placeholder="e.g. New York"
                   className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-border-subtle/40 text-sm text-text-white placeholder:text-text-secondary/50 focus:outline-none focus:border-neon-blue/50 transition-colors" />
               </div>
-              <SSrch label="Superstar" ph="Search superstar…" value={filters.superstarName}
+              <SSrch label={t('common.superstar')} ph={t('common.searchSuperstar')} value={filters.superstarName}
                 onSel={(id, n) => { upd('superstarId', id); setFilters(p => ({ ...p, superstarName: n })) }}
                 onClr={() => { upd('superstarId', ''); setFilters(p => ({ ...p, superstarName: '' })) }} />
               {filters.superstarId &&
-                <SSrch label="2nd Superstar" ph="Search 2nd superstar…" value={filters.superstar2Name}
+                <SSrch label={t('matches.segments.secondSuperstar')} ph={t('common.searchSuperstar')} value={filters.superstar2Name}
                   onSel={(id, n) => { upd('superstar2Id', id); setFilters(p => ({ ...p, superstar2Name: n })) }}
                   onClr={() => { upd('superstar2Id', ''); setFilters(p => ({ ...p, superstar2Name: '' })) }} />
               }
@@ -229,9 +229,9 @@ export default function SegmentSearchPage() {
         ) : segments.length === 0 ? (
           <div className="text-center py-20">
             <span className="text-5xl mb-4 block opacity-20">🎤</span>
-            <p className="text-text-secondary text-lg mb-2">No segments found</p>
+            <p className="text-text-secondary text-lg mb-2">{t('matches.segments.noSegments')}</p>
             <p className="text-text-secondary/60 text-sm mb-4">Try adjusting your filters</p>
-            {hasF && <button onClick={reset} className="text-sm text-neon-blue hover:underline">Clear all filters</button>}
+            {hasF && <button onClick={reset} className="text-sm text-neon-blue hover:underline">{t('matches.search.clearAll')}</button>}
           </div>
         ) : (
           <>

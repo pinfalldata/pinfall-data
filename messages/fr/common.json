@@ -77,7 +77,7 @@
     "sections": {
       "onThisDay": "Ce jour-là",
       "noEvents": "Aucun événement notable trouvé pour aujourd'hui.",
-      "wrestlingThroughTheAges": "Le catch à travers les âges",
+      "wrestlingThroughTheAges": "La WWE à travers les âges",
       "showCalendar": "Calendrier des shows",
       "hallOfLegends": "Le Panthéon des légendes",
       "championshipTitles": "Titres de champion",
@@ -199,7 +199,35 @@
       "rating": "Note",
       "titleMatch": "Match de championnat",
       "mainEvent": "Main Event",
-      "hideFilters": "Masquer les filtres"
+      "hideFilters": "Masquer les filtres",
+      "subtitle": "Recherchez parmi tous les matchs WWE avec les filtres les plus puissants disponibles.",
+      "searching": "Recherche…",
+      "matchesFound": "matchs trouvés",
+      "matchFound": "match trouvé",
+      "showFilters": "Afficher les filtres",
+      "clearAll": "Effacer tous les filtres",
+      "noMatchesFound": "Aucun match trouvé",
+      "tryAdjusting": "Essayez d'ajuster vos filtres",
+      "aboutTitle": "À propos du moteur de recherche de matchs",
+      "month": "Mois",
+      "promotion": "Promotion",
+      "minRating": "Note min.",
+      "finishType": "Type de fin",
+      "country": "Pays",
+      "city": "Ville",
+      "opponent": "Adversaire",
+      "teammate": "Partenaire",
+      "championship": "Championnat",
+      "champOnly": "Matchs de championnat uniquement",
+      "titleChangeOnly": "Changements de titre uniquement",
+      "date": "Date",
+      "type": "Type",
+      "participants": "Participants",
+      "titleCol": "Titre",
+      "ratingCol": "Note",
+      "searchSuperstar": "Rechercher superstar…",
+      "searchOpponent": "Rechercher adversaire…",
+      "searchTeammate": "Rechercher partenaire…"
     },
     "detail": {
       "participants": "Participants",
@@ -220,29 +248,47 @@
     },
     "segments": {
       "title": "Recherche de segments",
-      "types": "Types de segments"
+      "types": "Types de segments",
+      "subtitle": "Parcourez chaque segment WWE — promos, confrontations en coulisses, cérémonies et plus encore.",
+      "segmentsFound": "segments trouvés",
+      "segmentFound": "segment trouvé",
+      "segmentCategory": "Catégorie de segment",
+      "secondSuperstar": "2e Superstar",
+      "noSegments": "Aucun segment trouvé"
     },
     "shows": {
       "title": "Tous les shows",
       "upcoming": "À venir",
       "past": "Passés",
-      "allSeries": "Toutes les séries de shows"
+      "allSeries": "Toutes les séries de shows",
+      "subtitle": "Parcourez tous les shows hebdomadaires et spéciaux — Raw, SmackDown, NXT et plus.",
+      "searchPlaceholder": "Rechercher une série de shows...",
+      "inactive": "Inactif"
     },
     "ple": {
       "title": "Premium Live Events",
-      "subtitle": "Les plus grands événements de l'histoire de la WWE"
+      "subtitle": "WrestleMania, Royal Rumble, SummerSlam — chaque Premium Live Event de l'histoire."
     },
     "stipulations": {
       "title": "Stipulations de match",
-      "subtitle": "Tous les types de match dans l'histoire de la WWE"
+      "subtitle": "Steel Cage, Hell in a Cell, TLC, Royal Rumble — explorez chaque type de match.",
+      "searchPlaceholder": "Rechercher des stipulations..."
     },
     "arenas": {
       "title": "Toutes les arenas",
-      "subtitle": "Tous les lieux ayant accueilli des événements WWE"
+      "subtitle": "Chaque lieu de l'histoire de la WWE — du MSG aux stades du monde entier."
     },
     "objects": {
       "title": "Objets utilisés",
-      "subtitle": "Toutes les armes et objets utilisés dans les matchs WWE"
+      "subtitle": "Chaises, tables, échelles, kendo sticks — chaque objet utilisé dans les matchs WWE.",
+      "searchPlaceholder": "Rechercher des objets…"
+    },
+    "hub": {
+      "title": "Matchs & Shows",
+      "subtitle": "La base de données complète de chaque match WWE jamais enregistré — du premier combat de championnat au main event d'hier soir.",
+      "showsWorld": "Shows à travers le monde",
+      "showsWorldSub": "Découvrez où les événements WWE ont eu lieu à travers le globe.",
+      "aboutTitle": "À propos de la base de données des matchs WWE"
     }
   },
   "champions": {
@@ -489,7 +535,12 @@
     "men": "Hommes",
     "more": "Plus",
     "search": "Rechercher",
-    "women": "Femmes"
+    "women": "Femmes",
+    "allChampionships": "Tous les championnats",
+    "searchSuperstar": "Rechercher superstar…",
+    "searchOpponent": "Rechercher adversaire…",
+    "searchTeammate": "Rechercher partenaire…",
+    "allCategories": "Toutes les catégories"
   },
   "footer": {
     "disclaimer": "Pinfall Data est un projet créé par un seul passionné. Tout le contenu multimédia, les images et les vidéos YouTube sont la propriété de la WWE (World Wrestling Entertainment). Ce site n'est ni affilié, ni approuvé, ni lié à la WWE de quelque manière que ce soit.",

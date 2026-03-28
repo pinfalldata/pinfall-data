@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { StarRating } from '@/components/ui/StarRating'
 import { formatDateShort, isBattleRoyalType } from '@/lib/utils'
 
@@ -74,6 +75,7 @@ const RESULT_TYPES = [
    MAIN PAGE
    ============================================================ */
 export default function MatchSearchPage() {
+  const t = useTranslations()
   const [matches, setMatches] = useState<MatchData[]>([])
   const [total, setTotal] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
@@ -137,10 +139,10 @@ export default function MatchSearchPage() {
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">
           <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-white text-center tracking-tight mb-2">
-            <span className="text-neon-blue">Match</span> Search
+            {t('matches.search.title')}
           </h1>
           <p className="text-text-secondary text-sm sm:text-base lg:text-lg text-center max-w-2xl">
-            Search through every WWE match ever recorded with the most powerful filters available.
+            {t('matches.search.subtitle')}
           </p>
         </div>
       </section>
@@ -150,12 +152,12 @@ export default function MatchSearchPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-5">
           <p className="text-text-secondary text-sm">
-            {loading && !init ? 'Searching…' : `${total.toLocaleString()} match${total!==1?'es':''} found`}
+            {loading && !init ? t('matches.search.searching') : `${total.toLocaleString()} ${total!==1 ? t('matches.search.matchesFound') : t('matches.search.matchFound')}`}
           </p>
           <button onClick={()=>setShowF(!showF)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all ${showF?'bg-neon-blue/10 border-neon-blue/30 text-neon-blue':'bg-bg-secondary/50 border-border-subtle/30 text-text-secondary hover:text-text-white'}`}>
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
-            {showF ? 'Hide Filters' : 'Show Filters'}
+            {showF ? t('matches.search.hideFilters') : t('matches.search.showFilters')}
             {fCount>0 && <span className="w-5 h-5 rounded-full bg-neon-blue text-[10px] text-black font-bold flex items-center justify-center">{fCount}</span>}
           </button>
         </div>
@@ -164,36 +166,36 @@ export default function MatchSearchPage() {
         {showF && (
           <div className="mb-6 p-4 sm:p-5 rounded-2xl border border-border-subtle/30 bg-bg-secondary/30 backdrop-blur-sm animate-fade-in">
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-              <Sel label="Year" value={filters.year} set={v=>upd('year',v)} opts={YEARS.map(y=>({value:String(y),label:String(y)}))} ph="All years"/>
-              {filters.year && <Sel label="Month" value={filters.month} set={v=>upd('month',v)}
-                opts={Array.from({length:12},(_,i)=>({value:String(i+1),label:new Date(2000,i).toLocaleString('en-US',{month:'long'})}))} ph="All months"/>}
-              <Sel label="Promotion" value={filters.showSeriesId} set={v=>upd('showSeriesId',v)}
-                opts={opts.showSeries.map(s=>({value:String(s.id),label:s.name}))} ph="All promotions"/>
-              <Sel label="Match Type" value={filters.matchTypeId} set={v=>upd('matchTypeId',v)}
-                opts={opts.matchTypes.map(t=>({value:String(t.id),label:t.name}))} ph="All types"/>
-              <Sel label="Min. Rating" value={filters.minRating} set={v=>upd('minRating',v)}
-                opts={Array.from({length:11},(_,i)=>({value:String(i),label:`${i}+/10`}))} ph="Any rating"/>
-              <Sel label="Finish Type" value={filters.resultType} set={v=>upd('resultType',v)} opts={RESULT_TYPES} ph="Any finish"/>
-              <Sel label="Country" value={filters.country} set={v=>upd('country',v)}
-                opts={opts.countries.map(c=>({value:c,label:c}))} ph="All countries"/>
+              <Sel label={t('matches.search.year')} value={filters.year} set={v=>upd('year',v)} opts={YEARS.map(y=>({value:String(y),label:String(y)}))} ph={t('common.allYears')}/>
+              {filters.year && <Sel label={t('matches.search.month')} value={filters.month} set={v=>upd('month',v)}
+                opts={Array.from({length:12},(_,i)=>({value:String(i+1),label:new Date(2000,i).toLocaleString('en-US',{month:'long'})}))} ph={t('common.allMonths')}/>}
+              <Sel label={t('matches.search.promotion')} value={filters.showSeriesId} set={v=>upd('showSeriesId',v)}
+                opts={opts.showSeries.map(s=>({value:String(s.id),label:s.name}))} ph={t('common.allPromotions')}/>
+              <Sel label={t('matches.search.matchType')} value={filters.matchTypeId} set={v=>upd('matchTypeId',v)}
+                opts={opts.matchTypes.map(t=>({value:String(t.id),label:t.name}))} ph={t('common.allTypes')}/>
+              <Sel label={t('matches.search.minRating')} value={filters.minRating} set={v=>upd('minRating',v)}
+                opts={Array.from({length:11},(_,i)=>({value:String(i),label:`${i}+/10`}))} ph={t('common.anyRating')}/>
+              <Sel label={t('matches.search.finishType')} value={filters.resultType} set={v=>upd('resultType',v)} opts={RESULT_TYPES} ph={t('common.anyFinish')}/>
+              <Sel label={t('matches.search.country')} value={filters.country} set={v=>upd('country',v)}
+                opts={opts.countries.map(c=>({value:c,label:c}))} ph={t('common.allCountries')}/>
               <div className="flex flex-col gap-1">
                 <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">City</label>
-                <input type="text" value={filters.city} onChange={e=>upd('city',e.target.value)} placeholder="e.g. New York"
+                <input type="text" value={filters.city} onChange={e=>upd('city',e.target.value)} placeholder={t('matches.search.city')}
                   className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-border-subtle/40 text-sm text-text-white placeholder:text-text-secondary/50 focus:outline-none focus:border-neon-blue/50 transition-colors"/>
               </div>
-              <SSrch label="Superstar" ph="Search superstar…" value={filters.superstarName}
+              <SSrch label={t('common.superstar')} ph={t('common.searchSuperstar')} value={filters.superstarName}
                 onSel={(id,n)=>{upd('superstarId',id);setFilters(p=>({...p,superstarName:n}))}}
                 onClr={()=>{upd('superstarId','');setFilters(p=>({...p,superstarName:''}))}}/>
               {filters.superstarId && <>
-                <SSrch label="Opponent" ph="Search opponent…" value={filters.opponentName}
+                <SSrch label={t('matches.search.opponent')} ph={t('common.searchOpponent')} value={filters.opponentName}
                   onSel={(id,n)=>{upd('opponentId',id);setFilters(p=>({...p,opponentName:n}))}}
                   onClr={()=>{upd('opponentId','');setFilters(p=>({...p,opponentName:''}))}}/>
-                <SSrch label="Teammate" ph="Search teammate…" value={filters.teammateName}
+                <SSrch label={t('matches.search.teammate')} ph={t('common.searchTeammate')} value={filters.teammateName}
                   onSel={(id,n)=>{upd('teammateId',id);setFilters(p=>({...p,teammateName:n}))}}
                   onClr={()=>{upd('teammateId','');setFilters(p=>({...p,teammateName:''}))}}/>
               </>}
-              <Sel label="Championship" value={filters.championshipId} set={v=>upd('championshipId',v)}
-                opts={opts.championships.map(c=>({value:String(c.id),label:c.name}))} ph="All championships"/>
+              <Sel label={t('matches.search.championship')} value={filters.championshipId} set={v=>upd('championshipId',v)}
+                opts={opts.championships.map(c=>({value:String(c.id),label:c.name}))} ph={t('common.allChampionships')}/>
             </div>
             <div className="flex items-center justify-between mt-4 pt-3 border-t border-border-subtle/20">
               <div className="flex items-center gap-4 flex-wrap">
@@ -202,14 +204,14 @@ export default function MatchSearchPage() {
                     onClick={()=>upd('championshipOnly',!filters.championshipOnly)}>
                     <div className={`absolute top-0.5 w-4 h-4 rounded-full transition-transform ${filters.championshipOnly?'translate-x-[18px] bg-yellow-400':'translate-x-[2px] bg-text-secondary'}`}/>
                   </div>
-                  <span className="text-xs text-text-secondary group-hover:text-text-white transition-colors">🏆 Championship matches only</span>
+                  <span className="text-xs text-text-secondary group-hover:text-text-white transition-colors">🏆 {t('matches.search.champOnly')}</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer group">
                   <div className={`w-9 h-5 rounded-full relative transition-colors cursor-pointer ${filters.titleChangeOnly?'bg-yellow-500/40':'bg-bg-tertiary'}`}
                     onClick={()=>upd('titleChangeOnly',!filters.titleChangeOnly)}>
                     <div className={`absolute top-0.5 w-4 h-4 rounded-full transition-transform ${filters.titleChangeOnly?'translate-x-[18px] bg-yellow-400':'translate-x-[2px] bg-text-secondary'}`}/>
                   </div>
-                  <span className="text-xs text-text-secondary group-hover:text-text-white transition-colors">🔄 Title changes only</span>
+                  <span className="text-xs text-text-secondary group-hover:text-text-white transition-colors">🔄 {t('matches.search.titleChangeOnly')}</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer group">
                   <div className={`w-9 h-5 rounded-full relative transition-colors cursor-pointer ${filters.omgOnly?'bg-purple-500/40':'bg-bg-tertiary'}`}
@@ -233,15 +235,15 @@ export default function MatchSearchPage() {
         ) : matches.length===0 ? (
           <div className="text-center py-20">
             <svg className="w-16 h-16 mx-auto text-text-secondary/20 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            <p className="text-text-secondary text-lg mb-2">No matches found</p>
-            <p className="text-text-secondary/60 text-sm mb-4">Try adjusting your filters</p>
-            {hasF && <button onClick={reset} className="text-sm text-neon-blue hover:underline">Clear all filters</button>}
+            <p className="text-text-secondary text-lg mb-2">{t('matches.search.noMatchesFound')}</p>
+            <p className="text-text-secondary/60 text-sm mb-4">{t('matches.search.tryAdjusting')}</p>
+            {hasF && <button onClick={reset} className="text-sm text-neon-blue hover:underline">{t('matches.search.clearAll')}</button>}
           </div>
         ) : (
           <>
             {/* Desktop header */}
             <div className="hidden lg:grid lg:grid-cols-[90px_minmax(120px,1.2fr)_130px_minmax(250px,3fr)_100px_55px] gap-3 px-4 pb-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20">
-              <span>Date</span><span>Show</span><span>Type</span><span>Participants</span><span>Title</span><span className="text-center">Rating</span>
+              <span>{t('matches.search.date')}</span><span>{t('matches.search.show')}</span><span>{t('matches.search.type')}</span><span>{t('matches.search.participants')}</span><span>{t('matches.search.titleCol')}</span><span className="text-center">{t('matches.search.ratingCol')}</span>
             </div>
             <div className={`space-y-0.5 mt-0.5 transition-opacity duration-200 ${loading&&!init?'opacity-50':'opacity-100'}`}>
               {matches.map(m=><MRow key={m.id} m={m}/>)}
@@ -255,7 +257,7 @@ export default function MatchSearchPage() {
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-8">
         <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/10 p-6 sm:p-8">
           <h2 className="font-display text-xl font-bold text-text-white mb-3">
-            About the <span className="text-neon-blue">Match Search Engine</span>
+            {t('matches.search.aboutTitle')}
           </h2>
           <p className="text-text-secondary text-sm leading-relaxed mb-3">
             The most powerful WWE match search engine ever built. Filter through every match in history by year, promotion,
