@@ -134,9 +134,9 @@ export function HeadToHeadBar({ label, value1, value2, name1, name2, color1, col
 // ============================================================
 
 export function HeadToHeadSection({ h2h, superstar1, superstar2, color }: {
-  const t = useTranslations()
   h2h: any; superstar1: any; superstar2: any; color: string
 }) {
+  const t = useTranslations()
   if (!h2h || !h2h.total_matches || h2h.total_matches === 0) return null
 
   const c1 = '#c7a05a' // blue for superstar 1
@@ -192,9 +192,9 @@ export function HeadToHeadSection({ h2h, superstar1, superstar2, color }: {
 // ============================================================
 
 export function SuperstarQuickStats({ superstar, winMethods, color }: {
-  const t = useTranslations()
   superstar: any; winMethods?: any[]; color: string
 }) {
+  const t = useTranslations()
   if (!superstar) return null
   const s = superstar
 
