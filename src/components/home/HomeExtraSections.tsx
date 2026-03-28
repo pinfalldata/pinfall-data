@@ -14,7 +14,10 @@ const HomepageDataCtx = createContext<any>(null)
 export function HomepageDataProvider({ children }: { children: React.ReactNode }) {
   const [data, setData] = useState<any>(null)
   useEffect(() => {
-    fetch('/api/homepage-data')
+    const now = new Date()
+    const m = now.getMonth() + 1
+    const d = now.getDate()
+    fetch(`/api/homepage-data?month=${m}&day=${d}`)
       .then(r => r.json())
       .then(d => { if (!d.error) setData(d) })
       .catch(() => {})

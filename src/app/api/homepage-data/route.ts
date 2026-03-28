@@ -2,13 +2,19 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 
-export const revalidate = 300
+// CRITICAL: Force dynamic rendering — prevents Next.js / Vercel from caching
+// a stale date (e.g. yesterday's birthdays served after midnight)
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export async function GET(req: NextRequest) {
   try {
-    const today = new Date()
-    const m = today.getMonth() + 1
-    const d = today.getDate()
+    const { searchParams } = new URL(req.url)
+
+    // Use client-provided local date to avoid Vercel UTC mismatch
+    const now = new Date()
+    const m = parseInt(searchParams.get('month') || String(now.getMonth() + 1))
+    const d = parseInt(searchParams.get('day') || String(now.getDate()))
     const monthStr = String(m).padStart(2, '0')
     const dayStr = String(d).padStart(2, '0')
 
