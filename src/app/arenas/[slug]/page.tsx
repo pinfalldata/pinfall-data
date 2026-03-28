@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { ShareButtons } from '@/components/ui/ShareButtons'
 
 function fmt(d: string | null) { if (!d) return '—'; return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) }
@@ -51,6 +52,7 @@ export default function ArenaDetailPage() {
   const params = useParams()
   const slug = params.slug as string
 
+  const t = useTranslations()
   const [arena, setArena] = useState<any>(null)
   const [shows, setShows] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -184,7 +186,7 @@ export default function ArenaDetailPage() {
 
         {/* Prev/Next */}
         {prevArena && <Link href={`/arenas/${prevArena.slug}`} className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 flex items-center gap-2 px-3 py-2 rounded-xl bg-bg-primary/80 border border-border-subtle/30 backdrop-blur-sm hover:border-neon-blue/30 transition-all"><svg className="w-4 h-4 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg><div className="hidden sm:block"><p className="text-[9px] text-text-secondary uppercase">Prev</p><p className="text-xs text-text-white font-medium truncate max-w-[120px]">{prevArena.name}</p></div></Link>}
-        {nextArena && <Link href={`/arenas/${nextArena.slug}`} className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 flex items-center gap-2 px-3 py-2 rounded-xl bg-bg-primary/80 border border-border-subtle/30 backdrop-blur-sm hover:border-neon-blue/30 transition-all"><div className="hidden sm:block text-right"><p className="text-[9px] text-text-secondary uppercase">Next</p><p className="text-xs text-text-white font-medium truncate max-w-[120px]">{nextArena.name}</p></div><svg className="w-4 h-4 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg></Link>}
+        {nextArena && <Link href={`/arenas/${nextArena.slug}`} className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 flex items-center gap-2 px-3 py-2 rounded-xl bg-bg-primary/80 border border-border-subtle/30 backdrop-blur-sm hover:border-neon-blue/30 transition-all"><div className="hidden sm:block text-right"><p className="text-[9px] text-text-secondary uppercase">{t('common.next')}</p><p className="text-xs text-text-white font-medium truncate max-w-[120px]">{nextArena.name}</p></div><svg className="w-4 h-4 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg></Link>}
       </section>
 
       {/* ===== INFO BAR ===== */}
@@ -192,10 +194,10 @@ export default function ArenaDetailPage() {
         <section className="bg-bg-secondary/30 border-y border-border-subtle/20">
           <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-4">
             <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm">
-              {arena.capacity && <div className="text-center"><span className="block text-[10px] text-text-secondary uppercase tracking-wider">Capacity</span><span className="text-text-white font-bold">{arena.capacity.toLocaleString()}</span></div>}
-              {arena.opened_year && <div className="text-center"><span className="block text-[10px] text-text-secondary uppercase tracking-wider">Opened</span><span className="text-text-white font-semibold">{arena.opened_year}</span></div>}
-              <div className="text-center"><span className="block text-[10px] text-text-secondary uppercase tracking-wider">Total Events</span><span className="text-neon-blue font-bold text-lg">{total}</span></div>
-              {arena.city && <div className="text-center"><span className="block text-[10px] text-text-secondary uppercase tracking-wider">Location</span><span className="text-text-white font-semibold">{arena.city}{arena.country ? `, ${arena.country}` : ''}</span></div>}
+              {arena.capacity && <div className="text-center"><span className="block text-[10px] text-text-secondary uppercase tracking-wider">{t('arenas.detail.capacity')}</span><span className="text-text-white font-bold">{arena.capacity.toLocaleString()}</span></div>}
+              {arena.opened_year && <div className="text-center"><span className="block text-[10px] text-text-secondary uppercase tracking-wider">{t('arenas.detail.opened')}</span><span className="text-text-white font-semibold">{arena.opened_year}</span></div>}
+              <div className="text-center"><span className="block text-[10px] text-text-secondary uppercase tracking-wider">{t('arenas.detail.totalEvents')}</span><span className="text-neon-blue font-bold text-lg">{total}</span></div>
+              {arena.city && <div className="text-center"><span className="block text-[10px] text-text-secondary uppercase tracking-wider">{t('arenas.detail.location')}</span><span className="text-text-white font-semibold">{arena.city}{arena.country ? `, ${arena.country}` : ''}</span></div>}
             </div>
 
             {/* Arena name history timeline */}
@@ -256,7 +258,7 @@ export default function ArenaDetailPage() {
             <>
               {/* Desktop header */}
               <div className="hidden lg:grid lg:grid-cols-[100px_minmax(80px,0.5fr)_minmax(200px,2fr)_100px_120px] gap-4 px-4 pb-2 text-[9px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
-                <span>Date</span><span>Type</span><span>Event</span><span>Attendance</span><span>{arenaNames.length > 1 ? 'Venue Name' : 'Show'}</span>
+                <span>{t('matches.search.date')}</span><span>{t('matches.search.type')}</span><span>{t('arenas.detail.event')}</span><span>{t('shows.series.attendance')}</span><span>{arenaNames.length > 1 ? 'Venue Name' : 'Show'}</span>
               </div>
 
               <div className="space-y-0.5">
@@ -349,12 +351,12 @@ export default function ArenaDetailPage() {
               {/* Key stats */}
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
                 {[
-                  { l: 'Total Events', v: stats.totalShows, c: 'text-neon-blue' },
-                  { l: 'Total Matches', v: stats.totalMatches, c: 'text-text-white' },
-                  { l: 'Total Attendance', v: stats.totalAttendance?.toLocaleString(), c: 'text-neon-blue' },
-                  { l: 'Avg Attendance', v: stats.avgAttendance?.toLocaleString(), c: 'text-text-white' },
-                  { l: 'Avg Rating', v: stats.avgRating ? `${stats.avgRating}★` : '—', c: 'text-yellow-400' },
-                  { l: 'Title Changes', v: stats.titleChanges, c: 'text-neon-blue' },
+                  { l: t('arenas.stats.totalEvents'), v: stats.totalShows, c: 'text-neon-blue' },
+                  { l: t('arenas.stats.totalMatches'), v: stats.totalMatches, c: 'text-text-white' },
+                  { l: t('arenas.stats.totalAttendance'), v: stats.totalAttendance?.toLocaleString(), c: 'text-neon-blue' },
+                  { l: t('arenas.stats.avgAttendance'), v: stats.avgAttendance?.toLocaleString(), c: 'text-text-white' },
+                  { l: t('arenas.stats.avgRating'), v: stats.avgRating ? `${stats.avgRating}★` : '—', c: 'text-yellow-400' },
+                  { l: t('arenas.stats.titleChanges'), v: stats.titleChanges, c: 'text-neon-blue' },
                 ].map((s, i) => (
                   <div key={i} className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-4 text-center">
                     <span className="block text-[10px] text-text-secondary uppercase tracking-wider mb-1">{s.l}</span>
@@ -365,23 +367,23 @@ export default function ArenaDetailPage() {
 
               {/* Additional stats */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {stats.maxAttendance > 0 && <div className="rounded-2xl border border-neon-blue/20 bg-neon-blue/5 p-4 text-center"><span className="block text-[10px] text-text-secondary uppercase mb-1">Record Attendance</span><span className="block text-xl font-bold text-neon-blue">{stats.maxAttendance?.toLocaleString()}</span>{stats.maxAttendanceShow && <span className="block text-[10px] text-text-secondary mt-0.5">{fmt(stats.maxAttendanceShow.date)}</span>}</div>}
-                <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-4 text-center"><span className="block text-[10px] text-text-secondary uppercase mb-1">First Event</span><span className="block text-sm font-bold text-text-white">{fmt(stats.firstShowDate)}</span></div>
-                <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-4 text-center"><span className="block text-[10px] text-text-secondary uppercase mb-1">Last Event</span><span className="block text-sm font-bold text-text-white">{fmt(stats.lastShowDate)}</span></div>
-                {stats.avgDuration && <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-4 text-center"><span className="block text-[10px] text-text-secondary uppercase mb-1">Avg Match Length</span><span className="block text-xl font-bold text-text-white">{fmtDur(stats.avgDuration)}</span></div>}
+                {stats.maxAttendance > 0 && <div className="rounded-2xl border border-neon-blue/20 bg-neon-blue/5 p-4 text-center"><span className="block text-[10px] text-text-secondary uppercase mb-1">{t('arenas.stats.recordAttendance')}</span><span className="block text-xl font-bold text-neon-blue">{stats.maxAttendance?.toLocaleString()}</span>{stats.maxAttendanceShow && <span className="block text-[10px] text-text-secondary mt-0.5">{fmt(stats.maxAttendanceShow.date)}</span>}</div>}
+                <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-4 text-center"><span className="block text-[10px] text-text-secondary uppercase mb-1">{t('arenas.stats.firstEvent')}</span><span className="block text-sm font-bold text-text-white">{fmt(stats.firstShowDate)}</span></div>
+                <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-4 text-center"><span className="block text-[10px] text-text-secondary uppercase mb-1">{t('arenas.stats.lastEvent')}</span><span className="block text-sm font-bold text-text-white">{fmt(stats.lastShowDate)}</span></div>
+                {stats.avgDuration && <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-4 text-center"><span className="block text-[10px] text-text-secondary uppercase mb-1">{t('arenas.stats.avgMatchLength')}</span><span className="block text-xl font-bold text-text-white">{fmtDur(stats.avgDuration)}</span></div>}
               </div>
 
               {/* By decade & by series */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {stats.byDecade?.length > 0 && (
                   <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-6">
-                    <h3 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">Events by Decade</h3>
+                    <h3 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">{t('arenas.stats.eventsByDecade')}</h3>
                     <div className="space-y-2">{stats.byDecade.map((d: any) => { const mx = Math.max(...stats.byDecade.map((x: any) => x.count)); return <div key={d.decade} className="flex items-center gap-2"><span className="text-xs text-text-secondary w-10 font-mono">{d.decade}</span><div className="flex-1 h-2.5 rounded-full bg-bg-tertiary/50 overflow-hidden"><div className="h-full rounded-full bg-gradient-to-r from-neon-blue/60 to-neon-blue" style={{ width: `${(d.count / mx) * 100}%` }} /></div><span className="text-xs text-neon-blue font-bold w-8 text-right">{d.count}</span></div> })}</div>
                   </div>
                 )}
                 {stats.bySeries?.length > 0 && (
                   <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-6">
-                    <h3 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">Shows by Series</h3>
+                    <h3 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">{t('arenas.stats.showsBySeries')}</h3>
                     <div className="space-y-2">{stats.bySeries.slice(0, 10).map((s: any, i: number) => (
                       <div key={i} className="flex items-center gap-2">
                         {s.logo_url && <div className="w-5 h-5 rounded overflow-hidden shrink-0"><Image src={s.logo_url} alt="" width={20} height={20} className="w-full h-full object-contain" /></div>}

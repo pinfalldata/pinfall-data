@@ -49,7 +49,7 @@ export default function ObjectDetailPage() {
             <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-white mb-3">{obj.name}</h1>
             {obj.description && <p className="text-text-secondary text-sm sm:text-base leading-relaxed mb-4">{obj.description}</p>}
             <div className="flex flex-wrap gap-4">
-              <div className="px-4 py-3 rounded-xl border border-border-subtle/20 bg-bg-secondary/15 text-center"><p className="text-2xl font-display font-bold text-neon-blue">{data.total_uses}</p><p className="text-[10px] text-text-secondary uppercase tracking-wider">Total Uses</p></div>
+              <div className="px-4 py-3 rounded-xl border border-border-subtle/20 bg-bg-secondary/15 text-center"><p className="text-2xl font-display font-bold text-neon-blue">{data.total_uses}</p><p className="text-[10px] text-text-secondary uppercase tracking-wider">{t('objects.detail.totalUses')}</p></div>
               <div className="px-4 py-3 rounded-xl border border-border-subtle/20 bg-bg-secondary/15 text-center"><p className="text-2xl font-display font-bold text-neon-blue">{matches.filter((u: any) => u.match).length}</p><p className="text-[10px] text-text-secondary uppercase tracking-wider">{t('home.stats.matches')}</p></div>
               <div className="px-4 py-3 rounded-xl border border-border-subtle/20 bg-bg-secondary/15 text-center"><p className="text-2xl font-display font-bold text-neon-blue">{matches.filter((u: any) => u.segment && !u.match).length}</p><p className="text-[10px] text-text-secondary uppercase tracking-wider">{t('shows.detail.segments')}</p></div>
               <div className="px-4 py-3 rounded-xl border border-border-subtle/20 bg-bg-secondary/15 text-center"><p className="text-2xl font-display font-bold text-neon-blue">{superstars.length}</p><p className="text-[10px] text-text-secondary uppercase tracking-wider">{t('home.stats.superstars')}</p></div>
@@ -60,8 +60,8 @@ export default function ObjectDetailPage() {
 
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 pb-12">
         <div className="flex items-center gap-1 border-b border-border-subtle/20 mb-6">
-          <button onClick={() => setTab('matches')} className={`px-5 py-3 text-sm font-medium border-b-2 transition-all ${tab === 'matches' ? 'border-neon-blue text-neon-blue' : 'border-transparent text-text-secondary hover:text-text-white'}`}>Matches & Segments ({matches.length})</button>
-          <button onClick={() => setTab('superstars')} className={`px-5 py-3 text-sm font-medium border-b-2 transition-all ${tab === 'superstars' ? 'border-neon-blue text-neon-blue' : 'border-transparent text-text-secondary hover:text-text-white'}`}>Superstars ({superstars.length})</button>
+          <button onClick={() => setTab('matches')} className={`px-5 py-3 text-sm font-medium border-b-2 transition-all ${tab === 'matches' ? 'border-neon-blue text-neon-blue' : 'border-transparent text-text-secondary hover:text-text-white'}`}>{t('objects.detail.matchesSegments')} ({matches.length})</button>
+          <button onClick={() => setTab('superstars')} className={`px-5 py-3 text-sm font-medium border-b-2 transition-all ${tab === 'superstars' ? 'border-neon-blue text-neon-blue' : 'border-transparent text-text-secondary hover:text-text-white'}`}>{t('objects.detail.superstars')} ({superstars.length})</button>
         </div>
 
         {tab === 'matches' ? (

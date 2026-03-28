@@ -176,8 +176,11 @@
       "recentSegments": "Ostatnie segmenty",
       "recentMatches": "Ostatnie walki",
       "recordHolder": "Rekordzista",
-      "recentShowsCommentated": "Ostatnio komentowane show",
-      "seeAll": "Zobacz wszystko"
+      "recentShowsCommentated": "Recent Shows Commentated",
+      "seeAll": "Zobacz wszystko",
+      "recentMatchesManaged": "Recent Matches Managed",
+      "recentMatchesRefereed": "Recent Matches Refereed",
+      "recentShowsAnnounced": "Recent Shows Announced"
     },
     "info": {
       "realName": "Prawdziwe imię",
@@ -583,7 +586,41 @@
       "brand": "Marka",
       "matchCount": "Walki",
       "mainEvent": "Main Event",
-      "results": "Wyniki"
+      "results": "Wyniki",
+      "episode": "Odcinek",
+      "startTime": "Start Time",
+      "tvAudience": "TV Audience",
+      "avgWrestlerAge": "Avg. Wrestler Age",
+      "showRating": "Ocena show",
+      "overview": "Przegląd",
+      "yearsWord": "years",
+      "fullCard": "Pełna karta i wyniki",
+      "spoilerFree": "🔒 Bez spoilerów",
+      "showResults": "👁 Show Results",
+      "media": "Media",
+      "matchesAndSegments": "matches • {segments} segments"
+    },
+    "series": {
+      "firstEpisode": "Pierwszy odcinek",
+      "latestEpisode": "Ostatni odcinek",
+      "totalEpisodes": "Łącznie odcinków",
+      "filters": "Filters",
+      "allEpisodes": "All Episodes",
+      "allArenas": "All Arenas",
+      "allStates": "All States",
+      "venue": "Venue",
+      "location": "Location",
+      "attendance": "Attendance",
+      "venueName": "Venue Name"
+    },
+    "stats": {
+      "totalShows": "Total Shows",
+      "totalMatches": "Total Matches",
+      "avgRating": "Avg Rating",
+      "avgDuration": "Avg Duration",
+      "titleChanges": "Title Changes",
+      "winMethods": "Win Methods",
+      "topMatchTypes": "Top Match Types"
     }
   },
   "search": {
@@ -637,8 +674,8 @@
     "of": "z",
     "to": "do",
     "back": "Wróć",
-    "next": "Dalej",
-    "previous": "Wstecz",
+    "next": "Następny",
+    "previous": "Poprzedni",
     "seeMore": "Zobacz więcej",
     "seeLess": "Zobacz mniej",
     "close": "Zamknij",
@@ -702,5 +739,58 @@
     "disclaimer": "Pinfall Data to projekt fanowski stworzony przez jedną pasjonatę. Wszystkie treści multimedialne, obrazy i filmy z YouTube są własnością WWE (World Wrestling Entertainment). Ta strona nie jest powiązana, zatwierdzona ani połączona z WWE w żaden sposób.",
     "legal": "Nota prawna",
     "madeWith": "Stworzone z pasją dla WWE Universe"
+  },
+  "stipulations": {
+    "detail": {
+      "matchesRecorded": "matches recorded in WWE history",
+      "rules": "Zasady",
+      "howWon": "How are {name} won?",
+      "allMatches": "Wszystkie walki"
+    }
+  },
+  "arenas": {
+    "detail": {
+      "capacity": "Pojemność",
+      "opened": "Opened",
+      "totalEvents": "Total Events",
+      "location": "Location",
+      "event": "Event",
+      "show": "Show"
+    },
+    "stats": {
+      "totalEvents": "Total Events",
+      "totalMatches": "Total Matches",
+      "totalAttendance": "Total Attendance",
+      "avgAttendance": "Avg Attendance",
+      "avgRating": "Avg Rating",
+      "titleChanges": "Title Changes",
+      "recordAttendance": "Record Attendance",
+      "firstEvent": "First Event",
+      "lastEvent": "Last Event",
+      "avgMatchLength": "Avg Match Length",
+      "eventsByDecade": "Events by Decade",
+      "showsBySeries": "Shows by Series",
+      "winMethods": "Win Methods",
+      "topMatchTypes": "Top Match Types"
+    }
+  },
+  "objects": {
+    "detail": {
+      "totalUses": "Łączne użycia",
+      "matchesSegments": "Matches & Segments",
+      "superstars": "Superstars"
+    }
+  },
+  "matchStats": {
+    "result": "Wynik",
+    "statistics": "Statystyki",
+    "winRate": "Win Rate",
+    "winRateOverall": "Win Rate (Overall)",
+    "record": "Record",
+    "totalMatches": "Total Matches",
+    "nationality": "Nationality",
+    "winMethods": "Win Methods",
+    "heightCm": "Height (cm)",
+    "weightKg": "Weight (kg)"
   }
 }

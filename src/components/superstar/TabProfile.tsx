@@ -8,6 +8,16 @@ import { formatDate, formatDateShort, formatDuration, getRatingColor, getSegment
 
 export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabChange?: (tabId: string) => void }) {
   const t = useTranslations()
+
+  // Map API activity labels to translated labels
+  const activityLabelMap: Record<string, string> = {
+    'Recent Matches': t('superstars.profile.recentMatches'),
+    'Recent Shows Commentated': t('superstars.profile.recentShowsCommentated'),
+    'Recent Matches Managed': t('superstars.profile.recentMatchesManaged'),
+    'Recent Matches Refereed': t('superstars.profile.recentMatchesRefereed'),
+    'Recent Shows Announced': t('superstars.profile.recentShowsAnnounced'),
+  }
+
   const [preview, setPreview] = useState<any>(null)
 
   useEffect(() => {
@@ -53,7 +63,7 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
                   <div className="w-8 h-8 rounded-lg bg-neon-blue/15 flex items-center justify-center">
                     <span className="text-sm">{preview.primaryRole === 'wrestler' ? '🤼' : preview.primaryRole === 'commentator' ? '🎙️' : preview.primaryRole === 'manager' ? '👔' : preview.primaryRole === 'referee' ? '👨‍⚖️' : '📺'}</span>
                   </div>
-                  <h3 className="font-display text-base font-bold text-text-white">{preview.activityLabel}</h3>
+                  <h3 className="font-display text-base font-bold text-text-white">{activityLabelMap[preview.activityLabel] || preview.activityLabel}</h3>
                 </div>
                 <button onClick={() => onTabChange?.('matches')}
                   className="text-xs text-neon-blue hover:text-neon-blue/80 font-medium flex items-center gap-1 transition-colors">
@@ -409,6 +419,16 @@ function StatMini({ label, value, accent, color }: { label: string; value: any; 
 /* ═══════════════════════════════════════════════════════ */
 function RecordsBlocks({ superstarId }: { superstarId: number }) {
   const t = useTranslations()
+
+  // Map API activity labels to translated labels
+  const activityLabelMap: Record<string, string> = {
+    'Recent Matches': t('superstars.profile.recentMatches'),
+    'Recent Shows Commentated': t('superstars.profile.recentShowsCommentated'),
+    'Recent Matches Managed': t('superstars.profile.recentMatchesManaged'),
+    'Recent Matches Refereed': t('superstars.profile.recentMatchesRefereed'),
+    'Recent Shows Announced': t('superstars.profile.recentShowsAnnounced'),
+  }
+
   const [records, setRecords] = useState<any[]>([])
 
   useEffect(() => {

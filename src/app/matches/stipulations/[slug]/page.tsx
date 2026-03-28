@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { StarRating } from '@/components/ui/StarRating'
 
 interface MatchType {
@@ -101,6 +102,7 @@ export default function StipulationDetailPage() {
   const params = useParams()
   const slug = params.slug as string
 
+  const t = useTranslations()
   const [matchType, setMatchType] = useState<MatchType | null>(null)
   const [matches, setMatches] = useState<Match[]>([])
   const [stats, setStats] = useState<Stats | null>(null)
@@ -273,7 +275,7 @@ export default function StipulationDetailPage() {
             )}
             {matchType.rules && (
               <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-5 sm:p-6">
-                <h2 className="font-display text-sm font-bold text-neon-blue uppercase tracking-wider mb-2">Rules</h2>
+                <h2 className="font-display text-sm font-bold text-neon-blue uppercase tracking-wider mb-2">{t('stipulations.detail.rules')}</h2>
                 <p className="text-text-secondary text-sm leading-relaxed whitespace-pre-line">{matchType.rules}</p>
               </div>
             )}
@@ -292,19 +294,19 @@ export default function StipulationDetailPage() {
               <div className="flex flex-wrap gap-4 mb-5">
                 {stats.avgRating && (
                   <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-bg-tertiary/50 border border-border-subtle/20">
-                    <span className="text-[10px] text-text-secondary uppercase tracking-wider">Avg Rating</span>
+                    <span className="text-[10px] text-text-secondary uppercase tracking-wider">{t('shows.stats.avgRating')}</span>
                     <span className="text-neon-blue font-bold text-sm">{stats.avgRating.toFixed(2)}</span>
                   </div>
                 )}
                 {stats.avgDuration && (
                   <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-bg-tertiary/50 border border-border-subtle/20">
-                    <span className="text-[10px] text-text-secondary uppercase tracking-wider">Avg Duration</span>
+                    <span className="text-[10px] text-text-secondary uppercase tracking-wider">{t('shows.stats.avgDuration')}</span>
                     <span className="text-text-white font-bold text-sm">{formatDuration(stats.avgDuration)}</span>
                   </div>
                 )}
                 {stats.titleChangeCount > 0 && (
                   <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-bg-tertiary/50 border border-border-subtle/20">
-                    <span className="text-[10px] text-text-secondary uppercase tracking-wider">Title Changes</span>
+                    <span className="text-[10px] text-text-secondary uppercase tracking-wider">{t('shows.stats.titleChanges')}</span>
                     <span className="text-yellow-400 font-bold text-sm">{stats.titleChangeCount} ({stats.titleChangePercentage}%)</span>
                   </div>
                 )}
@@ -410,7 +412,7 @@ export default function StipulationDetailPage() {
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 py-2 lg:py-4">
         <div className="flex items-center justify-between mb-6">
           <h2 className="font-display text-lg font-bold text-text-white">
-            All Matches <span className="text-text-secondary font-normal text-sm">({total})</span>
+            {t('stipulations.detail.allMatches')} <span className="text-text-secondary font-normal text-sm">({total})</span>
           </h2>
           <span className="text-xs text-text-secondary">Page {page} of {totalPages}</span>
         </div>

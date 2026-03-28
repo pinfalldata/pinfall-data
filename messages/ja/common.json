@@ -176,8 +176,11 @@
       "recentSegments": "最近のセグメント",
       "recentMatches": "最近の試合",
       "recordHolder": "記録保持者",
-      "recentShowsCommentated": "最近の解説ショー",
-      "seeAll": "すべて見る"
+      "recentShowsCommentated": "Recent Shows Commentated",
+      "seeAll": "すべて見る",
+      "recentMatchesManaged": "Recent Matches Managed",
+      "recentMatchesRefereed": "Recent Matches Refereed",
+      "recentShowsAnnounced": "Recent Shows Announced"
     },
     "info": {
       "realName": "本名",
@@ -583,7 +586,41 @@
       "brand": "ブランド",
       "matchCount": "試合数",
       "mainEvent": "メインイベント",
-      "results": "結果"
+      "results": "結果",
+      "episode": "エピソード",
+      "startTime": "Start Time",
+      "tvAudience": "TV Audience",
+      "avgWrestlerAge": "Avg. Wrestler Age",
+      "showRating": "ショー評価",
+      "overview": "概要",
+      "yearsWord": "years",
+      "fullCard": "全カード＆結果",
+      "spoilerFree": "🔒 ネタバレなし",
+      "showResults": "👁 Show Results",
+      "media": "Media",
+      "matchesAndSegments": "matches • {segments} segments"
+    },
+    "series": {
+      "firstEpisode": "初回放送",
+      "latestEpisode": "最新放送",
+      "totalEpisodes": "総エピソード",
+      "filters": "Filters",
+      "allEpisodes": "All Episodes",
+      "allArenas": "All Arenas",
+      "allStates": "All States",
+      "venue": "Venue",
+      "location": "Location",
+      "attendance": "Attendance",
+      "venueName": "Venue Name"
+    },
+    "stats": {
+      "totalShows": "Total Shows",
+      "totalMatches": "Total Matches",
+      "avgRating": "Avg Rating",
+      "avgDuration": "Avg Duration",
+      "titleChanges": "Title Changes",
+      "winMethods": "Win Methods",
+      "topMatchTypes": "Top Match Types"
     }
   },
   "search": {
@@ -702,5 +739,58 @@
     "disclaimer": "Pinfall Dataは一人の情熱的なファンが作成したプロジェクトです。すべてのマルチメディアコンテンツ、画像、YouTube動画はWWE（World Wrestling Entertainment）の所有物です。このサイトはWWEとの提携、承認、関連は一切ありません。",
     "legal": "法的情報",
     "madeWith": "WWEユニバースへの情熱を込めて"
+  },
+  "stipulations": {
+    "detail": {
+      "matchesRecorded": "matches recorded in WWE history",
+      "rules": "ルール",
+      "howWon": "How are {name} won?",
+      "allMatches": "全試合"
+    }
+  },
+  "arenas": {
+    "detail": {
+      "capacity": "収容人数",
+      "opened": "Opened",
+      "totalEvents": "Total Events",
+      "location": "Location",
+      "event": "Event",
+      "show": "Show"
+    },
+    "stats": {
+      "totalEvents": "Total Events",
+      "totalMatches": "Total Matches",
+      "totalAttendance": "Total Attendance",
+      "avgAttendance": "Avg Attendance",
+      "avgRating": "Avg Rating",
+      "titleChanges": "Title Changes",
+      "recordAttendance": "Record Attendance",
+      "firstEvent": "First Event",
+      "lastEvent": "Last Event",
+      "avgMatchLength": "Avg Match Length",
+      "eventsByDecade": "Events by Decade",
+      "showsBySeries": "Shows by Series",
+      "winMethods": "Win Methods",
+      "topMatchTypes": "Top Match Types"
+    }
+  },
+  "objects": {
+    "detail": {
+      "totalUses": "使用回数",
+      "matchesSegments": "Matches & Segments",
+      "superstars": "Superstars"
+    }
+  },
+  "matchStats": {
+    "result": "結果",
+    "statistics": "統計",
+    "winRate": "Win Rate",
+    "winRateOverall": "Win Rate (Overall)",
+    "record": "Record",
+    "totalMatches": "Total Matches",
+    "nationality": "Nationality",
+    "winMethods": "Win Methods",
+    "heightCm": "Height (cm)",
+    "weightKg": "Weight (kg)"
   }
 }

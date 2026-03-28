@@ -176,8 +176,11 @@
       "recentSegments": "हाल के सेगमेंट",
       "recentMatches": "हाल के मैच",
       "recordHolder": "रिकॉर्ड धारक",
-      "recentShowsCommentated": "हाल में कमेंट्री किए शोज़",
-      "seeAll": "सभी देखें"
+      "recentShowsCommentated": "Recent Shows Commentated",
+      "seeAll": "सभी देखें",
+      "recentMatchesManaged": "Recent Matches Managed",
+      "recentMatchesRefereed": "Recent Matches Refereed",
+      "recentShowsAnnounced": "Recent Shows Announced"
     },
     "info": {
       "realName": "असली नाम",
@@ -583,7 +586,41 @@
       "brand": "ब्रांड",
       "matchCount": "मैच",
       "mainEvent": "मेन इवेंट",
-      "results": "परिणाम"
+      "results": "परिणाम",
+      "episode": "एपिसोड",
+      "startTime": "Start Time",
+      "tvAudience": "TV Audience",
+      "avgWrestlerAge": "Avg. Wrestler Age",
+      "showRating": "शो रेटिंग",
+      "overview": "अवलोकन",
+      "yearsWord": "years",
+      "fullCard": "पूरा कार्ड और परिणाम",
+      "spoilerFree": "🔒 स्पॉइलर-फ्री",
+      "showResults": "👁 Show Results",
+      "media": "Media",
+      "matchesAndSegments": "matches • {segments} segments"
+    },
+    "series": {
+      "firstEpisode": "First Episode",
+      "latestEpisode": "Latest Episode",
+      "totalEpisodes": "Total Episodes",
+      "filters": "Filters",
+      "allEpisodes": "All Episodes",
+      "allArenas": "All Arenas",
+      "allStates": "All States",
+      "venue": "Venue",
+      "location": "Location",
+      "attendance": "Attendance",
+      "venueName": "Venue Name"
+    },
+    "stats": {
+      "totalShows": "Total Shows",
+      "totalMatches": "Total Matches",
+      "avgRating": "Avg Rating",
+      "avgDuration": "Avg Duration",
+      "titleChanges": "Title Changes",
+      "winMethods": "Win Methods",
+      "topMatchTypes": "Top Match Types"
     }
   },
   "search": {
@@ -702,5 +739,58 @@
     "disclaimer": "Pinfall Data एक प्रशंसक द्वारा बनाई गई परियोजना है। सभी मल्टीमीडिया सामग्री, चित्र और YouTube वीडियो WWE (World Wrestling Entertainment) की संपत्ति हैं। यह साइट किसी भी तरह से WWE से संबद्ध, समर्थित या जुड़ी हुई नहीं है।",
     "legal": "कानूनी नोटिस",
     "madeWith": "WWE यूनिवर्स के लिए जुनून से बनाया गया"
+  },
+  "stipulations": {
+    "detail": {
+      "matchesRecorded": "matches recorded in WWE history",
+      "rules": "नियम",
+      "howWon": "How are {name} won?",
+      "allMatches": "सभी मैच"
+    }
+  },
+  "arenas": {
+    "detail": {
+      "capacity": "क्षमता",
+      "opened": "Opened",
+      "totalEvents": "Total Events",
+      "location": "Location",
+      "event": "Event",
+      "show": "Show"
+    },
+    "stats": {
+      "totalEvents": "Total Events",
+      "totalMatches": "Total Matches",
+      "totalAttendance": "Total Attendance",
+      "avgAttendance": "Avg Attendance",
+      "avgRating": "Avg Rating",
+      "titleChanges": "Title Changes",
+      "recordAttendance": "Record Attendance",
+      "firstEvent": "First Event",
+      "lastEvent": "Last Event",
+      "avgMatchLength": "Avg Match Length",
+      "eventsByDecade": "Events by Decade",
+      "showsBySeries": "Shows by Series",
+      "winMethods": "Win Methods",
+      "topMatchTypes": "Top Match Types"
+    }
+  },
+  "objects": {
+    "detail": {
+      "totalUses": "कुल उपयोग",
+      "matchesSegments": "Matches & Segments",
+      "superstars": "Superstars"
+    }
+  },
+  "matchStats": {
+    "result": "परिणाम",
+    "statistics": "आंकड़े",
+    "winRate": "Win Rate",
+    "winRateOverall": "Win Rate (Overall)",
+    "record": "Record",
+    "totalMatches": "Total Matches",
+    "nationality": "Nationality",
+    "winMethods": "Win Methods",
+    "heightCm": "Height (cm)",
+    "weightKg": "Weight (kg)"
   }
 }

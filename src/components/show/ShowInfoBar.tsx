@@ -22,11 +22,11 @@ export function ShowInfoBar({ show }: { show: any }) {
   // Build info cells — only include non-null ones
   const infoCells: { label: string; value: string; icon: string }[] = []
   infoCells.push({ label: t('shows.detail.date'), icon: '📅', value: formatDate(show.date) })
-  if (epNum) infoCells.push({ label: 'Episode', icon: '📺', value: `${seriesName} #${epNum}` })
-  if (show.start_time) infoCells.push({ label: 'Start Time', icon: '🕐', value: formatTime(show.start_time) })
+  if (epNum) infoCells.push({ label: t('shows.detail.episode'), icon: '📺', value: `${seriesName} #${epNum}` })
+  if (show.start_time) infoCells.push({ label: t('shows.detail.startTime'), icon: '🕐', value: formatTime(show.start_time) })
   if (show.attendance) infoCells.push({ label: t('shows.detail.attendance'), icon: '🏟️', value: formatNumber(show.attendance) })
-  if (show.tv_audience) infoCells.push({ label: 'TV Audience', icon: '📡', value: formatCompactNumber(show.tv_audience) })
-  if (show.averageAge) infoCells.push({ label: 'Avg. Wrestler Age', icon: '👤', value: `${show.averageAge} years` })
+  if (show.tv_audience) infoCells.push({ label: t('shows.detail.tvAudience'), icon: '📡', value: formatCompactNumber(show.tv_audience) })
+  if (show.averageAge) infoCells.push({ label: t('shows.detail.avgWrestlerAge'), icon: '👤', value: `${show.averageAge} ${t('shows.detail.yearsWord')}` })
 
   return (
     <div className="relative bg-bg-secondary/50 backdrop-blur-sm">
@@ -45,7 +45,7 @@ export function ShowInfoBar({ show }: { show: any }) {
         {/* Show Rating — prominent centered */}
         {show.rating && (
           <div className="flex items-center justify-center gap-3 py-3 border-b border-border-subtle/15">
-            <span className="text-text-secondary text-[10px] uppercase tracking-widest">Show Rating</span>
+            <span className="text-text-secondary text-[10px] uppercase tracking-widest">{t('shows.detail.showRating')}</span>
             <StarRating rating={show.rating} size="lg" showValue />
           </div>
         )}
@@ -183,7 +183,7 @@ export function ShowInfoBar({ show }: { show: any }) {
               }}
             />
             <div className="py-4 px-4 sm:px-8 text-center">
-              <p className="text-text-secondary text-[10px] uppercase tracking-widest mb-2">Overview</p>
+              <p className="text-text-secondary text-[10px] uppercase tracking-widest mb-2">{t('shows.detail.overview')}</p>
               <p className="text-sm text-text-white/80 leading-relaxed max-w-3xl mx-auto">
                 {show.highlights_md}
               </p>

@@ -177,7 +177,10 @@
       "recentMatches": "Recent Matches",
       "recordHolder": "Record Holder",
       "recentShowsCommentated": "Recent Shows Commentated",
-      "seeAll": "See all"
+      "seeAll": "See all",
+      "recentMatchesManaged": "Recent Matches Managed",
+      "recentMatchesRefereed": "Recent Matches Refereed",
+      "recentShowsAnnounced": "Recent Shows Announced"
     },
     "info": {
       "realName": "Real Name",
@@ -583,7 +586,41 @@
       "brand": "Brand",
       "matchCount": "Matches",
       "mainEvent": "Main Event",
-      "results": "Results"
+      "results": "Results",
+      "episode": "Episode",
+      "startTime": "Start Time",
+      "tvAudience": "TV Audience",
+      "avgWrestlerAge": "Avg. Wrestler Age",
+      "showRating": "Show Rating",
+      "overview": "Overview",
+      "yearsWord": "years",
+      "fullCard": "Full Card & Results",
+      "spoilerFree": "🔒 Spoiler-Free Mode",
+      "showResults": "👁 Show Results",
+      "media": "Media",
+      "matchesAndSegments": "matches • {segments} segments"
+    },
+    "series": {
+      "firstEpisode": "First Episode",
+      "latestEpisode": "Latest Episode",
+      "totalEpisodes": "Total Episodes",
+      "filters": "Filters",
+      "allEpisodes": "All Episodes",
+      "allArenas": "All Arenas",
+      "allStates": "All States",
+      "venue": "Venue",
+      "location": "Location",
+      "attendance": "Attendance",
+      "venueName": "Venue Name"
+    },
+    "stats": {
+      "totalShows": "Total Shows",
+      "totalMatches": "Total Matches",
+      "avgRating": "Avg Rating",
+      "avgDuration": "Avg Duration",
+      "titleChanges": "Title Changes",
+      "winMethods": "Win Methods",
+      "topMatchTypes": "Top Match Types"
     }
   },
   "search": {
@@ -702,5 +739,58 @@
     "disclaimer": "Pinfall Data is a fan-made project created by a single passionate individual. All multimedia content, images, and YouTube videos are the property of WWE (World Wrestling Entertainment). This site is not affiliated with, endorsed by, or connected to WWE in any way.",
     "legal": "Legal Notice",
     "madeWith": "Made with passion for the WWE Universe"
+  },
+  "stipulations": {
+    "detail": {
+      "matchesRecorded": "matches recorded in WWE history",
+      "rules": "Rules",
+      "howWon": "How are {name} won?",
+      "allMatches": "All Matches"
+    }
+  },
+  "arenas": {
+    "detail": {
+      "capacity": "Capacity",
+      "opened": "Opened",
+      "totalEvents": "Total Events",
+      "location": "Location",
+      "event": "Event",
+      "show": "Show"
+    },
+    "stats": {
+      "totalEvents": "Total Events",
+      "totalMatches": "Total Matches",
+      "totalAttendance": "Total Attendance",
+      "avgAttendance": "Avg Attendance",
+      "avgRating": "Avg Rating",
+      "titleChanges": "Title Changes",
+      "recordAttendance": "Record Attendance",
+      "firstEvent": "First Event",
+      "lastEvent": "Last Event",
+      "avgMatchLength": "Avg Match Length",
+      "eventsByDecade": "Events by Decade",
+      "showsBySeries": "Shows by Series",
+      "winMethods": "Win Methods",
+      "topMatchTypes": "Top Match Types"
+    }
+  },
+  "objects": {
+    "detail": {
+      "totalUses": "Total Uses",
+      "matchesSegments": "Matches & Segments",
+      "superstars": "Superstars"
+    }
+  },
+  "matchStats": {
+    "result": "Result",
+    "statistics": "Statistics",
+    "winRate": "Win Rate",
+    "winRateOverall": "Win Rate (Overall)",
+    "record": "Record",
+    "totalMatches": "Total Matches",
+    "nationality": "Nationality",
+    "winMethods": "Win Methods",
+    "heightCm": "Height (cm)",
+    "weightKg": "Weight (kg)"
   }
 }

@@ -71,6 +71,7 @@ const METHOD_COLORS: Record<string, string> = {
 }
 
 export function WinMethodsChart({ winMethods, color }: { winMethods: any[]; color: string }) {
+  const t = useTranslations()
   if (!winMethods || winMethods.length === 0) return null
 
   const chartData = winMethods.map(m => ({
@@ -82,7 +83,7 @@ export function WinMethodsChart({ winMethods, color }: { winMethods: any[]; colo
 
   return (
     <div className="glass rounded-xl p-5 border border-border-subtle/20">
-      <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-4">Win Methods</h3>
+      <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider mb-4">{t('matchStats.winMethods')}</h3>
       <div className="flex items-center gap-6">
         <DonutChart data={chartData} color={color} />
         <div className="flex-1 space-y-2">
@@ -133,6 +134,7 @@ export function HeadToHeadBar({ label, value1, value2, name1, name2, color1, col
 // ============================================================
 
 export function HeadToHeadSection({ h2h, superstar1, superstar2, color }: {
+  const t = useTranslations()
   h2h: any; superstar1: any; superstar2: any; color: string
 }) {
   if (!h2h || !h2h.total_matches || h2h.total_matches === 0) return null
@@ -157,7 +159,7 @@ export function HeadToHeadSection({ h2h, superstar1, superstar2, color }: {
         <HeadToHeadBar label="Wins" value1={h2h.wins_superstar1} value2={h2h.wins_superstar2} name1={superstar1.name} name2={superstar2.name} color1={c1} color2={c2} />
         {superstar1.total_matches > 0 && superstar2.total_matches > 0 && (
           <HeadToHeadBar
-            label="Win Rate (Overall)"
+            label={t('matchStats.winRateOverall')}
             value1={Math.round((superstar1.win_count / superstar1.total_matches) * 100)}
             value2={Math.round((superstar2.win_count / superstar2.total_matches) * 100)}
             name1={superstar1.name} name2={superstar2.name}
@@ -190,6 +192,7 @@ export function HeadToHeadSection({ h2h, superstar1, superstar2, color }: {
 // ============================================================
 
 export function SuperstarQuickStats({ superstar, winMethods, color }: {
+  const t = useTranslations()
   superstar: any; winMethods?: any[]; color: string
 }) {
   if (!superstar) return null
@@ -205,10 +208,10 @@ export function SuperstarQuickStats({ superstar, winMethods, color }: {
   return (
     <div className="glass rounded-xl p-4 border border-border-subtle/20">
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-        <StatCell label="Record" value={`${s.win_count}W - ${s.loss_count}L - ${s.draw_count}D`} />
+        <StatCell label={t('matchStats.record')} value={`${s.win_count}W - ${s.loss_count}L - ${s.draw_count}D`} />
         <StatCell label="Win Rate" value={s.total_matches ? getWinRate(s.win_count, s.total_matches) : '—'} highlight color={color} />
-        <StatCell label="Total Matches" value={s.total_matches?.toString() || '0'} />
-        <StatCell label="Nationality" value={s.nationalities?.[0] || s.birth_country || '—'} />
+        <StatCell label={t('matchStats.totalMatches')} value={s.total_matches?.toString() || '0'} />
+        <StatCell label={t('matchStats.nationality')} value={s.nationalities?.[0] || s.birth_country || '—'} />
       </div>
       {methodStats.length > 0 && (
         <div className="mt-3 pt-3 border-t border-border-subtle/10 grid grid-cols-2 sm:grid-cols-4 gap-2">

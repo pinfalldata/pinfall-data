@@ -176,8 +176,11 @@
       "recentSegments": "Neueste Segmente",
       "recentMatches": "Neueste Matches",
       "recordHolder": "Rekordhalter",
-      "recentShowsCommentated": "Kürzlich kommentierte Shows",
-      "seeAll": "Alle ansehen"
+      "recentShowsCommentated": "Recent Shows Commentated",
+      "seeAll": "Alle ansehen",
+      "recentMatchesManaged": "Recent Matches Managed",
+      "recentMatchesRefereed": "Recent Matches Refereed",
+      "recentShowsAnnounced": "Recent Shows Announced"
     },
     "info": {
       "realName": "Echter Name",
@@ -583,7 +586,41 @@
       "brand": "Brand",
       "matchCount": "Matches",
       "mainEvent": "Main Event",
-      "results": "Ergebnisse"
+      "results": "Ergebnisse",
+      "episode": "Episode",
+      "startTime": "Start Time",
+      "tvAudience": "TV Audience",
+      "avgWrestlerAge": "Avg. Wrestler Age",
+      "showRating": "Show-Bewertung",
+      "overview": "Übersicht",
+      "yearsWord": "years",
+      "fullCard": "Komplette Karte & Ergebnisse",
+      "spoilerFree": "🔒 Spoilerfrei",
+      "showResults": "👁 Ergebnisse anzeigen",
+      "media": "Media",
+      "matchesAndSegments": "matches • {segments} segments"
+    },
+    "series": {
+      "firstEpisode": "Erste Episode",
+      "latestEpisode": "Letzte Episode",
+      "totalEpisodes": "Episoden gesamt",
+      "filters": "Filter",
+      "allEpisodes": "Alle Episoden",
+      "allArenas": "All Arenas",
+      "allStates": "All States",
+      "venue": "Venue",
+      "location": "Location",
+      "attendance": "Attendance",
+      "venueName": "Venue Name"
+    },
+    "stats": {
+      "totalShows": "Total Shows",
+      "totalMatches": "Total Matches",
+      "avgRating": "Avg Rating",
+      "avgDuration": "Avg Duration",
+      "titleChanges": "Title Changes",
+      "winMethods": "Win Methods",
+      "topMatchTypes": "Top Match Types"
     }
   },
   "search": {
@@ -637,8 +674,8 @@
     "of": "von",
     "to": "bis",
     "back": "Zurück",
-    "next": "Weiter",
-    "previous": "Zurück",
+    "next": "Nächstes",
+    "previous": "Vorheriges",
     "seeMore": "Mehr anzeigen",
     "seeLess": "Weniger anzeigen",
     "close": "Schließen",
@@ -702,5 +739,58 @@
     "disclaimer": "Pinfall Data ist ein Fanprojekt, erstellt von einer einzelnen leidenschaftlichen Person. Alle Multimedia-Inhalte, Bilder und YouTube-Videos sind Eigentum der WWE (World Wrestling Entertainment). Diese Website ist in keiner Weise mit der WWE verbunden, von ihr unterstützt oder mit ihr verknüpft.",
     "legal": "Impressum",
     "madeWith": "Mit Leidenschaft für das WWE Universe erstellt"
+  },
+  "stipulations": {
+    "detail": {
+      "matchesRecorded": "Matches in der WWE-Geschichte",
+      "rules": "Regeln",
+      "howWon": "How are {name} won?",
+      "allMatches": "Alle Matches"
+    }
+  },
+  "arenas": {
+    "detail": {
+      "capacity": "Kapazität",
+      "opened": "Eröffnet",
+      "totalEvents": "Events gesamt",
+      "location": "Location",
+      "event": "Event",
+      "show": "Show"
+    },
+    "stats": {
+      "totalEvents": "Total Events",
+      "totalMatches": "Total Matches",
+      "totalAttendance": "Total Attendance",
+      "avgAttendance": "Avg Attendance",
+      "avgRating": "Avg Rating",
+      "titleChanges": "Title Changes",
+      "recordAttendance": "Zuschauerrekord",
+      "firstEvent": "Erstes Event",
+      "lastEvent": "Letztes Event",
+      "avgMatchLength": "Avg Match Length",
+      "eventsByDecade": "Events pro Jahrzehnt",
+      "showsBySeries": "Shows by Series",
+      "winMethods": "Win Methods",
+      "topMatchTypes": "Top Match Types"
+    }
+  },
+  "objects": {
+    "detail": {
+      "totalUses": "Einsätze gesamt",
+      "matchesSegments": "Matches & Segments",
+      "superstars": "Superstars"
+    }
+  },
+  "matchStats": {
+    "result": "Ergebnis",
+    "statistics": "Statistiken",
+    "winRate": "Win Rate",
+    "winRateOverall": "Win Rate (Overall)",
+    "record": "Bilanz",
+    "totalMatches": "Total Matches",
+    "nationality": "Nationalität",
+    "winMethods": "Win Methods",
+    "heightCm": "Height (cm)",
+    "weightKg": "Weight (kg)"
   }
 }

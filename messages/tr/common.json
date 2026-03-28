@@ -176,8 +176,11 @@
       "recentSegments": "Son Segmentler",
       "recentMatches": "Son Maçlar",
       "recordHolder": "Rekor Sahibi",
-      "recentShowsCommentated": "Son Yorumlanan Şovlar",
-      "seeAll": "Tümünü gör"
+      "recentShowsCommentated": "Recent Shows Commentated",
+      "seeAll": "Tümünü gör",
+      "recentMatchesManaged": "Recent Matches Managed",
+      "recentMatchesRefereed": "Recent Matches Refereed",
+      "recentShowsAnnounced": "Recent Shows Announced"
     },
     "info": {
       "realName": "Gerçek Adı",
@@ -583,7 +586,41 @@
       "brand": "Marka",
       "matchCount": "Maçlar",
       "mainEvent": "Ana Kart",
-      "results": "Sonuçlar"
+      "results": "Sonuçlar",
+      "episode": "Bölüm",
+      "startTime": "Start Time",
+      "tvAudience": "TV Audience",
+      "avgWrestlerAge": "Avg. Wrestler Age",
+      "showRating": "Şov Puanı",
+      "overview": "Genel Bakış",
+      "yearsWord": "years",
+      "fullCard": "Tam Kart ve Sonuçlar",
+      "spoilerFree": "🔒 Spoilersız",
+      "showResults": "👁 Show Results",
+      "media": "Media",
+      "matchesAndSegments": "matches • {segments} segments"
+    },
+    "series": {
+      "firstEpisode": "İlk Bölüm",
+      "latestEpisode": "Son Bölüm",
+      "totalEpisodes": "Toplam Bölüm",
+      "filters": "Filters",
+      "allEpisodes": "All Episodes",
+      "allArenas": "All Arenas",
+      "allStates": "All States",
+      "venue": "Venue",
+      "location": "Location",
+      "attendance": "Attendance",
+      "venueName": "Venue Name"
+    },
+    "stats": {
+      "totalShows": "Total Shows",
+      "totalMatches": "Total Matches",
+      "avgRating": "Avg Rating",
+      "avgDuration": "Avg Duration",
+      "titleChanges": "Title Changes",
+      "winMethods": "Win Methods",
+      "topMatchTypes": "Top Match Types"
     }
   },
   "search": {
@@ -702,5 +739,58 @@
     "disclaimer": "Pinfall Data, tutkulu bir birey tarafından oluşturulmuş hayran yapımı bir projedir. Tüm multimedya içerikleri, görseller ve YouTube videoları WWE'nin (World Wrestling Entertainment) mülkiyetindedir. Bu site hiçbir şekilde WWE ile bağlantılı, onaylanmış veya ilişkili değildir.",
     "legal": "Yasal Uyarı",
     "madeWith": "WWE Universe için tutkuyla yapıldı"
+  },
+  "stipulations": {
+    "detail": {
+      "matchesRecorded": "matches recorded in WWE history",
+      "rules": "Kurallar",
+      "howWon": "How are {name} won?",
+      "allMatches": "Tüm Maçlar"
+    }
+  },
+  "arenas": {
+    "detail": {
+      "capacity": "Kapasite",
+      "opened": "Opened",
+      "totalEvents": "Total Events",
+      "location": "Location",
+      "event": "Event",
+      "show": "Show"
+    },
+    "stats": {
+      "totalEvents": "Total Events",
+      "totalMatches": "Total Matches",
+      "totalAttendance": "Total Attendance",
+      "avgAttendance": "Avg Attendance",
+      "avgRating": "Avg Rating",
+      "titleChanges": "Title Changes",
+      "recordAttendance": "Record Attendance",
+      "firstEvent": "First Event",
+      "lastEvent": "Last Event",
+      "avgMatchLength": "Avg Match Length",
+      "eventsByDecade": "Events by Decade",
+      "showsBySeries": "Shows by Series",
+      "winMethods": "Win Methods",
+      "topMatchTypes": "Top Match Types"
+    }
+  },
+  "objects": {
+    "detail": {
+      "totalUses": "Toplam Kullanım",
+      "matchesSegments": "Matches & Segments",
+      "superstars": "Superstars"
+    }
+  },
+  "matchStats": {
+    "result": "Sonuç",
+    "statistics": "İstatistikler",
+    "winRate": "Win Rate",
+    "winRateOverall": "Win Rate (Overall)",
+    "record": "Record",
+    "totalMatches": "Total Matches",
+    "nationality": "Nationality",
+    "winMethods": "Win Methods",
+    "heightCm": "Height (cm)",
+    "weightKg": "Weight (kg)"
   }
 }

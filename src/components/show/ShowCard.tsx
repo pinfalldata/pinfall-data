@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { StarRating } from '@/components/ui/StarRating'
 import { MediaCarousel } from '@/components/ui/MediaCarousel'
@@ -13,6 +14,7 @@ import {
 } from '@/lib/utils'
 
 export function ShowCard({ show }: { show: any }) {
+  const t = useTranslations()
   const [spoilerMode, setSpoilerMode] = useState(true)
   const color = show.primary_color || '#c7a05a'
 
@@ -55,7 +57,7 @@ export function ShowCard({ show }: { show: any }) {
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
       {/* Section title */}
       <h2 className="font-display text-xl sm:text-2xl font-bold text-text-white text-center mb-2 uppercase tracking-wider">
-        Full Card & Results
+        {t('shows.detail.fullCard')}
       </h2>
       <p className="text-center text-text-secondary text-sm mb-6">
         {matchCount} match{matchCount !== 1 ? 'es' : ''} • {segmentCount} segment{segmentCount !== 1 ? 's' : ''}
@@ -83,7 +85,7 @@ export function ShowCard({ show }: { show: any }) {
             />
           </div>
           <span className="text-sm font-medium">
-            {spoilerMode ? '🔒 Spoiler-Free Mode' : '👁 Show Results'}
+            {spoilerMode ? t('shows.detail.spoilerFree') : t('shows.detail.showResults')}
           </span>
           <span className="text-xs opacity-60">
             {spoilerMode ? '(winners hidden)' : '(all results visible)'}

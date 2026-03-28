@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { ShareButtons } from '@/components/ui/ShareButtons'
 import { OMGBadge } from '@/components/ui/OMGBadge'
 
@@ -77,6 +78,7 @@ export default function ShowSeriesDetailPage() {
   const params = useParams()
   const slug = params.slug as string
 
+  const t = useTranslations()
   const [series, setSeries] = useState<Series | null>(null)
   const [episodes, setEpisodes] = useState<Episode[]>([])
   const [loading, setLoading] = useState(true)
@@ -295,7 +297,7 @@ export default function ShowSeriesDetailPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             <div className="hidden sm:block">
-              <p className="text-[9px] text-text-secondary uppercase tracking-wider">Previous</p>
+              <p className="text-[9px] text-text-secondary uppercase tracking-wider">{t('common.previous')}</p>
               <p className="text-xs text-text-white font-medium truncate max-w-[120px]">{prevSeries.short_name || prevSeries.name}</p>
             </div>
           </Link>
@@ -306,7 +308,7 @@ export default function ShowSeriesDetailPage() {
             className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 flex items-center gap-2 px-3 py-2 rounded-xl bg-bg-primary/80 border border-border-subtle/30 backdrop-blur-sm hover:border-border-subtle/60 transition-all group"
           >
             <div className="hidden sm:block text-right">
-              <p className="text-[9px] text-text-secondary uppercase tracking-wider">Next</p>
+              <p className="text-[9px] text-text-secondary uppercase tracking-wider">{t('common.next')}</p>
               <p className="text-xs text-text-white font-medium truncate max-w-[120px]">{nextSeries.short_name || nextSeries.name}</p>
             </div>
             <svg className="w-4 h-4 text-text-secondary group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -323,18 +325,18 @@ export default function ShowSeriesDetailPage() {
             <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm">
               {firstDate && (
                 <div className="text-center">
-                  <span className="block text-[10px] text-text-secondary uppercase tracking-wider">First Episode</span>
+                  <span className="block text-[10px] text-text-secondary uppercase tracking-wider">{t('shows.series.firstEpisode')}</span>
                   <span className="text-text-white font-semibold">{formatDateLong(firstDate)}</span>
                 </div>
               )}
               {lastDate && (
                 <div className="text-center">
-                  <span className="block text-[10px] text-text-secondary uppercase tracking-wider">Latest Episode</span>
+                  <span className="block text-[10px] text-text-secondary uppercase tracking-wider">{t('shows.series.latestEpisode')}</span>
                   <span className="text-text-white font-semibold">{formatDateLong(lastDate)}</span>
                 </div>
               )}
               <div className="text-center">
-                <span className="block text-[10px] text-text-secondary uppercase tracking-wider">Total Episodes</span>
+                <span className="block text-[10px] text-text-secondary uppercase tracking-wider">{t('shows.series.totalEpisodes')}</span>
                 <span className="text-neon-blue font-bold text-lg">{total.toLocaleString()}</span>
               </div>
               {series.is_active && (
@@ -395,7 +397,7 @@ export default function ShowSeriesDetailPage() {
           <div className="mb-6 rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-4">
             <div className="flex items-center gap-2 mb-3">
               <svg className="w-4 h-4 text-neon-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
-              <span className="text-xs font-bold text-neon-blue uppercase tracking-wider">Filters</span>
+              <span className="text-xs font-bold text-neon-blue uppercase tracking-wider">{t('shows.series.filters')}</span>
               {(filterYear || filterMonth || filterShowType || filterArenaId || filterState || filterCity || filterCountry) && (
                 <button
                   onClick={() => { setFilterYear(''); setFilterMonth(''); setFilterShowType(''); setFilterArenaId(''); setFilterState(''); setFilterCity(''); setFilterCountry('') }}
@@ -409,13 +411,13 @@ export default function ShowSeriesDetailPage() {
               {/* Year */}
               <select value={filterYear} onChange={e => { setFilterYear(e.target.value); if (!e.target.value) setFilterMonth('') }}
                 className="text-xs bg-bg-tertiary/50 border border-border-subtle/30 rounded-lg px-3 py-2 text-text-white focus:border-neon-blue/50 focus:outline-none transition-colors">
-                <option value="">All Years</option>
+                <option value="">{t('common.allYears')}</option>
                 {filterOptions.years.map(y => <option key={y} value={y}>{y}</option>)}
               </select>
               {/* Month */}
               <select value={filterMonth} onChange={e => setFilterMonth(e.target.value)} disabled={!filterYear}
                 className="text-xs bg-bg-tertiary/50 border border-border-subtle/30 rounded-lg px-3 py-2 text-text-white focus:border-neon-blue/50 focus:outline-none transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
-                <option value="">All Months</option>
+                <option value="">{t('common.allMonths')}</option>
                 {['January','February','March','April','May','June','July','August','September','October','November','December'].map((m, i) => (
                   <option key={i+1} value={String(i+1)}>{m}</option>
                 ))}
@@ -423,25 +425,25 @@ export default function ShowSeriesDetailPage() {
               {/* Show Type */}
               <select value={filterShowType} onChange={e => setFilterShowType(e.target.value)}
                 className="text-xs bg-bg-tertiary/50 border border-border-subtle/30 rounded-lg px-3 py-2 text-text-white focus:border-neon-blue/50 focus:outline-none transition-colors">
-                <option value="">All Types</option>
+                <option value="">{t('common.allTypes')}</option>
                 {filterOptions.showTypes.map(t => <option key={t} value={t}>{showTypeLabels[t] || t}</option>)}
               </select>
               {/* Arena */}
               <select value={filterArenaId} onChange={e => setFilterArenaId(e.target.value)}
                 className="text-xs bg-bg-tertiary/50 border border-border-subtle/30 rounded-lg px-3 py-2 text-text-white focus:border-neon-blue/50 focus:outline-none transition-colors">
-                <option value="">All Arenas</option>
+                <option value="">{t('shows.series.allArenas')}</option>
                 {filterOptions.arenas.map(a => <option key={a.id} value={String(a.id)}>{a.name}</option>)}
               </select>
               {/* Country */}
               <select value={filterCountry} onChange={e => { setFilterCountry(e.target.value); setFilterState(''); setFilterCity('') }}
                 className="text-xs bg-bg-tertiary/50 border border-border-subtle/30 rounded-lg px-3 py-2 text-text-white focus:border-neon-blue/50 focus:outline-none transition-colors">
-                <option value="">All Countries</option>
+                <option value="">{t('common.allCountries')}</option>
                 {filterOptions.countries.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
               {/* State */}
               <select value={filterState} onChange={e => { setFilterState(e.target.value); setFilterCity('') }}
                 className="text-xs bg-bg-tertiary/50 border border-border-subtle/30 rounded-lg px-3 py-2 text-text-white focus:border-neon-blue/50 focus:outline-none transition-colors">
-                <option value="">All States</option>
+                <option value="">{t('shows.series.allStates')}</option>
                 {filterOptions.states.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
               {/* City */}
@@ -622,11 +624,11 @@ export default function ShowSeriesDetailPage() {
               {/* Key stats grid */}
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
                 {[
-                  { label: 'Total Shows', value: stats.totalShows.toLocaleString(), color: 'text-neon-blue' },
-                  { label: 'Total Matches', value: stats.totalMatches.toLocaleString(), color: 'text-text-white' },
-                  { label: 'Avg Rating', value: stats.avgRating ? `${stats.avgRating}★` : '—', color: 'text-yellow-400' },
-                  { label: 'Avg Duration', value: stats.avgDuration ? formatDuration(stats.avgDuration) : '—', color: 'text-text-white' },
-                  { label: 'Title Changes', value: stats.totalTitleChanges.toLocaleString(), color: 'text-yellow-400' },
+                  { label: t('shows.stats.totalShows'), value: stats.totalShows.toLocaleString(), color: 'text-neon-blue' },
+                  { label: t('shows.stats.totalMatches'), value: stats.totalMatches.toLocaleString(), color: 'text-text-white' },
+                  { label: t('shows.stats.avgRating'), value: stats.avgRating ? `${stats.avgRating}★` : '—', color: 'text-yellow-400' },
+                  { label: t('shows.stats.avgDuration'), value: stats.avgDuration ? formatDuration(stats.avgDuration) : '—', color: 'text-text-white' },
+                  { label: t('shows.stats.titleChanges'), value: stats.totalTitleChanges.toLocaleString(), color: 'text-yellow-400' },
                   { label: 'Title Change %', value: `${stats.titleChangePercentage}%`, color: 'text-text-white' },
                 ].map((s, i) => (
                   <div key={i} className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-4 text-center">
@@ -639,7 +641,7 @@ export default function ShowSeriesDetailPage() {
               {/* Win methods */}
               {stats.winMethods.length > 0 && (
                 <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-6">
-                  <h3 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">Win Methods</h3>
+                  <h3 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">{t('shows.stats.winMethods')}</h3>
                   <div className="space-y-3">
                     {stats.winMethods.slice(0, 10).map(wm => (
                       <div key={wm.method} className="flex items-center gap-3">
@@ -657,7 +659,7 @@ export default function ShowSeriesDetailPage() {
               {/* Top match types */}
               {stats.topMatchTypes.length > 0 && (
                 <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-6">
-                  <h3 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">Top Match Types</h3>
+                  <h3 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">{t('shows.stats.topMatchTypes')}</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {stats.topMatchTypes.map((mt, i) => (
                       <Link key={mt.id} href={`/matches/stipulations/${mt.slug}`}

@@ -176,8 +176,11 @@
       "recentSegments": "Segmentos recentes",
       "recentMatches": "Lutas recentes",
       "recordHolder": "Detentor de recorde",
-      "recentShowsCommentated": "Shows comentados recentemente",
-      "seeAll": "Ver tudo"
+      "recentShowsCommentated": "Recent Shows Commentated",
+      "seeAll": "Ver tudo",
+      "recentMatchesManaged": "Recent Matches Managed",
+      "recentMatchesRefereed": "Recent Matches Refereed",
+      "recentShowsAnnounced": "Recent Shows Announced"
     },
     "info": {
       "realName": "Nome real",
@@ -583,7 +586,41 @@
       "brand": "Brand",
       "matchCount": "Lutas",
       "mainEvent": "Main Event",
-      "results": "Resultados"
+      "results": "Resultados",
+      "episode": "Episódio",
+      "startTime": "Start Time",
+      "tvAudience": "TV Audience",
+      "avgWrestlerAge": "Avg. Wrestler Age",
+      "showRating": "Nota do show",
+      "overview": "Visão geral",
+      "yearsWord": "years",
+      "fullCard": "Card completo e resultados",
+      "spoilerFree": "🔒 Sem spoilers",
+      "showResults": "👁 Show Results",
+      "media": "Media",
+      "matchesAndSegments": "matches • {segments} segments"
+    },
+    "series": {
+      "firstEpisode": "Primeiro episódio",
+      "latestEpisode": "Último episódio",
+      "totalEpisodes": "Total de episódios",
+      "filters": "Filters",
+      "allEpisodes": "All Episodes",
+      "allArenas": "All Arenas",
+      "allStates": "All States",
+      "venue": "Venue",
+      "location": "Location",
+      "attendance": "Attendance",
+      "venueName": "Venue Name"
+    },
+    "stats": {
+      "totalShows": "Total Shows",
+      "totalMatches": "Total Matches",
+      "avgRating": "Avg Rating",
+      "avgDuration": "Avg Duration",
+      "titleChanges": "Title Changes",
+      "winMethods": "Win Methods",
+      "topMatchTypes": "Top Match Types"
     }
   },
   "search": {
@@ -637,7 +674,7 @@
     "of": "de",
     "to": "para",
     "back": "Voltar",
-    "next": "Próximo",
+    "next": "Seguinte",
     "previous": "Anterior",
     "seeMore": "Ver mais",
     "seeLess": "Ver menos",
@@ -702,5 +739,58 @@
     "disclaimer": "Pinfall Data é um projeto feito por um fã apaixonado. Todo o conteúdo multimídia, imagens e vídeos do YouTube são propriedade da WWE (World Wrestling Entertainment). Este site não é afiliado, endossado ou conectado à WWE de nenhuma forma.",
     "legal": "Aviso legal",
     "madeWith": "Feito com paixão pelo WWE Universe"
+  },
+  "stipulations": {
+    "detail": {
+      "matchesRecorded": "lutas registradas na história da WWE",
+      "rules": "Regras",
+      "howWon": "How are {name} won?",
+      "allMatches": "Todas as lutas"
+    }
+  },
+  "arenas": {
+    "detail": {
+      "capacity": "Capacidade",
+      "opened": "Inauguração",
+      "totalEvents": "Total Events",
+      "location": "Location",
+      "event": "Event",
+      "show": "Show"
+    },
+    "stats": {
+      "totalEvents": "Total Events",
+      "totalMatches": "Total Matches",
+      "totalAttendance": "Total Attendance",
+      "avgAttendance": "Avg Attendance",
+      "avgRating": "Avg Rating",
+      "titleChanges": "Title Changes",
+      "recordAttendance": "Record Attendance",
+      "firstEvent": "First Event",
+      "lastEvent": "Last Event",
+      "avgMatchLength": "Avg Match Length",
+      "eventsByDecade": "Events by Decade",
+      "showsBySeries": "Shows by Series",
+      "winMethods": "Win Methods",
+      "topMatchTypes": "Top Match Types"
+    }
+  },
+  "objects": {
+    "detail": {
+      "totalUses": "Usos totais",
+      "matchesSegments": "Matches & Segments",
+      "superstars": "Superstars"
+    }
+  },
+  "matchStats": {
+    "result": "Resultado",
+    "statistics": "Estatísticas",
+    "winRate": "Win Rate",
+    "winRateOverall": "Win Rate (Overall)",
+    "record": "Recorde",
+    "totalMatches": "Total Matches",
+    "nationality": "Nationality",
+    "winMethods": "Win Methods",
+    "heightCm": "Height (cm)",
+    "weightKg": "Weight (kg)"
   }
 }

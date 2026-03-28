@@ -5,8 +5,10 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { getShowColorStyle, formatDate } from '@/lib/utils'
 import { ShareButtons } from '@/components/ui/ShareButtons'
+import { useTranslations } from 'next-intl'
 
 export function ShowHero({ show }: { show: any }) {
+  const t = useTranslations()
   const [logoError, setLogoError] = useState(false)
   const color = show.primary_color || '#c7a05a'
   const colorStyle = getShowColorStyle(color) as React.CSSProperties
@@ -138,7 +140,7 @@ export function ShowHero({ show }: { show: any }) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             <div className="hidden sm:block">
-              <p className="text-[9px] text-text-secondary uppercase tracking-wider">Previous</p>
+              <p className="text-[9px] text-text-secondary uppercase tracking-wider">{t('common.previous')}</p>
               <p className="text-xs text-text-white font-medium truncate max-w-[120px]">{show.prevShow.name}</p>
             </div>
           </Link>
@@ -150,7 +152,7 @@ export function ShowHero({ show }: { show: any }) {
             className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 flex items-center gap-2 px-3 py-2 rounded-xl bg-bg-primary/80 border border-border-subtle/30 backdrop-blur-sm hover:border-border-subtle/60 transition-all group"
           >
             <div className="hidden sm:block text-right">
-              <p className="text-[9px] text-text-secondary uppercase tracking-wider">Next</p>
+              <p className="text-[9px] text-text-secondary uppercase tracking-wider">{t('common.next')}</p>
               <p className="text-xs text-text-white font-medium truncate max-w-[120px]">{show.nextShow.name}</p>
             </div>
             <svg className="w-4 h-4 text-text-secondary group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">

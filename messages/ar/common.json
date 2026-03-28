@@ -176,8 +176,11 @@
       "recentSegments": "أحدث المقاطع",
       "recentMatches": "أحدث المباريات",
       "recordHolder": "صاحب رقم قياسي",
-      "recentShowsCommentated": "أحدث العروض التي علق عليها",
-      "seeAll": "عرض الكل"
+      "recentShowsCommentated": "Recent Shows Commentated",
+      "seeAll": "عرض الكل",
+      "recentMatchesManaged": "Recent Matches Managed",
+      "recentMatchesRefereed": "Recent Matches Refereed",
+      "recentShowsAnnounced": "Recent Shows Announced"
     },
     "info": {
       "realName": "الاسم الحقيقي",
@@ -583,7 +586,41 @@
       "brand": "العلامة",
       "matchCount": "المباريات",
       "mainEvent": "المباراة الرئيسية",
-      "results": "النتائج"
+      "results": "النتائج",
+      "episode": "الحلقة",
+      "startTime": "Start Time",
+      "tvAudience": "TV Audience",
+      "avgWrestlerAge": "Avg. Wrestler Age",
+      "showRating": "تقييم العرض",
+      "overview": "نظرة عامة",
+      "yearsWord": "years",
+      "fullCard": "البطاقة الكاملة والنتائج",
+      "spoilerFree": "🔒 بدون حرق",
+      "showResults": "👁 Show Results",
+      "media": "Media",
+      "matchesAndSegments": "matches • {segments} segments"
+    },
+    "series": {
+      "firstEpisode": "First Episode",
+      "latestEpisode": "Latest Episode",
+      "totalEpisodes": "Total Episodes",
+      "filters": "Filters",
+      "allEpisodes": "All Episodes",
+      "allArenas": "All Arenas",
+      "allStates": "All States",
+      "venue": "Venue",
+      "location": "Location",
+      "attendance": "Attendance",
+      "venueName": "Venue Name"
+    },
+    "stats": {
+      "totalShows": "Total Shows",
+      "totalMatches": "Total Matches",
+      "avgRating": "Avg Rating",
+      "avgDuration": "Avg Duration",
+      "titleChanges": "Title Changes",
+      "winMethods": "Win Methods",
+      "topMatchTypes": "Top Match Types"
     }
   },
   "search": {
@@ -702,5 +739,58 @@
     "disclaimer": "Pinfall Data مشروع مُعد من قِبل مشجع شغوف. جميع المحتويات المتعددة الوسائط والصور ومقاطع فيديو يوتيوب هي ملك لـ WWE (World Wrestling Entertainment). هذا الموقع غير تابع لـ WWE أو مدعوم أو مرتبط بها بأي شكل.",
     "legal": "إشعار قانوني",
     "madeWith": "صُنع بشغف لعالم WWE"
+  },
+  "stipulations": {
+    "detail": {
+      "matchesRecorded": "matches recorded in WWE history",
+      "rules": "القواعد",
+      "howWon": "How are {name} won?",
+      "allMatches": "جميع المباريات"
+    }
+  },
+  "arenas": {
+    "detail": {
+      "capacity": "السعة",
+      "opened": "Opened",
+      "totalEvents": "Total Events",
+      "location": "Location",
+      "event": "Event",
+      "show": "Show"
+    },
+    "stats": {
+      "totalEvents": "Total Events",
+      "totalMatches": "Total Matches",
+      "totalAttendance": "Total Attendance",
+      "avgAttendance": "Avg Attendance",
+      "avgRating": "Avg Rating",
+      "titleChanges": "Title Changes",
+      "recordAttendance": "Record Attendance",
+      "firstEvent": "First Event",
+      "lastEvent": "Last Event",
+      "avgMatchLength": "Avg Match Length",
+      "eventsByDecade": "Events by Decade",
+      "showsBySeries": "Shows by Series",
+      "winMethods": "Win Methods",
+      "topMatchTypes": "Top Match Types"
+    }
+  },
+  "objects": {
+    "detail": {
+      "totalUses": "إجمالي الاستخدامات",
+      "matchesSegments": "Matches & Segments",
+      "superstars": "Superstars"
+    }
+  },
+  "matchStats": {
+    "result": "النتيجة",
+    "statistics": "الإحصائيات",
+    "winRate": "Win Rate",
+    "winRateOverall": "Win Rate (Overall)",
+    "record": "Record",
+    "totalMatches": "Total Matches",
+    "nationality": "Nationality",
+    "winMethods": "Win Methods",
+    "heightCm": "Height (cm)",
+    "weightKg": "Weight (kg)"
   }
 }
