@@ -108,10 +108,10 @@ function AnimatedStat({ stat, delay }: { stat: Stat; delay: number }) {
       className="group relative flex flex-col items-center justify-center py-4 sm:py-5 px-2 rounded-xl border border-border-subtle/20 bg-bg-secondary/20 hover:bg-bg-secondary/40 hover:border-neon-blue/20 transition-all duration-300 cursor-pointer"
     >
       <span className="text-lg sm:text-xl mb-1 group-hover:scale-110 transition-transform duration-300">{stat.icon}</span>
-      <span className="font-mono text-lg sm:text-2xl font-bold text-neon-blue tabular-nums">
+      <span className="font-stats text-xl sm:text-3xl font-bold text-neon-blue tabular-nums tracking-wide">
         {formatted}{stat.suffix}
       </span>
-      <span className="text-[9px] sm:text-[10px] text-text-secondary uppercase tracking-wider mt-0.5 text-center leading-tight group-hover:text-neon-blue/70 transition-colors">
+      <span className="font-stats text-[10px] sm:text-xs text-text-secondary uppercase tracking-[0.15em] mt-0.5 text-center leading-tight group-hover:text-neon-blue/70 transition-colors">
         {stat.label}
       </span>
     </Link>

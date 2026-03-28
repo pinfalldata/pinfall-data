@@ -36,6 +36,7 @@ const config: Config = {
         display: ['var(--font-display)', 'Oswald', 'sans-serif'],
         body: ['var(--font-body)', 'Source Sans 3', 'sans-serif'],
         mono: ['var(--font-mono)', 'JetBrains Mono', 'monospace'],
+        stats: ['var(--font-stats)', 'Bebas Neue', 'Impact', 'sans-serif'],
       },
       boxShadow: {
         'neon-blue': '0 0 15px rgba(199, 160, 90, 0.3), 0 0 30px rgba(199, 160, 90, 0.1)',

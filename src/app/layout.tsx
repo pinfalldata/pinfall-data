@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
-import { Oswald, Source_Sans_3, JetBrains_Mono } from 'next/font/google'
+import { Oswald, Source_Sans_3, JetBrains_Mono, Bebas_Neue } from 'next/font/google'
 import '@/styles/globals.css'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
@@ -25,6 +25,13 @@ const sourceSans = Source_Sans_3({
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-mono',
+  display: 'swap',
+})
+
+const bebasNeue = Bebas_Neue({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-stats',
   display: 'swap',
 })
 
@@ -103,7 +110,7 @@ export default async function RootLayout({
     <html
       lang={locale}
       dir={dir}
-      className={`${oswald.variable} ${sourceSans.variable} ${jetbrainsMono.variable}`}
+      className={`${oswald.variable} ${sourceSans.variable} ${jetbrainsMono.variable} ${bebasNeue.variable}`}
     >
       <body className="min-h-screen bg-bg-primary text-text-primary font-body antialiased">
         <NextIntlClientProvider messages={messages}>
