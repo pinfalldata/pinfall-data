@@ -188,8 +188,45 @@ function BirthdayBlock({ birthdays }: { birthdays: any[] }) {
 }
 
 export function BirthdayStandalone() {
+  const t = useTranslations()
   const data = useHomepageData()
-  if (!data || !data.birthdays || data.birthdays.length === 0) return <div />
+
+  // Loading state — show skeleton while data loads
+  if (!data) {
+    return (
+      <div className="rounded-2xl border border-neon-pink/20 bg-gradient-to-br from-neon-pink/5 via-bg-secondary/20 to-transparent overflow-hidden h-full flex flex-col">
+        <div className="px-4 pt-4 flex items-center gap-1.5">
+          <h3 className="font-display text-sm font-bold text-neon-pink flex items-center gap-1.5">
+            <span className="text-base">🎂</span> {t('home.sections.bornToday')}
+          </h3>
+        </div>
+        <div className="flex-1 flex items-center justify-center p-4">
+          <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-xl bg-bg-tertiary/30 animate-pulse" />
+        </div>
+        <div className="px-4 pb-4 space-y-2">
+          <div className="h-4 w-24 mx-auto rounded bg-bg-tertiary/30 animate-pulse" />
+          <div className="h-3 w-32 mx-auto rounded bg-bg-tertiary/20 animate-pulse" />
+        </div>
+      </div>
+    )
+  }
+
+  // Empty state — no birthdays today
+  if (!data.birthdays || data.birthdays.length === 0) {
+    return (
+      <div className="rounded-2xl border border-neon-pink/20 bg-gradient-to-br from-neon-pink/5 via-bg-secondary/20 to-transparent overflow-hidden h-full flex flex-col">
+        <div className="px-4 pt-4 flex items-center gap-1.5">
+          <h3 className="font-display text-sm font-bold text-neon-pink flex items-center gap-1.5">
+            <span className="text-base">🎂</span> {t('home.sections.bornToday')}
+          </h3>
+        </div>
+        <div className="flex-1 flex items-center justify-center p-6">
+          <p className="text-text-secondary/60 text-sm text-center">{t('home.sections.noBirthdaysToday')}</p>
+        </div>
+      </div>
+    )
+  }
+
   return <BirthdayBlock birthdays={data.birthdays} />
 }
 

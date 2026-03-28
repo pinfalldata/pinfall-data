@@ -96,20 +96,19 @@ export function OnThisDay() {
 
       {/* Event card — fills remaining height */}
       <div className="p-5 sm:p-6 pt-4 flex-1 flex flex-col">
-        <div className="relative flex-1 flex flex-col">
-          {/* Image — large, cinematic */}
+        <div className="flex-1 flex flex-col sm:flex-row gap-4 sm:gap-5">
+          {/* Image — tall rectangle, portrait-ish */}
           {event.image_url && (
-            <div className="relative w-full h-40 sm:h-44 rounded-xl overflow-hidden shrink-0 border border-border-subtle/20 mb-4">
+            <div className="relative w-full sm:w-48 md:w-56 h-48 sm:h-auto sm:min-h-[180px] rounded-xl overflow-hidden shrink-0 border border-border-subtle/20 self-stretch">
               <Image
                 src={event.image_url}
                 alt={event.title}
                 fill
-                sizes="(max-width: 640px) 100vw, 800px"
-                className="object-cover object-top transition-transform duration-500 group-hover/card:scale-105"
+                sizes="(max-width: 640px) 100vw, 224px"
+                className="object-cover object-center transition-transform duration-500 group-hover/card:scale-105"
               />
-              {/* Gradient overlay with year */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
+              {/* Year overlay */}
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
                 <span className="inline-flex px-2 py-0.5 rounded-md bg-neon-blue/20 border border-neon-blue/30 text-neon-blue text-sm font-mono font-bold backdrop-blur-sm">
                   {event.year}
                 </span>
@@ -117,21 +116,21 @@ export function OnThisDay() {
             </div>
           )}
 
-          {/* Year badge (when no image) */}
-          {!event.image_url && (
-            <span className="inline-flex self-start mb-3 px-2.5 py-1 rounded-md bg-neon-blue/10 border border-neon-blue/20 text-neon-blue text-xs font-mono font-bold">
-              {event.year}
-            </span>
-          )}
-
-          {/* Text content — grows to fill space */}
+          {/* Text content — fills right side */}
           <div className="flex-1 flex flex-col justify-between min-w-0">
             <div>
-              <h3 className="font-display text-lg sm:text-xl font-bold text-text-white leading-snug mb-2">
+              {/* Year badge (when no image) */}
+              {!event.image_url && (
+                <span className="inline-flex self-start mb-3 px-2.5 py-1 rounded-md bg-neon-blue/10 border border-neon-blue/20 text-neon-blue text-xs font-mono font-bold">
+                  {event.year}
+                </span>
+              )}
+
+              <h3 className="font-display text-lg sm:text-xl font-bold text-text-white leading-snug mb-3">
                 {event.title}
               </h3>
               {event.description && (
-                <p className="text-text-secondary text-sm leading-relaxed line-clamp-3">
+                <p className="text-text-secondary text-sm sm:text-[15px] leading-relaxed line-clamp-4 sm:line-clamp-5">
                   {event.description}
                 </p>
               )}
