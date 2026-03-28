@@ -99,12 +99,12 @@ export function OnThisDay() {
         <div className="flex-1 flex flex-col sm:flex-row gap-4 sm:gap-5">
           {/* Image — tall rectangle, portrait-ish */}
           {event.image_url && (
-            <div className="relative w-full sm:w-48 md:w-56 h-48 sm:h-auto sm:min-h-[180px] rounded-xl overflow-hidden shrink-0 border border-border-subtle/20 self-stretch">
+            <div className="relative w-full sm:w-56 md:w-72 h-48 sm:h-auto sm:min-h-[180px] rounded-xl overflow-hidden shrink-0 border border-border-subtle/20 self-stretch">
               <Image
                 src={event.image_url}
                 alt={event.title}
                 fill
-                sizes="(max-width: 640px) 100vw, 224px"
+                sizes="(max-width: 640px) 100vw, 288px"
                 className="object-cover object-center transition-transform duration-500 group-hover/card:scale-105"
               />
               {/* Year overlay */}
