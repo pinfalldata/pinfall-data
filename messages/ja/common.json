@@ -50,7 +50,7 @@
       "historicalMilestones": "歴史的マイルストーン",
       "hallOfFame": "殿堂",
       "slammyAwards": "スラミー・アワード",
-      "yearEndAwards": "年間アワード"
+      "yearEndAwards": "Year-End Awards"
     }
   },
   "home": {
@@ -176,7 +176,8 @@
       "recentSegments": "最近のセグメント",
       "recentMatches": "最近の試合",
       "recordHolder": "記録保持者",
-      "recentShowsCommentated": "最近の解説ショー"
+      "recentShowsCommentated": "最近の解説ショー",
+      "seeAll": "すべて見る"
     },
     "info": {
       "realName": "本名",
@@ -207,24 +208,31 @@
       "inducted": "殿堂入り ★"
     },
     "tabs": {
-      "profile": "プロフィール",
+      "profile": "👤 プロフィール",
       "statistics": "📊 統計",
       "gallery": "📸 ギャラリー",
       "persona": "🎭 ペルソナ",
       "omgMoments": "⚡ OMGモーメント",
-      "moves": "技",
+      "moves": "💪 技",
       "hallOfFame": "🏛️ 殿堂",
       "slammyAwards": "🏆 スラミー",
-      "yearEndAwards": "🎖️ 年間アワード",
-      "manager": "マネージャー",
-      "guestCommentary": "ゲスト解説",
-      "guestReferee": "ゲストレフェリー",
-      "booksFilms": "書籍＆映画",
+      "yearEndAwards": "🎖️ Year-End Awards",
+      "manager": "🎩 マネージャー",
+      "guestCommentary": "🎙️ ゲスト解説",
+      "guestReferee": "🦓 ゲストレフェリー",
+      "booksFilms": "📚 書籍＆映画",
       "objectsUsed": "🪑 使用オブジェクト",
-      "ringAnnouncer": "リングアナ",
-      "executive": "幹部",
-      "interviewer": "インタビュアー",
-      "commentator": "コメンテーター"
+      "ringAnnouncer": "📢 リングアナ",
+      "executive": "🏛️ 幹部",
+      "interviewer": "🎤 インタビュアー",
+      "commentator": "🎙️ コメンテーター",
+      "matches": "🥊 試合",
+      "segments": "🎤 セグメント",
+      "timeline": "📅 年表",
+      "championships": "🏆 チャンピオンシップ",
+      "tagTeams": "👥 タッグチーム",
+      "stables": "⚔️ ユニット",
+      "referee": "🦓 レフェリー"
     },
     "stats": {
       "avgDuration": "平均時間",
@@ -263,7 +271,12 @@
       "match": "試合",
       "matchHistory": "試合履歴",
       "champOnly": "タイトルマッチのみ",
-      "titleChangeOnly": "タイトル変更のみ"
+      "titleChangeOnly": "タイトル変更のみ",
+      "matchesFound": "件の試合",
+      "matchFound": "件の試合",
+      "searching": "検索中...",
+      "noMatches": "試合が見つかりません",
+      "total": "合計"
     },
     "hof": {
       "inductedIn": "殿堂入り",
@@ -275,6 +288,16 @@
       "filmsTV": "映画＆TV",
       "books": "書籍",
       "noData": "データなし。"
+    },
+    "roleData": {
+      "show": "ショー",
+      "managedFor": "担当選手",
+      "opponents": "対戦相手",
+      "coCommentators": "共同解説者",
+      "segment": "セグメント",
+      "match": "試合",
+      "promotion": "団体",
+      "clear": "クリア"
     }
   },
   "matches": {

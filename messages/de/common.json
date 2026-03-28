@@ -50,7 +50,7 @@
       "historicalMilestones": "Historische Meilensteine",
       "hallOfFame": "Hall of Fame",
       "slammyAwards": "Slammy Awards",
-      "yearEndAwards": "Jahresend-Auszeichnungen"
+      "yearEndAwards": "Year-End Awards"
     }
   },
   "home": {
@@ -176,7 +176,8 @@
       "recentSegments": "Neueste Segmente",
       "recentMatches": "Neueste Matches",
       "recordHolder": "Rekordhalter",
-      "recentShowsCommentated": "Kürzlich kommentierte Shows"
+      "recentShowsCommentated": "Kürzlich kommentierte Shows",
+      "seeAll": "Alle ansehen"
     },
     "info": {
       "realName": "Echter Name",
@@ -207,24 +208,31 @@
       "inducted": "Aufgenommen ★"
     },
     "tabs": {
-      "profile": "Profil",
+      "profile": "👤 Profil",
       "statistics": "📊 Statistiken",
       "gallery": "📸 Galerie",
       "persona": "🎭 Persona",
       "omgMoments": "⚡ OMG-Momente",
-      "moves": "Moves",
+      "moves": "💪 Moves",
       "hallOfFame": "🏛️ Hall of Fame",
       "slammyAwards": "🏆 Slammy Awards",
-      "yearEndAwards": "🎖️ Jahresend-Auszeichnungen",
-      "manager": "Manager",
-      "guestCommentary": "Gastkommentar",
-      "guestReferee": "Gastschiedsrichter",
-      "booksFilms": "Bücher & Filme",
+      "yearEndAwards": "🎖️ Year-End Awards",
+      "manager": "🎩 Manager",
+      "guestCommentary": "🎙️ Gastkommentar",
+      "guestReferee": "🦓 Gastschiedsrichter",
+      "booksFilms": "📚 Bücher & Filme",
       "objectsUsed": "🪑 Gegenstände",
-      "ringAnnouncer": "Ringansager",
-      "executive": "Führungskraft",
-      "interviewer": "Interviewer",
-      "commentator": "Kommentator"
+      "ringAnnouncer": "📢 Ringansager",
+      "executive": "🏛️ Führungskraft",
+      "interviewer": "🎤 Interviewer",
+      "commentator": "🎙️ Kommentator",
+      "matches": "🥊 Matches",
+      "segments": "🎤 Segmente",
+      "timeline": "📅 Zeitachse",
+      "championships": "🏆 Meisterschaften",
+      "tagTeams": "👥 Tag Teams",
+      "stables": "⚔️ Stables",
+      "referee": "🦓 Schiedsrichter"
     },
     "stats": {
       "avgDuration": "Ø Dauer",
@@ -263,7 +271,12 @@
       "match": "Match",
       "matchHistory": "Match-Verlauf",
       "champOnly": "Nur Titelmatches",
-      "titleChangeOnly": "Nur Titelwechsel"
+      "titleChangeOnly": "Nur Titelwechsel",
+      "matchesFound": "Matches gefunden",
+      "matchFound": "Match gefunden",
+      "searching": "Suche...",
+      "noMatches": "Keine Matches gefunden",
+      "total": "insgesamt"
     },
     "hof": {
       "inductedIn": "Aufgenommen",
@@ -275,6 +288,16 @@
       "filmsTV": "Filme & TV",
       "books": "Bücher",
       "noData": "Keine Daten."
+    },
+    "roleData": {
+      "show": "Show",
+      "managedFor": "Gemanagt für",
+      "opponents": "Gegner",
+      "coCommentators": "Co-Kommentatoren",
+      "segment": "Segment",
+      "match": "Match",
+      "promotion": "Promotion",
+      "clear": "Löschen"
     }
   },
   "matches": {

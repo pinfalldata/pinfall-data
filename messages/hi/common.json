@@ -50,7 +50,7 @@
       "historicalMilestones": "ऐतिहासिक उपलब्धियाँ",
       "hallOfFame": "हॉल ऑफ़ फ़ेम",
       "slammyAwards": "स्लैमी अवार्ड्स",
-      "yearEndAwards": "साल के अंत के पुरस्कार"
+      "yearEndAwards": "Year-End Awards"
     }
   },
   "home": {
@@ -176,7 +176,8 @@
       "recentSegments": "हाल के सेगमेंट",
       "recentMatches": "हाल के मैच",
       "recordHolder": "रिकॉर्ड धारक",
-      "recentShowsCommentated": "हाल में कमेंट्री किए शोज़"
+      "recentShowsCommentated": "हाल में कमेंट्री किए शोज़",
+      "seeAll": "सभी देखें"
     },
     "info": {
       "realName": "असली नाम",
@@ -207,24 +208,31 @@
       "inducted": "शामिल ★"
     },
     "tabs": {
-      "profile": "प्रोफ़ाइल",
+      "profile": "👤 प्रोफ़ाइल",
       "statistics": "📊 आंकड़े",
       "gallery": "📸 गैलरी",
       "persona": "🎭 व्यक्तित्व",
       "omgMoments": "⚡ OMG मोमेंट्स",
-      "moves": "मूव्स",
+      "moves": "💪 मूव्स",
       "hallOfFame": "🏛️ Hall of Fame",
       "slammyAwards": "🏆 Slammy Awards",
-      "yearEndAwards": "🎖️ वार्षिक पुरस्कार",
-      "manager": "मैनेजर",
-      "guestCommentary": "गेस्ट कमेंट्री",
-      "guestReferee": "गेस्ट रेफ़री",
-      "booksFilms": "किताबें और फ़िल्में",
+      "yearEndAwards": "🎖️ Year-End Awards",
+      "manager": "🎩 मैनेजर",
+      "guestCommentary": "🎙️ गेस्ट कमेंट्री",
+      "guestReferee": "🦓 गेस्ट रेफ़री",
+      "booksFilms": "📚 किताबें और फ़िल्में",
       "objectsUsed": "🪑 ऑब्जेक्ट्स",
-      "ringAnnouncer": "रिंग अनाउंसर",
-      "executive": "एक्ज़ीक्यूटिव",
-      "interviewer": "इंटरव्यूअर",
-      "commentator": "कमेंटेटर"
+      "ringAnnouncer": "📢 रिंग अनाउंसर",
+      "executive": "🏛️ एक्ज़ीक्यूटिव",
+      "interviewer": "🎤 इंटरव्यूअर",
+      "commentator": "🎙️ कमेंटेटर",
+      "matches": "🥊 मैच",
+      "segments": "🎤 सेगमेंट",
+      "timeline": "📅 समयरेखा",
+      "championships": "🏆 चैंपियनशिप",
+      "tagTeams": "👥 Tag Teams",
+      "stables": "⚔️ Stables",
+      "referee": "🦓 रेफ़री"
     },
     "stats": {
       "avgDuration": "औसत अवधि",
@@ -263,7 +271,12 @@
       "match": "मैच",
       "matchHistory": "मैच इतिहास",
       "champOnly": "केवल चैंपियनशिप मैच",
-      "titleChangeOnly": "केवल टाइटल चेंज"
+      "titleChangeOnly": "केवल टाइटल चेंज",
+      "matchesFound": "मैच मिले",
+      "matchFound": "मैच मिला",
+      "searching": "खोज रहे हैं...",
+      "noMatches": "कोई मैच नहीं मिला",
+      "total": "कुल"
     },
     "hof": {
       "inductedIn": "शामिल",
@@ -275,6 +288,16 @@
       "filmsTV": "फ़िल्में & टीवी",
       "books": "किताबें",
       "noData": "कोई डेटा नहीं।"
+    },
+    "roleData": {
+      "show": "शो",
+      "managedFor": "के लिए मैनेज",
+      "opponents": "प्रतिद्वंद्वी",
+      "coCommentators": "सह-कमेंटेटर",
+      "segment": "सेगमेंट",
+      "match": "मैच",
+      "promotion": "प्रमोशन",
+      "clear": "साफ़ करें"
     }
   },
   "matches": {

@@ -184,7 +184,7 @@ export function TabMatches({ superstar }: { superstar: any }) {
             {t('superstars.matches.matchHistory')}
           </h3>
           <p className="text-text-secondary text-sm mt-0.5">
-            {loading && !initialLoad ? 'Searching...' : `${total} match${total !== 1 ? 'es' : ''} found`}
+            {loading && !initialLoad ? t('superstars.matches.searching') : `${total} ${total !== 1 ? t('superstars.matches.matchesFound') : t('superstars.matches.matchFound')}`}
           </p>
         </div>
 
@@ -417,7 +417,7 @@ export function TabMatches({ superstar }: { superstar: any }) {
         </div>
       ) : matches.length === 0 ? (
         <div className="text-center py-16">
-          <p className="text-text-secondary text-lg">No matches found</p>
+          <p className="text-text-secondary text-lg">{t('superstars.matches.noMatches')}</p>
           {hasActiveFilters && (
             <button onClick={resetFilters} className="mt-3 text-sm text-neon-blue hover:underline">
               Clear filters
@@ -647,6 +647,7 @@ function MatchRow({ match, superstarId, index }: {
 function Pagination({ page, totalPages, total, onPageChange }: {
   page: number; totalPages: number; total: number; onPageChange: (p: number) => void
 }) {
+  const t = useTranslations()
   const getVisiblePages = () => {
     const pages: (number | 'ellipsis')[] = []
     if (totalPages <= 7) {
@@ -664,7 +665,7 @@ function Pagination({ page, totalPages, total, onPageChange }: {
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-8 pt-6 border-t border-border-subtle/20">
       <p className="text-xs text-text-secondary">
-        Page {page} of {totalPages} — {total} match{total !== 1 ? 'es' : ''} total
+        Page {page} / {totalPages} — {total} {t('superstars.matches.total')}
       </p>
       <div className="flex items-center gap-1">
         <button onClick={() => onPageChange(page - 1)} disabled={page === 1}

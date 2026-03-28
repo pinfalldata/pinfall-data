@@ -50,7 +50,7 @@
       "historicalMilestones": "Jalons historiques",
       "hallOfFame": "Hall of Fame",
       "slammyAwards": "Slammy Awards",
-      "yearEndAwards": "Récompenses de fin d'année"
+      "yearEndAwards": "Year-End Awards"
     }
   },
   "home": {
@@ -176,7 +176,8 @@
       "recentSegments": "Segments récents",
       "recentMatches": "Matchs récents",
       "recordHolder": "Détenteur de record",
-      "recentShowsCommentated": "Shows commentés récemment"
+      "recentShowsCommentated": "Shows commentés récemment",
+      "seeAll": "Voir tout"
     },
     "info": {
       "realName": "Vrai nom",
@@ -207,24 +208,31 @@
       "inducted": "Intronisé ★"
     },
     "tabs": {
-      "profile": "Profil",
+      "profile": "👤 Profil",
       "statistics": "📊 Statistiques",
       "gallery": "📸 Galerie",
       "persona": "🎭 Personnage",
       "omgMoments": "⚡ Moments OMG",
-      "moves": "Prises",
+      "moves": "💪 Prises",
       "hallOfFame": "🏛️ Hall of Fame",
       "slammyAwards": "🏆 Slammy Awards",
-      "yearEndAwards": "🎖️ Prix de fin d'année",
-      "manager": "Manager",
-      "guestCommentary": "Commentaire invité",
-      "guestReferee": "Arbitre invité",
-      "booksFilms": "Livres & Films",
+      "yearEndAwards": "🎖️ Year-End Awards",
+      "manager": "🎩 Manager",
+      "guestCommentary": "🎙️ Commentaire invité",
+      "guestReferee": "🦓 Arbitre invité",
+      "booksFilms": "📚 Livres & Films",
       "objectsUsed": "🪑 Objets utilisés",
-      "ringAnnouncer": "Annonceur",
-      "executive": "Dirigeant",
-      "interviewer": "Intervieweur",
-      "commentator": "Commentateur"
+      "ringAnnouncer": "📢 Annonceur",
+      "executive": "🏛️ Dirigeant",
+      "interviewer": "🎤 Intervieweur",
+      "commentator": "🎙️ Commentateur",
+      "matches": "🥊 Matchs",
+      "segments": "🎤 Segments",
+      "timeline": "📅 Chronologie",
+      "championships": "🏆 Championnats",
+      "tagTeams": "👥 Tag Teams",
+      "stables": "⚔️ Stables",
+      "referee": "🦓 Arbitre"
     },
     "stats": {
       "avgDuration": "Durée moy.",
@@ -263,7 +271,12 @@
       "match": "Match",
       "matchHistory": "Historique des matchs",
       "champOnly": "Matchs de championnat uniquement",
-      "titleChangeOnly": "Changements de titre uniquement"
+      "titleChangeOnly": "Changements de titre uniquement",
+      "matchesFound": "matchs trouvés",
+      "matchFound": "match trouvé",
+      "searching": "Recherche...",
+      "noMatches": "Aucun match trouvé",
+      "total": "au total"
     },
     "hof": {
       "inductedIn": "Intronisé en",
@@ -275,6 +288,16 @@
       "filmsTV": "Films & Séries",
       "books": "Livres",
       "noData": "Aucune donnée."
+    },
+    "roleData": {
+      "show": "Show",
+      "managedFor": "Managé pour",
+      "opponents": "Adversaires",
+      "coCommentators": "Co-commentateurs",
+      "segment": "Segment",
+      "match": "Match",
+      "promotion": "Promotion",
+      "clear": "Effacer"
     }
   },
   "matches": {

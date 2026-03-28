@@ -50,7 +50,7 @@
       "historicalMilestones": "Marcos históricos",
       "hallOfFame": "Hall of Fame",
       "slammyAwards": "Slammy Awards",
-      "yearEndAwards": "Prêmios de fim de ano"
+      "yearEndAwards": "Year-End Awards"
     }
   },
   "home": {
@@ -176,7 +176,8 @@
       "recentSegments": "Segmentos recentes",
       "recentMatches": "Lutas recentes",
       "recordHolder": "Detentor de recorde",
-      "recentShowsCommentated": "Shows comentados recentemente"
+      "recentShowsCommentated": "Shows comentados recentemente",
+      "seeAll": "Ver tudo"
     },
     "info": {
       "realName": "Nome real",
@@ -207,24 +208,31 @@
       "inducted": "Introduzido ★"
     },
     "tabs": {
-      "profile": "Perfil",
+      "profile": "👤 Perfil",
       "statistics": "📊 Estatísticas",
       "gallery": "📸 Galeria",
       "persona": "🎭 Personagem",
       "omgMoments": "⚡ Momentos OMG",
-      "moves": "Golpes",
+      "moves": "💪 Golpes",
       "hallOfFame": "🏛️ Hall of Fame",
       "slammyAwards": "🏆 Slammy Awards",
-      "yearEndAwards": "🎖️ Prêmios de fim de ano",
-      "manager": "Manager",
-      "guestCommentary": "Comentário convidado",
-      "guestReferee": "Árbitro convidado",
-      "booksFilms": "Livros e Filmes",
-      "objectsUsed": "🪑 Objetos utilizados",
-      "ringAnnouncer": "Anunciador",
-      "executive": "Executivo",
-      "interviewer": "Entrevistador",
-      "commentator": "Comentarista"
+      "yearEndAwards": "🎖️ Year-End Awards",
+      "manager": "🎩 Manager",
+      "guestCommentary": "🎙️ Comentário convidado",
+      "guestReferee": "🦓 Árbitro convidado",
+      "booksFilms": "📚 Livros e Filmes",
+      "objectsUsed": "🪑 Objetos",
+      "ringAnnouncer": "📢 Anunciador",
+      "executive": "🏛️ Executivo",
+      "interviewer": "🎤 Entrevistador",
+      "commentator": "🎙️ Comentarista",
+      "matches": "🥊 Lutas",
+      "segments": "🎤 Segmentos",
+      "timeline": "📅 Cronologia",
+      "championships": "🏆 Campeonatos",
+      "tagTeams": "👥 Tag Teams",
+      "stables": "⚔️ Stables",
+      "referee": "🦓 Árbitro"
     },
     "stats": {
       "avgDuration": "Duração méd.",
@@ -263,7 +271,12 @@
       "match": "Luta",
       "matchHistory": "Histórico de lutas",
       "champOnly": "Apenas lutas por título",
-      "titleChangeOnly": "Apenas mudanças de título"
+      "titleChangeOnly": "Apenas mudanças de título",
+      "matchesFound": "lutas encontradas",
+      "matchFound": "luta encontrada",
+      "searching": "Buscando...",
+      "noMatches": "Nenhuma luta encontrada",
+      "total": "no total"
     },
     "hof": {
       "inductedIn": "Introduzido em",
@@ -275,6 +288,16 @@
       "filmsTV": "Filmes & TV",
       "books": "Livros",
       "noData": "Sem dados."
+    },
+    "roleData": {
+      "show": "Show",
+      "managedFor": "Gerenciou para",
+      "opponents": "Oponentes",
+      "coCommentators": "Co-comentaristas",
+      "segment": "Segmento",
+      "match": "Luta",
+      "promotion": "Promoção",
+      "clear": "Limpar"
     }
   },
   "matches": {

@@ -50,7 +50,7 @@
       "historicalMilestones": "معالم تاريخية",
       "hallOfFame": "قاعة المشاهير",
       "slammyAwards": "جوائز سلامي",
-      "yearEndAwards": "جوائز نهاية العام"
+      "yearEndAwards": "Year-End Awards"
     }
   },
   "home": {
@@ -176,7 +176,8 @@
       "recentSegments": "أحدث المقاطع",
       "recentMatches": "أحدث المباريات",
       "recordHolder": "صاحب رقم قياسي",
-      "recentShowsCommentated": "أحدث العروض التي علق عليها"
+      "recentShowsCommentated": "أحدث العروض التي علق عليها",
+      "seeAll": "عرض الكل"
     },
     "info": {
       "realName": "الاسم الحقيقي",
@@ -207,24 +208,31 @@
       "inducted": "أُدخل ★"
     },
     "tabs": {
-      "profile": "الملف",
+      "profile": "👤 الملف",
       "statistics": "📊 الإحصائيات",
       "gallery": "📸 معرض الصور",
       "persona": "🎭 الشخصية",
       "omgMoments": "⚡ لحظات OMG",
-      "moves": "الحركات",
+      "moves": "💪 الحركات",
       "hallOfFame": "🏛️ قاعة المشاهير",
       "slammyAwards": "🏆 جوائز سلامي",
-      "yearEndAwards": "🎖️ جوائز نهاية العام",
-      "manager": "المدير",
-      "guestCommentary": "تعليق ضيف",
-      "guestReferee": "حكم ضيف",
-      "booksFilms": "كتب وأفلام",
+      "yearEndAwards": "🎖️ Year-End Awards",
+      "manager": "🎩 المدير",
+      "guestCommentary": "🎙️ تعليق ضيف",
+      "guestReferee": "🦓 حكم ضيف",
+      "booksFilms": "📚 كتب وأفلام",
       "objectsUsed": "🪑 الأدوات",
-      "ringAnnouncer": "مذيع الحلبة",
-      "executive": "مسؤول تنفيذي",
-      "interviewer": "محاور",
-      "commentator": "معلق"
+      "ringAnnouncer": "📢 مذيع الحلبة",
+      "executive": "🏛️ مسؤول تنفيذي",
+      "interviewer": "🎤 محاور",
+      "commentator": "🎙️ معلق",
+      "matches": "🥊 المباريات",
+      "segments": "🎤 المقاطع",
+      "timeline": "📅 الجدول الزمني",
+      "championships": "🏆 الألقاب",
+      "tagTeams": "👥 فرق الثنائي",
+      "stables": "⚔️ التحالفات",
+      "referee": "🦓 حكم"
     },
     "stats": {
       "avgDuration": "متوسط المدة",
@@ -263,7 +271,12 @@
       "match": "مباراة",
       "matchHistory": "سجل المباريات",
       "champOnly": "مباريات البطولة فقط",
-      "titleChangeOnly": "تغييرات اللقب فقط"
+      "titleChangeOnly": "تغييرات اللقب فقط",
+      "matchesFound": "مباريات وُجدت",
+      "matchFound": "مباراة وُجدت",
+      "searching": "جارٍ البحث...",
+      "noMatches": "لم يتم العثور على مباريات",
+      "total": "الإجمالي"
     },
     "hof": {
       "inductedIn": "أُدخل في",
@@ -275,6 +288,16 @@
       "filmsTV": "أفلام و تلفزيون",
       "books": "كتب",
       "noData": "لا توجد بيانات."
+    },
+    "roleData": {
+      "show": "العرض",
+      "managedFor": "أدار لـ",
+      "opponents": "الخصوم",
+      "coCommentators": "معلقون مشاركون",
+      "segment": "مقطع",
+      "match": "مباراة",
+      "promotion": "العرض",
+      "clear": "مسح"
     }
   },
   "matches": {

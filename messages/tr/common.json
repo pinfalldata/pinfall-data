@@ -50,7 +50,7 @@
       "historicalMilestones": "Tarihî Dönüm Noktaları",
       "hallOfFame": "Onur Listesi",
       "slammyAwards": "Slammy Ödülleri",
-      "yearEndAwards": "Yıl Sonu Ödülleri"
+      "yearEndAwards": "Year-End Awards"
     }
   },
   "home": {
@@ -176,7 +176,8 @@
       "recentSegments": "Son Segmentler",
       "recentMatches": "Son Maçlar",
       "recordHolder": "Rekor Sahibi",
-      "recentShowsCommentated": "Son Yorumlanan Şovlar"
+      "recentShowsCommentated": "Son Yorumlanan Şovlar",
+      "seeAll": "Tümünü gör"
     },
     "info": {
       "realName": "Gerçek Adı",
@@ -207,24 +208,31 @@
       "inducted": "Kabul Edildi ★"
     },
     "tabs": {
-      "profile": "Profil",
+      "profile": "👤 Profil",
       "statistics": "📊 İstatistikler",
       "gallery": "📸 Galeri",
       "persona": "🎭 Karakter",
       "omgMoments": "⚡ OMG Anları",
-      "moves": "Hareketler",
+      "moves": "💪 Hareketler",
       "hallOfFame": "🏛️ Onur Listesi",
       "slammyAwards": "🏆 Slammy Ödülleri",
-      "yearEndAwards": "🎖️ Yıl Sonu Ödülleri",
-      "manager": "Menajer",
-      "guestCommentary": "Konuk Yorumcu",
-      "guestReferee": "Konuk Hakem",
-      "booksFilms": "Kitaplar ve Filmler",
-      "objectsUsed": "🪑 Kullanılan Objeler",
-      "ringAnnouncer": "Ring Spikeri",
-      "executive": "Yönetici",
-      "interviewer": "Muhabir",
-      "commentator": "Yorumcu"
+      "yearEndAwards": "🎖️ Year-End Awards",
+      "manager": "🎩 Menajer",
+      "guestCommentary": "🎙️ Konuk Yorumcu",
+      "guestReferee": "🦓 Konuk Hakem",
+      "booksFilms": "📚 Kitaplar ve Filmler",
+      "objectsUsed": "🪑 Objeler",
+      "ringAnnouncer": "📢 Ring Spikeri",
+      "executive": "🏛️ Yönetici",
+      "interviewer": "🎤 Muhabir",
+      "commentator": "🎙️ Yorumcu",
+      "matches": "🥊 Maçlar",
+      "segments": "🎤 Segmentler",
+      "timeline": "📅 Zaman Çizelgesi",
+      "championships": "🏆 Şampiyonluklar",
+      "tagTeams": "👥 Tag Takımları",
+      "stables": "⚔️ Gruplar",
+      "referee": "🦓 Hakem"
     },
     "stats": {
       "avgDuration": "Ort. Süre",
@@ -263,7 +271,12 @@
       "match": "Maç",
       "matchHistory": "Maç Geçmişi",
       "champOnly": "Sadece kemer maçları",
-      "titleChangeOnly": "Sadece kemer değişimleri"
+      "titleChangeOnly": "Sadece kemer değişimleri",
+      "matchesFound": "maç bulundu",
+      "matchFound": "maç bulundu",
+      "searching": "Aranıyor...",
+      "noMatches": "Maç bulunamadı",
+      "total": "toplam"
     },
     "hof": {
       "inductedIn": "Kabul edildi",
@@ -275,6 +288,16 @@
       "filmsTV": "Film & Dizi",
       "books": "Kitaplar",
       "noData": "Henüz veri yok."
+    },
+    "roleData": {
+      "show": "Şov",
+      "managedFor": "Yönetilen",
+      "opponents": "Rakipler",
+      "coCommentators": "Eş-Yorumcular",
+      "segment": "Segment",
+      "match": "Maç",
+      "promotion": "Organizasyon",
+      "clear": "Temizle"
     }
   },
   "matches": {

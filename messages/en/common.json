@@ -176,7 +176,8 @@
       "recentSegments": "Recent Segments",
       "recentMatches": "Recent Matches",
       "recordHolder": "Record Holder",
-      "recentShowsCommentated": "Recent Shows Commentated"
+      "recentShowsCommentated": "Recent Shows Commentated",
+      "seeAll": "See all"
     },
     "info": {
       "realName": "Real Name",
@@ -207,24 +208,31 @@
       "inducted": "Inducted ★"
     },
     "tabs": {
-      "profile": "Profile",
+      "profile": "👤 Profile",
       "statistics": "📊 Statistics",
       "gallery": "📸 Gallery",
       "persona": "🎭 Persona",
       "omgMoments": "⚡ OMG Moments",
-      "moves": "Moves",
+      "moves": "💪 Moves",
       "hallOfFame": "🏛️ Hall of Fame",
       "slammyAwards": "🏆 Slammy Awards",
       "yearEndAwards": "🎖️ Year-End Awards",
-      "manager": "Manager",
-      "guestCommentary": "Guest Commentary",
-      "guestReferee": "Guest Referee",
-      "booksFilms": "Books & Films",
+      "manager": "🎩 Manager",
+      "guestCommentary": "🎙️ Guest Commentary",
+      "guestReferee": "🦓 Guest Referee",
+      "booksFilms": "📚 Books & Films",
       "objectsUsed": "🪑 Objects Used",
-      "ringAnnouncer": "Ring Announcer",
-      "executive": "Executive",
-      "interviewer": "Interviewer",
-      "commentator": "Commentator"
+      "ringAnnouncer": "📢 Ring Announcer",
+      "executive": "🏛️ Executive",
+      "interviewer": "🎤 Interviewer",
+      "commentator": "🎙️ Commentator",
+      "matches": "🥊 Matches",
+      "segments": "🎤 Segments",
+      "timeline": "📅 Timeline",
+      "championships": "🏆 Championships",
+      "tagTeams": "👥 Tag Teams",
+      "stables": "⚔️ Stables",
+      "referee": "🦓 Referee"
     },
     "stats": {
       "avgDuration": "Avg Duration",
@@ -263,7 +271,12 @@
       "match": "Match",
       "matchHistory": "Match History",
       "champOnly": "Championship matches only",
-      "titleChangeOnly": "Title changes only"
+      "titleChangeOnly": "Title changes only",
+      "matchesFound": "matches found",
+      "matchFound": "match found",
+      "searching": "Searching...",
+      "noMatches": "No matches found",
+      "total": "total"
     },
     "hof": {
       "inductedIn": "Inducted in",
@@ -275,6 +288,16 @@
       "filmsTV": "Films & TV",
       "books": "Books",
       "noData": "No data yet."
+    },
+    "roleData": {
+      "show": "Show",
+      "managedFor": "Managed For",
+      "opponents": "Opponents",
+      "coCommentators": "Co-Commentators",
+      "segment": "Segment",
+      "match": "Match",
+      "promotion": "Promotion",
+      "clear": "Clear"
     }
   },
   "matches": {

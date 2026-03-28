@@ -36,7 +36,7 @@ export default function TabChampionships({ superstar }: { superstar: any }) {
       <div className="flex flex-wrap items-center gap-4 sm:gap-6 mb-8 p-4 sm:p-5 rounded-2xl border border-neon-blue/15 bg-gradient-to-r from-neon-blue/5 via-transparent to-neon-blue/5">
         <div className="text-center">
           <span className="block text-2xl sm:text-3xl font-bold text-neon-blue font-display">{data.length}</span>
-          <span className="text-[10px] text-text-secondary uppercase tracking-wider">Title{data.length !== 1 ? 's' : ''}</span>
+          <span className="text-[10px] text-text-secondary uppercase tracking-wider">{data.length !== 1 ? t('superstars.champs.titles') : t('superstars.champs.title')}</span>
         </div>
         <div className="w-px h-10 bg-border-subtle/30 hidden sm:block" />
         <div className="text-center">

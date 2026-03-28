@@ -50,7 +50,7 @@
       "historicalMilestones": "Kamienie milowe historii",
       "hallOfFame": "Galeria Sław",
       "slammyAwards": "Nagrody Slammy",
-      "yearEndAwards": "Nagrody końcoworoczne"
+      "yearEndAwards": "Year-End Awards"
     }
   },
   "home": {
@@ -176,7 +176,8 @@
       "recentSegments": "Ostatnie segmenty",
       "recentMatches": "Ostatnie walki",
       "recordHolder": "Rekordzista",
-      "recentShowsCommentated": "Ostatnio komentowane show"
+      "recentShowsCommentated": "Ostatnio komentowane show",
+      "seeAll": "Zobacz wszystko"
     },
     "info": {
       "realName": "Prawdziwe imię",
@@ -207,24 +208,31 @@
       "inducted": "Wprowadzony ★"
     },
     "tabs": {
-      "profile": "Profil",
+      "profile": "👤 Profil",
       "statistics": "📊 Statystyki",
       "gallery": "📸 Galeria",
       "persona": "🎭 Persona",
       "omgMoments": "⚡ Momenty OMG",
-      "moves": "Chwyty",
+      "moves": "💪 Chwyty",
       "hallOfFame": "🏛️ Galeria Sław",
       "slammyAwards": "🏆 Slammy Awards",
-      "yearEndAwards": "🎖️ Nagrody roczne",
-      "manager": "Menedżer",
-      "guestCommentary": "Komentarz gościnny",
-      "guestReferee": "Sędzia gościnny",
-      "booksFilms": "Książki i Filmy",
+      "yearEndAwards": "🎖️ Year-End Awards",
+      "manager": "🎩 Menedżer",
+      "guestCommentary": "🎙️ Komentarz gościnny",
+      "guestReferee": "🦓 Sędzia gościnny",
+      "booksFilms": "📚 Książki i Filmy",
       "objectsUsed": "🪑 Przedmioty",
-      "ringAnnouncer": "Spiker ringowy",
-      "executive": "Kierownik",
-      "interviewer": "Dziennikarz",
-      "commentator": "Komentator"
+      "ringAnnouncer": "📢 Spiker",
+      "executive": "🏛️ Kierownik",
+      "interviewer": "🎤 Dziennikarz",
+      "commentator": "🎙️ Komentator",
+      "matches": "🥊 Walki",
+      "segments": "🎤 Segmenty",
+      "timeline": "📅 Oś czasu",
+      "championships": "🏆 Mistrzostwa",
+      "tagTeams": "👥 Tag Teamy",
+      "stables": "⚔️ Stajnie",
+      "referee": "🦓 Sędzia"
     },
     "stats": {
       "avgDuration": "Śr. czas trwania",
@@ -263,7 +271,12 @@
       "match": "Walka",
       "matchHistory": "Historia walk",
       "champOnly": "Tylko walki o tytuł",
-      "titleChangeOnly": "Tylko zmiany tytułu"
+      "titleChangeOnly": "Tylko zmiany tytułu",
+      "matchesFound": "walk znaleziono",
+      "matchFound": "walka znaleziona",
+      "searching": "Szukanie...",
+      "noMatches": "Nie znaleziono walk",
+      "total": "łącznie"
     },
     "hof": {
       "inductedIn": "Wprowadzony w",
@@ -275,6 +288,16 @@
       "filmsTV": "Filmy i TV",
       "books": "Książki",
       "noData": "Brak danych."
+    },
+    "roleData": {
+      "show": "Show",
+      "managedFor": "Zarządzał dla",
+      "opponents": "Przeciwnicy",
+      "coCommentators": "Współkomentatorzy",
+      "segment": "Segment",
+      "match": "Walka",
+      "promotion": "Promocja",
+      "clear": "Wyczyść"
     }
   },
   "matches": {

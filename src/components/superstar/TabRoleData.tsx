@@ -63,11 +63,11 @@ export default function TabRoleData({ superstar, tab }: { superstar: any; tab: s
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
                 <FS l={t('matches.search.year')} v={year} s={v => { setYear(v); setMonth(''); setPage(1) }} o={YEARS.map(y => ({ v: String(y), l: String(y) }))} p={t('common.allYears')} />
                 {year && <FS l="Month" v={month} s={v => { setMonth(v); setPage(1) }} o={MONTHS.map(m => ({ v: m.value, l: m.label }))} p={t('common.allMonths')} />}
-                {fOpts?.showSeries && <FS l="Promotion" v={ssId} s={v => { setSsId(v); setPage(1) }} o={(fOpts.showSeries || []).map((s: any) => ({ v: String(s.id), l: s.name }))} p={t('common.allPromotions')} />}
+                {fOpts?.showSeries && <FS l={t('superstars.roleData.promotion')} v={ssId} s={v => { setSsId(v); setPage(1) }} o={(fOpts.showSeries || []).map((s: any) => ({ v: String(s.id), l: s.name }))} p={t('common.allPromotions')} />}
                 {tab === 'segments' && <FS l={t('hallOfFame.inductees.category')} v={cat} s={v => { setCat(v); setPage(1) }} o={SCATS.map(c => ({ v: c, l: `${segI[c]} ${c.replace(/_/g, ' ')}` }))} p={t('common.all')} />}
                 {tab === 'managed' && <FS l={t('common.result')} v={result} s={v => { setResult(v); setPage(1) }} o={[{ v: 'win', l: 'Win' }, { v: 'loss', l: 'Loss' }, { v: 'draw', l: 'Draw' }]} p={t('common.all')} />}
               </div>
-              {hasF && <div className="flex justify-end mt-3 pt-2 border-t border-border-subtle/20"><button onClick={() => { setYear(''); setMonth(''); setSsId(''); setCat(''); setResult(''); setPage(1) }} className="text-xs text-neon-pink hover:text-neon-pink/80 flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>Clear</button></div>}
+              {hasF && <div className="flex justify-end mt-3 pt-2 border-t border-border-subtle/20"><button onClick={() => { setYear(''); setMonth(''); setSsId(''); setCat(''); setResult(''); setPage(1) }} className="text-xs text-neon-pink hover:text-neon-pink/80 flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>{t('superstars.roleData.clear')}</button></div>}
             </div>
           )}
         </>
@@ -82,37 +82,37 @@ export default function TabRoleData({ superstar, tab }: { superstar: any; tab: s
           <div className={`transition-opacity ${loading ? 'opacity-50' : ''}`}>
             {tab === 'managed' && (
               <div className="hidden lg:grid lg:grid-cols-[100px_minmax(120px,1fr)_140px_minmax(180px,2fr)_minmax(160px,1.5fr)_60px_60px] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
-                <span>{t('shows.detail.date')}</span><span>Show</span><span>{t('matches.search.matchType')}</span><span>Managed For</span><span>Opponents</span><span>{t('common.result')}</span><span>{t('common.rating')}</span>
+                <span>{t('shows.detail.date')}</span><span>{t('superstars.roleData.show')}</span><span>{t('matches.search.matchType')}</span><span>{t('superstars.roleData.managedFor')}</span><span>{t('superstars.roleData.opponents')}</span><span>{t('common.result')}</span><span>{t('common.rating')}</span>
               </div>
             )}
             {tab === 'segments' && (
               <div className="hidden lg:grid lg:grid-cols-[100px_minmax(120px,1fr)_40px_minmax(200px,2.5fr)_minmax(140px,1.5fr)] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
-                <span>{t('shows.detail.date')}</span><span>Show</span><span></span><span>Segment</span><span>{t('matches.detail.participants')}</span>
+                <span>{t('shows.detail.date')}</span><span>{t('superstars.roleData.show')}</span><span></span><span>{t('superstars.roleData.segment')}</span><span>{t('matches.detail.participants')}</span>
               </div>
             )}
             {tab === 'commentated' && (
               <div className="hidden lg:grid lg:grid-cols-[100px_minmax(200px,2fr)_minmax(200px,2fr)] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
-                <span>{t('shows.detail.date')}</span><span>Show</span><span>Co-Commentators</span>
+                <span>{t('shows.detail.date')}</span><span>{t('superstars.roleData.show')}</span><span>{t('superstars.roleData.coCommentators')}</span>
               </div>
             )}
             {tab === 'matchCommentated' && (
               <div className="hidden lg:grid lg:grid-cols-[100px_minmax(120px,1fr)_140px_minmax(200px,2.5fr)_minmax(100px,1fr)] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
-                <span>{t('shows.detail.date')}</span><span>Show</span><span>{t('matches.search.matchType')}</span><span>Match</span><span>{t('nav.dropdown.commentators')}</span>
+                <span>{t('shows.detail.date')}</span><span>{t('superstars.roleData.show')}</span><span>{t('matches.search.matchType')}</span><span>{t('superstars.roleData.match')}</span><span>{t('nav.dropdown.commentators')}</span>
               </div>
             )}
             {tab === 'ringAnnounced' && (
               <div className="hidden lg:grid lg:grid-cols-[100px_1fr] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
-                <span>{t('shows.detail.date')}</span><span>Show</span>
+                <span>{t('shows.detail.date')}</span><span>{t('superstars.roleData.show')}</span>
               </div>
             )}
             {(tab === 'refereed' || tab === 'guestRefereed') && (
               <div className="hidden lg:grid lg:grid-cols-[100px_minmax(120px,1fr)_140px_minmax(200px,2.5fr)_60px] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
-                <span>{t('shows.detail.date')}</span><span>Show</span><span>{t('matches.search.matchType')}</span><span>Match</span><span>{t('common.rating')}</span>
+                <span>{t('shows.detail.date')}</span><span>{t('superstars.roleData.show')}</span><span>{t('matches.search.matchType')}</span><span>{t('superstars.roleData.match')}</span><span>{t('common.rating')}</span>
               </div>
             )}
             {tab === 'interviewed' && (
               <div className="hidden lg:grid lg:grid-cols-[100px_minmax(120px,1fr)_minmax(200px,2.5fr)_minmax(160px,1.5fr)] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-1">
-                <span>{t('shows.detail.date')}</span><span>Show</span><span>Segment</span><span>{t('matches.detail.participants')}</span>
+                <span>{t('shows.detail.date')}</span><span>{t('superstars.roleData.show')}</span><span>{t('superstars.roleData.segment')}</span><span>{t('matches.detail.participants')}</span>
               </div>
             )}
 
