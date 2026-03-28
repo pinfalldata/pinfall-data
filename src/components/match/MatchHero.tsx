@@ -240,7 +240,7 @@ export function MatchHero({ match }: { match: any }) {
             <div className="text-center mt-8 space-y-3">
               {match.result_type && (
                 <p className="text-sm text-text-secondary">
-                  Result: <span className="text-text-white font-medium">{getResultLabel(match.result_type)}</span>
+                  {t('matchStats.result')}: <span className="text-text-white font-medium">{getResultLabel(match.result_type)}</span>
                 </p>
               )}
               {isIronMan && match.score_winner != null && (

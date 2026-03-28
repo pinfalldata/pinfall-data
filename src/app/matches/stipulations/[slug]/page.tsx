@@ -241,7 +241,7 @@ export default function StipulationDetailPage() {
                 {matchType?.name || <span className="bg-bg-secondary/50 rounded w-60 h-12 inline-block animate-pulse" />}
               </h1>
               <p className="text-text-secondary text-lg mb-5">
-                <span className="text-neon-blue font-bold text-2xl">{total.toLocaleString()}</span> {t('stipulations.detail.recordedInWWEHistory')}
+                <span className="text-neon-blue font-bold text-2xl">{total.toLocaleString()}</span> {t('stipulations.detail.matchesRecorded')}
               </p>
               {matchType?.description && (
                 <p className="text-text-secondary text-sm leading-relaxed max-w-xl">{matchType.description}</p>

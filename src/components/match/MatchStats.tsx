@@ -157,7 +157,7 @@ export function HeadToHeadSection({ h2h, superstar1, superstar2, color }: {
 
       {/* Bars */}
       <div className="space-y-3">
-        <HeadToHeadBar label="Wins" value1={h2h.wins_superstar1} value2={h2h.wins_superstar2} name1={superstar1.name} name2={superstar2.name} color1={c1} color2={c2} />
+        <HeadToHeadBar label={t('common.wins')} value1={h2h.wins_superstar1} value2={h2h.wins_superstar2} name1={superstar1.name} name2={superstar2.name} color1={c1} color2={c2} />
         {superstar1.total_matches > 0 && superstar2.total_matches > 0 && (
           <HeadToHeadBar
             label={t('matchStats.winRateOverall')}
@@ -168,10 +168,10 @@ export function HeadToHeadSection({ h2h, superstar1, superstar2, color }: {
           />
         )}
         {superstar1.height_cm && superstar2.height_cm && (
-          <HeadToHeadBar label="Height (cm)" value1={superstar1.height_cm} value2={superstar2.height_cm} name1={superstar1.name} name2={superstar2.name} color1={c1} color2={c2} />
+          <HeadToHeadBar label={t('matchStats.heightCm')} value1={superstar1.height_cm} value2={superstar2.height_cm} name1={superstar1.name} name2={superstar2.name} color1={c1} color2={c2} />
         )}
         {superstar1.weight_kg && superstar2.weight_kg && (
-          <HeadToHeadBar label="Weight (kg)" value1={superstar1.weight_kg} value2={superstar2.weight_kg} name1={superstar1.name} name2={superstar2.name} color1={c1} color2={c2} />
+          <HeadToHeadBar label={t('matchStats.weightKg')} value1={superstar1.weight_kg} value2={superstar2.weight_kg} name1={superstar1.name} name2={superstar2.name} color1={c1} color2={c2} />
         )}
       </div>
 
@@ -210,7 +210,7 @@ export function SuperstarQuickStats({ superstar, winMethods, color }: {
     <div className="glass rounded-xl p-4 border border-border-subtle/20">
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
         <StatCell label={t('matchStats.record')} value={`${s.win_count}W - ${s.loss_count}L - ${s.draw_count}D`} />
-        <StatCell label="Win Rate" value={s.total_matches ? getWinRate(s.win_count, s.total_matches) : '—'} highlight color={color} />
+        <StatCell label={t('matchStats.winRate')} value={s.total_matches ? getWinRate(s.win_count, s.total_matches) : '—'} highlight color={color} />
         <StatCell label={t('matchStats.totalMatches')} value={s.total_matches?.toString() || '0'} />
         <StatCell label={t('matchStats.nationality')} value={s.nationalities?.[0] || s.birth_country || '—'} />
       </div>

@@ -2,12 +2,14 @@
 
 import { HeadToHeadSection, WinMethodsChart, SuperstarQuickStats } from './MatchStats'
 import { groupParticipantsByTeam } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
 
 export function MatchStatsSection({ match, h2hData, winMethodsMap }: {
   match: any
   h2hData: any
   winMethodsMap: Record<number, any[]>
 }) {
+  const t = useTranslations()
   const participants = match.participants || []
   const color = match.show?.primary_color || '#c7a05a'
   const teams = groupParticipantsByTeam(participants)
@@ -25,7 +27,7 @@ export function MatchStatsSection({ match, h2hData, winMethodsMap }: {
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 space-y-8">
       {/* Section title */}
       <div className="text-center">
-        <h2 className="font-display text-xl sm:text-2xl font-bold text-text-white uppercase tracking-wide">📊 Statistics</h2>
+        <h2 className="font-display text-xl sm:text-2xl font-bold text-text-white uppercase tracking-wide">📊 {t('matchStats.statistics')}</h2>
         <div className="h-px mt-3 max-w-xs mx-auto" style={{ background: `linear-gradient(90deg, transparent, ${color}, transparent)` }} />
       </div>
 
