@@ -163,7 +163,20 @@
       "slammyAwards": "جوائز سلامي",
       "yearEndAwards": "جوائز نهاية العام",
       "objectsUsed": "الأدوات المستخدمة",
-      "roleData": "بيانات الدور"
+      "roleData": "بيانات الدور",
+      "ringNames": "أسماء الحلبة",
+      "careerBreaks": "فترات توقف",
+      "draftHistory": "تاريخ الانتقالات",
+      "eras": "الحقب",
+      "quickStats": "📊 إحصائيات سريعة",
+      "signatureMoves": "💥 الحركات المميزة",
+      "familyInWWE": "العائلة في WWE",
+      "trainedBy": "تدرب على يد",
+      "roles": "الأدوار",
+      "recentSegments": "أحدث المقاطع",
+      "recentMatches": "أحدث المباريات",
+      "recordHolder": "صاحب رقم قياسي",
+      "recentShowsCommentated": "أحدث العروض التي علق عليها"
     },
     "info": {
       "realName": "الاسم الحقيقي",
@@ -212,6 +225,34 @@
       "executive": "مسؤول تنفيذي",
       "interviewer": "محاور",
       "commentator": "معلق"
+    },
+    "stats": {
+      "avgDuration": "متوسط المدة",
+      "avgRating": "متوسط التقييم",
+      "howTheyWin": "كيف يفوزون",
+      "matchTypes": "أنواع المباريات",
+      "recordByYear": "السجل حسب السنة",
+      "matchesByShow": "المباريات حسب العرض",
+      "titleMatches": "مباريات اللقب",
+      "careerStats": "إحصائيات المسيرة"
+    },
+    "champs": {
+      "totalDays": "إجمالي الأيام",
+      "wonAt": "فاز في",
+      "lostAt": "خسر في"
+    },
+    "moves": {
+      "finishingMoves": "Finishing Moves",
+      "signatureMoves": "Signature Moves",
+      "noData": "لا توجد بيانات حركات."
+    },
+    "matches": {
+      "showFilters": "إظهار التصفيات",
+      "hideFilters": "إخفاء التصفيات",
+      "opponent": "الخصم",
+      "teammate": "الزميل",
+      "result": "النتيجة",
+      "match": "مباراة"
     }
   },
   "matches": {
@@ -262,7 +303,9 @@
       "searchTeammate": "البحث عن زميل…",
       "omgOnly": "فقط لحظات OMG",
       "omgCategory": "فئة OMG",
-      "anyOmg": "أي OMG"
+      "anyOmg": "أي OMG",
+      "heroPrefix": "بحث",
+      "heroHighlight": "المباريات"
     },
     "detail": {
       "participants": "المشاركون",
@@ -289,7 +332,9 @@
       "segmentFound": "مقطع وُجد",
       "segmentCategory": "فئة المقطع",
       "secondSuperstar": "السوبرستار الثاني",
-      "noSegments": "لم يتم العثور على مقاطع"
+      "noSegments": "لم يتم العثور على مقاطع",
+      "heroPrefix": "بحث",
+      "heroHighlight": "المقاطع"
     },
     "shows": {
       "title": "جميع العروض",
@@ -308,14 +353,18 @@
       "heroSubtitle": "كل حدث كبير مباشر في تاريخ WWE — من أول WrestleMania حتى اليوم.",
       "filterBy": "تصفية حسب سلسلة PLE:",
       "clear": "مسح",
-      "noPLEs": "لم يتم العثور على عروض كبرى"
+      "noPLEs": "لم يتم العثور على عروض كبرى",
+      "heroPrefix": "جميع",
+      "heroHighlight": "العروض الكبرى"
     },
     "stipulations": {
       "title": "أنواع المباريات",
       "subtitle": "Steel Cage, Hell in a Cell, TLC — اكتشف كل نوع مباراة.",
       "searchPlaceholder": "البحث عن أنواع المباريات...",
       "heroTitle": "أنواع المباريات",
-      "heroSubtitle": "كل نوع مباراة في تاريخ WWE."
+      "heroSubtitle": "كل نوع مباراة في تاريخ WWE.",
+      "heroPrefix": "أنواع",
+      "heroHighlight": "المباريات"
     },
     "arenas": {
       "title": "جميع الساحات",
@@ -330,13 +379,17 @@
       "alphabetical": "🔤 أبجدي",
       "clearFilters": "مسح التصفيات",
       "arenaCount": "ساحات",
-      "arenaCountSingle": "ساحة"
+      "arenaCountSingle": "ساحة",
+      "heroPrefix": "جميع",
+      "heroHighlight": "الساحات"
     },
     "objects": {
       "title": "الأدوات المستخدمة",
       "subtitle": "الكراسي والطاولات والسلالم — كل أداة استُخدمت في مباريات WWE.",
       "searchPlaceholder": "البحث عن الأدوات…",
-      "heroSubtitle": "الكراسي والطاولات والسلالم — كل أداة استُخدمت في مباريات WWE."
+      "heroSubtitle": "الكراسي والطاولات والسلالم — كل أداة استُخدمت في مباريات WWE.",
+      "heroPrefix": "الأدوات",
+      "heroHighlight": "المستخدمة"
     },
     "hub": {
       "title": "المباريات والعروض",

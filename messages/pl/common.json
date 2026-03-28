@@ -163,7 +163,20 @@
       "slammyAwards": "Nagrody Slammy",
       "yearEndAwards": "Nagrody końcoworoczne",
       "objectsUsed": "Użyte przedmioty",
-      "roleData": "Dane roli"
+      "roleData": "Dane roli",
+      "ringNames": "Pseudonimy ringowe",
+      "careerBreaks": "Przerwy w karierze",
+      "draftHistory": "Historia draftów",
+      "eras": "Ery",
+      "quickStats": "📊 Szybkie staty",
+      "signatureMoves": "💥 Chwyty firmowe",
+      "familyInWWE": "Rodzina w WWE",
+      "trainedBy": "Szkolony przez",
+      "roles": "Role",
+      "recentSegments": "Ostatnie segmenty",
+      "recentMatches": "Ostatnie walki",
+      "recordHolder": "Rekordzista",
+      "recentShowsCommentated": "Ostatnio komentowane show"
     },
     "info": {
       "realName": "Prawdziwe imię",
@@ -212,6 +225,34 @@
       "executive": "Kierownik",
       "interviewer": "Dziennikarz",
       "commentator": "Komentator"
+    },
+    "stats": {
+      "avgDuration": "Śr. czas trwania",
+      "avgRating": "Śr. ocena",
+      "howTheyWin": "Jak wygrywają",
+      "matchTypes": "Typy walk",
+      "recordByYear": "Bilans rocznie",
+      "matchesByShow": "Walki wg show",
+      "titleMatches": "Walki o tytuł",
+      "careerStats": "Statystyki kariery"
+    },
+    "champs": {
+      "totalDays": "Łączne dni",
+      "wonAt": "Zdobyty na",
+      "lostAt": "Stracony na"
+    },
+    "moves": {
+      "finishingMoves": "Finishing Moves",
+      "signatureMoves": "Signature Moves",
+      "noData": "Brak danych o chwytach."
+    },
+    "matches": {
+      "showFilters": "Pokaż filtry",
+      "hideFilters": "Ukryj filtry",
+      "opponent": "Przeciwnik",
+      "teammate": "Partner",
+      "result": "Wynik",
+      "match": "Walka"
     }
   },
   "matches": {
@@ -262,7 +303,9 @@
       "searchTeammate": "Szukaj partnera…",
       "omgOnly": "Tylko OMG Moments",
       "omgCategory": "Kategoria OMG",
-      "anyOmg": "Dowolny OMG"
+      "anyOmg": "Dowolny OMG",
+      "heroPrefix": "Szukaj",
+      "heroHighlight": "walk"
     },
     "detail": {
       "participants": "Uczestnicy",
@@ -289,7 +332,9 @@
       "segmentFound": "segment znaleziony",
       "segmentCategory": "Kategoria segmentu",
       "secondSuperstar": "2. Superstar",
-      "noSegments": "Nie znaleziono segmentów"
+      "noSegments": "Nie znaleziono segmentów",
+      "heroPrefix": "Szukaj",
+      "heroHighlight": "segmentów"
     },
     "shows": {
       "title": "Wszystkie show",
@@ -308,14 +353,18 @@
       "heroSubtitle": "Każdy Premium Live Event w historii WWE — od pierwszej WrestleManii do dziś.",
       "filterBy": "Filtruj po serii PLE:",
       "clear": "Wyczyść",
-      "noPLEs": "Nie znaleziono PLE"
+      "noPLEs": "Nie znaleziono PLE",
+      "heroPrefix": "Wszystkie",
+      "heroHighlight": "PLE"
     },
     "stipulations": {
       "title": "Typy walk",
       "subtitle": "Steel Cage, Hell in a Cell, TLC — każdy typ walki.",
       "searchPlaceholder": "Szukaj stypulacji...",
       "heroTitle": "Typy walk",
-      "heroSubtitle": "Każdy typ walki w historii WWE."
+      "heroSubtitle": "Każdy typ walki w historii WWE.",
+      "heroPrefix": "Typy",
+      "heroHighlight": "walk"
     },
     "arenas": {
       "title": "Wszystkie areny",
@@ -330,13 +379,17 @@
       "alphabetical": "🔤 Alfabetycznie",
       "clearFilters": "Wyczyść filtry",
       "arenaCount": "areny",
-      "arenaCountSingle": "arena"
+      "arenaCountSingle": "arena",
+      "heroPrefix": "Wszystkie",
+      "heroHighlight": "areny"
     },
     "objects": {
       "title": "Użyte przedmioty",
       "subtitle": "Krzesła, stoły, drabiny — każdy przedmiot użyty w walkach WWE.",
       "searchPlaceholder": "Szukaj przedmiotów…",
-      "heroSubtitle": "Krzesła, stoły, drabiny — każdy przedmiot użyty w walkach WWE."
+      "heroSubtitle": "Krzesła, stoły, drabiny — każdy przedmiot użyty w walkach WWE.",
+      "heroPrefix": "Użyte",
+      "heroHighlight": "przedmioty"
     },
     "hub": {
       "title": "Walki i Show",

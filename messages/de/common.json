@@ -163,7 +163,20 @@
       "slammyAwards": "Slammy Awards",
       "yearEndAwards": "Jahresend-Auszeichnungen",
       "objectsUsed": "Verwendete Gegenstände",
-      "roleData": "Rollendaten"
+      "roleData": "Rollendaten",
+      "ringNames": "Ringnamen",
+      "careerBreaks": "Karrierepausen",
+      "draftHistory": "Draft-Historie",
+      "eras": "Ären",
+      "quickStats": "📊 Schnellstatistik",
+      "signatureMoves": "💥 Signature Moves",
+      "familyInWWE": "Familie in der WWE",
+      "trainedBy": "Trainiert von",
+      "roles": "Rollen",
+      "recentSegments": "Neueste Segmente",
+      "recentMatches": "Neueste Matches",
+      "recordHolder": "Rekordhalter",
+      "recentShowsCommentated": "Kürzlich kommentierte Shows"
     },
     "info": {
       "realName": "Echter Name",
@@ -212,6 +225,34 @@
       "executive": "Führungskraft",
       "interviewer": "Interviewer",
       "commentator": "Kommentator"
+    },
+    "stats": {
+      "avgDuration": "Ø Dauer",
+      "avgRating": "Ø Bewertung",
+      "howTheyWin": "Wie sie gewinnen",
+      "matchTypes": "Match-Typen",
+      "recordByYear": "Bilanz pro Jahr",
+      "matchesByShow": "Matches pro Show",
+      "titleMatches": "Titelmatches",
+      "careerStats": "Karrierestatistiken"
+    },
+    "champs": {
+      "totalDays": "Gesamttage",
+      "wonAt": "Gewonnen bei",
+      "lostAt": "Verloren bei"
+    },
+    "moves": {
+      "finishingMoves": "Finishing Moves",
+      "signatureMoves": "Signature Moves",
+      "noData": "Noch keine Moves-Daten."
+    },
+    "matches": {
+      "showFilters": "Filter anzeigen",
+      "hideFilters": "Filter ausblenden",
+      "opponent": "Gegner",
+      "teammate": "Teamkollege",
+      "result": "Ergebnis",
+      "match": "Match"
     }
   },
   "matches": {
@@ -262,7 +303,9 @@
       "searchTeammate": "Teamkollege suchen…",
       "omgOnly": "Nur OMG Moments",
       "omgCategory": "OMG-Kategorie",
-      "anyOmg": "Alle OMG"
+      "anyOmg": "Alle OMG",
+      "heroPrefix": "Match-",
+      "heroHighlight": "Suche"
     },
     "detail": {
       "participants": "Teilnehmer",
@@ -289,7 +332,9 @@
       "segmentFound": "Segment gefunden",
       "segmentCategory": "Segmentkategorie",
       "secondSuperstar": "2. Superstar",
-      "noSegments": "Keine Segmente gefunden"
+      "noSegments": "Keine Segmente gefunden",
+      "heroPrefix": "Segment-",
+      "heroHighlight": "Suche"
     },
     "shows": {
       "title": "Alle Shows",
@@ -308,14 +353,18 @@
       "heroSubtitle": "Jedes Premium Live Event der WWE-Geschichte — vom ersten WrestleMania bis heute.",
       "filterBy": "Nach PLE-Serie filtern:",
       "clear": "Löschen",
-      "noPLEs": "Keine PLEs gefunden"
+      "noPLEs": "Keine PLEs gefunden",
+      "heroPrefix": "Alle",
+      "heroHighlight": "PLEs"
     },
     "stipulations": {
       "title": "Match-Stipulationen",
       "subtitle": "Steel Cage, Hell in a Cell, TLC, Royal Rumble — jeder Match-Typ.",
       "searchPlaceholder": "Stipulationen suchen...",
       "heroTitle": "Match-Stipulationen",
-      "heroSubtitle": "Jeder Match-Typ der WWE-Geschichte — von klassischen Einzelmatches bis zu den brutalsten Stipulationen."
+      "heroSubtitle": "Jeder Match-Typ der WWE-Geschichte — von klassischen Einzelmatches bis zu den brutalsten Stipulationen.",
+      "heroPrefix": "Match-",
+      "heroHighlight": "Stipulationen"
     },
     "arenas": {
       "title": "Alle Arenen",
@@ -330,13 +379,17 @@
       "alphabetical": "🔤 Alphabetisch",
       "clearFilters": "Filter löschen",
       "arenaCount": "Arenen",
-      "arenaCountSingle": "Arena"
+      "arenaCountSingle": "Arena",
+      "heroPrefix": "Alle",
+      "heroHighlight": "Arenen"
     },
     "objects": {
       "title": "Verwendete Gegenstände",
       "subtitle": "Stühle, Tische, Leitern, Kendo Sticks — jeder Gegenstand in WWE-Matches.",
       "searchPlaceholder": "Gegenstände suchen…",
-      "heroSubtitle": "Stühle, Tische, Leitern, Kendo Sticks — jeder Gegenstand in WWE-Matches."
+      "heroSubtitle": "Stühle, Tische, Leitern, Kendo Sticks — jeder Gegenstand in WWE-Matches.",
+      "heroPrefix": "Verwendete",
+      "heroHighlight": "Gegenstände"
     },
     "hub": {
       "title": "Matches & Shows",

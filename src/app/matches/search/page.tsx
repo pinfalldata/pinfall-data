@@ -139,7 +139,7 @@ export default function MatchSearchPage() {
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">
           <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-white text-center tracking-tight mb-2">
-            {t('matches.search.title')}
+            {t('matches.search.heroPrefix')} <span className="text-neon-blue">{t('matches.search.heroHighlight')}</span>
           </h1>
           <p className="text-text-secondary text-sm sm:text-base lg:text-lg text-center max-w-2xl">
             {t('matches.search.subtitle')}

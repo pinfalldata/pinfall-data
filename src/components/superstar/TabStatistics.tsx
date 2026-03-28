@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 
@@ -12,6 +13,7 @@ const RESULT_LABELS: Record<string, string> = {
 function fmtDur(s: number) { const m = Math.floor(s / 60); const sec = s % 60; return `${m}:${sec.toString().padStart(2, '0')}` }
 
 export default function TabStatistics({ superstar }: { superstar: any }) {
+  const t = useTranslations()
   const [stats, setStats] = useState<any>(null)
   const [years, setYears] = useState<string[]>([])
   const [year, setYear] = useState('')
@@ -62,13 +64,13 @@ export default function TabStatistics({ superstar }: { superstar: any }) {
       {/* Key stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
         {[
-          { l: 'Matches', v: s.totalMatches, c: 'text-neon-blue' },
-          { l: 'Wins', v: s.wins, c: 'text-emerald-400' },
-          { l: 'Losses', v: s.losses, c: 'text-red-400' },
-          { l: 'Draws', v: s.draws, c: 'text-yellow-400' },
-          { l: 'Win Rate', v: `${s.winRate}%`, c: s.winRate >= 60 ? 'text-emerald-400' : s.winRate >= 40 ? 'text-yellow-400' : 'text-red-400' },
-          { l: 'Avg Duration', v: s.avgDuration > 0 ? fmtDur(s.avgDuration) : '—', c: 'text-text-white' },
-          { l: 'Avg Rating', v: s.avgRating ? `${s.avgRating}★` : '—', c: 'text-yellow-400' },
+          { l: t('home.stats.matches'), v: s.totalMatches, c: 'text-neon-blue' },
+          { l: t('common.wins'), v: s.wins, c: 'text-emerald-400' },
+          { l: t('common.losses'), v: s.losses, c: 'text-red-400' },
+          { l: t('common.draws'), v: s.draws, c: 'text-yellow-400' },
+          { l: t('common.winRate'), v: `${s.winRate}%`, c: s.winRate >= 60 ? 'text-emerald-400' : s.winRate >= 40 ? 'text-yellow-400' : 'text-red-400' },
+          { l: t('superstars.stats.avgDuration'), v: s.avgDuration > 0 ? fmtDur(s.avgDuration) : '—', c: 'text-text-white' },
+          { l: t('superstars.stats.avgRating'), v: s.avgRating ? `${s.avgRating}★` : '—', c: 'text-yellow-400' },
         ].map((item, i) => (
           <div key={i} className="rounded-xl border border-border-subtle/20 bg-bg-secondary/15 p-3 text-center">
             <span className="block text-[9px] text-text-secondary uppercase tracking-wider mb-1">{item.l}</span>
@@ -93,7 +95,7 @@ export default function TabStatistics({ superstar }: { superstar: any }) {
         )}
         {s.titleMatches > 0 && (
           <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/5 p-3 text-center">
-            <span className="block text-[9px] text-text-secondary uppercase mb-1">Title Matches</span>
+            <span className="block text-[9px] text-text-secondary uppercase mb-1">{t('superstars.stats.titleMatches')}</span>
             <span className="block text-xl font-bold text-yellow-400">{s.titleMatches}</span>
           </div>
         )}
@@ -109,7 +111,7 @@ export default function TabStatistics({ superstar }: { superstar: any }) {
         {/* Win Methods */}
         {s.winMethods?.length > 0 && (
           <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/10 p-5">
-            <h4 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">How They Win</h4>
+            <h4 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">{t('superstars.stats.howTheyWin')}</h4>
             <div className="space-y-2.5">
               {s.winMethods.slice(0, 8).map((wm: any) => (
                 <div key={wm.method} className="flex items-center gap-2">
@@ -127,7 +129,7 @@ export default function TabStatistics({ superstar }: { superstar: any }) {
         {/* Match Types */}
         {s.matchTypes?.length > 0 && (
           <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/10 p-5">
-            <h4 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">Match Types</h4>
+            <h4 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">{t('superstars.stats.matchTypes')}</h4>
             <div className="space-y-2.5">
               {s.matchTypes.map((mt: any, i: number) => {
                 const max = s.matchTypes[0].count
@@ -150,7 +152,7 @@ export default function TabStatistics({ superstar }: { superstar: any }) {
       {/* Yearly Record Chart */}
       {s.yearlyChart?.length > 1 && !year && (
         <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/10 p-5">
-          <h4 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">Record by Year</h4>
+          <h4 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">{t('superstars.stats.recordByYear')}</h4>
           <div className="overflow-x-auto">
             <div className="flex items-end gap-1" style={{ minWidth: s.yearlyChart.length * 48 }}>
               {s.yearlyChart.map((yr: any) => {
@@ -170,8 +172,8 @@ export default function TabStatistics({ superstar }: { superstar: any }) {
               })}
             </div>
             <div className="flex items-center gap-4 mt-3 justify-center">
-              <span className="flex items-center gap-1 text-[9px] text-text-secondary"><span className="w-2 h-2 rounded-sm bg-emerald-500/60" /> Wins</span>
-              <span className="flex items-center gap-1 text-[9px] text-text-secondary"><span className="w-2 h-2 rounded-sm bg-red-500/40" /> Losses</span>
+              <span className="flex items-center gap-1 text-[9px] text-text-secondary"><span className="w-2 h-2 rounded-sm bg-emerald-500/60" /> {t('common.wins')}</span>
+              <span className="flex items-center gap-1 text-[9px] text-text-secondary"><span className="w-2 h-2 rounded-sm bg-red-500/40" /> {t('common.losses')}</span>
             </div>
           </div>
         </div>
@@ -180,7 +182,7 @@ export default function TabStatistics({ superstar }: { superstar: any }) {
       {/* Show breakdown */}
       {s.showSeriesBreakdown?.length > 0 && (
         <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/10 p-5">
-          <h4 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">Matches by Show</h4>
+          <h4 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">{t('superstars.stats.matchesByShow')}</h4>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {s.showSeriesBreakdown.map((ss: any) => (
               <div key={ss.ss.id} className="flex items-center gap-2 p-2 rounded-lg bg-bg-tertiary/20 border border-border-subtle/10">

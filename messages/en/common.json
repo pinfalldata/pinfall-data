@@ -163,7 +163,20 @@
       "slammyAwards": "Slammy Awards",
       "yearEndAwards": "Year-End Awards",
       "objectsUsed": "Objects Used",
-      "roleData": "Role Data"
+      "roleData": "Role Data",
+      "ringNames": "Ring Names",
+      "careerBreaks": "Career Breaks",
+      "draftHistory": "Draft History",
+      "eras": "Eras",
+      "quickStats": "📊 Quick Stats",
+      "signatureMoves": "💥 Signature Moves",
+      "familyInWWE": "Family in WWE",
+      "trainedBy": "Trained By",
+      "roles": "Roles",
+      "recentSegments": "Recent Segments",
+      "recentMatches": "Recent Matches",
+      "recordHolder": "Record Holder",
+      "recentShowsCommentated": "Recent Shows Commentated"
     },
     "info": {
       "realName": "Real Name",
@@ -212,6 +225,34 @@
       "executive": "Executive",
       "interviewer": "Interviewer",
       "commentator": "Commentator"
+    },
+    "stats": {
+      "avgDuration": "Avg Duration",
+      "avgRating": "Avg Rating",
+      "howTheyWin": "How They Win",
+      "matchTypes": "Match Types",
+      "recordByYear": "Record by Year",
+      "matchesByShow": "Matches by Show",
+      "titleMatches": "Title Matches",
+      "careerStats": "Career Stats"
+    },
+    "champs": {
+      "totalDays": "Total Days",
+      "wonAt": "Won at",
+      "lostAt": "Lost at"
+    },
+    "moves": {
+      "finishingMoves": "Finishing Moves",
+      "signatureMoves": "Signature Moves",
+      "noData": "No moves data yet."
+    },
+    "matches": {
+      "showFilters": "Show Filters",
+      "hideFilters": "Hide Filters",
+      "opponent": "Opponent",
+      "teammate": "Teammate",
+      "result": "Result",
+      "match": "Match"
     }
   },
   "matches": {
@@ -262,7 +303,9 @@
       "searchTeammate": "Search teammate…",
       "omgOnly": "OMG Moments only",
       "omgCategory": "OMG Category",
-      "anyOmg": "Any OMG"
+      "anyOmg": "Any OMG",
+      "heroPrefix": "Match",
+      "heroHighlight": "Search"
     },
     "detail": {
       "participants": "Participants",
@@ -289,7 +332,9 @@
       "segmentFound": "segment found",
       "segmentCategory": "Segment Category",
       "secondSuperstar": "2nd Superstar",
-      "noSegments": "No segments found"
+      "noSegments": "No segments found",
+      "heroPrefix": "Segment",
+      "heroHighlight": "Search"
     },
     "shows": {
       "title": "All Shows",
@@ -308,14 +353,18 @@
       "heroSubtitle": "Every Premium Live Event in WWE history — from the first WrestleMania to today's biggest spectacles.",
       "filterBy": "Filter by PLE series:",
       "clear": "Clear",
-      "noPLEs": "No PLEs found"
+      "noPLEs": "No PLEs found",
+      "heroPrefix": "All",
+      "heroHighlight": "PLEs"
     },
     "stipulations": {
       "title": "Match Stipulations",
       "subtitle": "Steel Cage, Hell in a Cell, TLC, Royal Rumble — explore every match type.",
       "searchPlaceholder": "Search stipulations...",
       "heroTitle": "Match Stipulations",
-      "heroSubtitle": "Every match type in WWE history — from classic singles to the most brutal stipulations ever created."
+      "heroSubtitle": "Every match type in WWE history — from classic singles to the most brutal stipulations ever created.",
+      "heroPrefix": "Match",
+      "heroHighlight": "Stipulations"
     },
     "arenas": {
       "title": "All Arenas",
@@ -330,13 +379,17 @@
       "alphabetical": "🔤 Alphabetical",
       "clearFilters": "Clear Filters",
       "arenaCount": "arenas",
-      "arenaCountSingle": "arena"
+      "arenaCountSingle": "arena",
+      "heroPrefix": "All",
+      "heroHighlight": "Arenas"
     },
     "objects": {
       "title": "Objects Used",
       "subtitle": "Chairs, tables, ladders, kendo sticks — every foreign object used in WWE matches.",
       "searchPlaceholder": "Search objects…",
-      "heroSubtitle": "Chairs, tables, ladders, kendo sticks — every foreign object used in WWE matches."
+      "heroSubtitle": "Chairs, tables, ladders, kendo sticks — every foreign object used in WWE matches.",
+      "heroPrefix": "Objects",
+      "heroHighlight": "Used"
     },
     "hub": {
       "title": "Matches & Shows",

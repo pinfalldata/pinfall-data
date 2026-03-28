@@ -163,7 +163,20 @@
       "slammyAwards": "Slammy Awards",
       "yearEndAwards": "Premios de fin de año",
       "objectsUsed": "Objetos utilizados",
-      "roleData": "Datos de rol"
+      "roleData": "Datos de rol",
+      "ringNames": "Nombres de ring",
+      "careerBreaks": "Pausas de carrera",
+      "draftHistory": "Historial de drafts",
+      "eras": "Eras",
+      "quickStats": "📊 Estadísticas rápidas",
+      "signatureMoves": "💥 Movimientos de firma",
+      "familyInWWE": "Familia en WWE",
+      "trainedBy": "Entrenado por",
+      "roles": "Roles",
+      "recentSegments": "Segmentos recientes",
+      "recentMatches": "Luchas recientes",
+      "recordHolder": "Poseedor de récord",
+      "recentShowsCommentated": "Shows comentados recientemente"
     },
     "info": {
       "realName": "Nombre real",
@@ -212,6 +225,34 @@
       "executive": "Ejecutivo",
       "interviewer": "Entrevistador",
       "commentator": "Comentarista"
+    },
+    "stats": {
+      "avgDuration": "Duración prom.",
+      "avgRating": "Puntuación prom.",
+      "howTheyWin": "Cómo ganan",
+      "matchTypes": "Tipos de lucha",
+      "recordByYear": "Récord por año",
+      "matchesByShow": "Luchas por show",
+      "titleMatches": "Luchas por el título",
+      "careerStats": "Estadísticas de carrera"
+    },
+    "champs": {
+      "totalDays": "Días totales",
+      "wonAt": "Ganado en",
+      "lostAt": "Perdido en"
+    },
+    "moves": {
+      "finishingMoves": "Finishing Moves",
+      "signatureMoves": "Signature Moves",
+      "noData": "Sin datos de movimientos."
+    },
+    "matches": {
+      "showFilters": "Mostrar filtros",
+      "hideFilters": "Ocultar filtros",
+      "opponent": "Oponente",
+      "teammate": "Compañero",
+      "result": "Resultado",
+      "match": "Lucha"
     }
   },
   "matches": {
@@ -262,7 +303,9 @@
       "searchTeammate": "Buscar compañero…",
       "omgOnly": "Solo OMG Moments",
       "omgCategory": "Categoría OMG",
-      "anyOmg": "Cualquier OMG"
+      "anyOmg": "Cualquier OMG",
+      "heroPrefix": "Búsqueda de",
+      "heroHighlight": "luchas"
     },
     "detail": {
       "participants": "Participantes",
@@ -289,7 +332,9 @@
       "segmentFound": "segmento encontrado",
       "segmentCategory": "Categoría de segmento",
       "secondSuperstar": "2ª Superstar",
-      "noSegments": "No se encontraron segmentos"
+      "noSegments": "No se encontraron segmentos",
+      "heroPrefix": "Búsqueda de",
+      "heroHighlight": "segmentos"
     },
     "shows": {
       "title": "Todos los shows",
@@ -308,14 +353,18 @@
       "heroSubtitle": "Cada Premium Live Event de la historia de la WWE — desde el primer WrestleMania hasta hoy.",
       "filterBy": "Filtrar por serie de PLE:",
       "clear": "Borrar",
-      "noPLEs": "No se encontraron PLEs"
+      "noPLEs": "No se encontraron PLEs",
+      "heroPrefix": "Todos los",
+      "heroHighlight": "PLEs"
     },
     "stipulations": {
       "title": "Estipulaciones de lucha",
       "subtitle": "Steel Cage, Hell in a Cell, TLC, Royal Rumble — explora cada tipo de lucha.",
       "searchPlaceholder": "Buscar estipulaciones...",
       "heroTitle": "Estipulaciones de lucha",
-      "heroSubtitle": "Cada tipo de lucha en la historia de la WWE — desde combates clásicos hasta las estipulaciones más brutales."
+      "heroSubtitle": "Cada tipo de lucha en la historia de la WWE — desde combates clásicos hasta las estipulaciones más brutales.",
+      "heroPrefix": "Estipulaciones de",
+      "heroHighlight": "lucha"
     },
     "arenas": {
       "title": "Todas las arenas",
@@ -330,13 +379,17 @@
       "alphabetical": "🔤 Alfabético",
       "clearFilters": "Borrar filtros",
       "arenaCount": "arenas",
-      "arenaCountSingle": "arena"
+      "arenaCountSingle": "arena",
+      "heroPrefix": "Todas las",
+      "heroHighlight": "arenas"
     },
     "objects": {
       "title": "Objetos utilizados",
       "subtitle": "Sillas, mesas, escaleras, kendo sticks — cada objeto utilizado en luchas WWE.",
       "searchPlaceholder": "Buscar objetos…",
-      "heroSubtitle": "Sillas, mesas, escaleras, kendo sticks — cada objeto utilizado en luchas WWE."
+      "heroSubtitle": "Sillas, mesas, escaleras, kendo sticks — cada objeto utilizado en luchas WWE.",
+      "heroPrefix": "Objetos",
+      "heroHighlight": "utilizados"
     },
     "hub": {
       "title": "Luchas & Shows",

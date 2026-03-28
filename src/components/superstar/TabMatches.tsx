@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -89,6 +90,7 @@ const RESULT_TYPE_OPTIONS = [
 // MAIN COMPONENT
 // ============================================================
 export function TabMatches({ superstar }: { superstar: any }) {
+  const t = useTranslations()
   const [matches, setMatches] = useState<MatchData[]>([])
   const [total, setTotal] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
@@ -197,7 +199,7 @@ export function TabMatches({ superstar }: { superstar: any }) {
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
           </svg>
-          {showFilters ? 'Hide Filters' : 'Show Filters'}
+          {showFilters ? t('superstars.matches.hideFilters') : t('superstars.matches.showFilters')}
           {activeFilterCount > 0 && (
             <span className="w-5 h-5 rounded-full bg-neon-blue text-[10px] text-black font-bold flex items-center justify-center">
               {activeFilterCount}
@@ -215,66 +217,66 @@ export function TabMatches({ superstar }: { superstar: any }) {
 
             {/* Year */}
             <FilterSelect
-              label="Year"
+              label={t('matches.search.year')}
               value={filters.year}
               onChange={(v) => updateFilter('year', v)}
               options={YEARS.map(y => ({ value: String(y), label: String(y) }))}
-              placeholder="All years"
+              placeholder={t('common.allYears')}
             />
 
             {/* Month — only if year selected */}
             {filters.year && (
               <FilterSelect
-                label="Month"
+                label={t('matches.search.month')}
                 value={filters.month}
                 onChange={(v) => updateFilter('month', v)}
                 options={Array.from({ length: 12 }, (_, i) => ({
                   value: String(i + 1),
                   label: new Date(2000, i).toLocaleString('en-US', { month: 'long' }),
                 }))}
-                placeholder="All months"
+                placeholder={t('common.allMonths')}
               />
             )}
 
             {/* Promotion — full name */}
             <FilterSelect
-              label="Promotion"
+              label={t('matches.search.promotion')}
               value={filters.showSeriesId}
               onChange={(v) => updateFilter('showSeriesId', v)}
               options={filterOptions.showSeries.map(s => ({
                 value: String(s.id),
                 label: s.name,
               }))}
-              placeholder="All promotions"
+              placeholder={t('common.allPromotions')}
             />
 
             {/* Match Type — sorted by most used */}
             <FilterSelect
-              label="Match Type"
+              label={t('matches.search.matchType')}
               value={filters.matchTypeId}
               onChange={(v) => updateFilter('matchTypeId', v)}
               options={filterOptions.matchTypes.map(t => ({
                 value: String(t.id),
                 label: t.name,
               }))}
-              placeholder="All types"
+              placeholder={t('common.allTypes')}
             />
 
             {/* Min Rating — 0 to 10 */}
             <FilterSelect
-              label="Min. Rating"
+              label={t('matches.search.minRating')}
               value={filters.minRating}
               onChange={(v) => updateFilter('minRating', v)}
               options={Array.from({ length: 11 }, (_, i) => ({
                 value: String(i),
                 label: `${i}+/10`,
               }))}
-              placeholder="Any rating"
+              placeholder={t('common.anyRating')}
             />
 
             {/* Result */}
             <FilterSelect
-              label="Result"
+              label={t('superstars.matches.result')}
               value={filters.result}
               onChange={(v) => updateFilter('result', v)}
               options={[
@@ -287,11 +289,11 @@ export function TabMatches({ superstar }: { superstar: any }) {
 
             {/* Result Type (how) */}
             <FilterSelect
-              label="Finish Type"
+              label={t('matches.search.finishType')}
               value={filters.resultType}
               onChange={(v) => updateFilter('resultType', v)}
               options={RESULT_TYPE_OPTIONS}
-              placeholder="Any finish"
+              placeholder={t('common.anyFinish')}
             />
 
             {/* Country */}
@@ -320,7 +322,7 @@ export function TabMatches({ superstar }: { superstar: any }) {
 
             {/* Opponent search */}
             <SuperstarSearch
-              label="Opponent"
+              label={t('superstars.matches.opponent')}
               placeholder="Search opponent..."
               value={filters.opponentName}
               onSelect={(id, name) => {
@@ -335,7 +337,7 @@ export function TabMatches({ superstar }: { superstar: any }) {
 
             {/* Teammate search */}
             <SuperstarSearch
-              label="Teammate"
+              label={t('superstars.matches.teammate')}
               placeholder="Search teammate..."
               value={filters.teammateName}
               onSelect={(id, name) => {
@@ -426,13 +428,13 @@ export function TabMatches({ superstar }: { superstar: any }) {
         <>
           {/* Desktop table header */}
           <div className="hidden lg:grid lg:grid-cols-[95px_minmax(140px,1.2fr)_150px_minmax(200px,2.5fr)_110px_55px_56px] gap-3 px-4 pb-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20">
-            <span>Date</span>
-            <span>Show</span>
-            <span>Type</span>
-            <span>Match</span>
-            <span>Title</span>
-            <span className="text-center">Rating</span>
-            <span className="text-center">Result</span>
+            <span>{t('matches.search.date')}</span>
+            <span>{t('matches.search.show')}</span>
+            <span>{t('matches.search.type')}</span>
+            <span>{t('superstars.matches.match')}</span>
+            <span>{t('matches.search.titleCol')}</span>
+            <span className="text-center">{t('matches.search.ratingCol')}</span>
+            <span className="text-center">{t('superstars.matches.result')}</span>
           </div>
 
           {/* Loading overlay */}

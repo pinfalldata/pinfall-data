@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import { formatDate, formatDateShort, formatDuration, getRatingColor, getSegmentCategoryIcon } from '@/lib/utils'
 
 export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabChange?: (tabId: string) => void }) {
+  const t = useTranslations()
   const [preview, setPreview] = useState<any>(null)
 
   useEffect(() => {
@@ -20,7 +22,7 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
       {/* ═══════ LEFT COLUMN: Bio + Records + Ring Names + Activity ═══════ */}
       <div className="lg:col-span-2 space-y-6">
         {superstar.bio_md && (
-          <Card title="Biography">
+          <Card title={t('superstars.profile.biography')}>
             <p className="text-text-primary leading-relaxed whitespace-pre-line">{superstar.bio_md}</p>
           </Card>
         )}
@@ -28,7 +30,7 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
         <RecordsBlocks superstarId={superstar.id} />
 
         {superstar.aliases?.length > 0 && (
-          <Card title="Ring Names">
+          <Card title={t('superstars.profile.ringNames')}>
             <div className="space-y-2">
               {superstar.aliases.map((a: any) => (
                 <div key={a.id} className="flex items-center justify-between py-2 border-b border-border-subtle/20 last:border-b-0">
@@ -77,7 +79,7 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
                   <div className="w-8 h-8 rounded-lg bg-purple-500/15 flex items-center justify-center">
                     <span className="text-sm">🎤</span>
                   </div>
-                  <h3 className="font-display text-base font-bold text-text-white">Recent Segments</h3>
+                  <h3 className="font-display text-base font-bold text-text-white">{t('superstars.profile.recentSegments')}</h3>
                 </div>
                 <button onClick={() => onTabChange?.('segments')}
                   className="text-xs text-neon-blue hover:text-neon-blue/80 font-medium flex items-center gap-1 transition-colors">
@@ -111,7 +113,7 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
 
         {/* Career Breaks + Draft History */}
         {superstar.careerBreaks?.length > 0 && (
-          <Card title="Career Breaks">
+          <Card title={t('superstars.profile.careerBreaks')}>
             <div className="space-y-3">
               {superstar.careerBreaks.map((cb: any) => (
                 <div key={cb.id} className="rounded-xl bg-bg-tertiary/50 p-4 border border-border-subtle/30">
@@ -128,7 +130,7 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
         )}
 
         {superstar.draftHistory?.length > 0 && (
-          <Card title="Draft History">
+          <Card title={t('superstars.profile.draftHistory')}>
             <div className="space-y-2">
               {superstar.draftHistory.map((d: any) => (
                 <div key={d.id} className="flex items-center gap-3 py-2 border-b border-border-subtle/20 last:border-b-0 flex-wrap">
@@ -147,7 +149,7 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
       <div className="space-y-5">
         {/* Eras */}
         {superstar.eras?.length > 0 && (
-          <Card title="Eras">
+          <Card title={t('superstars.profile.eras')}>
             <div className="flex flex-wrap gap-2">
               {superstar.eras.map((e: any) => (
                 <span key={e.id} className={`px-3 py-1.5 rounded-lg text-xs font-medium border ${e.is_primary ? 'bg-neon-blue/15 text-neon-blue border-neon-blue/30' : 'bg-bg-tertiary text-text-secondary border-border-subtle/50'}`}>
@@ -160,7 +162,7 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
 
         {/* ★★★ STATS WIDGET ★★★ */}
         {preview?.statsPreview && (
-          <PreviewWidget title="📊 Quick Stats" onSeeMore={() => onTabChange?.('statistics')} icon="📊">
+          <PreviewWidget title={t('superstars.profile.quickStats')} onSeeMore={() => onTabChange?.('statistics')} icon="📊">
             <div className="grid grid-cols-2 gap-2">
               <StatMini label="Win Rate" value={`${preview.statsPreview.winRate}%`} accent />
               <StatMini label="Total Matches" value={preview.statsPreview.total_matches} />
@@ -174,7 +176,7 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
 
         {/* ★★★ FINISHERS WIDGET ★★★ */}
         {preview?.finishersPreview?.length > 0 && (
-          <PreviewWidget title="💥 Signature Moves" onSeeMore={() => onTabChange?.('moves')} icon="💥">
+          <PreviewWidget title={t('superstars.profile.signatureMoves')} onSeeMore={() => onTabChange?.('moves')} icon="💥">
             <div className="space-y-2">
               {preview.finishersPreview.map((f: any) => (
                 <div key={f.id} className="flex items-center gap-2">
@@ -266,7 +268,7 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
 
         {/* Family */}
         {superstar.families?.length > 0 && (
-          <Card title="Family in WWE">
+          <Card title={t('superstars.profile.familyInWWE')}>
             <div className="space-y-2">
               {superstar.families.map((f: any) => (
                 <div key={f.id} className="flex items-center gap-3">
@@ -283,7 +285,7 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
         )}
 
         {superstar.trainers?.length > 0 && (
-          <Card title="Trained By">
+          <Card title={t('superstars.profile.trainedBy')}>
             <div className="space-y-1">
               {superstar.trainers.map((t: any) => (
                 <div key={t.id}>
@@ -299,7 +301,7 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
         )}
 
         {superstar.roles?.length > 1 && (
-          <Card title="Roles">
+          <Card title={t('superstars.profile.roles')}>
             <div className="space-y-2">
               {superstar.roles.map((r: any) => (
                 <div key={r.id} className="flex items-center justify-between py-1.5 border-b border-border-subtle/20 last:border-b-0">
@@ -406,6 +408,7 @@ function StatMini({ label, value, accent, color }: { label: string; value: any; 
 /* GOLDEN RECORDS BLOCKS                                   */
 /* ═══════════════════════════════════════════════════════ */
 function RecordsBlocks({ superstarId }: { superstarId: number }) {
+  const t = useTranslations()
   const [records, setRecords] = useState<any[]>([])
 
   useEffect(() => {
@@ -440,7 +443,7 @@ function RecordsBlocks({ superstarId }: { superstarId: number }) {
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-0.5">
-                <span className="text-[9px] px-2 py-0.5 rounded-full bg-yellow-500/15 border border-yellow-500/25 text-yellow-400 font-bold uppercase tracking-[0.15em]">Record Holder</span>
+                <span className="text-[9px] px-2 py-0.5 rounded-full bg-yellow-500/15 border border-yellow-500/25 text-yellow-400 font-bold uppercase tracking-[0.15em]">{t('superstars.profile.recordHolder')}</span>
               </div>
               <h4 className="text-sm sm:text-base font-bold text-yellow-400/90 font-display">{rec.type}</h4>
               {rec.subtitle && <p className="text-xs text-yellow-400/50 mt-0.5">{rec.subtitle}</p>}

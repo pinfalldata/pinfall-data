@@ -163,7 +163,20 @@
       "slammyAwards": "स्लैमी अवार्ड्स",
       "yearEndAwards": "साल के अंत के पुरस्कार",
       "objectsUsed": "इस्तेमाल किए गए ऑब्जेक्ट्स",
-      "roleData": "भूमिका डेटा"
+      "roleData": "भूमिका डेटा",
+      "ringNames": "रिंग के नाम",
+      "careerBreaks": "करियर ब्रेक",
+      "draftHistory": "ड्राफ्ट इतिहास",
+      "eras": "युग",
+      "quickStats": "📊 त्वरित आंकड़े",
+      "signatureMoves": "💥 सिग्नेचर मूव्स",
+      "familyInWWE": "WWE में परिवार",
+      "trainedBy": "प्रशिक्षक",
+      "roles": "भूमिकाएँ",
+      "recentSegments": "हाल के सेगमेंट",
+      "recentMatches": "हाल के मैच",
+      "recordHolder": "रिकॉर्ड धारक",
+      "recentShowsCommentated": "हाल में कमेंट्री किए शोज़"
     },
     "info": {
       "realName": "असली नाम",
@@ -212,6 +225,34 @@
       "executive": "एक्ज़ीक्यूटिव",
       "interviewer": "इंटरव्यूअर",
       "commentator": "कमेंटेटर"
+    },
+    "stats": {
+      "avgDuration": "औसत अवधि",
+      "avgRating": "औसत रेटिंग",
+      "howTheyWin": "कैसे जीतते हैं",
+      "matchTypes": "मैच प्रकार",
+      "recordByYear": "साल दर साल",
+      "matchesByShow": "शो के अनुसार मैच",
+      "titleMatches": "टाइटल मैच",
+      "careerStats": "करियर आंकड़े"
+    },
+    "champs": {
+      "totalDays": "कुल दिन",
+      "wonAt": "जीता",
+      "lostAt": "हारा"
+    },
+    "moves": {
+      "finishingMoves": "Finishing Moves",
+      "signatureMoves": "Signature Moves",
+      "noData": "अभी कोई मूव डेटा नहीं।"
+    },
+    "matches": {
+      "showFilters": "फ़िल्टर दिखाएँ",
+      "hideFilters": "फ़िल्टर छुपाएँ",
+      "opponent": "प्रतिद्वंद्वी",
+      "teammate": "साथी",
+      "result": "परिणाम",
+      "match": "मैच"
     }
   },
   "matches": {
@@ -262,7 +303,9 @@
       "searchTeammate": "साथी खोजें…",
       "omgOnly": "केवल OMG Moments",
       "omgCategory": "OMG श्रेणी",
-      "anyOmg": "कोई भी OMG"
+      "anyOmg": "कोई भी OMG",
+      "heroPrefix": "मैच",
+      "heroHighlight": "खोज"
     },
     "detail": {
       "participants": "प्रतिभागी",
@@ -289,7 +332,9 @@
       "segmentFound": "सेगमेंट मिला",
       "segmentCategory": "सेगमेंट श्रेणी",
       "secondSuperstar": "दूसरा सुपरस्टार",
-      "noSegments": "कोई सेगमेंट नहीं मिला"
+      "noSegments": "कोई सेगमेंट नहीं मिला",
+      "heroPrefix": "सेगमेंट",
+      "heroHighlight": "खोज"
     },
     "shows": {
       "title": "सभी शोज़",
@@ -308,14 +353,18 @@
       "heroSubtitle": "WWE इतिहास का हर Premium Live Event — पहले WrestleMania से आज तक।",
       "filterBy": "PLE सीरीज़ से फ़िल्टर करें:",
       "clear": "साफ़ करें",
-      "noPLEs": "कोई PLE नहीं मिला"
+      "noPLEs": "कोई PLE नहीं मिला",
+      "heroPrefix": "सभी",
+      "heroHighlight": "PLEs"
     },
     "stipulations": {
       "title": "मैच स्टिपुलेशन",
       "subtitle": "Steel Cage, Hell in a Cell, TLC — हर मैच प्रकार खोजें।",
       "searchPlaceholder": "स्टिपुलेशन खोजें...",
       "heroTitle": "मैच स्टिपुलेशन",
-      "heroSubtitle": "WWE इतिहास का हर मैच प्रकार।"
+      "heroSubtitle": "WWE इतिहास का हर मैच प्रकार।",
+      "heroPrefix": "मैच",
+      "heroHighlight": "स्टिपुलेशन"
     },
     "arenas": {
       "title": "सभी एरीनाज़",
@@ -330,13 +379,17 @@
       "alphabetical": "🔤 वर्णमाला",
       "clearFilters": "फ़िल्टर साफ़ करें",
       "arenaCount": "एरीनाज़",
-      "arenaCountSingle": "एरीना"
+      "arenaCountSingle": "एरीना",
+      "heroPrefix": "सभी",
+      "heroHighlight": "एरीनाज़"
     },
     "objects": {
       "title": "इस्तेमाल किए गए ऑब्जेक्ट्स",
       "subtitle": "कुर्सियाँ, टेबल, सीढ़ियाँ — WWE मैचों में इस्तेमाल हर वस्तु।",
       "searchPlaceholder": "ऑब्जेक्ट खोजें…",
-      "heroSubtitle": "कुर्सियाँ, टेबल, सीढ़ियाँ — WWE मैचों में इस्तेमाल हर वस्तु।"
+      "heroSubtitle": "कुर्सियाँ, टेबल, सीढ़ियाँ — WWE मैचों में इस्तेमाल हर वस्तु।",
+      "heroPrefix": "उपयोग किए गए",
+      "heroHighlight": "ऑब्जेक्ट्स"
     },
     "hub": {
       "title": "मैच और शोज़",

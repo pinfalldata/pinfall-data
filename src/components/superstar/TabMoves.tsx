@@ -1,15 +1,20 @@
+'use client'
+
+import { useTranslations } from 'next-intl'
+
 export function TabMoves({ superstar }: { superstar: any }) {
+  const t = useTranslations()
   const finishers = superstar.finishers?.filter((f: any) => f.move_type === 'finisher') || []
   const signatures = superstar.finishers?.filter((f: any) => f.move_type === 'signature') || []
 
-  if (!finishers.length && !signatures.length) return <p className="text-center py-12 text-text-secondary">No moves data yet.</p>
+  if (!finishers.length && !signatures.length) return <p className="text-center py-12 text-text-secondary">{t('superstars.moves.noData')}</p>
 
   return (
     <div className="max-w-4xl mx-auto space-y-10">
       {finishers.length > 0 && (
         <div>
           <h3 className="font-display text-lg font-bold text-neon-blue mb-4 flex items-center gap-2">
-            <span className="w-1.5 h-5 bg-neon-blue rounded-full" />Finishing Moves
+            <span className="w-1.5 h-5 bg-neon-blue rounded-full" />{t('superstars.moves.finishingMoves')}
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {finishers.map((m: any) => <MoveCard key={m.id} move={m} color="blue" />)}
@@ -19,7 +24,7 @@ export function TabMoves({ superstar }: { superstar: any }) {
       {signatures.length > 0 && (
         <div>
           <h3 className="font-display text-lg font-bold text-neon-pink mb-4 flex items-center gap-2">
-            <span className="w-1.5 h-5 bg-neon-pink rounded-full" />Signature Moves
+            <span className="w-1.5 h-5 bg-neon-pink rounded-full" />{t('superstars.moves.signatureMoves')}
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {signatures.map((m: any) => <MoveCard key={m.id} move={m} color="pink" />)}

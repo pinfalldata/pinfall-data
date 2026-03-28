@@ -163,7 +163,20 @@
       "slammyAwards": "Slammy Ödülleri",
       "yearEndAwards": "Yıl Sonu Ödülleri",
       "objectsUsed": "Kullanılan Objeler",
-      "roleData": "Rol Verileri"
+      "roleData": "Rol Verileri",
+      "ringNames": "Ring İsimleri",
+      "careerBreaks": "Kariyer Molaları",
+      "draftHistory": "Draft Geçmişi",
+      "eras": "Dönemler",
+      "quickStats": "📊 Hızlı İstatistik",
+      "signatureMoves": "💥 İmza Hareketleri",
+      "familyInWWE": "WWE'deki Aile",
+      "trainedBy": "Eğitmen",
+      "roles": "Roller",
+      "recentSegments": "Son Segmentler",
+      "recentMatches": "Son Maçlar",
+      "recordHolder": "Rekor Sahibi",
+      "recentShowsCommentated": "Son Yorumlanan Şovlar"
     },
     "info": {
       "realName": "Gerçek Adı",
@@ -212,6 +225,34 @@
       "executive": "Yönetici",
       "interviewer": "Muhabir",
       "commentator": "Yorumcu"
+    },
+    "stats": {
+      "avgDuration": "Ort. Süre",
+      "avgRating": "Ort. Puan",
+      "howTheyWin": "Nasıl Kazanırlar",
+      "matchTypes": "Maç Türleri",
+      "recordByYear": "Yıllık Rekor",
+      "matchesByShow": "Şova Göre Maçlar",
+      "titleMatches": "Kemer Maçları",
+      "careerStats": "Kariyer İstatistikleri"
+    },
+    "champs": {
+      "totalDays": "Toplam Gün",
+      "wonAt": "Kazanıldığı Yer",
+      "lostAt": "Kaybedildiği Yer"
+    },
+    "moves": {
+      "finishingMoves": "Finishing Moves",
+      "signatureMoves": "Signature Moves",
+      "noData": "Henüz hareket verisi yok."
+    },
+    "matches": {
+      "showFilters": "Filtreleri Göster",
+      "hideFilters": "Filtreleri Gizle",
+      "opponent": "Rakip",
+      "teammate": "Takım Arkadaşı",
+      "result": "Sonuç",
+      "match": "Maç"
     }
   },
   "matches": {
@@ -262,7 +303,9 @@
       "searchTeammate": "Takım arkadaşı ara…",
       "omgOnly": "Sadece OMG Moments",
       "omgCategory": "OMG Kategorisi",
-      "anyOmg": "Herhangi bir OMG"
+      "anyOmg": "Herhangi bir OMG",
+      "heroPrefix": "Maç",
+      "heroHighlight": "Arama"
     },
     "detail": {
       "participants": "Katılımcılar",
@@ -289,7 +332,9 @@
       "segmentFound": "segment bulundu",
       "segmentCategory": "Segment Kategorisi",
       "secondSuperstar": "2. Superstar",
-      "noSegments": "Segment bulunamadı"
+      "noSegments": "Segment bulunamadı",
+      "heroPrefix": "Segment",
+      "heroHighlight": "Arama"
     },
     "shows": {
       "title": "Tüm Şovlar",
@@ -308,14 +353,18 @@
       "heroSubtitle": "WWE tarihindeki her Premium Live Event — ilk WrestleMania'dan bugüne.",
       "filterBy": "PLE serisine göre filtrele:",
       "clear": "Temizle",
-      "noPLEs": "PLE bulunamadı"
+      "noPLEs": "PLE bulunamadı",
+      "heroPrefix": "Tüm",
+      "heroHighlight": "PLE'ler"
     },
     "stipulations": {
       "title": "Maç Şartları",
       "subtitle": "Steel Cage, Hell in a Cell, TLC — her maç türünü keşfedin.",
       "searchPlaceholder": "Stipülasyon ara...",
       "heroTitle": "Maç Şartları",
-      "heroSubtitle": "WWE tarihindeki her maç türü."
+      "heroSubtitle": "WWE tarihindeki her maç türü.",
+      "heroPrefix": "Maç",
+      "heroHighlight": "Şartları"
     },
     "arenas": {
       "title": "Tüm Arenalar",
@@ -330,13 +379,17 @@
       "alphabetical": "🔤 Alfabetik",
       "clearFilters": "Filtreleri Temizle",
       "arenaCount": "arena",
-      "arenaCountSingle": "arena"
+      "arenaCountSingle": "arena",
+      "heroPrefix": "Tüm",
+      "heroHighlight": "Arenalar"
     },
     "objects": {
       "title": "Kullanılan Objeler",
       "subtitle": "Sandalyeler, masalar, merdivenler — WWE maçlarında kullanılan her obje.",
       "searchPlaceholder": "Obje ara…",
-      "heroSubtitle": "Sandalyeler, masalar, merdivenler — WWE maçlarında kullanılan her obje."
+      "heroSubtitle": "Sandalyeler, masalar, merdivenler — WWE maçlarında kullanılan her obje.",
+      "heroPrefix": "Kullanılan",
+      "heroHighlight": "Objeler"
     },
     "hub": {
       "title": "Maçlar & Şovlar",

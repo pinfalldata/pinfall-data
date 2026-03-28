@@ -46,7 +46,7 @@ export default function TabChampionships({ superstar }: { superstar: any }) {
         <div className="w-px h-10 bg-border-subtle/30 hidden sm:block" />
         <div className="text-center">
           <span className="block text-2xl sm:text-3xl font-bold text-neon-blue font-display">{totalDays.toLocaleString()}</span>
-          <span className="text-[10px] text-text-secondary uppercase tracking-wider">Total Days</span>
+          <span className="text-[10px] text-text-secondary uppercase tracking-wider">{t('superstars.champs.totalDays')}</span>
         </div>
       </div>
 
@@ -106,7 +106,7 @@ export default function TabChampionships({ superstar }: { superstar: any }) {
                         <div className="w-px h-10 bg-border-subtle/30" />
                         <div className="text-center">
                           <span className="text-2xl sm:text-3xl font-bold text-text-white font-display">{item.total_days.toLocaleString()}</span>
-                          <span className="block text-[9px] text-text-secondary uppercase tracking-wider mt-0.5">Total Days</span>
+                          <span className="block text-[9px] text-text-secondary uppercase tracking-wider mt-0.5">{t('superstars.champs.totalDays')}</span>
                         </div>
                         {item.reign_count > 1 && (
                           <>
@@ -184,7 +184,7 @@ export default function TabChampionships({ superstar }: { superstar: any }) {
                             <div className="flex items-center gap-3 mt-1 text-[11px] text-text-secondary">
                               {r.won_at_show && (
                                 <span>
-                                  Won at{' '}
+                                  {t('superstars.champs.wonAt')}{' '}
                                   <Link href={`/shows/${r.won_at_show.slug}`} className="text-neon-blue hover:underline" onClick={e => e.stopPropagation()}>
                                     {r.won_at_show.name}
                                   </Link>
@@ -192,7 +192,7 @@ export default function TabChampionships({ superstar }: { superstar: any }) {
                               )}
                               {r.lost_at_show && (
                                 <span>
-                                  Lost at{' '}
+                                  {t('superstars.champs.lostAt')}{' '}
                                   <Link href={`/shows/${r.lost_at_show.slug}`} className="text-neon-blue hover:underline" onClick={e => e.stopPropagation()}>
                                     {r.lost_at_show.name}
                                   </Link>
