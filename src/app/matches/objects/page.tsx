@@ -30,7 +30,7 @@ export default function ObjectsListPage() {
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">
           <Link href="/matches" className="text-[10px] text-text-secondary uppercase tracking-widest mb-2 hover:text-neon-blue transition-colors">← Matches & Shows</Link>
           <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-white text-center tracking-tight mb-2">
-            <span className="text-neon-blue">Objects</span> Used
+            {t('matches.objects.title')}
           </h1>
           <p className="text-text-secondary text-sm sm:text-base text-center max-w-2xl">{t('matches.objects.heroSubtitle')}</p>
         </div>

@@ -19,21 +19,21 @@ export function ProfileInfoBar({ superstar }: { superstar: any }) {
   const topRow = [
     { label: t('superstars.info.height'), value: formatHeight(superstar.height_cm) },
     { label: t('superstars.info.weight'), value: formatWeight(superstar.weight_kg) },
-    { label: 'Born', value: formatDate(superstar.birth_date) },
-    superstar.death_date ? { label: 'Died', value: formatDate(superstar.death_date) } : null,
-    { label: 'Age', value: age !== null ? `${age} years${superstar.death_date ? ' (at death)' : ''}` : '' },
-    { label: 'Gender', value: getGenderLabel(superstar.gender) },
+    { label: t('superstars.info.born'), value: formatDate(superstar.birth_date) },
+    superstar.death_date ? { label: t('superstars.info.died'), value: formatDate(superstar.death_date) } : null,
+    { label: t('superstars.info.age'), value: age !== null ? `${age} ${t('superstars.info.yearsWord')}${superstar.death_date ? ` (${t('superstars.info.atDeath')})` : ''}` : '' },
+    { label: t('superstars.info.gender'), value: getGenderLabel(superstar.gender) },
   ].filter(cell => cell && cell.value) as { label: string; value: string }[]
 
   const bottomRow = [
-    { label: 'Birthplace', value: birthplace },
-    { label: 'Nationality', value: nationalities },
-    { label: 'Billed From', value: superstar.billed_from || '' },
-    { label: 'WWE Debut', value: formatDate(superstar.debut_date) },
+    { label: t('superstars.info.birthplace'), value: birthplace },
+    { label: t('superstars.info.nationality'), value: nationalities },
+    { label: t('superstars.info.billedFrom'), value: superstar.billed_from || '' },
+    { label: t('superstars.info.wweDebut'), value: formatDate(superstar.debut_date) },
     superstar.retirement_date
       ? { label: t('common.retired'), value: formatDate(superstar.retirement_date) }
-      : careerYears !== null ? { label: 'Career', value: `${careerYears} years` } : null,
-    superstar.is_hall_of_fame ? { label: t('nav.dropdown.hallOfFame'), value: 'Inducted ★' } : null,
+      : careerYears !== null ? { label: t('superstars.info.career'), value: `${careerYears} ${t('superstars.info.yearsWord')}` } : null,
+    superstar.is_hall_of_fame ? { label: t('nav.dropdown.hallOfFame'), value: t('superstars.info.inducted') } : null,
   ].filter(cell => cell && cell.value) as { label: string; value: string }[]
 
   // Grid columns adapt to number of cells
