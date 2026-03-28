@@ -611,7 +611,8 @@
       "venue": "Venue",
       "location": "Location",
       "attendance": "Attendance",
-      "venueName": "Venue Name"
+      "venueName": "Venue Name",
+      "allCities": "All Cities"
     },
     "stats": {
       "totalShows": "Total Shows",
@@ -620,7 +621,8 @@
       "avgDuration": "Avg Duration",
       "titleChanges": "Title Changes",
       "winMethods": "Win Methods",
-      "topMatchTypes": "Top Match Types"
+      "topMatchTypes": "Top Match Types",
+      "titleChangePercent": "Title Change %"
     }
   },
   "search": {
@@ -745,7 +747,11 @@
       "matchesRecorded": "matches recorded in WWE history",
       "rules": "Rules",
       "howWon": "How are {name} won?",
-      "allMatches": "All Matches"
+      "allMatches": "All Matches",
+      "inWWEHistory": "in WWE history",
+      "recordedInWWEHistory": "recorded in WWE history",
+      "howWonPrefix": "How are",
+      "howWonSuffix": "won?"
     }
   },
   "arenas": {

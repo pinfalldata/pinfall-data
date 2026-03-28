@@ -611,7 +611,8 @@
       "venue": "Venue",
       "location": "Location",
       "attendance": "Attendance",
-      "venueName": "Venue Name"
+      "venueName": "Venue Name",
+      "allCities": "सभी शहर"
     },
     "stats": {
       "totalShows": "Total Shows",
@@ -620,7 +621,8 @@
       "avgDuration": "Avg Duration",
       "titleChanges": "Title Changes",
       "winMethods": "Win Methods",
-      "topMatchTypes": "Top Match Types"
+      "topMatchTypes": "Top Match Types",
+      "titleChangePercent": "टाइटल चेंज %"
     }
   },
   "search": {
@@ -745,7 +747,11 @@
       "matchesRecorded": "matches recorded in WWE history",
       "rules": "नियम",
       "howWon": "How are {name} won?",
-      "allMatches": "सभी मैच"
+      "allMatches": "सभी मैच",
+      "inWWEHistory": "WWE इतिहास में",
+      "recordedInWWEHistory": "WWE इतिहास में दर्ज",
+      "howWonPrefix": "",
+      "howWonSuffix": "कैसे जीते जाते हैं?"
     }
   },
   "arenas": {

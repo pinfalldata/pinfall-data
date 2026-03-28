@@ -449,7 +449,7 @@ export default function ShowSeriesDetailPage() {
               {/* City */}
               <select value={filterCity} onChange={e => setFilterCity(e.target.value)}
                 className="text-xs bg-bg-tertiary/50 border border-border-subtle/30 rounded-lg px-3 py-2 text-text-white focus:border-neon-blue/50 focus:outline-none transition-colors">
-                <option value="">All Cities</option>
+                <option value="">{t('shows.series.allCities')}</option>
                 {filterOptions.cities.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
@@ -629,7 +629,7 @@ export default function ShowSeriesDetailPage() {
                   { label: t('shows.stats.avgRating'), value: stats.avgRating ? `${stats.avgRating}★` : '—', color: 'text-yellow-400' },
                   { label: t('shows.stats.avgDuration'), value: stats.avgDuration ? formatDuration(stats.avgDuration) : '—', color: 'text-text-white' },
                   { label: t('shows.stats.titleChanges'), value: stats.totalTitleChanges.toLocaleString(), color: 'text-yellow-400' },
-                  { label: 'Title Change %', value: `${stats.titleChangePercentage}%`, color: 'text-text-white' },
+                  { label: t('shows.stats.titleChangePercent'), value: `${stats.titleChangePercentage}%`, color: 'text-text-white' },
                 ].map((s, i) => (
                   <div key={i} className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-4 text-center">
                     <span className="block text-[10px] text-text-secondary uppercase tracking-wider mb-1">{s.label}</span>

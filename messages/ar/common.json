@@ -611,7 +611,8 @@
       "venue": "Venue",
       "location": "Location",
       "attendance": "Attendance",
-      "venueName": "Venue Name"
+      "venueName": "Venue Name",
+      "allCities": "جميع المدن"
     },
     "stats": {
       "totalShows": "Total Shows",
@@ -620,7 +621,8 @@
       "avgDuration": "Avg Duration",
       "titleChanges": "Title Changes",
       "winMethods": "Win Methods",
-      "topMatchTypes": "Top Match Types"
+      "topMatchTypes": "Top Match Types",
+      "titleChangePercent": "نسبة تغيير اللقب"
     }
   },
   "search": {
@@ -745,7 +747,11 @@
       "matchesRecorded": "matches recorded in WWE history",
       "rules": "القواعد",
       "howWon": "How are {name} won?",
-      "allMatches": "جميع المباريات"
+      "allMatches": "جميع المباريات",
+      "inWWEHistory": "في تاريخ WWE",
+      "recordedInWWEHistory": "مسجلة في تاريخ WWE",
+      "howWonPrefix": "كيف تُفاز",
+      "howWonSuffix": "؟"
     }
   },
   "arenas": {

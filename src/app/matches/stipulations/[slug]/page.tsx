@@ -205,7 +205,7 @@ export default function StipulationDetailPage() {
             {matchType?.name || <span className="bg-bg-secondary/50 rounded w-60 h-10 inline-block animate-pulse" />}
           </h1>
           <p className="text-text-secondary text-sm text-center">
-            <span className="text-neon-blue font-bold">{total.toLocaleString()}</span> match{total !== 1 ? 'es' : ''} in WWE history
+            <span className="text-neon-blue font-bold">{total.toLocaleString()}</span> {t('stipulations.detail.inWWEHistory')}
           </p>
         </div>
       </section>
@@ -241,7 +241,7 @@ export default function StipulationDetailPage() {
                 {matchType?.name || <span className="bg-bg-secondary/50 rounded w-60 h-12 inline-block animate-pulse" />}
               </h1>
               <p className="text-text-secondary text-lg mb-5">
-                <span className="text-neon-blue font-bold text-2xl">{total.toLocaleString()}</span> match{total !== 1 ? 'es' : ''} recorded in WWE history
+                <span className="text-neon-blue font-bold text-2xl">{total.toLocaleString()}</span> {t('stipulations.detail.recordedInWWEHistory')}
               </p>
               {matchType?.description && (
                 <p className="text-text-secondary text-sm leading-relaxed max-w-xl">{matchType.description}</p>
@@ -289,7 +289,7 @@ export default function StipulationDetailPage() {
           <div className="max-w-3xl mx-auto">
             <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-5 sm:p-6">
               <h2 className="font-display text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">
-                How are {matchType?.name || 'these matches'} won?
+                {t('stipulations.detail.howWonPrefix')} {matchType?.name || 'these matches'} {t('stipulations.detail.howWonSuffix')}
               </h2>
               <div className="flex flex-wrap gap-4 mb-5">
                 {stats.avgRating && (
@@ -436,10 +436,10 @@ export default function StipulationDetailPage() {
           <>
             {/* Desktop header */}
             <div className="hidden lg:grid lg:grid-cols-[100px_60px_1fr_180px_80px] gap-3 px-4 py-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20 mb-2">
-              <span>Date</span>
-              <span>Show</span>
-              <span>Participants</span>
-              <span>Championship</span>
+              <span>{t('matches.search.date')}</span>
+              <span>{t('matches.search.show')}</span>
+              <span>{t('matches.search.participants')}</span>
+              <span>{t('matches.search.championship')}</span>
               <span className="text-center">Rating</span>
             </div>
 

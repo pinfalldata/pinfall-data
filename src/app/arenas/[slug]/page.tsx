@@ -399,7 +399,7 @@ export default function ArenaDetailPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {stats.winMethods?.length > 0 && (
                   <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-6">
-                    <h3 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">Win Methods</h3>
+                    <h3 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">{t('arenas.stats.winMethods')}</h3>
                     <div className="space-y-2">{stats.winMethods.slice(0, 8).map((wm: any) => (
                       <div key={wm.method} className="flex items-center gap-2">
                         <span className="text-xs text-text-white w-28 truncate">{resultLabels[wm.method] || wm.method}</span>
@@ -411,7 +411,7 @@ export default function ArenaDetailPage() {
                 )}
                 {stats.topMatchTypes?.length > 0 && (
                   <div className="rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 p-6">
-                    <h3 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">Top Match Types</h3>
+                    <h3 className="text-sm font-bold text-neon-blue uppercase tracking-wider mb-4">{t('arenas.stats.topMatchTypes')}</h3>
                     <div className="space-y-2">{stats.topMatchTypes.slice(0, 8).map((mt: any, i: number) => (
                       <Link key={mt.id} href={`/matches/stipulations/${mt.slug}`} className="flex items-center gap-2 p-2 rounded-lg hover:bg-bg-tertiary/30 transition-all">
                         <span className="w-5 h-5 rounded bg-neon-blue/10 flex items-center justify-center text-[9px] text-neon-blue font-bold">{i + 1}</span>

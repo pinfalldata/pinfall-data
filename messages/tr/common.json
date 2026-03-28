@@ -611,7 +611,8 @@
       "venue": "Venue",
       "location": "Location",
       "attendance": "Attendance",
-      "venueName": "Venue Name"
+      "venueName": "Venue Name",
+      "allCities": "Tüm Şehirler"
     },
     "stats": {
       "totalShows": "Total Shows",
@@ -620,7 +621,8 @@
       "avgDuration": "Avg Duration",
       "titleChanges": "Title Changes",
       "winMethods": "Win Methods",
-      "topMatchTypes": "Top Match Types"
+      "topMatchTypes": "Top Match Types",
+      "titleChangePercent": "Kemer Değişim %"
     }
   },
   "search": {
@@ -745,7 +747,11 @@
       "matchesRecorded": "matches recorded in WWE history",
       "rules": "Kurallar",
       "howWon": "How are {name} won?",
-      "allMatches": "Tüm Maçlar"
+      "allMatches": "Tüm Maçlar",
+      "inWWEHistory": "WWE tarihinde",
+      "recordedInWWEHistory": "WWE tarihinde kaydedilen",
+      "howWonPrefix": "",
+      "howWonSuffix": "nasıl kazanılır?"
     }
   },
   "arenas": {

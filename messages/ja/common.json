@@ -611,7 +611,8 @@
       "venue": "Venue",
       "location": "Location",
       "attendance": "Attendance",
-      "venueName": "Venue Name"
+      "venueName": "Venue Name",
+      "allCities": "すべての都市"
     },
     "stats": {
       "totalShows": "Total Shows",
@@ -620,7 +621,8 @@
       "avgDuration": "Avg Duration",
       "titleChanges": "Title Changes",
       "winMethods": "Win Methods",
-      "topMatchTypes": "Top Match Types"
+      "topMatchTypes": "Top Match Types",
+      "titleChangePercent": "タイトル変更率"
     }
   },
   "search": {
@@ -745,7 +747,11 @@
       "matchesRecorded": "matches recorded in WWE history",
       "rules": "ルール",
       "howWon": "How are {name} won?",
-      "allMatches": "全試合"
+      "allMatches": "全試合",
+      "inWWEHistory": "WWE史上",
+      "recordedInWWEHistory": "WWE史上記録",
+      "howWonPrefix": "",
+      "howWonSuffix": "はどう決着する？"
     }
   },
   "arenas": {
