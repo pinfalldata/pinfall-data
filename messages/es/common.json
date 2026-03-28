@@ -227,7 +227,10 @@
       "ratingCol": "Puntuación",
       "searchSuperstar": "Buscar superstar…",
       "searchOpponent": "Buscar oponente…",
-      "searchTeammate": "Buscar compañero…"
+      "searchTeammate": "Buscar compañero…",
+      "omgOnly": "Solo OMG Moments",
+      "omgCategory": "Categoría OMG",
+      "anyOmg": "Cualquier OMG"
     },
     "detail": {
       "participants": "Participantes",
@@ -261,27 +264,47 @@
       "upcoming": "Próximos",
       "past": "Pasados",
       "allSeries": "Todas las series de shows",
-      "subtitle": "Explora todos los shows semanales y especiales — Raw, SmackDown, NXT y más.",
+      "subtitle": "Explora todas las series de shows WWE — de la programación semanal a los Premium Live Events.",
       "searchPlaceholder": "Buscar serie de shows...",
-      "inactive": "Inactivo"
+      "inactive": "Inactivo",
+      "pastShows": "Shows anteriores"
     },
     "ple": {
       "title": "Premium Live Events",
-      "subtitle": "WrestleMania, Royal Rumble, SummerSlam — cada Premium Live Event de la historia."
+      "subtitle": "WrestleMania, Royal Rumble, SummerSlam — cada Premium Live Event de la historia.",
+      "heroTitle": "Todos los PLEs",
+      "heroSubtitle": "Cada Premium Live Event de la historia de la WWE — desde el primer WrestleMania hasta hoy.",
+      "filterBy": "Filtrar por serie de PLE:",
+      "clear": "Borrar",
+      "noPLEs": "No se encontraron PLEs"
     },
     "stipulations": {
       "title": "Estipulaciones de lucha",
       "subtitle": "Steel Cage, Hell in a Cell, TLC, Royal Rumble — explora cada tipo de lucha.",
-      "searchPlaceholder": "Buscar estipulaciones..."
+      "searchPlaceholder": "Buscar estipulaciones...",
+      "heroTitle": "Estipulaciones de lucha",
+      "heroSubtitle": "Cada tipo de lucha en la historia de la WWE — desde combates clásicos hasta las estipulaciones más brutales."
     },
     "arenas": {
       "title": "Todas las arenas",
-      "subtitle": "Cada sede en la historia de la WWE — desde el MSG hasta estadios de todo el mundo."
+      "subtitle": "Cada sede en la historia de la WWE — desde el MSG hasta estadios de todo el mundo.",
+      "heroSubtitle": "Cada sede que ha albergado un evento WWE — desde arenas legendarias hasta joyas ocultas.",
+      "filtersAndSorting": "Filtros y Orden",
+      "yearUsed": "Año de uso",
+      "stateProvince": "Estado / Provincia",
+      "sortBy": "Ordenar por",
+      "mostUsed": "🏆 Más utilizada",
+      "highestAttendance": "👥 Mayor asistencia",
+      "alphabetical": "🔤 Alfabético",
+      "clearFilters": "Borrar filtros",
+      "arenaCount": "arenas",
+      "arenaCountSingle": "arena"
     },
     "objects": {
       "title": "Objetos utilizados",
       "subtitle": "Sillas, mesas, escaleras, kendo sticks — cada objeto utilizado en luchas WWE.",
-      "searchPlaceholder": "Buscar objetos…"
+      "searchPlaceholder": "Buscar objetos…",
+      "heroSubtitle": "Sillas, mesas, escaleras, kendo sticks — cada objeto utilizado en luchas WWE."
     },
     "hub": {
       "title": "Luchas & Shows",

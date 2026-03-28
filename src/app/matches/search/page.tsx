@@ -218,7 +218,7 @@ export default function MatchSearchPage() {
                     onClick={()=>upd('omgOnly',!filters.omgOnly)}>
                     <div className={`absolute top-0.5 w-4 h-4 rounded-full transition-transform ${filters.omgOnly?'translate-x-[18px] bg-purple-400':'translate-x-[2px] bg-text-secondary'}`}/>
                   </div>
-                  <span className="text-xs text-text-secondary group-hover:text-text-white transition-colors">⚡ OMG Moments only</span>
+                  <span className="text-xs text-text-secondary group-hover:text-text-white transition-colors">⚡ {t('matches.search.omgOnly')}</span>
                 </label>
               </div>
               {hasF && <button onClick={reset} className="text-xs text-neon-pink hover:text-neon-pink/80 transition-colors flex items-center gap-1">

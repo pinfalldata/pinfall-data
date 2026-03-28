@@ -86,7 +86,7 @@ export default function StipulationsListPage() {
             Match <span className="text-neon-blue">Stipulations</span>
           </h1>
           <p className="text-text-secondary text-sm sm:text-base lg:text-lg text-center max-w-2xl">
-            Every match type in WWE history — from Standard singles to Hell in a Cell.
+            {t('matches.stipulations.heroSubtitle')}
           </p>
         </div>
       </section>

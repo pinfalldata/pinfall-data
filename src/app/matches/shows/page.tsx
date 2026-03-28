@@ -88,7 +88,7 @@ export default function ShowSeriesListPage() {
             WWE <span className="text-neon-blue">{t('home.stats.shows')}</span>
           </h1>
           <p className="text-text-secondary text-sm sm:text-base lg:text-lg text-center max-w-2xl">
-            Browse every WWE show series — from weekly programming to Premium Live Events.
+            {t('matches.shows.subtitle')}
           </p>
         </div>
       </section>
@@ -171,7 +171,7 @@ export default function ShowSeriesListPage() {
             <div>
               {filter === 'all' && (
                 <div className="flex items-center gap-3 mb-5">
-                  <h2 className="font-display text-lg font-bold text-text-white uppercase tracking-wide">Past Shows</h2>
+                  <h2 className="font-display text-lg font-bold text-text-white uppercase tracking-wide">{t('matches.shows.pastShows')}</h2>
                   <span className="text-text-secondary text-xs">({inactiveShows.length})</span>
                 </div>
               )}

@@ -32,7 +32,7 @@ export default function ObjectsListPage() {
           <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-white text-center tracking-tight mb-2">
             <span className="text-neon-blue">Objects</span> Used
           </h1>
-          <p className="text-text-secondary text-sm sm:text-base text-center max-w-2xl">Chairs, tables, ladders, kendo sticks — every foreign object used in WWE matches.</p>
+          <p className="text-text-secondary text-sm sm:text-base text-center max-w-2xl">{t('matches.objects.heroSubtitle')}</p>
         </div>
       </section>
 

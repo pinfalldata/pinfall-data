@@ -227,7 +227,10 @@
       "ratingCol": "Puan",
       "searchSuperstar": "Superstar ara…",
       "searchOpponent": "Rakip ara…",
-      "searchTeammate": "Takım arkadaşı ara…"
+      "searchTeammate": "Takım arkadaşı ara…",
+      "omgOnly": "Sadece OMG Moments",
+      "omgCategory": "OMG Kategorisi",
+      "anyOmg": "Herhangi bir OMG"
     },
     "detail": {
       "participants": "Katılımcılar",
@@ -261,27 +264,47 @@
       "upcoming": "Yaklaşan",
       "past": "Geçmiş",
       "allSeries": "Tüm Şov Serileri",
-      "subtitle": "Tüm haftalık ve özel şovları keşfedin.",
+      "subtitle": "Tüm WWE şov serilerini keşfedin — haftalık programlardan Premium Live Events'e.",
       "searchPlaceholder": "Şov serisi ara...",
-      "inactive": "Pasif"
+      "inactive": "Pasif",
+      "pastShows": "Geçmiş Şovlar"
     },
     "ple": {
       "title": "Premium Live Events",
-      "subtitle": "WrestleMania, Royal Rumble, SummerSlam — tarihteki her PLE."
+      "subtitle": "WrestleMania, Royal Rumble, SummerSlam — tarihteki her PLE.",
+      "heroTitle": "Tüm PLE'ler",
+      "heroSubtitle": "WWE tarihindeki her Premium Live Event — ilk WrestleMania'dan bugüne.",
+      "filterBy": "PLE serisine göre filtrele:",
+      "clear": "Temizle",
+      "noPLEs": "PLE bulunamadı"
     },
     "stipulations": {
       "title": "Maç Şartları",
       "subtitle": "Steel Cage, Hell in a Cell, TLC — her maç türünü keşfedin.",
-      "searchPlaceholder": "Stipülasyon ara..."
+      "searchPlaceholder": "Stipülasyon ara...",
+      "heroTitle": "Maç Şartları",
+      "heroSubtitle": "WWE tarihindeki her maç türü."
     },
     "arenas": {
       "title": "Tüm Arenalar",
-      "subtitle": "WWE tarihindeki her mekan."
+      "subtitle": "WWE tarihindeki her mekan.",
+      "heroSubtitle": "WWE etkinliğine ev sahipliği yapan her mekan.",
+      "filtersAndSorting": "Filtreler ve Sıralama",
+      "yearUsed": "Kullanım Yılı",
+      "stateProvince": "Eyalet / İl",
+      "sortBy": "Sırala",
+      "mostUsed": "🏆 En Çok Kullanılan",
+      "highestAttendance": "👥 En Yüksek Seyirci",
+      "alphabetical": "🔤 Alfabetik",
+      "clearFilters": "Filtreleri Temizle",
+      "arenaCount": "arena",
+      "arenaCountSingle": "arena"
     },
     "objects": {
       "title": "Kullanılan Objeler",
       "subtitle": "Sandalyeler, masalar, merdivenler — WWE maçlarında kullanılan her obje.",
-      "searchPlaceholder": "Obje ara…"
+      "searchPlaceholder": "Obje ara…",
+      "heroSubtitle": "Sandalyeler, masalar, merdivenler — WWE maçlarında kullanılan her obje."
     },
     "hub": {
       "title": "Maçlar & Şovlar",

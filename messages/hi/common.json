@@ -227,7 +227,10 @@
       "ratingCol": "रेटिंग",
       "searchSuperstar": "सुपरस्टार खोजें…",
       "searchOpponent": "प्रतिद्वंद्वी खोजें…",
-      "searchTeammate": "साथी खोजें…"
+      "searchTeammate": "साथी खोजें…",
+      "omgOnly": "केवल OMG Moments",
+      "omgCategory": "OMG श्रेणी",
+      "anyOmg": "कोई भी OMG"
     },
     "detail": {
       "participants": "प्रतिभागी",
@@ -261,27 +264,47 @@
       "upcoming": "आगामी",
       "past": "बीते हुए",
       "allSeries": "सभी शो सीरीज़",
-      "subtitle": "सभी साप्ताहिक और विशेष शोज़ ब्राउज़ करें।",
+      "subtitle": "सभी WWE शो सीरीज़ ब्राउज़ करें — साप्ताहिक शोज़ से लेकर Premium Live Events तक।",
       "searchPlaceholder": "शो सीरीज़ खोजें...",
-      "inactive": "निष्क्रिय"
+      "inactive": "निष्क्रिय",
+      "pastShows": "पिछले शोज़"
     },
     "ple": {
       "title": "प्रीमियम लाइव इवेंट्स",
-      "subtitle": "WrestleMania, Royal Rumble, SummerSlam — इतिहास का हर Premium Live Event।"
+      "subtitle": "WrestleMania, Royal Rumble, SummerSlam — इतिहास का हर Premium Live Event।",
+      "heroTitle": "सभी PLEs",
+      "heroSubtitle": "WWE इतिहास का हर Premium Live Event — पहले WrestleMania से आज तक।",
+      "filterBy": "PLE सीरीज़ से फ़िल्टर करें:",
+      "clear": "साफ़ करें",
+      "noPLEs": "कोई PLE नहीं मिला"
     },
     "stipulations": {
       "title": "मैच स्टिपुलेशन",
       "subtitle": "Steel Cage, Hell in a Cell, TLC — हर मैच प्रकार खोजें।",
-      "searchPlaceholder": "स्टिपुलेशन खोजें..."
+      "searchPlaceholder": "स्टिपुलेशन खोजें...",
+      "heroTitle": "मैच स्टिपुलेशन",
+      "heroSubtitle": "WWE इतिहास का हर मैच प्रकार।"
     },
     "arenas": {
       "title": "सभी एरीनाज़",
-      "subtitle": "WWE इतिहास का हर स्थान।"
+      "subtitle": "WWE इतिहास का हर स्थान।",
+      "heroSubtitle": "WWE इवेंट आयोजित करने वाला हर स्थान।",
+      "filtersAndSorting": "फ़िल्टर और क्रम",
+      "yearUsed": "उपयोग का वर्ष",
+      "stateProvince": "राज्य / प्रांत",
+      "sortBy": "क्रम",
+      "mostUsed": "🏆 सबसे अधिक उपयोग",
+      "highestAttendance": "👥 सबसे अधिक दर्शक",
+      "alphabetical": "🔤 वर्णमाला",
+      "clearFilters": "फ़िल्टर साफ़ करें",
+      "arenaCount": "एरीनाज़",
+      "arenaCountSingle": "एरीना"
     },
     "objects": {
       "title": "इस्तेमाल किए गए ऑब्जेक्ट्स",
       "subtitle": "कुर्सियाँ, टेबल, सीढ़ियाँ — WWE मैचों में इस्तेमाल हर वस्तु।",
-      "searchPlaceholder": "ऑब्जेक्ट खोजें…"
+      "searchPlaceholder": "ऑब्जेक्ट खोजें…",
+      "heroSubtitle": "कुर्सियाँ, टेबल, सीढ़ियाँ — WWE मैचों में इस्तेमाल हर वस्तु।"
     },
     "hub": {
       "title": "मैच और शोज़",

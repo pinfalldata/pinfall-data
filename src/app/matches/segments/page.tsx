@@ -150,10 +150,10 @@ export default function SegmentSearchPage() {
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">
           <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-white text-center tracking-tight mb-2">
-            <span className="text-neon-blue">Segment</span> Search
+            {t('matches.segments.title')}
           </h1>
           <p className="text-text-secondary text-sm sm:text-base lg:text-lg text-center max-w-2xl">
-            Search every WWE segment ever — promos, backstage confrontations, ceremonies, interviews, and more.
+            {t('matches.segments.subtitle')}
           </p>
         </div>
       </section>
@@ -202,8 +202,8 @@ export default function SegmentSearchPage() {
                   onSel={(id, n) => { upd('superstar2Id', id); setFilters(p => ({ ...p, superstar2Name: n })) }}
                   onClr={() => { upd('superstar2Id', ''); setFilters(p => ({ ...p, superstar2Name: '' })) }} />
               }
-              <Sel label="OMG Category" value={filters.omgCategory} set={v => { upd('omgCategory', v); if (v) setFilters(p => ({ ...p, omgOnly: true })) }}
-                opts={opts.omgCategories.map(c => ({ value: c.value, label: c.label }))} ph="Any OMG" />
+              <Sel label={t('matches.search.omgCategory')} value={filters.omgCategory} set={v => { upd('omgCategory', v); if (v) setFilters(p => ({ ...p, omgOnly: true })) }}
+                opts={opts.omgCategories.map(c => ({ value: c.value, label: c.label }))} ph={t('matches.search.anyOmg')} />
             </div>
             <div className="flex items-center justify-between mt-4 pt-3 border-t border-border-subtle/20">
               <div className="flex items-center gap-4 flex-wrap">
@@ -212,7 +212,7 @@ export default function SegmentSearchPage() {
                     onClick={() => upd('omgOnly', !filters.omgOnly)}>
                     <div className={`absolute top-0.5 w-4 h-4 rounded-full transition-transform ${filters.omgOnly ? 'translate-x-[18px] bg-purple-400' : 'translate-x-[2px] bg-text-secondary'}`} />
                   </div>
-                  <span className="text-xs text-text-secondary group-hover:text-text-white transition-colors">⚡ OMG Moments only</span>
+                  <span className="text-xs text-text-secondary group-hover:text-text-white transition-colors">⚡ {t('matches.search.omgOnly')}</span>
                 </label>
               </div>
               {hasF && <button onClick={reset} className="text-xs text-neon-pink hover:text-neon-pink/80 transition-colors flex items-center gap-1">
@@ -237,7 +237,7 @@ export default function SegmentSearchPage() {
           <>
             {/* Desktop header */}
             <div className="hidden lg:grid lg:grid-cols-[90px_minmax(120px,1.2fr)_110px_minmax(200px,3fr)_minmax(180px,2fr)_70px] gap-3 px-4 pb-2 text-[10px] text-text-secondary uppercase tracking-wider font-medium border-b border-border-subtle/20">
-              <span>{t('shows.detail.date')}</span><span>Show</span><span>{t('hallOfFame.inductees.category')}</span><span>Title</span><span>{t('matches.detail.participants')}</span><span className="text-center">{t('common.duration')}</span>
+              <span>{t('shows.detail.date')}</span><span>{t('matches.search.show')}</span><span>{t('hallOfFame.inductees.category')}</span><span>{t('matches.search.titleCol')}</span><span>{t('matches.detail.participants')}</span><span className="text-center">{t('common.duration')}</span>
             </div>
             <div className={`space-y-0.5 mt-0.5 transition-opacity duration-200 ${loading && !init ? 'opacity-50' : 'opacity-100'}`}>
               {segments.map(s => <SRow key={s.id} s={s} />)}

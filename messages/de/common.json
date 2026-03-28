@@ -227,7 +227,10 @@
       "ratingCol": "Bewertung",
       "searchSuperstar": "Superstar suchen…",
       "searchOpponent": "Gegner suchen…",
-      "searchTeammate": "Teamkollege suchen…"
+      "searchTeammate": "Teamkollege suchen…",
+      "omgOnly": "Nur OMG Moments",
+      "omgCategory": "OMG-Kategorie",
+      "anyOmg": "Alle OMG"
     },
     "detail": {
       "participants": "Teilnehmer",
@@ -261,27 +264,47 @@
       "upcoming": "Kommende",
       "past": "Vergangene",
       "allSeries": "Alle Showserien",
-      "subtitle": "Alle wöchentlichen und speziellen Shows — Raw, SmackDown, NXT und mehr.",
+      "subtitle": "Alle WWE-Showserien — von wöchentlichen Sendungen bis zu Premium Live Events.",
       "searchPlaceholder": "Showserien suchen...",
-      "inactive": "Inaktiv"
+      "inactive": "Inaktiv",
+      "pastShows": "Vergangene Shows"
     },
     "ple": {
       "title": "Premium Live Events",
-      "subtitle": "WrestleMania, Royal Rumble, SummerSlam — jedes Premium Live Event der Geschichte."
+      "subtitle": "WrestleMania, Royal Rumble, SummerSlam — jedes Premium Live Event der Geschichte.",
+      "heroTitle": "Alle PLEs",
+      "heroSubtitle": "Jedes Premium Live Event der WWE-Geschichte — vom ersten WrestleMania bis heute.",
+      "filterBy": "Nach PLE-Serie filtern:",
+      "clear": "Löschen",
+      "noPLEs": "Keine PLEs gefunden"
     },
     "stipulations": {
       "title": "Match-Stipulationen",
       "subtitle": "Steel Cage, Hell in a Cell, TLC, Royal Rumble — jeder Match-Typ.",
-      "searchPlaceholder": "Stipulationen suchen..."
+      "searchPlaceholder": "Stipulationen suchen...",
+      "heroTitle": "Match-Stipulationen",
+      "heroSubtitle": "Jeder Match-Typ der WWE-Geschichte — von klassischen Einzelmatches bis zu den brutalsten Stipulationen."
     },
     "arenas": {
       "title": "Alle Arenen",
-      "subtitle": "Jede Arena der WWE-Geschichte — vom MSG bis zu Stadien weltweit."
+      "subtitle": "Jede Arena der WWE-Geschichte — vom MSG bis zu Stadien weltweit.",
+      "heroSubtitle": "Jede Arena der WWE-Geschichte — von legendären Hallen bis zu verborgenen Schätzen weltweit.",
+      "filtersAndSorting": "Filter & Sortierung",
+      "yearUsed": "Verwendungsjahr",
+      "stateProvince": "Bundesland / Provinz",
+      "sortBy": "Sortieren nach",
+      "mostUsed": "🏆 Meistgenutzt",
+      "highestAttendance": "👥 Höchste Zuschauerzahl",
+      "alphabetical": "🔤 Alphabetisch",
+      "clearFilters": "Filter löschen",
+      "arenaCount": "Arenen",
+      "arenaCountSingle": "Arena"
     },
     "objects": {
       "title": "Verwendete Gegenstände",
       "subtitle": "Stühle, Tische, Leitern, Kendo Sticks — jeder Gegenstand in WWE-Matches.",
-      "searchPlaceholder": "Gegenstände suchen…"
+      "searchPlaceholder": "Gegenstände suchen…",
+      "heroSubtitle": "Stühle, Tische, Leitern, Kendo Sticks — jeder Gegenstand in WWE-Matches."
     },
     "hub": {
       "title": "Matches & Shows",

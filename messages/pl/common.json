@@ -227,7 +227,10 @@
       "ratingCol": "Ocena",
       "searchSuperstar": "Szukaj superstara…",
       "searchOpponent": "Szukaj przeciwnika…",
-      "searchTeammate": "Szukaj partnera…"
+      "searchTeammate": "Szukaj partnera…",
+      "omgOnly": "Tylko OMG Moments",
+      "omgCategory": "Kategoria OMG",
+      "anyOmg": "Dowolny OMG"
     },
     "detail": {
       "participants": "Uczestnicy",
@@ -261,27 +264,47 @@
       "upcoming": "Nadchodzące",
       "past": "Przeszłe",
       "allSeries": "Wszystkie serie show",
-      "subtitle": "Przeglądaj wszystkie show tygodniowe i specjalne.",
+      "subtitle": "Przeglądaj wszystkie serie show WWE — od programów tygodniowych po Premium Live Events.",
       "searchPlaceholder": "Szukaj serii show...",
-      "inactive": "Nieaktywny"
+      "inactive": "Nieaktywny",
+      "pastShows": "Dawne show"
     },
     "ple": {
       "title": "Premium Live Events",
-      "subtitle": "WrestleMania, Royal Rumble, SummerSlam — każdy PLE w historii."
+      "subtitle": "WrestleMania, Royal Rumble, SummerSlam — każdy PLE w historii.",
+      "heroTitle": "Wszystkie PLE",
+      "heroSubtitle": "Każdy Premium Live Event w historii WWE — od pierwszej WrestleManii do dziś.",
+      "filterBy": "Filtruj po serii PLE:",
+      "clear": "Wyczyść",
+      "noPLEs": "Nie znaleziono PLE"
     },
     "stipulations": {
       "title": "Typy walk",
       "subtitle": "Steel Cage, Hell in a Cell, TLC — każdy typ walki.",
-      "searchPlaceholder": "Szukaj stypulacji..."
+      "searchPlaceholder": "Szukaj stypulacji...",
+      "heroTitle": "Typy walk",
+      "heroSubtitle": "Każdy typ walki w historii WWE."
     },
     "arenas": {
       "title": "Wszystkie areny",
-      "subtitle": "Każde miejsce w historii WWE."
+      "subtitle": "Każde miejsce w historii WWE.",
+      "heroSubtitle": "Każde miejsce, które gościło wydarzenie WWE.",
+      "filtersAndSorting": "Filtry i Sortowanie",
+      "yearUsed": "Rok użycia",
+      "stateProvince": "Stan / Prowincja",
+      "sortBy": "Sortuj wg",
+      "mostUsed": "🏆 Najczęściej używana",
+      "highestAttendance": "👥 Najwyższa frekwencja",
+      "alphabetical": "🔤 Alfabetycznie",
+      "clearFilters": "Wyczyść filtry",
+      "arenaCount": "areny",
+      "arenaCountSingle": "arena"
     },
     "objects": {
       "title": "Użyte przedmioty",
       "subtitle": "Krzesła, stoły, drabiny — każdy przedmiot użyty w walkach WWE.",
-      "searchPlaceholder": "Szukaj przedmiotów…"
+      "searchPlaceholder": "Szukaj przedmiotów…",
+      "heroSubtitle": "Krzesła, stoły, drabiny — każdy przedmiot użyty w walkach WWE."
     },
     "hub": {
       "title": "Walki i Show",

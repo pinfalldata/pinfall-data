@@ -227,7 +227,10 @@
       "ratingCol": "Rating",
       "searchSuperstar": "Search superstar…",
       "searchOpponent": "Search opponent…",
-      "searchTeammate": "Search teammate…"
+      "searchTeammate": "Search teammate…",
+      "omgOnly": "OMG Moments only",
+      "omgCategory": "OMG Category",
+      "anyOmg": "Any OMG"
     },
     "detail": {
       "participants": "Participants",
@@ -261,27 +264,47 @@
       "upcoming": "Upcoming",
       "past": "Past",
       "allSeries": "All Show Series",
-      "subtitle": "Browse every weekly and special show — Raw, SmackDown, NXT, and more.",
+      "subtitle": "Browse every WWE show series — from weekly programming to Premium Live Events.",
       "searchPlaceholder": "Search show series...",
-      "inactive": "Inactive"
+      "inactive": "Inactive",
+      "pastShows": "Past Shows"
     },
     "ple": {
       "title": "Premium Live Events",
-      "subtitle": "WrestleMania, Royal Rumble, SummerSlam — every Premium Live Event in history."
+      "subtitle": "WrestleMania, Royal Rumble, SummerSlam — every Premium Live Event in history.",
+      "heroTitle": "All PLEs",
+      "heroSubtitle": "Every Premium Live Event in WWE history — from the first WrestleMania to today's biggest spectacles.",
+      "filterBy": "Filter by PLE series:",
+      "clear": "Clear",
+      "noPLEs": "No PLEs found"
     },
     "stipulations": {
       "title": "Match Stipulations",
       "subtitle": "Steel Cage, Hell in a Cell, TLC, Royal Rumble — explore every match type.",
-      "searchPlaceholder": "Search stipulations..."
+      "searchPlaceholder": "Search stipulations...",
+      "heroTitle": "Match Stipulations",
+      "heroSubtitle": "Every match type in WWE history — from classic singles to the most brutal stipulations ever created."
     },
     "arenas": {
       "title": "All Arenas",
-      "subtitle": "Every venue in WWE history — from MSG to stadiums worldwide."
+      "subtitle": "Every venue in WWE history — from MSG to stadiums worldwide.",
+      "heroSubtitle": "Every venue that has hosted a WWE event — from legendary arenas to hidden gems around the world.",
+      "filtersAndSorting": "Filters & Sorting",
+      "yearUsed": "Year Used",
+      "stateProvince": "State / Province",
+      "sortBy": "Sort By",
+      "mostUsed": "🏆 Most Used",
+      "highestAttendance": "👥 Highest Attendance",
+      "alphabetical": "🔤 Alphabetical",
+      "clearFilters": "Clear Filters",
+      "arenaCount": "arenas",
+      "arenaCountSingle": "arena"
     },
     "objects": {
       "title": "Objects Used",
       "subtitle": "Chairs, tables, ladders, kendo sticks — every foreign object used in WWE matches.",
-      "searchPlaceholder": "Search objects…"
+      "searchPlaceholder": "Search objects…",
+      "heroSubtitle": "Chairs, tables, ladders, kendo sticks — every foreign object used in WWE matches."
     },
     "hub": {
       "title": "Matches & Shows",

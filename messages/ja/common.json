@@ -227,7 +227,10 @@
       "ratingCol": "評価",
       "searchSuperstar": "スーパースター検索…",
       "searchOpponent": "対戦相手検索…",
-      "searchTeammate": "パートナー検索…"
+      "searchTeammate": "パートナー検索…",
+      "omgOnly": "OMGモーメントのみ",
+      "omgCategory": "OMGカテゴリ",
+      "anyOmg": "すべてのOMG"
     },
     "detail": {
       "participants": "参加者",
@@ -261,27 +264,47 @@
       "upcoming": "今後のショー",
       "past": "過去のショー",
       "allSeries": "すべてのショーシリーズ",
-      "subtitle": "すべての週間・特別ショーを閲覧。",
+      "subtitle": "すべてのWWEショーシリーズ — 週間番組からPLEまで。",
       "searchPlaceholder": "ショーシリーズを検索...",
-      "inactive": "非活動"
+      "inactive": "非活動",
+      "pastShows": "過去のショー"
     },
     "ple": {
       "title": "プレミアム・ライブ・イベント",
-      "subtitle": "WrestleMania, Royal Rumble, SummerSlam — 歴史上すべてのPLE。"
+      "subtitle": "WrestleMania, Royal Rumble, SummerSlam — 歴史上すべてのPLE。",
+      "heroTitle": "すべてのPLE",
+      "heroSubtitle": "WWE史上すべてのPremium Live Event — 最初のWrestleManiaから今日まで。",
+      "filterBy": "PLEシリーズでフィルター：",
+      "clear": "クリア",
+      "noPLEs": "PLEが見つかりません"
     },
     "stipulations": {
       "title": "試合のスティピュレーション",
       "subtitle": "Steel Cage, Hell in a Cell, TLC — すべての試合タイプ。",
-      "searchPlaceholder": "スティピュレーション検索..."
+      "searchPlaceholder": "スティピュレーション検索...",
+      "heroTitle": "試合のスティピュレーション",
+      "heroSubtitle": "WWE史上すべての試合タイプ。"
     },
     "arenas": {
       "title": "すべてのアリーナ",
-      "subtitle": "WWE史上すべてのアリーナ。"
+      "subtitle": "WWE史上すべてのアリーナ。",
+      "heroSubtitle": "WWEイベントを開催したすべてのアリーナ。",
+      "filtersAndSorting": "フィルターと並べ替え",
+      "yearUsed": "使用年",
+      "stateProvince": "州 / 県",
+      "sortBy": "並べ替え",
+      "mostUsed": "🏆 最多使用",
+      "highestAttendance": "👥 最大観客数",
+      "alphabetical": "🔤 アルファベット順",
+      "clearFilters": "フィルタークリア",
+      "arenaCount": "アリーナ",
+      "arenaCountSingle": "アリーナ"
     },
     "objects": {
       "title": "使用されたオブジェクト",
       "subtitle": "椅子、テーブル、ラダー — WWE試合で使われたすべてのオブジェクト。",
-      "searchPlaceholder": "オブジェクト検索…"
+      "searchPlaceholder": "オブジェクト検索…",
+      "heroSubtitle": "椅子、テーブル、ラダー — WWE試合で使われたすべてのオブジェクト。"
     },
     "hub": {
       "title": "試合＆ショー",

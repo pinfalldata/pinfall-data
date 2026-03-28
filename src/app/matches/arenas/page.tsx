@@ -18,15 +18,16 @@ interface FilterOptions {
   countries: string[]; states: string[]; cities: string[]; years: string[]
 }
 
-const SORT_OPTIONS = [
-  { value: 'most_used', label: '🏆 Most Used' },
-  { value: 'highest_attendance', label: '👥 Highest Attendance' },
-  { value: 'alphabetical', label: '🔤 Alphabetical' },
-]
+// SORT_OPTIONS moved inside component
 
 export default function AllArenasPage() {
   const t = useTranslations()
 
+  const SORT_OPTIONS = [
+    { value: 'most_used', label: t('matches.arenas.mostUsed') },
+    { value: 'highest_attendance', label: t('matches.arenas.highestAttendance') },
+    { value: 'alphabetical', label: t('matches.arenas.alphabetical') },
+  ]
   const [arenas, setArenas] = useState<Arena[]>([])
   const [total, setTotal] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
@@ -84,7 +85,7 @@ export default function AllArenasPage() {
             All <span className="text-neon-blue">Arenas</span>
           </h1>
           <p className="text-text-secondary text-sm sm:text-base lg:text-lg text-center max-w-2xl">
-            Every venue that has hosted a WWE event — from legendary arenas to hidden gems around the world.
+            {t('matches.arenas.heroSubtitle')}
           </p>
         </div>
       </section>
@@ -94,13 +95,13 @@ export default function AllArenasPage() {
         <div className="p-4 sm:p-5 rounded-2xl border border-border-subtle/30 bg-bg-secondary/30 backdrop-blur-sm">
           <div className="flex items-center gap-2 mb-3">
             <svg className="w-4 h-4 text-neon-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
-            <span className="text-xs font-bold text-neon-blue uppercase tracking-wider">Filters & Sorting</span>
-            <span className="text-xs text-text-secondary ml-auto">{loading ? 'Loading…' : `${total.toLocaleString()} arena${total !== 1 ? 's' : ''}`}</span>
+            <span className="text-xs font-bold text-neon-blue uppercase tracking-wider">{t('matches.arenas.filtersAndSorting')}</span>
+            <span className="text-xs text-text-secondary ml-auto">{loading ? 'Loading…' : `${total.toLocaleString()} ${total !== 1 ? t('matches.arenas.arenaCount') : t('matches.arenas.arenaCountSingle')}`}</span>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3">
             {/* Year */}
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">Year Used</label>
+              <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">{t('matches.arenas.yearUsed')}</label>
               <select value={year} onChange={e => { setYear(e.target.value); if (!e.target.value) setMonth('') }}
                 className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-border-subtle/40 text-sm text-text-white focus:outline-none focus:border-neon-blue/50 transition-colors appearance-none cursor-pointer"
                 style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 8px center', backgroundRepeat: 'no-repeat', backgroundSize: '16px', paddingRight: '32px' }}>
@@ -110,7 +111,7 @@ export default function AllArenasPage() {
             </div>
             {/* Month */}
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">Month</label>
+              <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">{t('matches.search.month')}</label>
               <select value={month} onChange={e => setMonth(e.target.value)} disabled={!year}
                 className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-border-subtle/40 text-sm text-text-white focus:outline-none focus:border-neon-blue/50 transition-colors appearance-none cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                 style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 8px center', backgroundRepeat: 'no-repeat', backgroundSize: '16px', paddingRight: '32px' }}>
@@ -122,7 +123,7 @@ export default function AllArenasPage() {
             </div>
             {/* Country */}
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">Country</label>
+              <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">{t('matches.search.country')}</label>
               <select value={country} onChange={e => { setCountry(e.target.value); setState(''); setCity('') }}
                 className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-border-subtle/40 text-sm text-text-white focus:outline-none focus:border-neon-blue/50 transition-colors appearance-none cursor-pointer"
                 style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 8px center', backgroundRepeat: 'no-repeat', backgroundSize: '16px', paddingRight: '32px' }}>
@@ -132,7 +133,7 @@ export default function AllArenasPage() {
             </div>
             {/* State */}
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">State / Province</label>
+              <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">{t('matches.arenas.stateProvince')}</label>
               <select value={state} onChange={e => { setState(e.target.value); setCity('') }}
                 className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-border-subtle/40 text-sm text-text-white focus:outline-none focus:border-neon-blue/50 transition-colors appearance-none cursor-pointer"
                 style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 8px center', backgroundRepeat: 'no-repeat', backgroundSize: '16px', paddingRight: '32px' }}>
@@ -142,7 +143,7 @@ export default function AllArenasPage() {
             </div>
             {/* City */}
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">City</label>
+              <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">{t('matches.search.city')}</label>
               <select value={city} onChange={e => setCity(e.target.value)}
                 className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-border-subtle/40 text-sm text-text-white focus:outline-none focus:border-neon-blue/50 transition-colors appearance-none cursor-pointer"
                 style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 8px center', backgroundRepeat: 'no-repeat', backgroundSize: '16px', paddingRight: '32px' }}>
@@ -152,7 +153,7 @@ export default function AllArenasPage() {
             </div>
             {/* Sort */}
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">Sort By</label>
+              <label className="text-[10px] text-text-secondary uppercase tracking-wider font-medium">{t('matches.arenas.sortBy')}</label>
               <select value={sort} onChange={e => setSort(e.target.value)}
                 className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-border-subtle/40 text-sm text-text-white focus:outline-none focus:border-neon-blue/50 transition-colors appearance-none cursor-pointer"
                 style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 8px center', backgroundRepeat: 'no-repeat', backgroundSize: '16px', paddingRight: '32px' }}>

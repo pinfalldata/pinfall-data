@@ -227,7 +227,10 @@
       "ratingCol": "التقييم",
       "searchSuperstar": "البحث عن سوبرستار…",
       "searchOpponent": "البحث عن خصم…",
-      "searchTeammate": "البحث عن زميل…"
+      "searchTeammate": "البحث عن زميل…",
+      "omgOnly": "فقط لحظات OMG",
+      "omgCategory": "فئة OMG",
+      "anyOmg": "أي OMG"
     },
     "detail": {
       "participants": "المشاركون",
@@ -261,27 +264,47 @@
       "upcoming": "القادمة",
       "past": "السابقة",
       "allSeries": "جميع سلاسل العروض",
-      "subtitle": "تصفح جميع العروض الأسبوعية والخاصة.",
+      "subtitle": "تصفح جميع سلاسل عروض WWE — من البرامج الأسبوعية إلى العروض الكبرى.",
       "searchPlaceholder": "البحث عن سلسلة عروض...",
-      "inactive": "غير نشط"
+      "inactive": "غير نشط",
+      "pastShows": "عروض سابقة"
     },
     "ple": {
       "title": "الأحداث الكبرى المباشرة",
-      "subtitle": "WrestleMania, Royal Rumble, SummerSlam — كل حدث كبير مباشر في التاريخ."
+      "subtitle": "WrestleMania, Royal Rumble, SummerSlam — كل حدث كبير مباشر في التاريخ.",
+      "heroTitle": "جميع العروض الكبرى",
+      "heroSubtitle": "كل حدث كبير مباشر في تاريخ WWE — من أول WrestleMania حتى اليوم.",
+      "filterBy": "تصفية حسب سلسلة PLE:",
+      "clear": "مسح",
+      "noPLEs": "لم يتم العثور على عروض كبرى"
     },
     "stipulations": {
       "title": "أنواع المباريات",
       "subtitle": "Steel Cage, Hell in a Cell, TLC — اكتشف كل نوع مباراة.",
-      "searchPlaceholder": "البحث عن أنواع المباريات..."
+      "searchPlaceholder": "البحث عن أنواع المباريات...",
+      "heroTitle": "أنواع المباريات",
+      "heroSubtitle": "كل نوع مباراة في تاريخ WWE."
     },
     "arenas": {
       "title": "جميع الساحات",
-      "subtitle": "كل مكان في تاريخ WWE."
+      "subtitle": "كل مكان في تاريخ WWE.",
+      "heroSubtitle": "كل مكان استضاف حدث WWE.",
+      "filtersAndSorting": "التصفيات والترتيب",
+      "yearUsed": "سنة الاستخدام",
+      "stateProvince": "الولاية / المقاطعة",
+      "sortBy": "ترتيب حسب",
+      "mostUsed": "🏆 الأكثر استخداماً",
+      "highestAttendance": "👥 أعلى حضور",
+      "alphabetical": "🔤 أبجدي",
+      "clearFilters": "مسح التصفيات",
+      "arenaCount": "ساحات",
+      "arenaCountSingle": "ساحة"
     },
     "objects": {
       "title": "الأدوات المستخدمة",
       "subtitle": "الكراسي والطاولات والسلالم — كل أداة استُخدمت في مباريات WWE.",
-      "searchPlaceholder": "البحث عن الأدوات…"
+      "searchPlaceholder": "البحث عن الأدوات…",
+      "heroSubtitle": "الكراسي والطاولات والسلالم — كل أداة استُخدمت في مباريات WWE."
     },
     "hub": {
       "title": "المباريات والعروض",
