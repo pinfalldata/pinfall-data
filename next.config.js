@@ -13,19 +13,11 @@ const nextConfig = {
 
   // ===== VERCEL PRO OPTIMIZATIONS =====
 
-  // Enable React strict mode for better debugging
   reactStrictMode: true,
-
-  // Compress responses for faster delivery
   compress: true,
-
-  // Powered by header removed for cleaner responses
   poweredByHeader: false,
-
-  // SEO: trailing slashes consistency
   trailingSlash: false,
 
-  // Headers for better SEO and security
   async headers() {
     return [
       {
@@ -35,10 +27,42 @@ const nextConfig = {
           { key: 'X-Frame-Options', value: 'DENY' },
           { key: 'X-XSS-Protection', value: '1; mode=block' },
           { key: 'Referrer-Policy', value: 'origin-when-cross-origin' },
+
+          // ✅ FIX — Force HTTPS pour 2 ans (HSTS)
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload',
+          },
+
+          // ✅ FIX — Désactive caméra, micro, géoloc, paiement
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=(), payment=()',
+          },
+
+          // ✅ FIX — Content Security Policy
+          // img-src : https: autorise toutes les images HTTPS (Supabase, PostImg, flags jsdelivr…)
+          // script-src : Next.js + Vercel Analytics uniquement
+          // connect-src : appels API internes + Supabase + Vercel
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://vitals.vercel-insights.com",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob: https:",
+              "font-src 'self' data:",
+              "connect-src 'self' https://*.supabase.co https://vitals.vercel-insights.com https://va.vercel-scripts.com",
+              "media-src 'none'",
+              "object-src 'none'",
+              "frame-ancestors 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+            ].join('; '),
+          },
         ],
       },
       {
-        // Cache static assets aggressively
         source: '/(.*)\\.(jpg|jpeg|png|gif|ico|svg|webp|woff|woff2)',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
@@ -47,7 +71,6 @@ const nextConfig = {
     ]
   },
 
-  // Redirects for SEO — redirect old Vercel domain to custom domain
   async redirects() {
     return [
       {
@@ -65,9 +88,7 @@ const nextConfig = {
   },
 
   images: {
-    // Vercel Pro: optimized image formats
     formats: ['image/avif', 'image/webp'],
-    // Cache optimized images for 30 days
     minimumCacheTTL: 2592000,
     remotePatterns: [
       {
@@ -83,10 +104,8 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'postimg.cc',
       },
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
+      // ✅ FIX — { hostname: '**' } SUPPRIMÉ (faille SSRF / abus de bande passante)
+      // Si une image cesse de charger, ajoute son hostname explicitement ici
     ],
   },
 };

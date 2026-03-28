@@ -1,11 +1,7 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "nextjs",
-  "regions": ["cdg1"],
-  "crons": [
-    {
-      "path": "/api/revalidate?secret=pinfall_secret_2026",
-      "schedule": "0 0 * * *"
+  "functions": {
+    "src/app/api/**": {
+      "maxDuration": 10
     }
-  ]
+  }
 }
