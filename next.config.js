@@ -54,6 +54,7 @@ const nextConfig = {
               "font-src 'self' data:",
               "connect-src 'self' https://*.supabase.co https://vitals.vercel-insights.com https://va.vercel-scripts.com https://cdn.jsdelivr.net",
               "media-src 'none'",
+              "frame-src https://www.youtube.com https://youtube.com",
               "object-src 'none'",
               "frame-ancestors 'none'",
               "base-uri 'self'",
