@@ -107,7 +107,7 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
                       <div className="flex items-center gap-2 mt-0.5">
                         {seg.show?.show_series?.logo_url && (
                           <div className="w-4 h-4 rounded overflow-hidden shrink-0">
-                            <Image src={seg.show.show_series.logo_url} alt="" width={16} height={16} className="w-full h-full object-contain" unoptimized />
+                            <Image src={seg.show.show_series.logo_url} alt="" width={16} height={16} className="w-full h-full object-contain" />
                           </div>
                         )}
                         <span className="text-[11px] text-text-secondary truncate">{seg.show?.name}</span>
@@ -222,7 +222,7 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
             <Link href={`/tag-teams/teams/${preview.tagTeamPreview.slug}`} className="flex items-center gap-3 p-3 rounded-xl bg-bg-tertiary/30 border border-border-subtle/20 hover:border-neon-blue/20 transition-all group">
               {preview.tagTeamPreview.photo_url ? (
                 <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
-                  <Image src={preview.tagTeamPreview.photo_url} alt="" width={48} height={48} className="w-full h-full object-cover" unoptimized />
+                  <Image src={preview.tagTeamPreview.photo_url} alt="" width={48} height={48} className="w-full h-full object-cover" />
                 </div>
               ) : (
                 <div className="w-12 h-12 rounded-lg bg-neon-blue/10 flex items-center justify-center shrink-0"><span className="text-xl">🤝</span></div>
@@ -240,7 +240,7 @@ export function TabProfile({ superstar, onTabChange }: { superstar: any; onTabCh
             <Link href={`/tag-teams/stables/${preview.stablePreview.slug}`} className="flex items-center gap-3 p-3 rounded-xl bg-bg-tertiary/30 border border-border-subtle/20 hover:border-neon-blue/20 transition-all group">
               {preview.stablePreview.photo_url ? (
                 <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
-                  <Image src={preview.stablePreview.photo_url} alt="" width={48} height={48} className="w-full h-full object-cover" unoptimized />
+                  <Image src={preview.stablePreview.photo_url} alt="" width={48} height={48} className="w-full h-full object-cover" />
                 </div>
               ) : (
                 <div className="w-12 h-12 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0"><span className="text-xl">🛡️</span></div>
@@ -353,7 +353,7 @@ function MatchPreviewRow({ match, superstarId, primaryRole }: { match: any; supe
       {/* Show series logo */}
       {match.show?.show_series?.logo_url && (
         <div className="w-6 h-6 rounded overflow-hidden shrink-0">
-          <Image src={match.show.show_series.logo_url} alt="" width={24} height={24} className="w-full h-full object-contain" unoptimized />
+          <Image src={match.show.show_series.logo_url} alt="" width={24} height={24} className="w-full h-full object-contain" />
         </div>
       )}
 
@@ -453,7 +453,7 @@ function RecordsBlocks({ superstarId }: { superstarId: number }) {
             <div className="shrink-0">
               {rec.championshipImage ? (
                 <div className="w-14 h-14 sm:w-16 sm:h-16 relative">
-                  <Image src={rec.championshipImage} alt="" fill className="object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.3)]" sizes="64px" unoptimized />
+                  <Image src={rec.championshipImage} alt="" fill className="object-contain drop-shadow-[0_0_8px_rgba(255,215,0,0.3)]" sizes="64px" />
                 </div>
               ) : (
                 <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-yellow-400/20 to-yellow-600/10 border border-yellow-500/30 flex items-center justify-center">

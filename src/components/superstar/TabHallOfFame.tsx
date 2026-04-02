@@ -34,7 +34,7 @@ export default function TabHallOfFame({ superstar }: { superstar: any }) {
             {data.class && <span className="ml-auto text-[10px] px-3 py-1 rounded-full font-bold" style={{ background: `${ROYAL_BLUE}50`, color: '#b0c4de', border: `1px solid ${ROYAL_BLUE}70` }}>{data.class}</span>}
           </div>
           <div className="flex flex-col lg:flex-row gap-6">
-            {data.image_url && (<div className="relative w-full lg:w-64 h-64 lg:h-80 rounded-xl overflow-hidden border shrink-0" style={{ borderColor: `${GOLD}25` }}><Image src={data.image_url} alt={data.inductee_name} fill className="object-cover" sizes="(max-width:1024px) 100vw, 256px" unoptimized /><div className="absolute inset-0" style={{ background: `linear-gradient(to top, ${ROYAL_BLUE}30, transparent)` }} /></div>)}
+            {data.image_url && (<div className="relative w-full lg:w-64 h-64 lg:h-80 rounded-xl overflow-hidden border shrink-0" style={{ borderColor: `${GOLD}25` }}><Image src={data.image_url} alt={data.inductee_name} fill className="object-cover" sizes="(max-width:1024px) 100vw, 256px" /><div className="absolute inset-0" style={{ background: `linear-gradient(to top, ${ROYAL_BLUE}30, transparent)` }} /></div>)}
             <div className="flex-1 min-w-0">
               <h3 className="font-display text-2xl font-bold text-text-white mb-1">{data.inductee_name}</h3>
               <p className="text-lg font-display mb-4" style={{ color: GOLD }}>{t('superstars.hof.inductedIn')} {data.induction_year}</p>

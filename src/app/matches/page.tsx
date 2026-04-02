@@ -124,7 +124,7 @@ export default async function MatchesPage() {
           fill
           priority
           sizes="100vw"
-          unoptimized
+         
           quality={100}
           className="object-cover object-center"
         />

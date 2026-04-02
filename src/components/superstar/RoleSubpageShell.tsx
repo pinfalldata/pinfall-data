@@ -35,7 +35,7 @@ export default function RoleSubpageShell({ title, roleKey, description, imageUrl
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-8">
             {/* Role icon */}
             <div className="relative w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-2xl overflow-hidden border-2 shrink-0 bg-bg-tertiary" style={{ borderColor: `${accentColor}40` }}>
-              <Image src={imageUrl} alt={title} fill className="object-cover object-top" sizes="112px" unoptimized />
+              <Image src={imageUrl} alt={title} fill className="object-cover object-top" sizes="112px" />
             </div>
 
             <div className="text-center sm:text-left">

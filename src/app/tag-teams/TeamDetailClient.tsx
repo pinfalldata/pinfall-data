@@ -102,7 +102,7 @@ export default function TeamDetailClient({ type }: Props) {
         <div className="absolute inset-0 bg-bg-primary" />
         {entity.photo_url && (
           <div className="absolute inset-0 opacity-20">
-            <Image src={entity.photo_url} alt="" fill className="object-cover blur-2xl" sizes="100vw" unoptimized />
+            <Image src={entity.photo_url} alt="" fill className="object-cover blur-2xl" sizes="100vw" />
           </div>
         )}
 
@@ -118,7 +118,7 @@ export default function TeamDetailClient({ type }: Props) {
           <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
             {entity.photo_url && (
               <div className="relative w-full lg:w-80 xl:w-96 h-56 sm:h-64 lg:h-auto rounded-2xl overflow-hidden border border-border-subtle/30 shrink-0">
-                <Image src={entity.photo_url} alt={entity.name} fill className="object-cover" sizes="(max-width:1024px) 100vw, 400px" unoptimized />
+                <Image src={entity.photo_url} alt={entity.name} fill className="object-cover" sizes="(max-width:1024px) 100vw, 400px" />
               </div>
             )}
 

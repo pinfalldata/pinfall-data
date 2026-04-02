@@ -186,7 +186,7 @@ export default function TabStatistics({ superstar }: { superstar: any }) {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {s.showSeriesBreakdown.map((ss: any) => (
               <div key={ss.ss.id} className="flex items-center gap-2 p-2 rounded-lg bg-bg-tertiary/20 border border-border-subtle/10">
-                {ss.ss.logo_url && <div className="w-6 h-6 rounded shrink-0 overflow-hidden"><Image src={ss.ss.logo_url} alt="" width={24} height={24} className="w-full h-full object-contain" unoptimized /></div>}
+                {ss.ss.logo_url && <div className="w-6 h-6 rounded shrink-0 overflow-hidden"><Image src={ss.ss.logo_url} alt="" width={24} height={24} className="w-full h-full object-contain" /></div>}
                 <div className="min-w-0">
                   <span className="text-xs text-text-white font-medium block truncate">{ss.ss.short_name || ss.ss.name}</span>
                   <span className="text-[10px] text-neon-blue font-bold">{ss.count}</span>

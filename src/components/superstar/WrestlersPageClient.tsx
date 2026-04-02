@@ -104,7 +104,7 @@ export default function WrestlersPageClient() {
       {/* ===== HERO ===== */}
       <section className="relative w-full h-[220px] sm:h-[300px] lg:h-[380px] xl:h-[420px] overflow-hidden">
         <Image src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20superstars/64216f678940c1.72076216.webp"
-          alt="WWE Wrestlers" fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-[center_20%]"/>
+          alt="WWE Wrestlers" fill priority sizes="100vw" quality={100} className="object-cover object-[center_20%]"/>
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/50 to-transparent"/>
         <div className="absolute inset-0 bg-gradient-to-r from-bg-primary/30 via-transparent to-bg-primary/30"/>
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60"/>
@@ -221,7 +221,7 @@ function WCard({w}:{w:Wrestler}){
   return(
     <Link href={`/superstars/${w.slug}`} className="group relative rounded-2xl border border-border-subtle/20 bg-bg-secondary/20 overflow-hidden transition-all duration-300 hover:border-neon-blue/20 hover:bg-bg-secondary/30 active:scale-[0.98]">
       <div className="relative aspect-square bg-bg-tertiary overflow-hidden">
-        {w.photo_url?<Image src={w.photo_url} alt={w.name} fill className="object-cover object-top transition-transform duration-500 group-hover:scale-105" sizes="(max-width:640px)50vw,(max-width:768px)33vw,(max-width:1024px)25vw,20vw" unoptimized/>
+        {w.photo_url?<Image src={w.photo_url} alt={w.name} fill className="object-cover object-top transition-transform duration-500 group-hover:scale-105" sizes="(max-width:640px)50vw,(max-width:768px)33vw,(max-width:1024px)25vw,20vw"/>
         :<div className="w-full h-full flex items-center justify-center"><span className="text-4xl font-bold text-border-subtle">{w.name[0]}</span></div>}
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/90 via-bg-primary/20 to-transparent"/>
         <div className="absolute top-2 left-2 flex flex-col gap-1">
@@ -268,7 +268,7 @@ function SBar({onSelect,onSearch}:{onSelect:(slug:string)=>void;onSearch:(q:stri
           {res.map(s=>(
             <button key={s.id} onClick={()=>{onSelect(s.slug);setOpen(false)}} className="w-full flex items-center gap-3 px-4 py-3 hover:bg-neon-blue/5 transition-colors text-left border-b border-border-subtle/10 last:border-0">
               <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 bg-bg-tertiary border border-border-subtle/30">
-                {s.photo_url?<Image src={s.photo_url} alt="" width={40} height={40} className="w-full h-full object-cover object-top" unoptimized/>:<div className="w-full h-full flex items-center justify-center text-sm font-bold text-border-subtle">{s.name[0]}</div>}
+                {s.photo_url?<Image src={s.photo_url} alt="" width={40} height={40} className="w-full h-full object-cover object-top"/>:<div className="w-full h-full flex items-center justify-center text-sm font-bold text-border-subtle">{s.name[0]}</div>}
               </div>
               <div className="min-w-0 flex-1"><span className="text-sm font-medium text-text-white block truncate">{s.name}</span>{s.matchedVia&&<span className="text-[10px] text-text-secondary">aka &ldquo;{s.matchedVia}&rdquo;</span>}</div>
               <svg className="w-4 h-4 text-text-secondary/30 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/></svg>

@@ -86,7 +86,7 @@ export default function OMGMomentsPage() {
           <Image
             src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20OMG%20Moments/hardy-boyz_2026-03-18_19_07_17.478080.jpg.png"
             alt="WWE OMG Moments"
-            fill priority sizes="100vw" unoptimized quality={100}
+            fill priority sizes="100vw" quality={100}
             className="object-cover object-[center_30%]"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/40 to-transparent" />
@@ -124,7 +124,7 @@ export default function OMGMomentsPage() {
                       fill
                       className="object-cover object-top transition-transform duration-500 group-hover:scale-110"
                       sizes="80px"
-                      unoptimized
+                     
                     />
                     <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/0 to-white/0 group-hover:via-white/10 group-hover:to-white/5 transition-all duration-500" />
                   </div>

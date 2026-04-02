@@ -144,7 +144,7 @@ export default function SegmentSearchPage() {
       {/* ===== HERO ===== */}
       <section className="relative w-full h-[220px] sm:h-[300px] lg:h-[380px] xl:h-[420px] overflow-hidden">
         <Image src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page/ston.png"
-          alt="WWE Segment Search" fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-center lg:object-[50%_25%]" />
+          alt="WWE Segment Search" fill priority sizes="100vw" quality={100} className="object-cover object-center lg:object-[50%_25%]" />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/50 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-bg-primary/30 via-transparent to-bg-primary/30" />
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />

@@ -132,7 +132,7 @@ export default function MatchSearchPage() {
       {/* ===== HERO ===== */}
       <section className="relative w-full h-[220px] sm:h-[300px] lg:h-[380px] xl:h-[420px] overflow-hidden">
         <Image src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page/pagesearchmatch.webp"
-          alt="WWE Match Search" fill priority sizes="100vw" quality={100} unoptimized
+          alt="WWE Match Search" fill priority sizes="100vw" quality={100}
           className="object-cover object-center" />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/50 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-bg-primary/30 via-transparent to-bg-primary/30" />

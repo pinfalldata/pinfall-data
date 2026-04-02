@@ -104,7 +104,7 @@ export default function OMGCategoryClient({ category, title, subtitle, heroImage
     <div className="min-h-screen bg-bg-primary" ref={scrollRef}>
       {/* ===== HERO — tall to show more image ===== */}
       <section className="relative w-full h-[260px] sm:h-[360px] lg:h-[440px] xl:h-[500px] overflow-hidden">
-        <Image src={heroImage} alt={title} fill priority sizes="100vw" quality={100} unoptimized className="object-cover" style={{ objectPosition: 'center 25%' }} />
+        <Image src={heroImage} alt={title} fill priority sizes="100vw" quality={100} className="object-cover" style={{ objectPosition: 'center 25%' }} />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/30 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-bg-primary/20 via-transparent to-bg-primary/20" />
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
@@ -262,7 +262,7 @@ function MomentCard({ moment, link }: { moment: OMGMoment; link: string }) {
       {/* Image */}
       <div className="relative h-40 sm:h-44 overflow-hidden bg-bg-tertiary/30">
         {moment.image_url ? (
-          <Image src={moment.image_url} alt={moment.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 25vw" unoptimized />
+          <Image src={moment.image_url} alt={moment.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 25vw" />
         ) : (
           <div className="w-full h-full flex items-center justify-center"><span className="text-5xl opacity-15">🎬</span></div>
         )}

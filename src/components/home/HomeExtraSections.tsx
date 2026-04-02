@@ -91,7 +91,7 @@ export function WweLogosCarousel() {
           {display.map((logo, i) => (
             <div key={`${logo.id}-${i}`} className="shrink-0 flex flex-col items-center gap-2 group cursor-default">
               <div className="w-32 h-24 sm:w-40 sm:h-28 rounded-xl border border-border-subtle/20 bg-bg-secondary/20 flex items-center justify-center p-4 group-hover:border-neon-blue/30 transition-all">
-                <Image src={logo.image_url} alt={logo.name} width={140} height={100} className="max-w-full max-h-full object-contain" unoptimized />
+                <Image src={logo.image_url} alt={logo.name} width={140} height={100} className="max-w-full max-h-full object-contain" />
               </div>
               <div className="text-center">
                 <span className="text-[10px] text-text-secondary font-mono block">{logo.start_year}–{logo.end_year || t('common.now')}</span>
@@ -139,7 +139,7 @@ function BirthdayBlock({ birthdays }: { birthdays: any[] }) {
         <Link href={`/superstars/${star.slug}`} className="group">
           <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-xl overflow-hidden border-2 border-neon-pink/20 group-hover:border-neon-pink/50 transition-all shadow-lg">
             {star.photo_url ? (
-              <Image src={star.photo_url} alt={star.name} width={128} height={128} className="w-full h-full object-cover" unoptimized />
+              <Image src={star.photo_url} alt={star.name} width={128} height={128} className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full bg-bg-tertiary/30 flex items-center justify-center">
                 <span className="text-4xl opacity-30">🎂</span>
@@ -248,7 +248,7 @@ function ParticipantsVs({ participants }: { participants: any[] }) {
       <div className="flex -space-x-2 shrink-0">
         {participants.slice(0, 6).map((p: any, i: number) => (
           <div key={i} className="w-8 h-8 rounded-full overflow-hidden border-2 border-bg-primary">
-            {p.superstar?.photo_url ? <Image src={p.superstar.photo_url} alt="" width={32} height={32} className="w-full h-full object-cover" unoptimized /> : <div className="w-full h-full bg-bg-tertiary" />}
+            {p.superstar?.photo_url ? <Image src={p.superstar.photo_url} alt="" width={32} height={32} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-bg-tertiary" />}
           </div>
         ))}
       </div>
@@ -263,7 +263,7 @@ function ParticipantsVs({ participants }: { participants: any[] }) {
           <div className="flex -space-x-1.5">
             {teams[Number(tk)].slice(0, 3).map((p: any, i: number) => (
               <div key={i} className="w-7 h-7 rounded-full overflow-hidden border-2 border-bg-primary">
-                {p.superstar?.photo_url ? <Image src={p.superstar.photo_url} alt="" width={28} height={28} className="w-full h-full object-cover" unoptimized /> : <div className="w-full h-full bg-bg-tertiary" />}
+                {p.superstar?.photo_url ? <Image src={p.superstar.photo_url} alt="" width={28} height={28} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-bg-tertiary" />}
               </div>
             ))}
           </div>
@@ -291,7 +291,7 @@ function RecentMatchesBlock({ matches }: { matches: any[] }) {
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-text-white font-medium truncate group-hover:text-neon-blue transition-colors">{m.match_type?.name || 'Match'}</p>
                 <div className="flex items-center gap-2 mt-0.5">
-                  {m.show?.show_series?.logo_url && <div className="w-3.5 h-3.5 rounded overflow-hidden shrink-0"><Image src={m.show.show_series.logo_url} alt="" width={14} height={14} className="object-contain" unoptimized /></div>}
+                  {m.show?.show_series?.logo_url && <div className="w-3.5 h-3.5 rounded overflow-hidden shrink-0"><Image src={m.show.show_series.logo_url} alt="" width={14} height={14} className="object-contain" /></div>}
                   <span className="text-[10px] text-text-secondary truncate">{m.show?.name}</span>
                 </div>
               </div>
@@ -326,14 +326,14 @@ function RecentSegmentsBlock({ segments }: { segments: any[] }) {
               <div className="flex -space-x-2 shrink-0">
                 {parts.map((p: any, i: number) => (
                   <div key={i} className="w-8 h-8 rounded-full overflow-hidden border-2 border-bg-primary">
-                    {p.superstar?.photo_url ? <Image src={p.superstar.photo_url} alt="" width={32} height={32} className="w-full h-full object-cover" unoptimized /> : <div className="w-full h-full bg-bg-tertiary" />}
+                    {p.superstar?.photo_url ? <Image src={p.superstar.photo_url} alt="" width={32} height={32} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-bg-tertiary" />}
                   </div>
                 ))}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-text-white font-medium truncate group-hover:text-neon-pink transition-colors">{s.title}</p>
                 <div className="flex items-center gap-2 mt-0.5">
-                  {s.show?.show_series?.logo_url && <div className="w-3.5 h-3.5 rounded overflow-hidden shrink-0"><Image src={s.show.show_series.logo_url} alt="" width={14} height={14} className="object-contain" unoptimized /></div>}
+                  {s.show?.show_series?.logo_url && <div className="w-3.5 h-3.5 rounded overflow-hidden shrink-0"><Image src={s.show.show_series.logo_url} alt="" width={14} height={14} className="object-contain" /></div>}
                   <span className="text-[10px] text-text-secondary truncate">{s.show?.name}</span>
                 </div>
               </div>
@@ -375,7 +375,7 @@ function BeltCarousel({ championships }: { championships: any[] }) {
             <Link key={`belt-${c.id}-${i}`} href={`/champions/${c.slug}`} className="shrink-0 group" title={c.name}>
               <div className="relative w-36 h-24 sm:w-48 sm:h-32 rounded-xl border border-border-subtle/20 bg-bg-secondary/10 flex items-center justify-center px-4 py-3 group-hover:border-neon-blue/40 group-hover:bg-neon-blue/5 transition-all overflow-hidden">
                 {c.image_url ? (
-                  <Image src={c.image_url} alt={c.name} width={180} height={120} className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300" unoptimized />
+                  <Image src={c.image_url} alt={c.name} width={180} height={120} className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-300" />
                 ) : (
                   <span className="text-3xl opacity-30">🏆</span>
                 )}

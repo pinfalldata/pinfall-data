@@ -38,7 +38,7 @@ export default function TabObjectsUsed({ superstar }: { superstar: any }) {
             {/* Header — object image + name + count — click to expand */}
             <button onClick={() => toggle(obj.id)} className="w-full flex items-center gap-4 p-4 hover:bg-bg-secondary/30 transition-all text-left">
               <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden border border-border-subtle/20 bg-bg-tertiary/30 shrink-0">
-                {obj.image_url ? <Image src={obj.image_url} alt={obj.name} fill className="object-cover" sizes="64px" unoptimized /> : <div className="w-full h-full flex items-center justify-center text-xl">🪑</div>}
+                {obj.image_url ? <Image src={obj.image_url} alt={obj.name} fill className="object-cover" sizes="64px" /> : <div className="w-full h-full flex items-center justify-center text-xl">🪑</div>}
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-display text-base sm:text-lg font-bold text-text-white">{obj.name}</h3>

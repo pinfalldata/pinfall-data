@@ -125,7 +125,7 @@ export default function HistoryPageClient() {
         <Image
           src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20History%20En%20tete/image__15__2026-03-16_22_26_56.926494.jpg.png"
           alt={t('history.title')}
-          fill priority sizes="100vw" quality={100} unoptimized
+          fill priority sizes="100vw" quality={100}
           className="object-cover object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/60 to-bg-primary/20" />

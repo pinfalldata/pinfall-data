@@ -273,7 +273,7 @@ export default function SegmentDetail({ segment }: { segment: Segment }) {
                     priority
                     quality={100}
                     sizes="(max-width: 1024px) 100vw, 896px"
-                    unoptimized
+                   
                   />
                 </div>
               </div>
@@ -332,14 +332,14 @@ export default function SegmentDetail({ segment }: { segment: Segment }) {
         {/* Microphone — far right edge, floating, visible */}
         <div className="hidden xl:block absolute right-0 top-4 w-[200px] pointer-events-none select-none" style={{ height: 'calc(100% - 16px)' }}>
           <div className="sticky top-16 w-full h-[350px] opacity-[0.14]" style={{ animation: 'deco-float-1 6s ease-in-out infinite' }}>
-            <Image src={DECO_OBJECTS.mic} alt="" fill className="object-contain object-right" aria-hidden="true" sizes="200px" unoptimized />
+            <Image src={DECO_OBJECTS.mic} alt="" fill className="object-contain object-right" aria-hidden="true" sizes="200px" />
           </div>
         </div>
 
         {/* Contract — far left edge, more visible, floating */}
         <div className="hidden xl:block absolute left-0 top-4 w-[200px] pointer-events-none select-none" style={{ height: 'calc(100% - 16px)' }}>
           <div className="sticky top-20 w-full h-[320px] opacity-[0.10]" style={{ animation: 'deco-float-2 8s ease-in-out infinite', transform: 'rotate(-5deg)' }}>
-            <Image src={DECO_OBJECTS.contract} alt="" fill className="object-contain object-left" aria-hidden="true" sizes="200px" unoptimized />
+            <Image src={DECO_OBJECTS.contract} alt="" fill className="object-contain object-left" aria-hidden="true" sizes="200px" />
           </div>
         </div>
 

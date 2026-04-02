@@ -141,7 +141,7 @@ export default function ArenaDetailPage() {
             priority
             sizes="100vw"
             quality={100}
-            unoptimized
+           
             className="object-cover object-center"
           />
         )}

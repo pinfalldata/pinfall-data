@@ -54,7 +54,7 @@ export default function TabStables({ superstar }: { superstar: any }) {
           {/* Stable photo or member grid */}
           <div className="relative h-40 bg-bg-tertiary/30 overflow-hidden">
             {stable.photo_url ? (
-              <Image src={stable.photo_url} alt={stable.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" sizes="400px" unoptimized />
+              <Image src={stable.photo_url} alt={stable.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" sizes="400px" />
             ) : (
               <div className="w-full h-full flex items-center justify-center gap-2 p-4 flex-wrap">
                 {stable.members?.slice(0, 6).map((m: any) => (

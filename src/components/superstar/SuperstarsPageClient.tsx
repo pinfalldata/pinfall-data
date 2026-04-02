@@ -129,7 +129,7 @@ export default function SuperstarsPageClient() {
           fill
           priority
           sizes="100vw"
-          unoptimized
+         
           quality={100}
           className="object-cover object-center"
         />
@@ -171,7 +171,7 @@ export default function SuperstarsPageClient() {
                     fill
                     className="object-cover object-top transition-transform duration-500 group-hover:scale-110"
                     sizes="(max-width: 640px) 64px, (max-width: 1024px) 72px, 80px"
-                    unoptimized
+                   
                   />
                   {/* Shine overlay */}
                   <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/0 to-white/0 group-hover:via-white/10 group-hover:to-white/5 transition-all duration-500" />
@@ -283,7 +283,7 @@ export default function SuperstarsPageClient() {
                       fill
                       className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                       sizes="192px"
-                      unoptimized
+                     
                     />
                   </div>
                 </Link>

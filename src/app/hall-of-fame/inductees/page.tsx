@@ -58,7 +58,7 @@ export default function HallOfFamePage() {
     <div className="relative">
       {/* ===== HERO — Royal blue/gold gradient ===== */}
       <section className="relative w-full h-[240px] sm:h-[320px] lg:h-[400px] overflow-hidden">
-        <Image src={HERO} alt="WWE Hall of Fame" fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-center" />
+        <Image src={HERO} alt="WWE Hall of Fame" fill priority sizes="100vw" quality={100} className="object-cover object-center" />
         <div className="absolute inset-0" style={{ background: `linear-gradient(to top, #050507 0%, ${ROYAL_BLUE}40 40%, transparent 100%)` }} />
         <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${ROYAL_BLUE}20, transparent 50%, ${GOLD}10)` }} />
         {/* Gold accent line */}
@@ -143,7 +143,7 @@ export default function HallOfFamePage() {
                       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = `${GOLD}50`; (e.currentTarget as HTMLElement).style.boxShadow = `0 0 25px ${GOLD}15, 0 4px 20px rgba(0,0,0,0.3)` }}
                       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = `${GOLD}20`; (e.currentTarget as HTMLElement).style.boxShadow = 'none' }}>
                       {photo ? (
-                        <Image src={photo} alt={item.inductee_name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 20vw" unoptimized />
+                        <Image src={photo} alt={item.inductee_name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 20vw" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${ROYAL_BLUE}30, ${GOLD}10)` }}>
                           <span className="text-5xl opacity-20">🏛️</span>

@@ -47,7 +47,7 @@ export default function TagTeamsPage() {
         <section className="relative w-full h-[240px] sm:h-[320px] lg:h-[400px] xl:h-[440px] overflow-hidden">
           <Image
             src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20Tag%20Teams/bloodline-famille-hart-wwe-bloodline-2023_2026-03-20_21_48_13.392778.jpg.png"
-            alt="WWE Tag Teams & Stables" fill priority sizes="100vw" unoptimized quality={100}
+            alt="WWE Tag Teams & Stables" fill priority sizes="100vw" quality={100}
             className="object-cover" style={{ objectPosition: 'center 25%' }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/30 to-transparent" />
@@ -72,7 +72,7 @@ export default function TagTeamsPage() {
                 <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue/0 to-transparent group-hover:via-neon-blue/60 transition-all duration-500 z-10" />
                 <div className="flex items-center gap-4 p-4 sm:p-5">
                   <div className="relative w-16 h-16 sm:w-[72px] sm:h-[72px] lg:w-20 lg:h-20 rounded-xl overflow-hidden border-2 border-border-subtle/30 group-hover:border-neon-blue/40 transition-all shrink-0 bg-bg-tertiary">
-                    <Image src={cat.image} alt={cat.label} fill className="object-cover object-top transition-transform duration-500 group-hover:scale-110" sizes="80px" unoptimized />
+                    <Image src={cat.image} alt={cat.label} fill className="object-cover object-top transition-transform duration-500 group-hover:scale-110" sizes="80px" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">

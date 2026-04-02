@@ -390,7 +390,7 @@ function GMC({ d }: { d: any }) {
     <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-neon-blue/70 to-transparent" />
     <div className="p-6 sm:p-10 flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
       {d.photo_url ? (
-        <div className="relative w-40 h-52 sm:w-48 sm:h-60 rounded-2xl overflow-hidden border-2 border-neon-blue/30 shrink-0 bg-bg-tertiary shadow-neon-blue"><Image src={d.photo_url} alt="" fill className="object-cover object-top" sizes="192px" unoptimized /></div>
+        <div className="relative w-40 h-52 sm:w-48 sm:h-60 rounded-2xl overflow-hidden border-2 border-neon-blue/30 shrink-0 bg-bg-tertiary shadow-neon-blue"><Image src={d.photo_url} alt="" fill className="object-cover object-top" sizes="192px" /></div>
       ) : d.show_series?.logo_url ? (
         <div className="w-32 h-32 sm:w-40 sm:h-40 shrink-0 rounded-2xl bg-bg-tertiary/80 border border-border-subtle/30 p-4 flex items-center justify-center"><Image src={d.show_series.logo_url} alt="" width={120} height={120} className="w-full h-full object-contain" /></div>
       ) : null}
@@ -416,7 +416,7 @@ function ExC({ d }: { d: any }) {
   return <div className="relative rounded-2xl border border-border-subtle/20 bg-gradient-to-br from-bg-secondary/50 via-bg-secondary/20 to-transparent overflow-hidden mb-8">
     <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-yellow-500/60 to-transparent" />
     <div className="p-6 sm:p-10 flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
-      {d.photo_url && (<div className="relative w-40 h-52 sm:w-48 sm:h-60 rounded-2xl overflow-hidden border-2 border-yellow-500/20 shrink-0 bg-bg-tertiary"><Image src={d.photo_url} alt="" fill className="object-cover object-top" sizes="192px" unoptimized /></div>)}
+      {d.photo_url && (<div className="relative w-40 h-52 sm:w-48 sm:h-60 rounded-2xl overflow-hidden border-2 border-yellow-500/20 shrink-0 bg-bg-tertiary"><Image src={d.photo_url} alt="" fill className="object-cover object-top" sizes="192px" /></div>)}
       <div className="flex-1 min-w-0 text-center sm:text-left">
         <h3 className="font-display text-2xl sm:text-4xl font-bold text-text-white mb-3">{d.title || 'Executive'}</h3>
         <div className="flex items-center gap-3 justify-center sm:justify-start">

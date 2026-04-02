@@ -101,7 +101,7 @@ export default function TeamListClient({ type, title, subtitle, heroImage }: Pro
     <div className="min-h-screen bg-bg-primary" ref={scrollRef}>
       {/* HERO */}
       <section className="relative w-full h-[260px] sm:h-[360px] lg:h-[440px] xl:h-[500px] overflow-hidden">
-        <Image src={heroImage} alt={title} fill priority sizes="100vw" quality={100} unoptimized className="object-cover" style={{ objectPosition: 'center 25%' }} />
+        <Image src={heroImage} alt={title} fill priority sizes="100vw" quality={100} className="object-cover" style={{ objectPosition: 'center 25%' }} />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/30 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-bg-primary/20 via-transparent to-bg-primary/20" />
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
@@ -217,7 +217,7 @@ function TeamCard({ item, basePath }: { item: any; basePath: string }) {
     <Link href={`${basePath}/${item.slug}`} className="group relative flex flex-col rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 overflow-hidden transition-all hover:border-neon-blue/30 hover:bg-bg-secondary/25 card-glow">
       <div className="relative h-40 sm:h-44 overflow-hidden bg-bg-tertiary/30">
         {item.photo_url ? (
-          <Image src={item.photo_url} alt={item.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 25vw" unoptimized />
+          <Image src={item.photo_url} alt={item.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 25vw" />
         ) : (
           <div className="w-full h-full flex items-center justify-center"><span className="text-5xl opacity-15">👥</span></div>
         )}

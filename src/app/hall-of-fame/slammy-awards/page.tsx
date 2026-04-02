@@ -47,7 +47,7 @@ export default function SlammyAwardsPage() {
   return (
     <div className="relative">
       <section className="relative w-full h-[220px] sm:h-[300px] lg:h-[380px] overflow-hidden">
-        <Image src={HERO} alt="WWE Slammy Awards" fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-center lg:object-[50%_20%]" />
+        <Image src={HERO} alt="WWE Slammy Awards" fill priority sizes="100vw" quality={100} className="object-cover object-center lg:object-[50%_20%]" />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/50 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">
@@ -107,7 +107,7 @@ function AwardCard({ item }: { item: any }) {
   return (
     <Link href={href} className="group relative flex flex-col rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 overflow-hidden transition-all hover:border-neon-blue/30 hover:translate-y-[-2px] card-glow">
       <div className="relative aspect-square overflow-hidden bg-bg-tertiary/30">
-        {photo ? <Image src={photo} alt={item.winner_name || ''} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width:640px) 50vw, 20vw" unoptimized />
+        {photo ? <Image src={photo} alt={item.winner_name || ''} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width:640px) 50vw, 20vw" />
         : <div className="w-full h-full flex items-center justify-center"><span className="text-4xl opacity-20">🏆</span></div>}
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/70 to-transparent" />
         <div className="absolute top-2 right-2"><span className="text-[9px] px-2 py-0.5 rounded-full bg-bg-primary/80 backdrop-blur-sm border border-neon-blue/20 text-neon-blue font-bold">{item.year}</span></div>

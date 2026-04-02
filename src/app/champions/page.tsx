@@ -67,7 +67,7 @@ export default function ChampionsPage() {
       <section className="relative w-full h-[220px] sm:h-[300px] lg:h-[380px] xl:h-[420px] overflow-hidden">
         <Image
           src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Page%20champions/SHOP_OUR_BIGGEST_SALES_OF_THE_YEAR_1_cc28e654-4926-455a-803a-585337e60e69_2026-03-11_13_24_57.173879.webp.png"
-          alt="WWE Champions" fill priority sizes="100vw" quality={100} unoptimized
+          alt="WWE Champions" fill priority sizes="100vw" quality={100}
           className="object-cover object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/50 to-transparent" />
@@ -104,7 +104,7 @@ export default function ChampionsPage() {
                     fill
                     className="object-cover object-top transition-transform duration-500 group-hover:scale-110"
                     sizes="80px"
-                    unoptimized
+                   
                   />
                   {/* Subtle shine overlay */}
                   <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/0 to-white/0 group-hover:via-white/10 group-hover:to-white/5 transition-all duration-500" />

@@ -132,7 +132,7 @@ export default function TabOMGMoments({ superstar }: { superstar: any }) {
                   {/* Image */}
                   {m.image_url && (
                     <div className="relative w-16 h-16 rounded-xl overflow-hidden shrink-0 border border-border-subtle/20">
-                      <Image src={m.image_url} alt="" fill className="object-cover" sizes="64px" unoptimized />
+                      <Image src={m.image_url} alt="" fill className="object-cover" sizes="64px" />
                     </div>
                   )}
 

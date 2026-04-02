@@ -75,7 +75,7 @@ export function TabMedia({ superstar }: { superstar: any }) {
                     width={48}
                     height={48}
                     className="w-full h-full object-contain"
-                    unoptimized
+                   
                   />
                 </div>
                 <span className={`text-xs sm:text-sm font-medium text-center leading-tight ${site.textColor}`}>

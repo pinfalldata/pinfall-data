@@ -26,13 +26,13 @@ export default function TabYearEndAwards({ superstar }: { superstar: any }) {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="flex items-center gap-4 mb-6">
-        <div className="relative w-16 h-16 sm:w-20 sm:h-20 shrink-0"><Image src={TROPHY_IMG} alt="Year-End Award" fill className="object-contain drop-shadow-[0_0_15px_rgba(199,160,90,0.3)]" sizes="80px" unoptimized /></div>
+        <div className="relative w-16 h-16 sm:w-20 sm:h-20 shrink-0"><Image src={TROPHY_IMG} alt="Year-End Award" fill className="object-contain drop-shadow-[0_0_15px_rgba(199,160,90,0.3)]" sizes="80px" /></div>
         <div><h2 className="font-display text-xl sm:text-2xl font-bold text-text-white">{t('nav.dropdown.yearEndAwards')}</h2><p className="text-sm text-text-secondary">{items.length} award{items.length !== 1 ? 's' : ''} won</p></div>
       </div>
       <div className="space-y-3">
         {items.map((item: any) => (
           <div key={item.id} className="flex items-center gap-4 p-4 rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 hover:border-neon-blue/20 transition-all">
-            <div className="relative w-12 h-12 shrink-0"><Image src={TROPHY_IMG} alt="" fill className="object-contain drop-shadow-[0_0_6px_rgba(199,160,90,0.2)]" sizes="48px" unoptimized /></div>
+            <div className="relative w-12 h-12 shrink-0"><Image src={TROPHY_IMG} alt="" fill className="object-contain drop-shadow-[0_0_6px_rgba(199,160,90,0.2)]" sizes="48px" /></div>
             <div className="flex-1 min-w-0">
               <p className="text-neon-blue text-[11px] font-bold uppercase tracking-wider mb-0.5">{item.category}</p>
               <div className="flex items-center gap-2">

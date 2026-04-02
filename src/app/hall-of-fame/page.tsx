@@ -25,7 +25,7 @@ export default function HallOfFameMainPage() {
     <div className="relative">
       {/* ===== HERO ===== */}
       <section className="relative w-full h-[240px] sm:h-[320px] lg:h-[400px] xl:h-[440px] overflow-hidden">
-        <Image src={HERO} alt="WWE Hall of Fame & Awards" fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-center" />
+        <Image src={HERO} alt="WWE Hall of Fame & Awards" fill priority sizes="100vw" quality={100} className="object-cover object-center" />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/50 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-bg-primary/30 via-transparent to-bg-primary/30" />
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
@@ -89,7 +89,7 @@ export default function HallOfFameMainPage() {
               <Link key={s.id} href={`/superstars/${s.slug}`}
                 className="group shrink-0 w-32 sm:w-36 snap-start">
                 <div className="relative aspect-square rounded-xl overflow-hidden border border-border-subtle/20 bg-bg-tertiary/30 group-hover:border-neon-blue/30 transition-all">
-                  {s.photo_url && <Image src={s.photo_url} alt={s.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" sizes="144px" unoptimized />}
+                  {s.photo_url && <Image src={s.photo_url} alt={s.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" sizes="144px" />}
                   <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/70 to-transparent" />
                   <div className="absolute bottom-1.5 left-1.5 right-1.5">
                     <p className="text-[10px] text-text-white font-bold truncate">{s.name}</p>

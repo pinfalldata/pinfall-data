@@ -54,7 +54,7 @@ export default function TabTagTeams({ superstar }: { superstar: any }) {
           {/* Team photo or member photos */}
           <div className="relative h-40 bg-bg-tertiary/30 overflow-hidden">
             {team.photo_url ? (
-              <Image src={team.photo_url} alt={team.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" sizes="400px" unoptimized />
+              <Image src={team.photo_url} alt={team.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" sizes="400px" />
             ) : (
               <div className="w-full h-full flex items-center justify-center gap-3 p-4">
                 {team.members?.slice(0, 3).map((m: any) => (

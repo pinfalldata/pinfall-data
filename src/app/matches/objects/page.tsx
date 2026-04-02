@@ -24,7 +24,7 @@ export default function ObjectsListPage() {
     <div className="relative">
       {/* Hero */}
       <section className="relative w-full h-[220px] sm:h-[300px] lg:h-[380px] overflow-hidden">
-        <Image src={HERO} alt="WWE Objects Used" fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-center lg:object-[50%_60%]" />
+        <Image src={HERO} alt="WWE Objects Used" fill priority sizes="100vw" quality={100} className="object-cover object-center lg:object-[50%_60%]" />
         <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/50 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
         <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">
@@ -56,7 +56,7 @@ export default function ObjectsListPage() {
                 className="group relative flex flex-col rounded-2xl border border-border-subtle/20 bg-bg-secondary/15 overflow-hidden transition-all hover:border-neon-blue/30 hover:translate-y-[-2px] card-glow">
                 <div className="relative aspect-square overflow-hidden bg-bg-tertiary/30">
                   {obj.image_url ? (
-                    <Image src={obj.image_url} alt={obj.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 20vw" unoptimized />
+                    <Image src={obj.image_url} alt={obj.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 20vw" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center"><span className="text-5xl opacity-20">🪑</span></div>
                   )}

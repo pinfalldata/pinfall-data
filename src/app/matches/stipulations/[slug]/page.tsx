@@ -189,7 +189,7 @@ export default function StipulationDetailPage() {
       <section className="lg:hidden relative w-full h-[260px] sm:h-[320px] overflow-hidden">
         {matchType?.image_url ? (
           <Image src={matchType.image_url} alt={matchType?.name || ''} fill priority
-            sizes="100vw" quality={100} unoptimized className="object-cover object-center" />
+            sizes="100vw" quality={100} className="object-cover object-center" />
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 via-zinc-800 to-black" />
         )}
@@ -223,7 +223,7 @@ export default function StipulationDetailPage() {
           <div className="flex items-center gap-10">
             {matchType?.image_url ? (
               <div className="relative w-[460px] h-[300px] shrink-0 rounded-2xl overflow-hidden border border-border-subtle/20 bg-black/40">
-                <Image src={matchType.image_url} alt={matchType?.name || ''} fill priority quality={100} unoptimized
+                <Image src={matchType.image_url} alt={matchType?.name || ''} fill priority quality={100}
                   className="object-contain p-2" sizes="460px" />
               </div>
             ) : (

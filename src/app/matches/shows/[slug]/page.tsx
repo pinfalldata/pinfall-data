@@ -250,7 +250,7 @@ export default function ShowSeriesDetailPage() {
       <section className="relative w-full h-[220px] sm:h-[300px] lg:h-[380px] overflow-hidden">
         {series?.banner_url ? (
           <Image src={series.banner_url} alt={series?.name || ''} fill priority
-            sizes="100vw" quality={100} unoptimized className="object-cover object-center" />
+            sizes="100vw" quality={100} className="object-cover object-center" />
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 via-zinc-800 to-black" />
         )}

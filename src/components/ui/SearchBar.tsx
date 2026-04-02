@@ -271,7 +271,7 @@ export function SearchBar({ onClose }: SearchBarProps) {
                           {/* Image or fallback */}
                           {item.image ? (
                             <div className="w-9 h-9 rounded-lg overflow-hidden bg-bg-tertiary/30 shrink-0 border border-border-subtle/20">
-                              <Image src={item.image} alt="" width={36} height={36} className="w-full h-full object-cover" unoptimized />
+                              <Image src={item.image} alt="" width={36} height={36} className="w-full h-full object-cover" />
                             </div>
                           ) : (
                             <div className="w-9 h-9 rounded-lg bg-bg-tertiary/20 border border-border-subtle/15 flex items-center justify-center shrink-0">

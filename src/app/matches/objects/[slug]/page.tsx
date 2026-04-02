@@ -43,7 +43,7 @@ export default function ObjectDetailPage() {
       <section className="max-w-[1440px] mx-auto px-4 sm:px-6 pb-8">
         <div className="flex flex-col lg:flex-row gap-6 items-start">
           <div className="relative w-full lg:w-80 aspect-square rounded-2xl overflow-hidden border border-border-subtle/20 bg-bg-tertiary/30 shrink-0">
-            {obj.image_url ? <Image src={obj.image_url} alt={obj.name} fill className="object-cover" sizes="(max-width:1024px) 100vw, 320px" unoptimized /> : <div className="w-full h-full flex items-center justify-center"><span className="text-6xl opacity-20">🪑</span></div>}
+            {obj.image_url ? <Image src={obj.image_url} alt={obj.name} fill className="object-cover" sizes="(max-width:1024px) 100vw, 320px" /> : <div className="w-full h-full flex items-center justify-center"><span className="text-6xl opacity-20">🪑</span></div>}
           </div>
           <div className="flex-1 min-w-0">
             <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-text-white mb-3">{obj.name}</h1>

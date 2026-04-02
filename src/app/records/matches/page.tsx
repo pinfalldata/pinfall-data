@@ -109,7 +109,7 @@ export default function MatchRecordsPage() {
 function Hero({ img, t1, t2, sub }: any) {
   return (
     <section className="relative w-full h-[220px] sm:h-[300px] lg:h-[380px] overflow-hidden">
-      <Image src={img} alt={`${t1} ${t2}`} fill priority sizes="100vw" quality={100} unoptimized className="object-cover object-[50%_25%]" />
+      <Image src={img} alt={`${t1} ${t2}`} fill priority sizes="100vw" quality={100} className="object-cover object-[50%_25%]" />
       <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-bg-primary/50 to-transparent" />
       <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-neon-blue to-transparent opacity-60" />
       <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 sm:pb-8 lg:pb-10 px-4">

@@ -88,7 +88,7 @@ function TeamCard({ data }: { data: any }) {
       <div className="flex flex-col sm:flex-row">
         {item.photo_url && (
           <div className="relative w-full sm:w-64 lg:w-80 h-48 sm:h-auto shrink-0 overflow-hidden">
-            <Image src={item.photo_url} alt={item.name} fill className="object-cover group-hover:scale-105 transition-transform duration-700" sizes="320px" unoptimized />
+            <Image src={item.photo_url} alt={item.name} fill className="object-cover group-hover:scale-105 transition-transform duration-700" sizes="320px" />
             <div className="absolute inset-0 bg-gradient-to-r from-transparent to-bg-primary/50 hidden sm:block" />
             <div className="absolute inset-0 bg-gradient-to-t from-bg-primary/60 to-transparent sm:hidden" />
           </div>
