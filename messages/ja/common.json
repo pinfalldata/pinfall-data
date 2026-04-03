@@ -798,5 +798,17 @@
     "winMethods": "Win Methods",
     "heightCm": "Height (cm)",
     "weightKg": "Weight (kg)"
+  },
+  "floating": {
+    "reportTitle": "問題を報告",
+    "reportDesc": "エラーや提案がありますか？お知らせください！",
+    "reportSubject": "件名（任意）",
+    "reportPlaceholder": "問題や提案を記述してください...",
+    "reportSend": "レポートを送信",
+    "reportSent": "ありがとうございます！メールクライアントが開きます。",
+    "supportTitle": "Pinfall Dataを支援する",
+    "supportMessage": "Pinfall Dataは一人で作成・運営しています。ホスティング、ドメイン、データベース — すべてにコストがかかります。このプロジェクトを気に入っていただけたら、少額の寄付がプロジェクトの維持に役立ちます！",
+    "supportKofi": "Ko-fiでコーヒーをおごる",
+    "supportThanks": "どんなに小さな貢献でも、とても嬉しいです。ありがとうございます！🙏"
   }
 }

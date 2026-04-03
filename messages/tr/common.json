@@ -798,5 +798,17 @@
     "winMethods": "Win Methods",
     "heightCm": "Height (cm)",
     "weightKg": "Weight (kg)"
+  },
+  "floating": {
+    "reportTitle": "Sorun Bildir",
+    "reportDesc": "Bir hata mı buldunuz yoksa bir öneriniz mi var? Bize bildirin!",
+    "reportSubject": "Konu (isteğe bağlı)",
+    "reportPlaceholder": "Sorunu veya önerinizi açıklayın...",
+    "reportSend": "Rapor Gönder",
+    "reportSent": "Teşekkürler! E-posta istemciniz açılacak.",
+    "supportTitle": "Pinfall Data'yı Destekle",
+    "supportMessage": "Pinfall Data tek bir kişi tarafından oluşturulup sürdürülmektedir. Barındırma, alan adı, veritabanı — hepsinin bir maliyeti var. Bu projeyi beğeniyorsanız, küçük bir bağış onu yaşatmaya yardımcı olur!",
+    "supportKofi": "Ko-fi'de bana bir kahve ısmarla",
+    "supportThanks": "Her katkı, ne kadar küçük olursa olsun, çok değerli. Teşekkürler! 🙏"
   }
 }

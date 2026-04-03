@@ -798,5 +798,17 @@
     "winMethods": "Win Methods",
     "heightCm": "Height (cm)",
     "weightKg": "Weight (kg)"
+  },
+  "floating": {
+    "reportTitle": "Reportar um problema",
+    "reportDesc": "Encontrou um erro ou tem uma sugestão? Diga-nos!",
+    "reportSubject": "Assunto (opcional)",
+    "reportPlaceholder": "Descreva o problema ou sua sugestão...",
+    "reportSend": "Enviar relatório",
+    "reportSent": "Obrigado! Seu cliente de e-mail será aberto.",
+    "supportTitle": "Apoie o Pinfall Data",
+    "supportMessage": "Pinfall Data é criado e mantido por uma única pessoa. Hospedagem, domínio, banco de dados — tudo tem um custo. Se você gosta deste projeto, uma pequena doação ajuda a mantê-lo vivo!",
+    "supportKofi": "Me pague um café no Ko-fi",
+    "supportThanks": "Cada contribuição, por menor que seja, significa muito. Obrigado! 🙏"
   }
 }

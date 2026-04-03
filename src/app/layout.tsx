@@ -9,6 +9,7 @@ import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { isRTL } from '@/lib/locales'
 import { CookieBanner } from '@/components/CookieBanner'
+import { FloatingButtons } from '@/components/layout/FloatingButtons'
 
 const oswald = Oswald({
   subsets: ['latin'],
@@ -129,6 +130,7 @@ export default async function RootLayout({
           <Analytics />
           <SpeedInsights />
           <CookieBanner />
+          <FloatingButtons />
           
         </NextIntlClientProvider>
       </body>

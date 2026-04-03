@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
       .eq('day', day)
       .order('importance', { ascending: false })
       .order('year', { ascending: false })
-      .limit(10)
+      .limit(20)
 
     if (error) {
       console.error('[on-this-day]', error)

@@ -798,5 +798,17 @@
     "winMethods": "Win Methods",
     "heightCm": "Height (cm)",
     "weightKg": "Weight (kg)"
+  },
+  "floating": {
+    "reportTitle": "الإبلاغ عن مشكلة",
+    "reportDesc": "وجدت خطأ أو لديك اقتراح؟ أخبرنا!",
+    "reportSubject": "الموضوع (اختياري)",
+    "reportPlaceholder": "صف المشكلة أو اقتراحك...",
+    "reportSend": "إرسال التقرير",
+    "reportSent": "شكراً! سيتم فتح عميل البريد الإلكتروني.",
+    "supportTitle": "ادعم Pinfall Data",
+    "supportMessage": "يتم إنشاء وصيانة Pinfall Data بواسطة شخص واحد. الاستضافة والنطاق وقاعدة البيانات — كل شيء له تكلفة. إذا أعجبك هذا المشروع، فإن تبرعاً صغيراً يساعد في إبقائه حياً!",
+    "supportKofi": "اشترِ لي قهوة على Ko-fi",
+    "supportThanks": "كل مساهمة، مهما كانت صغيرة، تعني الكثير. شكراً! 🙏"
   }
 }
