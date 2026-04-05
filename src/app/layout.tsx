@@ -52,13 +52,13 @@ export const metadata: Metadata = {
   ],
   icons: {
     icon: [
-      { url: '/favicon.png', type: 'image/png', sizes: '32x32' },
-      { url: '/favicon.png', type: 'image/png', sizes: '16x16' },
-      { url: '/favicon.png', type: 'image/png', sizes: '192x192' },
+      { url: '/flavicon.png', type: 'image/png', sizes: '32x32' },
+      { url: '/flavicon.png', type: 'image/png', sizes: '16x16' },
+      { url: '/flavicon.png', type: 'image/png', sizes: '192x192' },
     ],
-    shortcut: '/favicon.png',
+    shortcut: '/flavicon.png',
     apple: [
-      { url: '/favicon.png', sizes: '180x180' },
+      { url: '/flavicon.png', sizes: '180x180' },
     ],
   },
   manifest: undefined,
