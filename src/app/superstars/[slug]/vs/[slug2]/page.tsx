@@ -16,14 +16,32 @@ async function getSuperstars(slug1: string, slug2: string) {
   return data || []
 }
 
+// Supabase server limits to 1000 rows per query — pagination needed
+async function fetchAllMatchIds(superstarId: number): Promise<number[]> {
+  const allIds: number[] = []
+  let from = 0
+  const batch = 1000
+  while (true) {
+    const { data } = await supabase
+      .from('match_participants')
+      .select('match_id')
+      .eq('superstar_id', superstarId)
+      .range(from, from + batch - 1)
+    if (!data || data.length === 0) break
+    allIds.push(...data.map(p => p.match_id))
+    if (data.length < batch) break
+    from += batch
+  }
+  return allIds
+}
+
 async function getMatchCount(id1: number, id2: number) {
-  const [{ data: p1 }, { data: p2 }] = await Promise.all([
-    supabase.from('match_participants').select('match_id').eq('superstar_id', id1).limit(50000),
-    supabase.from('match_participants').select('match_id').eq('superstar_id', id2).limit(50000),
+  const [ids1, ids2] = await Promise.all([
+    fetchAllMatchIds(id1),
+    fetchAllMatchIds(id2),
   ])
-  if (!p1 || !p2) return 0
-  const set1 = new Set(p1.map(p => p.match_id))
-  return p2.filter(p => set1.has(p.match_id)).length
+  const set1 = new Set(ids1)
+  return ids2.filter(id => set1.has(id)).length
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {

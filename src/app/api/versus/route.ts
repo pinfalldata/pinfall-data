@@ -31,13 +31,28 @@ export async function GET(request: NextRequest) {
     const s1 = stars.find(s => s.slug === slug1)!
     const s2 = stars.find(s => s.slug === slug2)!
 
-    // 2. Get match IDs for both
-    const [{ data: p1 }, { data: p2 }] = await Promise.all([
-      supabase.from('match_participants').select('match_id, team_number, is_winner').eq('superstar_id', s1.id).limit(50000),
-      supabase.from('match_participants').select('match_id, team_number, is_winner').eq('superstar_id', s2.id).limit(50000),
-    ])
+    // 2. Get ALL match IDs for both (paginated — Supabase limits to 1000 rows per query)
+    async function fetchAll(superstarId: number) {
+      const all: { match_id: number; team_number: number; is_winner: boolean | null }[] = []
+      let from = 0
+      const batch = 1000
+      while (true) {
+        const { data } = await supabase
+          .from('match_participants')
+          .select('match_id, team_number, is_winner')
+          .eq('superstar_id', superstarId)
+          .range(from, from + batch - 1)
+        if (!data || data.length === 0) break
+        all.push(...data)
+        if (data.length < batch) break
+        from += batch
+      }
+      return all
+    }
 
-    if (!p1 || !p2) return NextResponse.json({ superstar1: s1, superstar2: s2, matches: [], h2h: null })
+    const [p1, p2] = await Promise.all([fetchAll(s1.id), fetchAll(s2.id)])
+
+    if (p1.length === 0 || p2.length === 0) return NextResponse.json({ superstar1: s1, superstar2: s2, matches: [], h2h: null })
 
     // 3. Find common match IDs
     const s1MatchIds = new Set(p1.map(p => p.match_id))
