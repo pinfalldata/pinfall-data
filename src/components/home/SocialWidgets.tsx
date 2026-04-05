@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 
 interface SocialLink {
   id: number
@@ -60,7 +61,7 @@ const ICONS: Record<string, { svg: JSX.Element; color: string; bg: string }> = {
     color: '#FFFC00',
     bg: 'rgba(255,252,0,0.08)',
     svg: (
-      <img src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Social%20media/Snapchat.png" alt="Snapchat" className="w-5 h-5 object-contain" />
+      <Image src="https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Social%20media/Snapchat.png" alt="Snapchat" width={20} height={20} className="w-5 h-5 object-contain" />
     ),
   },
 }

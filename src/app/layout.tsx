@@ -52,13 +52,13 @@ export const metadata: Metadata = {
   ],
   icons: {
     icon: [
-      { url: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Logo%20etc/flavicon.png', type: 'image/png', sizes: '32x32' },
-      { url: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Logo%20etc/flavicon.png', type: 'image/png', sizes: '16x16' },
-      { url: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Logo%20etc/flavicon.png', type: 'image/png', sizes: '192x192' },
+      { url: '/favicon.png', type: 'image/png', sizes: '32x32' },
+      { url: '/favicon.png', type: 'image/png', sizes: '16x16' },
+      { url: '/favicon.png', type: 'image/png', sizes: '192x192' },
     ],
-    shortcut: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Logo%20etc/flavicon.png',
+    shortcut: '/favicon.png',
     apple: [
-      { url: 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/Logo%20etc/flavicon.png', sizes: '180x180' },
+      { url: '/favicon.png', sizes: '180x180' },
     ],
   },
   manifest: undefined,
