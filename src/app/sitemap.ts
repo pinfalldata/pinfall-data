@@ -29,12 +29,13 @@ export async function generateSitemaps() {
   const BATCH = 5000
   const matchBatches = Math.ceil(matchCount / BATCH)
 
-  // IDs: 0=static+superstars, 1=shows+arenas, 2..N=matches, N+1=other
+  // IDs: 0=static+superstars, 1=shows+arenas, 2..N=matches, N+1=other, N+2=versus
   const ids = [{ id: 0 }, { id: 1 }]
   for (let i = 0; i < matchBatches; i++) {
     ids.push({ id: 2 + i })
   }
   ids.push({ id: 2 + matchBatches }) // "other" segment
+  ids.push({ id: 3 + matchBatches }) // "versus" segment
   return ids
 }
 
@@ -175,6 +176,88 @@ export default async function sitemap({ id }: { id: number }): Promise<MetadataR
       }))
 
     return [...stipPages, ...tagPages, ...stablePages, ...rivalryPages, ...segPages]
+  }
+
+  // ===== VERSUS SEGMENT: Popular head-to-head matchup pages =====
+  const versusSegmentId = otherSegmentId + 1
+  if (id === versusSegmentId) {
+    // Find popular matchups: pairs of wrestlers who share 2+ matches
+    // Step 1: Get all match_participants for wrestlers (role = 'wrestler' or most matches)
+    const { data: allParts } = await supabase
+      .from('match_participants')
+      .select('match_id, superstar_id')
+      .order('match_id')
+
+    if (!allParts || allParts.length === 0) return []
+
+    // Step 2: Group by match_id to find pairs
+    const matchGroups = new Map<number, number[]>()
+    for (const p of allParts) {
+      if (!matchGroups.has(p.match_id)) matchGroups.set(p.match_id, [])
+      matchGroups.get(p.match_id)!.push(p.superstar_id)
+    }
+
+    // Step 3: Count pairwise matchups (only for matches with 2-4 participants to avoid battle royals)
+    const pairCount = new Map<string, number>()
+    for (const [, ids] of matchGroups) {
+      if (ids.length < 2 || ids.length > 4) continue
+      const unique = [...new Set(ids)].sort((a, b) => a - b)
+      for (let i = 0; i < unique.length; i++) {
+        for (let j = i + 1; j < unique.length; j++) {
+          const key = `${unique[i]}-${unique[j]}`
+          pairCount.set(key, (pairCount.get(key) || 0) + 1)
+        }
+      }
+    }
+
+    // Step 4: Filter pairs with 2+ matches, sort by count desc, cap at 3000
+    const topPairs = [...pairCount.entries()]
+      .filter(([, count]) => count >= 2)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3000)
+
+    if (topPairs.length === 0) return []
+
+    // Step 5: Fetch slugs for all involved superstars
+    const allStarIds = new Set<number>()
+    for (const [key] of topPairs) {
+      const [a, b] = key.split('-').map(Number)
+      allStarIds.add(a)
+      allStarIds.add(b)
+    }
+
+    const { data: starSlugs } = await supabase
+      .from('superstars')
+      .select('id, slug')
+      .in('id', [...allStarIds])
+
+    const slugMap = new Map<number, string>()
+    for (const s of (starSlugs || [])) slugMap.set(s.id, s.slug)
+
+    // Step 6: Generate URLs (alphabetical slug order = canonical)
+    const vsPages: MetadataRoute.Sitemap = topPairs
+      .map(([key]) => {
+        const [a, b] = key.split('-').map(Number)
+        const slugA = slugMap.get(a)
+        const slugB = slugMap.get(b)
+        if (!slugA || !slugB) return null
+        const [first, second] = [slugA, slugB].sort()
+        return {
+          url: `${BASE}/superstars/${first}/vs/${second}`,
+          lastModified: now,
+          changeFrequency: 'monthly' as const,
+          priority: 0.6,
+        }
+      })
+      .filter(Boolean) as MetadataRoute.Sitemap
+
+    // Deduplicate
+    const seen = new Set<string>()
+    return vsPages.filter(p => {
+      if (seen.has(p.url)) return false
+      seen.add(p.url)
+      return true
+    })
   }
 
   return []
