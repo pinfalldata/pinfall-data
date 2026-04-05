@@ -13,7 +13,7 @@ export default function PrivacyPolicyPage() {
 
       {/* Header */}
       <div className="mb-10">
-        <p className="text-text-secondary text-sm mb-2">Last updated: June 2025</p>
+        <p className="text-text-secondary text-sm mb-2">Last updated: April 2026</p>
         <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-white mb-4">
           Privacy <span className="text-neon-blue">Policy</span>
         </h1>
@@ -28,13 +28,13 @@ export default function PrivacyPolicyPage() {
           <p>
             Pinfall Data (<strong className="text-text-white">pinfalldata.com</strong>) is an independent WWE statistics
             database operated by{' '}
-            <strong className="text-text-white">[YOUR_FULL_NAME]</strong>, registered auto-entrepreneur based in{' '}
-            <strong className="text-text-white">[YOUR_CITY], France</strong>.
+            <strong className="text-text-white">Alexis BERSWEILER</strong>, entreprise individuelle registered in{' '}
+            <strong className="text-text-white">Marseille, France</strong> (SIRET: 103 073 946 00016).
           </p>
           <p className="mt-2">
             Contact:{' '}
-            <a href="mailto:[YOUR_EMAIL]" className="text-neon-blue hover:underline">
-              [YOUR_EMAIL]
+            <a href="mailto:pinfalldata@gmail.com" className="text-neon-blue hover:underline">
+              pinfalldata@gmail.com
             </a>
           </p>
         </section>
@@ -142,7 +142,7 @@ export default function PrivacyPolicyPage() {
           </ul>
           <p className="mt-3">
             To exercise your rights, contact us at{' '}
-            <a href="mailto:[YOUR_EMAIL]" className="text-neon-blue hover:underline">[YOUR_EMAIL]</a>.
+            <a href="mailto:pinfalldata@gmail.com" className="text-neon-blue hover:underline">pinfalldata@gmail.com</a>.
             We will respond within 30 days.
           </p>
         </section>

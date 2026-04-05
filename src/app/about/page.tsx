@@ -55,8 +55,8 @@ export default function AboutPage() {
           <h2 className="font-display text-lg font-bold text-text-white mb-3">Who's behind it</h2>
           <p>
             Pinfall Data is an independent passion project created by{' '}
-            <strong className="text-text-white">[YOUR_FIRST_NAME]</strong>, a lifelong WWE fan based in{' '}
-            <strong className="text-text-white">[YOUR_CITY], France</strong>. This is not an official WWE product
+            <strong className="text-text-white">Alexis</strong>, a lifelong WWE fan based in{' '}
+            <strong className="text-text-white">Marseille, France</strong>. This is not an official WWE product
             and has no affiliation with World Wrestling Entertainment, Inc.
           </p>
           <p className="mt-3">
@@ -102,10 +102,10 @@ export default function AboutPage() {
             Found a data error? Have a suggestion? Just want to say hello? I'd love to hear from you.
           </p>
           <a
-            href="mailto:[YOUR_EMAIL]"
+            href="mailto:pinfalldata@gmail.com"
             className="inline-flex items-center gap-2 mt-3 text-neon-blue hover:underline font-medium"
           >
-            [YOUR_EMAIL] →
+            pinfalldata@gmail.com →
           </a>
         </section>
 

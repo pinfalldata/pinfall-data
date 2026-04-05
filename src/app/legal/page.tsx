@@ -11,11 +11,15 @@ const SECTIONS = [
   {
     title: 'Site publisher',
     items: [
-      { label: 'Name', value: '[YOUR_FULL_NAME]' },
-      { label: 'Status', value: 'Auto-entrepreneur (sole trader)' },
-      { label: 'SIRET', value: '[YOUR_SIRET — available after auto-entrepreneur registration]' },
-      { label: 'City', value: '[YOUR_CITY], France' },
-      { label: 'Email', value: '[YOUR_EMAIL]', isEmail: true },
+      { label: 'Name', value: 'Alexis BERSWEILER' },
+      { label: 'Trade name', value: 'Pinfall Data' },
+      { label: 'Status', value: 'Entreprise individuelle' },
+      { label: 'SIREN', value: '103 073 946' },
+      { label: 'SIRET', value: '103 073 946 00016' },
+      { label: 'Activity', value: 'Activités des agences de publicité (NAF 7311Z)' },
+      { label: 'RCS', value: 'Marseille' },
+      { label: 'Address', value: '11 Boulevard Tellene, 13007 Marseille, France' },
+      { label: 'Email', value: 'pinfalldata@gmail.com', isEmail: true },
     ],
   },
   {
