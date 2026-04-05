@@ -2,11 +2,14 @@
 import type { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { getHeadToHead } from '@/lib/queries'
 import { VersusPageClient } from './VersusPageClient'
 
 const FALLBACK_IMAGE = 'https://xusywypjmogzbizrwruv.supabase.co/storage/v1/object/public/Images/show_series/logo-CWC.png'
 
-type Props = { params: Promise<{ slug: string; slug2: string }> }
+interface Props {
+  params: { slug: string; slug2: string }
+}
 
 async function getSuperstars(slug1: string, slug2: string) {
   const { data } = await supabase
@@ -16,43 +19,11 @@ async function getSuperstars(slug1: string, slug2: string) {
   return data || []
 }
 
-// Supabase server limits to 1000 rows per query — pagination needed
-async function fetchAllMatchIds(superstarId: number): Promise<number[]> {
-  const allIds: number[] = []
-  let from = 0
-  const batch = 1000
-  while (true) {
-    const { data } = await supabase
-      .from('match_participants')
-      .select('match_id')
-      .eq('superstar_id', superstarId)
-      .range(from, from + batch - 1)
-    if (!data || data.length === 0) break
-    allIds.push(...data.map(p => p.match_id))
-    if (data.length < batch) break
-    from += batch
-  }
-  return allIds
-}
-
-async function getMatchCount(id1: number, id2: number) {
-  const [ids1, ids2] = await Promise.all([
-    fetchAllMatchIds(id1),
-    fetchAllMatchIds(id2),
-  ])
-  const set1 = new Set(ids1)
-  return ids2.filter(id => set1.has(id)).length
-}
-
-export async function generateMetadata(props: Props): Promise<Metadata> {
-  const params = await props.params
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, slug2 } = params
 
-  // Normalize order: alphabetical
   if (slug > slug2) {
-    return {
-      alternates: { canonical: `/superstars/${slug2}/vs/${slug}` },
-    }
+    return { alternates: { canonical: `/superstars/${slug2}/vs/${slug}` } }
   }
 
   const stars = await getSuperstars(slug, slug2)
@@ -60,7 +31,10 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   const s1 = stars.find(s => s.slug === slug)!
   const s2 = stars.find(s => s.slug === slug2)!
-  const matchCount = await getMatchCount(s1.id, s2.id)
+
+  // Use existing RPC that works perfectly — no row limit issues
+  const h2h = await getHeadToHead(s1.id, s2.id)
+  const matchCount = h2h?.total_matches || 0
 
   const title = `${s1.name} vs ${s2.name} — All ${matchCount} Match${matchCount !== 1 ? 'es' : ''} | Pinfall Data`
   const description = `Complete match history between ${s1.name} and ${s2.name}. ${matchCount} match${matchCount !== 1 ? 'es' : ''} analyzed with results, ratings, championships, and detailed statistics. The most comprehensive head-to-head breakdown.`
@@ -127,8 +101,7 @@ function generateJsonLd(s1: any, s2: any, matchCount: number) {
   ]
 }
 
-export default async function VersusPage(props: Props) {
-  const params = await props.params
+export default async function VersusPage({ params }: Props) {
   const { slug, slug2 } = params
 
   // Normalize: always alphabetical order
@@ -141,7 +114,10 @@ export default async function VersusPage(props: Props) {
 
   const s1 = stars.find(s => s.slug === slug)!
   const s2 = stars.find(s => s.slug === slug2)!
-  const matchCount = await getMatchCount(s1.id, s2.id)
+
+  // Use existing RPC — runs in PostgreSQL, no row limit
+  const h2h = await getHeadToHead(s1.id, s2.id)
+  const matchCount = h2h?.total_matches || 0
 
   if (matchCount === 0) notFound()
 
