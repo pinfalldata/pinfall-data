@@ -42,6 +42,8 @@ export function VersusPageClient({ superstar1: s1, superstar2: s2, initialMatchC
   const [resultType, setResultType] = useState('')
   const [champOnly, setChampOnly] = useState(false)
   const [titleChangeOnly, setTitleChangeOnly] = useState(false)
+  const [page, setPage] = useState(1)
+  const PER_PAGE = 50
 
   useEffect(() => {
     fetch(`/api/versus?slug1=${s1.slug}&slug2=${s2.slug}`)
@@ -103,10 +105,17 @@ export function VersusPageClient({ superstar1: s1, superstar2: s2, initialMatchC
 
   const resetFilters = () => {
     setYear(''); setShowSeriesId(''); setMatchTypeId(''); setMinRating('')
-    setResult(''); setResultType(''); setChampOnly(false); setTitleChangeOnly(false)
+    setResult(''); setResultType(''); setChampOnly(false); setTitleChangeOnly(false); setPage(1)
   }
 
   const activeFilters = [year, showSeriesId, matchTypeId, minRating, result, resultType, champOnly, titleChangeOnly].filter(Boolean).length
+
+  // Reset page when filters change
+  useEffect(() => { setPage(1) }, [year, showSeriesId, matchTypeId, minRating, result, resultType, champOnly, titleChangeOnly])
+
+  // Pagination
+  const totalPages = Math.ceil(filtered.length / PER_PAGE)
+  const paged = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE)
 
   return (
     <div className="min-h-screen bg-bg-primary">
@@ -168,8 +177,8 @@ export function VersusPageClient({ superstar1: s1, superstar2: s2, initialMatchC
               </div>
               {/* Match count */}
               <p className="mt-3 text-center">
-                <span className="font-stats text-xl sm:text-2xl text-text-white tracking-wide">{initialMatchCount}</span>
-                <span className="block text-[10px] sm:text-xs text-text-secondary uppercase tracking-widest">Match{initialMatchCount !== 1 ? 'es' : ''}</span>
+                <span className="font-stats text-xl sm:text-2xl text-text-white tracking-wide">{h2h?.total || matches.length}</span>
+                <span className="block text-[10px] sm:text-xs text-text-secondary uppercase tracking-widest">Match{(h2h?.total || matches.length) !== 1 ? 'es' : ''}</span>
               </p>
               {h2h && h2h.draws > 0 && (
                 <p className="text-xs text-text-secondary mt-0.5">
@@ -292,16 +301,20 @@ export function VersusPageClient({ superstar1: s1, superstar2: s2, initialMatchC
                 .map(r => <option key={r} value={r}>{r.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</option>)}
             </Select>
 
-            <label className="flex items-center gap-2 px-3 py-2 rounded-lg bg-bg-tertiary/30 border border-border-subtle/20 cursor-pointer hover:border-neon-blue/20 transition-colors col-span-1">
-              <input type="checkbox" checked={champOnly} onChange={e => setChampOnly(e.target.checked)}
-                className="w-3.5 h-3.5 rounded accent-neon-blue" />
-              <span className="text-[11px] text-text-secondary">🏆 Championship</span>
+            <label className="flex items-center gap-2 cursor-pointer group col-span-1">
+              <div className={`w-9 h-5 rounded-full relative transition-colors cursor-pointer ${champOnly ? 'bg-yellow-500/40' : 'bg-bg-tertiary'}`}
+                onClick={() => setChampOnly(!champOnly)}>
+                <div className={`absolute top-0.5 w-4 h-4 rounded-full transition-transform ${champOnly ? 'translate-x-[18px] bg-yellow-400' : 'translate-x-[2px] bg-text-secondary'}`} />
+              </div>
+              <span className="text-xs text-text-secondary group-hover:text-text-white transition-colors">🏆 Championship only</span>
             </label>
 
-            <label className="flex items-center gap-2 px-3 py-2 rounded-lg bg-bg-tertiary/30 border border-border-subtle/20 cursor-pointer hover:border-neon-blue/20 transition-colors col-span-1">
-              <input type="checkbox" checked={titleChangeOnly} onChange={e => setTitleChangeOnly(e.target.checked)}
-                className="w-3.5 h-3.5 rounded accent-neon-blue" />
-              <span className="text-[11px] text-text-secondary">🔄 Title Change</span>
+            <label className="flex items-center gap-2 cursor-pointer group col-span-1">
+              <div className={`w-9 h-5 rounded-full relative transition-colors cursor-pointer ${titleChangeOnly ? 'bg-yellow-500/40' : 'bg-bg-tertiary'}`}
+                onClick={() => setTitleChangeOnly(!titleChangeOnly)}>
+                <div className={`absolute top-0.5 w-4 h-4 rounded-full transition-transform ${titleChangeOnly ? 'translate-x-[18px] bg-yellow-400' : 'translate-x-[2px] bg-text-secondary'}`} />
+              </div>
+              <span className="text-xs text-text-secondary group-hover:text-text-white transition-colors">🔄 Title changes only</span>
             </label>
           </div>
 
@@ -346,10 +359,33 @@ export function VersusPageClient({ superstar1: s1, superstar2: s2, initialMatchC
             </div>
 
             <div className="space-y-1.5">
-              {filtered.map((m) => (
+              {paged.map((m) => (
                 <MatchRow key={m.id} match={m} s1={s1} s2={s2} />
               ))}
             </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-2 mt-6 pt-4 border-t border-border-subtle/20">
+                <button
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className="px-3 py-1.5 rounded-lg border border-border-subtle/30 text-text-secondary text-xs hover:text-neon-blue hover:border-neon-blue/30 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                >
+                  ← Prev
+                </button>
+                <span className="text-xs text-text-secondary font-mono">
+                  Page {page} / {totalPages}
+                </span>
+                <button
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages}
+                  className="px-3 py-1.5 rounded-lg border border-border-subtle/30 text-text-secondary text-xs hover:text-neon-blue hover:border-neon-blue/30 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                >
+                  Next →
+                </button>
+              </div>
+            )}
           </>
         )}
       </section>
@@ -357,7 +393,7 @@ export function VersusPageClient({ superstar1: s1, superstar2: s2, initialMatchC
       {/* SEO-only content (hidden for users, visible for crawlers) */}
       <section className="sr-only" aria-hidden="false">
         <h1>{s1.name} vs {s2.name} — Complete Match History</h1>
-        <p>Full head-to-head record between {s1.name} and {s2.name} on Pinfall Data. {initialMatchCount} matches analyzed with results, ratings, championships, and detailed statistics.</p>
+        <p>Full head-to-head record between {s1.name} and {s2.name} on Pinfall Data. {h2h?.total || matches.length} matches analyzed with results, ratings, championships, and detailed statistics.</p>
       </section>
     </div>
   )
@@ -370,7 +406,7 @@ function MatchRow({ match: m, s1, s2 }: { match: VersusMatch; s1: Superstar; s2:
   const showHref = m.show?.slug ? `/shows/${m.show.slug}` : '#'
   const matchHref = m.show?.slug && m.slug ? `/shows/${m.show.slug}/matches/${m.slug}` : '#'
 
-  const outcomeColor = m.outcome === 'win' ? 'border-l-neon-blue' : m.outcome === 'loss' ? 'border-l-neon-pink' : 'border-l-border-subtle/50'
+  const outcomeColor = ''
 
   // Group participants by team
   const teams: Record<number, any[]> = {}
@@ -385,7 +421,7 @@ function MatchRow({ match: m, s1, s2 }: { match: VersusMatch; s1: Superstar; s2:
 
   return (
     <Link href={matchHref}
-      className={`group block rounded-xl border border-border-subtle/15 bg-bg-secondary/15 hover:bg-bg-secondary/30 hover:border-neon-blue/15 transition-all duration-200 border-l-[3px] ${outcomeColor}`}>
+      className={`group block rounded-xl border border-border-subtle/15 bg-bg-secondary/15 hover:bg-bg-secondary/30 hover:border-neon-blue/15 transition-all duration-200`}>
 
       {/* Desktop */}
       <div className="hidden lg:grid grid-cols-[100px_1fr_180px_1fr_160px_80px] gap-3 items-center px-4 py-3">
