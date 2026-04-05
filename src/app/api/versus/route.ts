@@ -33,8 +33,8 @@ export async function GET(request: NextRequest) {
 
     // 2. Get match IDs for both
     const [{ data: p1 }, { data: p2 }] = await Promise.all([
-      supabase.from('match_participants').select('match_id, team_number, is_winner').eq('superstar_id', s1.id),
-      supabase.from('match_participants').select('match_id, team_number, is_winner').eq('superstar_id', s2.id),
+      supabase.from('match_participants').select('match_id, team_number, is_winner').eq('superstar_id', s1.id).limit(50000),
+      supabase.from('match_participants').select('match_id, team_number, is_winner').eq('superstar_id', s2.id).limit(50000),
     ])
 
     if (!p1 || !p2) return NextResponse.json({ superstar1: s1, superstar2: s2, matches: [], h2h: null })

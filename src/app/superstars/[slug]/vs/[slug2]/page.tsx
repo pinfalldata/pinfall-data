@@ -17,14 +17,10 @@ async function getSuperstars(slug1: string, slug2: string) {
 }
 
 async function getMatchCount(id1: number, id2: number) {
-  const { data: p1 } = await supabase
-    .from('match_participants')
-    .select('match_id')
-    .eq('superstar_id', id1)
-  const { data: p2 } = await supabase
-    .from('match_participants')
-    .select('match_id')
-    .eq('superstar_id', id2)
+  const [{ data: p1 }, { data: p2 }] = await Promise.all([
+    supabase.from('match_participants').select('match_id').eq('superstar_id', id1).limit(50000),
+    supabase.from('match_participants').select('match_id').eq('superstar_id', id2).limit(50000),
+  ])
   if (!p1 || !p2) return 0
   const set1 = new Set(p1.map(p => p.match_id))
   return p2.filter(p => set1.has(p.match_id)).length
