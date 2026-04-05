@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
     // 1. Fetch both superstars
     const { data: stars } = await supabase
       .from('superstars')
-      .select('id, name, slug, photo_url, birth_date, status, height_cm, weight_kg, total_matches, wins, losses, draws')
+      .select('id, name, slug, photo_url, birth_date, status, height_cm, weight_kg, total_matches, win_count, loss_count, draw_count')
       .in('slug', [slug1, slug2])
 
     if (!stars || stars.length < 2) {

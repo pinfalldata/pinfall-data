@@ -14,7 +14,7 @@ interface Props {
 async function getSuperstars(slug1: string, slug2: string) {
   const { data, error } = await supabase
     .from('superstars')
-    .select('id, name, slug, photo_url, birth_date, status, height_cm, weight_kg, total_matches, wins, losses, draws')
+    .select('id, name, slug, photo_url, birth_date, status, height_cm, weight_kg, total_matches, win_count, loss_count, draw_count')
     .in('slug', [slug1, slug2])
   return { stars: data || [], error }
 }

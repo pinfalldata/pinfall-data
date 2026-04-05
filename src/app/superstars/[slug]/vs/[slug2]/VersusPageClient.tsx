@@ -9,7 +9,7 @@ import Link from 'next/link'
    ═══════════════════════════════════════════ */
 interface Superstar {
   id: number; name: string; slug: string; photo_url: string | null
-  total_matches: number; wins: number; losses: number; draws: number
+  total_matches: number; win_count: number; loss_count: number; draw_count: number
 }
 interface VersusMatch {
   id: number; slug: string; date: string; duration_seconds: number | null
