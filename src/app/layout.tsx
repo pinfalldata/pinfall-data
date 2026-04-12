@@ -9,6 +9,7 @@ import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { isRTL } from '@/lib/locales'
 import { CookieBanner } from '@/components/CookieBanner'
+import Script from 'next/script'
 import { FloatingButtons } from '@/components/layout/FloatingButtons'
 
 const oswald = Oswald({
@@ -113,6 +114,14 @@ export default async function RootLayout({
       dir={dir}
       className={`${oswald.variable} ${sourceSans.variable} ${jetbrainsMono.variable} ${bebasNeue.variable}`}
     >
+      <head>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1064441409311525"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+      </head>
       <body className="min-h-screen bg-bg-primary text-text-primary font-body antialiased">
         <NextIntlClientProvider messages={messages}>
           {/* Background grid effect */}
