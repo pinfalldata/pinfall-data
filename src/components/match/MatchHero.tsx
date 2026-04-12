@@ -450,9 +450,17 @@ function MatchParticipantsLayout({ teamEntries, color, match }: {
 
 // Team managers sub-component
 function TeamManagers({ teamNum, members, match, color }: { teamNum: number; members: any[]; match: any; color: string }) {
-  const teamManagers = (match.managers || []).filter((m: any) =>
+  const rawManagers = (match.managers || []).filter((m: any) =>
     m.team_number === teamNum || members.some((p: any) => m.managing_for?.id === p.superstar?.id)
   )
+  // Deduplicate: show each manager only once per team even if they manage multiple wrestlers
+  const seen = new Set<number>()
+  const teamManagers = rawManagers.filter((m: any) => {
+    const sid = m.superstar?.id
+    if (seen.has(sid)) return false
+    seen.add(sid)
+    return true
+  })
   if (teamManagers.length === 0) return null
   return (
     <div className="mt-3 flex items-center gap-2 justify-center">
