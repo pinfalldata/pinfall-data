@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
   try {
     const [
       { count: segments },
-      { count: managed },
+      { data: managedRows },
       { count: commentated },
       { count: matchCommentated },
       { count: ringAnnounced },
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
       { count: superstarMediaCount },
     ] = await Promise.all([
       supabase.from('show_segment_participants').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
-      supabase.from('match_managers').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
+      supabase.from('match_managers').select('match_id').eq('superstar_id', sid),
       supabase.from('show_commentators').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
       supabase.from('match_commentators').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
       supabase.from('show_ring_announcers').select('*', { count: 'exact', head: true }).eq('superstar_id', sid),
@@ -82,6 +82,7 @@ export async function GET(request: NextRequest) {
     } catch {}
 
     const omgMoments = Math.max((omgParticipant || 0), (omgDirect || 0))
+    const managed = new Set((managedRows || []).map((r: any) => r.match_id)).size
 
     return NextResponse.json({
       segments: segments || 0,

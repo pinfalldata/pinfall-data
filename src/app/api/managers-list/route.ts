@@ -76,13 +76,28 @@ export async function GET(request: NextRequest) {
         .from('match_managers')
         .select('superstar_id, match_id, team_number, matches!match_managers_match_id_fkey(winner_team, result_type)')
 
-      // Aggregate stats per manager
-      const statsMap = new Map<number, { matches: number; wins: number; losses: number }>()
+      // Aggregate stats per manager — deduplicate by match_id first
+      const seenMatchPerManager = new Map<number, Set<number>>()
       for (const row of (mmData || [])) {
         const sid = row.superstar_id
+        if (!seenMatchPerManager.has(sid)) seenMatchPerManager.set(sid, new Set())
+        seenMatchPerManager.get(sid)!.add(row.match_id)
+      }
+      const statsMap = new Map<number, { matches: number; wins: number; losses: number }>()
+      // Build stats using unique match_ids per manager
+      for (const [sid, matchIds] of seenMatchPerManager.entries()) {
         if (!statsMap.has(sid)) statsMap.set(sid, { matches: 0, wins: 0, losses: 0 })
         const s = statsMap.get(sid)!
-        s.matches++
+        s.matches = matchIds.size
+      }
+      // Compute wins/losses using one row per unique match per manager
+      const processedMatchPerManager = new Map<number, Set<number>>()
+      for (const row of (mmData || [])) {
+        const sid = row.superstar_id
+        if (!processedMatchPerManager.has(sid)) processedMatchPerManager.set(sid, new Set())
+        if (processedMatchPerManager.get(sid)!.has(row.match_id)) continue
+        processedMatchPerManager.get(sid)!.add(row.match_id)
+        const s = statsMap.get(sid)!
         const m = row.matches
         if (m) {
           const isDraw = m.result_type === 'no_contest' || m.result_type === 'time_limit_draw'
@@ -181,11 +196,15 @@ export async function GET(request: NextRequest) {
     if (ids.length > 0) {
       const { data: mmData } = await supabase
         .from('match_managers')
-        .select('superstar_id, team_number, matches!match_managers_match_id_fkey(winner_team, result_type)')
+        .select('superstar_id, match_id, team_number, matches!match_managers_match_id_fkey(winner_team, result_type)')
         .in('superstar_id', ids)
+      const processedPerManager = new Map<number, Set<number>>()
       for (const row of (mmData || [])) {
         const sid = row.superstar_id
         if (!managerStats.has(sid)) managerStats.set(sid, { matches: 0, wins: 0, losses: 0 })
+        if (!processedPerManager.has(sid)) processedPerManager.set(sid, new Set())
+        if (processedPerManager.get(sid)!.has(row.match_id)) continue
+        processedPerManager.get(sid)!.add(row.match_id)
         const s = managerStats.get(sid)!
         s.matches++
         const m = row.matches
