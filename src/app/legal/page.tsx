@@ -84,24 +84,103 @@ export default function LegalPage() {
           </section>
         ))}
 
+        {/* Fan project statement */}
+        <section>
+          <h2 className="font-display text-lg font-bold text-text-white mb-3">Fan project &amp; non-commercial purpose</h2>
+          <p className="text-text-secondary text-sm leading-relaxed">
+            Pinfall Data is a <strong className="text-text-white">personal passion project</strong> created by a fan
+            of professional wrestling. This website is built for educational and entertainment purposes only, aiming to
+            compile, organise, and present publicly available statistical data about WWE events, matches, and performers.
+            This is <strong className="text-text-white">not</strong> a commercial exploitation of WWE content — it is
+            a non-official fan resource dedicated to the history and statistics of professional wrestling.
+          </p>
+        </section>
+
         {/* Intellectual property */}
         <section>
-          <h2 className="font-display text-lg font-bold text-text-white mb-3">Intellectual property</h2>
-          <p className="text-text-secondary text-sm leading-relaxed">
-            The structure, design, and original content of Pinfall Data are protected under French and international
-            copyright law. The WWE name, logos, and all related intellectual property are the exclusive property of
-            World Wrestling Entertainment, Inc. (WWE). Pinfall Data is an independent fan statistics site and is not
-            affiliated with, endorsed by, or sponsored by WWE.
-          </p>
+          <h2 className="font-display text-lg font-bold text-text-white mb-3">Intellectual property &amp; WWE trademark notice</h2>
+          <div className="text-text-secondary text-sm leading-relaxed space-y-3">
+            <p>
+              <strong className="text-text-white">All WWE-related intellectual property belongs exclusively to WWE.</strong>{' '}
+              This includes, but is not limited to:
+            </p>
+            <ul className="space-y-1.5 pl-1">
+              {[
+                'The names "WWE", "World Wrestling Entertainment", "WCW", "ECW", "NXT", and all associated brand names',
+                'All wrestler names, ring names, likenesses, characters, personas, and catchphrases',
+                'All logos, trademarks, service marks, and trade dress',
+                'All photographs, images, video footage, and promotional materials',
+                'All event names (WrestleMania, Royal Rumble, SummerSlam, Survivor Series, etc.)',
+                'All championship belt designs and names',
+                'All entrance music, theme songs, and audio content',
+              ].map((item) => (
+                <li key={item} className="flex gap-2">
+                  <span className="text-neon-blue shrink-0">›</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <p>
+              These are the <strong className="text-text-white">exclusive property of World Wrestling Entertainment, Inc.</strong>{' '}
+              (now TKO Group Holdings, Inc.) and/or their respective owners. Pinfall Data claims{' '}
+              <strong className="text-text-white">no ownership whatsoever</strong> over any of the above.
+            </p>
+            <p>
+              Any images, video thumbnails, or media displayed on this website are used solely for identification
+              and informational purposes in the context of reporting statistics and historical facts. They remain
+              the property of WWE and/or their respective copyright holders. If any rights holder wishes to have
+              content removed, please contact us at{' '}
+              <a href="mailto:pinfalldata@gmail.com" className="text-neon-blue hover:underline">pinfalldata@gmail.com</a>{' '}
+              and we will promptly comply.
+            </p>
+            <p>
+              The <strong className="text-text-white">original elements</strong> of Pinfall Data — including its code,
+              database structure, visual design, custom graphics, and original written commentary — are protected under
+              French and international copyright law (Code de la propriété intellectuelle).
+            </p>
+          </div>
+        </section>
+
+        {/* Non-affiliation */}
+        <section>
+          <h2 className="font-display text-lg font-bold text-text-white mb-3">Non-affiliation statement</h2>
+          <div className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/5">
+            <p className="text-text-secondary text-sm leading-relaxed">
+              <strong className="text-amber-400">⚠ Important:</strong>{' '}
+              Pinfall Data is <strong className="text-text-white">not affiliated with, endorsed by, sponsored by,
+              or in any way officially connected to</strong> World Wrestling Entertainment, Inc. (WWE), TKO Group
+              Holdings, Inc., or any of their subsidiaries, partners, or affiliates. All WWE-related content is used
+              under fair use principles for informational, statistical, and commentary purposes. Any resemblance to
+              an official WWE product is unintentional.
+            </p>
+          </div>
         </section>
 
         {/* Disclaimer */}
         <section>
           <h2 className="font-display text-lg font-bold text-text-white mb-3">Disclaimer</h2>
+          <div className="text-text-secondary text-sm leading-relaxed space-y-3">
+            <p>
+              Pinfall Data strives to maintain accurate and up-to-date statistical information. However, we make no
+              warranty, express or implied, regarding the completeness or accuracy of the data presented. The publisher
+              shall not be liable for any errors, omissions, or consequences arising from the use of this information.
+            </p>
+            <p>
+              Statistics, match results, and historical data are compiled from publicly available sources and may
+              contain inaccuracies. Users are encouraged to verify critical information through official WWE sources.
+            </p>
+          </div>
+        </section>
+
+        {/* DMCA / Takedown */}
+        <section>
+          <h2 className="font-display text-lg font-bold text-text-white mb-3">Content removal requests</h2>
           <p className="text-text-secondary text-sm leading-relaxed">
-            Pinfall Data strives to maintain accurate and up-to-date statistical information. However, we make no
-            warranty, express or implied, regarding the completeness or accuracy of the data presented. The publisher
-            shall not be liable for any errors, omissions, or consequences arising from the use of this information.
+            If you are a rights holder and believe that any content on Pinfall Data infringes your intellectual
+            property rights, please contact us at{' '}
+            <a href="mailto:pinfalldata@gmail.com" className="text-neon-blue hover:underline">pinfalldata@gmail.com</a>{' '}
+            with a description of the content in question. We are committed to respecting intellectual property
+            rights and will remove or modify any infringing content as quickly as possible, typically within 48 hours.
           </p>
         </section>
 
